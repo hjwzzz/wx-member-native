@@ -1,0 +1,6 @@
+<!-- index.wxml -->
+<view class="tab-index">
+  <view class="tab" wx:for="{{list}}"  data-item="{{item}}" bindtap="onclick"  wx:for-index="index" wx:key="index">
+      {{item.text}}
+  </view>
+</view>
