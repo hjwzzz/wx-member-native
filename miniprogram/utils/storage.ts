@@ -48,5 +48,32 @@ class Storage {
   static removeEpid() {
     return wx.removeStorageSync("epid");
   }
+
+  // pages
+  static setPages(value: string) {
+    wx.setStorageSync("pages", value);
+  }
+  static getPages() {
+    return wx.getStorageSync("pages");
+  }
+  static removePages() {
+    return wx.removeStorageSync("pages");
+  }
+
+  // colorTheme
+  static setColorTheme(value: string) {
+    wx.setStorageSync("colorTheme", value);
+  }
+  static getColorTheme() {
+    return wx.getStorageSync("colorTheme");
+  }
+ // mainColor
+ static setMainColor(value: string) {
+    wx.setStorageSync("mainColor", value);
+  }
+  static getMainColor() {
+    return wx.getStorageSync("mainColor");
+  }
+
 }
 export default Storage;

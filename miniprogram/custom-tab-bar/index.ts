@@ -1,16 +1,39 @@
 import TabMenu from './data';
 
+import { getWmmeberNav,getWmColorTheme } from "../api/server";
+// getWmmeberNav
+
 Component({
   data: {
-     list:TabMenu
+     list:TabMenu,
+     bottomNavList:[],
+     active :0,
+     actionColor:""
   },
   lifetimes:{
     created(){
-    
-       console.log(JSON.stringify(this.data.list))
+      getWmColorTheme("").then((res: any) => {
+        this.setData({
+          actionColor:res.data.mainColor
+        })
+      });
+      getWmmeberNav('').then((res:any)=>{
+           console.log('getWmmeberNav',res.data.bottomNavList)
+           this.setData({
+            bottomNavList:res.data.bottomNavList||[]
+          })
+      })
+      // console.log(JSON.stringify(this.data.list))
     }
   },
   methods: {
+
+    onChange(items:any){
+     console.log(items)
+     this.setData({
+      active:items.detail
+    })
+    },
     onclick(items:any) {
       
       const {icon,url}=items.target.dataset.item

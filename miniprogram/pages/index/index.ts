@@ -4,6 +4,9 @@
 
 import Storage from '../../utils/storage'
 import { staticUrl} from '../../utils/config'
+import { getEAppIdByWAppId} from '../../api/server'
+
+
 // const { staticUrl }=getApp().require('/utils/config.js')
 // const app = getApp<IAppOption>()
 
@@ -25,8 +28,8 @@ Page({
     })
   },
   onLoad() {
-    console.log('staticUrl',staticUrl)
-    console.log('Storage',Storage.getJqzAppId())
+    // console.log('staticUrl',staticUrl)
+    // console.log('Storage1111111111',Storage.getJqzAppId())
     // console.log('ddd',ddd)
     // @ts-ignore
     if (wx.getUserProfile) {
@@ -34,6 +37,15 @@ Page({
         canIUseGetUserProfile: true
       })
     }
+
+    // const dddd= ()=>{
+    //   getEAppIdByWAppId(Storage.getWXAppId()).then((res:any)=>{
+    //        console.log('getEAppIdByWAppId',res)
+    //   })
+       
+
+    // }
+    // dddd()
   },
   getUserProfile() {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
