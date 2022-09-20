@@ -2,7 +2,10 @@
   "name": "miniprogram-ts-less-quickstart",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "preinstall": "npx only-allow npm",
+    "lint": "eslint --cache ./miniprogram --fix"
+  },
   "keywords": [],
   "author": "",
   "license": "",
@@ -12,6 +15,13 @@
     "eslint": "^8.23.1",
     "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-import": "^2.26.0",
+    "lint-staged": "^13.0.3",
     "miniprogram-api-typings": "^2.8.3-1"
+  },
+  "lint-staged": {
+    "*.{ts, js}": "npm run lint"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm lint-staged --concurrent 10"
   }
 }

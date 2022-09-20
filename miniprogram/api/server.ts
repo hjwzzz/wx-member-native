@@ -1,5 +1,5 @@
-import { baseUrl } from "../utils/config";
-import request from "../utils/request";
+import { baseUrl } from '../utils/config';
+import request from '../utils/request';
 
 // 根据微信APPID获取EAPPID
 export const getEAppIdByWAppId = async (data: any) => {
