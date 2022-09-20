@@ -44,7 +44,7 @@ const getEpid = async () => {
   if(err) {
     return '';
   }
-  const { appId, appType, epid } = res?.data?.data;
+  const { appId, appType, epid } = res?.data?.data ?? {};
   if (appId && appType && epid) {
     Storage.setJqzAppId(appId);
     Storage.setEpid(epid);
