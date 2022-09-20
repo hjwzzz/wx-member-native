@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "preinstall": "npx only-allow npm",
-    "lint": "eslint --cache ./miniprogram --fix"
+    "lint": "eslint ./miniprogram --fix"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +16,13 @@
     "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-import": "^2.26.0",
     "lint-staged": "^13.0.3",
-    "miniprogram-api-typings": "^2.8.3-1",
+    "miniprogram-api-typings": "^3.0.0",
     "simple-git-hooks": "^2.8.0"
   },
   "lint-staged": {
     "*.{ts, js}": "npm run lint"
   },
   "simple-git-hooks": {
-    "pre-commit": "npm lint-staged --concurrent 10"
+    "pre-commit": "npx lint-staged"
   }
 }

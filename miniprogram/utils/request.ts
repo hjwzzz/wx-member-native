@@ -1,6 +1,9 @@
+// / <reference path="./../../typings/index.d.ts" />
+
 import Storage from '../utils/storage';
 import { debounce } from '../utils/util';
 import { baseUrl } from '../utils/config';
+import { BaseRequestRes } from './request.type';
 
 const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
 // 网络错误的页面
@@ -19,7 +22,7 @@ const defaultParam = {
 
 let requestCount = 0;
 // 加载
-const loading = debounce(function () {
+const loading = debounce(() => {
   if (requestCount) {
     wx.showLoading({
       title: '加载中',
@@ -32,7 +35,7 @@ const loading = debounce(function () {
 //
 
 const getEpid = async () => {
-  const [err, res]: any = await asyncRequest({
+  const [err, res] = await asyncRequest({
     method: 'POST',
     url: BASEURL,
     data: {
@@ -44,7 +47,7 @@ const getEpid = async () => {
   if(err) {
     return '';
   }
-  const { appId, appType, epid } = res?.data?.data ?? {};
+  const { appId, appType, epid } = res.data.data;
   if (appId && appType && epid) {
     Storage.setJqzAppId(appId);
     Storage.setEpid(epid);
@@ -52,9 +55,9 @@ const getEpid = async () => {
   return epid;
 };
 
-const asyncRequest = (params:any) => new Promise((resolve, reject) => {
+const asyncRequest = <R extends Record<string, unknown>>(params: WechatMiniprogram.RequestOption<BaseRequestRes<R>>) => new Promise<[null, WechatMiniprogram.RequestSuccessCallbackResult<BaseRequestRes<R>>]>((resolve, reject) => {
   const { header, method, url, data } = params;
-  wx.request({
+  wx.request<BaseRequestRes<R>>({
     url,
     header,
     method,
@@ -69,17 +72,12 @@ const asyncRequest = (params:any) => new Promise((resolve, reject) => {
 });
 
 // 请求
-const request = async (
+const request = async <R extends Record<string, unknown>>(
   url: any,
   args: any,
   method: any = 'POST',
   isLoading = true
 ) => {
-  // console.log(url);
-  // console.log(args);
-  // console.log(method);
-  // console.log(isLoading);
-  // console.log(Storage.getJqzAppId());
   // 没有网络的情况
   wx.getNetworkType({
     success (res) {
@@ -102,9 +100,7 @@ const request = async (
     loading();
   }
   try {
-    // console.log("error", 2222222);
-
-    const [error, res]: any = await asyncRequest({
+    const [error, res] = await asyncRequest<R>({
       header: {
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
@@ -121,9 +117,6 @@ const request = async (
         ...defaultParam,
       },
     });
-    // console.log("error", 2222222);
-    // console.log('error',error);
-    // console.log(res);
     // 加载提示完成处理
     if (isLoading) requestCount--;
     if (requestCount <= 0) {
@@ -131,8 +124,9 @@ const request = async (
         wx.hideLoading();
       }, 300);
     }
+
     // 系统开小差处理
-    if (res.statusCode === 500 || res?.data?.status === 500) {
+    if (res.statusCode === 500 || res.data.status === 500) {
       setTimeout(() => {
         wx.showToast({
           icon: 'none',

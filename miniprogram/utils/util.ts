@@ -31,7 +31,7 @@ export const debounce = (fn:any, wait = 600) => {
       clearTimeout(timeout);
     }
     timeout = setTimeout(() => {
-      fn(arguments);
+      fn();
     }, wait);
   };
 };
