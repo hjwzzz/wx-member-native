@@ -1,5 +1,7 @@
 <!--index.wxml-->
 <view class="container">
+
+  首页
   <!-- <view class="userinfo">
 
     <block wx:if="{{canIUseOpenData}}">

@@ -1,4 +1,3 @@
-//
 
 const appId = wx.getAccountInfoSync().miniProgram.appId;
 class Storage {
