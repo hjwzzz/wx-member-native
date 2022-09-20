@@ -15,9 +15,8 @@ module.exports = {
   ],
   parserOptions: {
     parser: '@typescript-eslint/parser',
-    ecmaVersion: 2018,
-    sourceType: 'module',
     ecmaVersion: 6,
+    sourceType: 'module',
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
       modules: true,
