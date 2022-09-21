@@ -24,14 +24,14 @@ const formatNumber = (n: number) => {
 
 
 // 防抖
-export const debounce = (fn:any, wait = 600) => {
-  let timeout:any = null;
-  return function() {
+export const debounce = (fn: (...args: any) => any, wait = 600) => {
+  let timeout: number | null = null;
+  return (...args: unknown[]) => {
     if (timeout !== null) {
       clearTimeout(timeout);
     }
     timeout = setTimeout(() => {
-      fn();
+      fn(args);
     }, wait);
   };
 };
