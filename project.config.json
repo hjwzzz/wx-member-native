@@ -8,7 +8,10 @@
   "compileType": "miniprogram",
   "projectname": "ts-less-demo",
   "setting": {
-    "useCompilerPlugins": ["typescript", "less"],
+    "useCompilerPlugins": [
+      "typescript",
+      "less"
+    ],
     "urlCheck": true,
     "coverView": true,
     "es6": true,
