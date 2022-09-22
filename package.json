@@ -6,7 +6,7 @@
     "preinstall": "npx only-allow npm",
     "lint": "npm run lint:script && npm run lint:style",
     "lint:script": "eslint --fix --cache ./miniprogram --ext .ts,.js",
-    "lint:style": "stylelint --fix"
+    "lint:style": "stylelint --fix --cache"
   },
   "keywords": [],
   "author": "",
