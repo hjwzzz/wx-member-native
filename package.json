@@ -27,7 +27,7 @@
   },
   "lint-staged": {
     "*.{ts,js}": "npm run lint:script",
-    "*.{less}": "npm run lint:style"
+    "*.less": "npm run lint:style"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged --concurrent false"
