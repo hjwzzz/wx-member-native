@@ -13,7 +13,7 @@ Component({
   lifetimes: {
     created() {
       getWmColorTheme('')
-        .then((res: any) => {
+        .then(res => {
           this.setData({ actionColor: res.data.mainColor });
           Storage.setColorTheme(res.data);
           Storage.setMainColor(res.data.mainColor);

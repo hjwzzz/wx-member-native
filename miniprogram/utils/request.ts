@@ -134,29 +134,28 @@ const request = async <R extends Record<string, unknown>>(
           duration: 3000,
         });
       }, 500);
-      return;
+      return Promise.resolve(res);
     }
     // 服务过期处理
     if (res.data.code === 610) {
       wx.redirectTo({ url: '/no-wifi/disabled-serve' });
-      return;
+      return Promise.resolve(res);
     }
 
     // 没有登录
     if (res.data.code === 401) {
       Storage.setMid('');
-      // uni.setStorageSync( "pages",hisPages ? hisPages : historyPages[len - 1].$page.fullPath);
       // 保存当前的页面，然后登录在跳转
       const historyPages = getCurrentPages();
       Storage.setPages(historyPages[historyPages.length - 1].$page.fullPath);
       //  router.go(pages.login);  这里去登录
-      return Promise.reject(res.data);
+      return Promise.reject(res);
     }
 
     if (error) {
       return Promise.reject(error);
     }
-    return Promise.resolve(res.data);
+    return Promise.resolve(res);
   } catch (error) {
     return Promise.reject(error);
   }
