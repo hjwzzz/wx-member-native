@@ -2,7 +2,7 @@
 
 import Storage from './utils/storage';
 //   import { staticUrl } from "../../utils/config";
-import { getEAppIdByWAppId, getWmColorTheme } from './api/server';
+import { getEAppIdByWAppId } from './api/server';
 
 App<IAppOption>({
   globalData: {},
@@ -15,11 +15,6 @@ App<IAppOption>({
         Storage.setEpid(epid);
       });
 
-    getWmColorTheme('')
-      .then((res: any) => {
-        Storage.setColorTheme(res.data);
-        Storage.setMainColor(res.data.mainColor);
-      });
 
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || [];

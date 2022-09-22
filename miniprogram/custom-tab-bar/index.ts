@@ -1,5 +1,5 @@
 import TabMenu from './data';
-
+import Storage from './../utils/storage';
 import { getWmmeberNav, getWmColorTheme } from '../api/server';
 // getWmmeberNav
 
@@ -15,6 +15,8 @@ Component({
       getWmColorTheme('')
         .then((res: any) => {
           this.setData({ actionColor: res.data.mainColor });
+          Storage.setColorTheme(res.data);
+          Storage.setMainColor(res.data.mainColor);
         });
       getWmmeberNav('')
         .then((res:any) => {
