@@ -134,12 +134,12 @@ const request = async <R extends Record<string, unknown>>(
           duration: 3000,
         });
       }, 500);
-      return Promise.resolve(res);
+      return Promise.resolve(res.data);
     }
     // 服务过期处理
     if (res.data.code === 610) {
       wx.redirectTo({ url: '/no-wifi/disabled-serve' });
-      return Promise.resolve(res);
+      return Promise.resolve(res.data);
     }
 
     // 没有登录
@@ -155,7 +155,7 @@ const request = async <R extends Record<string, unknown>>(
     if (error) {
       return Promise.reject(error);
     }
-    return Promise.resolve(res);
+    return Promise.resolve(res.data);
   } catch (error) {
     return Promise.reject(error);
   }
