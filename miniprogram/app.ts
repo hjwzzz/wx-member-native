@@ -2,18 +2,20 @@
 
 import Storage from './utils/storage';
 //   import { staticUrl } from "../../utils/config";
-import { getEAppIdByWAppId } from './api/server';
+// import { getEAppIdByWAppId } from './api/server';
 
 App<IAppOption>({
   globalData: {},
   onLaunch() {
+    Storage.removeEpid();
+
     // setJqzAppId
-    getEAppIdByWAppId(Storage.getWXAppId())
-      .then((res: any) => {
-        const { appId, epid } = res.data;
-        Storage.setJqzAppId(appId);
-        Storage.setEpid(epid);
-      });
+    // getEAppIdByWAppId(Storage.getWXAppId())
+    //   .then((res: any) => {
+    //     const { appId, epid } = res.data;
+    //     Storage.setJqzAppId(appId);
+    //     Storage.setEpid(epid);
+    //   });
 
 
     // 展示本地存储能力
