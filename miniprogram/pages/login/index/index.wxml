@@ -1,0 +1,46 @@
+<page-meta page-style="{{pageStyle}}">
+  <view class="login">
+    <view class="logo">
+      <image src="{{logo}}" mode="aspectFit" />
+    </view>
+    <view class="btn wx-auth">
+      微信授权登录
+    </view>
+    <view class="btn no-login">
+      暂不登录
+    </view>
+    <view wx:if="{{protocol.regAgreementShowed || protocol.privacyAgreementShowed}}" class="footer">
+      <view class="protocol">
+        <text>登录代表阅读并同意</text>
+        <text class="eula-name" wx:if="{{protocol.regAgreementShowed}}">
+          《用户协议》
+        </text>
+        <text class="eula-name" wx:if="{{protocol.privacyAgreementShowed}}">
+          《隐私协议》
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <van-popup show="{{ true }}" round>
+    <view class="popup">
+      <view class="popup-content">
+        <view class="popup-content-title">
+          授权申请
+        </view>
+        <view class="popup-content-box">
+          为了您更好的体验，请先绑定手机号才能登录噢！
+        </view>
+      </view>
+      <view class="popup-btn">
+        <button class="popup-btn-btn popup-btn-reject">
+          拒绝
+        </button>
+        <button class="popup-btn-btn popup-btn-reslove" open-type="getPhoneNumber" bind:getphonenumber="decryptPhoneNumber">
+          允许
+        </button>
+      </view>
+    </view>
+
+  </van-popup>
+</page-meta>

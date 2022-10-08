@@ -20,7 +20,6 @@ const defaultParam = {
   version: '',
 };
 
-
 // 加载
 let requestCount = 0;
 const loading = debounce(() => {
@@ -35,23 +34,23 @@ const loading = debounce(() => {
 }, 200);
 //
 
-
 // 等待有epid阻塞请求
 let waitGetEpidIndex = 0;
-const waitGetEpid = () => new Promise(resolve => {
-  const time = setInterval(() => {
-    const epid = Storage.getEpid();
-    if (epid) {
-      clearInterval(time);
-      resolve(epid);
-    }
-  }, 500);
-});
+const waitGetEpid = () =>
+  new Promise(resolve => {
+    const time = setInterval(() => {
+      const epid = Storage.getEpid();
+      if (epid) {
+        clearInterval(time);
+        resolve(epid);
+      }
+    }, 500);
+  });
 
 // 获取epid
 const getEpid = async () => {
   // 第一次请求获取epid
-  if(waitGetEpidIndex === 0) {
+  if (waitGetEpidIndex === 0) {
     waitGetEpidIndex += 1;
     const [err, res] = await asyncRequest({
       method: 'POST',
@@ -62,7 +61,7 @@ const getEpid = async () => {
         ...defaultParam,
       },
     });
-    if(err) {
+    if (err) {
       return '';
     }
     const { appId, appType, epid } = res.data.data;
@@ -73,33 +72,36 @@ const getEpid = async () => {
     return epid;
   }
   // 如果epid还没回来-请求就等待
-  if(waitGetEpidIndex > 0) {
+  if (waitGetEpidIndex > 0) {
     const epid = await waitGetEpid();
     return epid;
   }
-
 };
 
-
 // 基础request封装Promise
-const asyncRequest = <R extends Record<string, unknown>>(params: WechatMiniprogram.RequestOption<BaseRequestRes<R>>) => new Promise<[null, WechatMiniprogram.RequestSuccessCallbackResult<BaseRequestRes<R>>]>((resolve, reject) => {
-  const { header, method, url, data } = params;
-  wx.request<BaseRequestRes<R>>({
-    url,
-    header,
-    method,
-    data,
-    success: res => {
-      resolve([null, res]);
-    },
-    fail: err => {
-      reject([err, null]);
-    },
+const asyncRequest = <R>(
+  params: WechatMiniprogram.RequestOption<BaseRequestRes<R>>
+) =>
+  new Promise<
+    [null, WechatMiniprogram.RequestSuccessCallbackResult<BaseRequestRes<R>>]
+  >((resolve, reject) => {
+    const { header, method, url, data } = params;
+    wx.request<BaseRequestRes<R>>({
+      url,
+      header,
+      method,
+      data,
+      success: res => {
+        resolve([null, res]);
+      },
+      fail: err => {
+        reject([err, null]);
+      },
+    });
   });
-});
 
 // 请求
-const request = async <R extends Record<string, unknown> = any>(
+const request = async <R = never>(
   url: any,
   args: any,
   method: any = 'POST',
@@ -107,7 +109,7 @@ const request = async <R extends Record<string, unknown> = any>(
 ) => {
   // 没有网络的情况
   wx.getNetworkType({
-    success (res) {
+    success(res) {
       if (res.networkType === 'none') {
         wx.showLoading({
           title: '加载中',

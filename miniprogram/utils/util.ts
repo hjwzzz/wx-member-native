@@ -1,4 +1,3 @@
-
 // 时间格式format
 export const formatTime = (date: Date) => {
   const year = date.getFullYear();
@@ -8,20 +7,19 @@ export const formatTime = (date: Date) => {
   const minute = date.getMinutes();
   const second = date.getSeconds();
 
-  return (
-    `${[year, month, day].map(formatNumber)
-      .join('/')
-    } ${
-      [hour, minute, second].map(formatNumber)
-        .join(':')}`
-  );
+  return `${[year, month, day].map(formatNumber).join('/')} ${[
+    hour,
+    minute,
+    second,
+  ]
+    .map(formatNumber)
+    .join(':')}`;
 };
 
 const formatNumber = (n: number) => {
   const s = n.toString();
   return s[1] ? s : `0${s}`;
 };
-
 
 // 防抖
 export const debounce = (fn: (...args: any) => any, wait = 600) => {

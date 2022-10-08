@@ -1,0 +1,7 @@
+<view class="wifi-no-container">
+  <view class="container" bindtap="goback">
+    <image src="./../../static/img/wifi-none.png" mode="heightFix"></image>
+    <view class="titles"> 网络异常，点击重试</view>
+  </view>
+  <view class="footer"> 技术支持：金千枝数智云 </view>
+</view>
