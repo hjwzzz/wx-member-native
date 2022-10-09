@@ -1,5 +1,5 @@
 interface IAppOption {
   globalData: {
-    userInfo?: WechatMiniprogram.UserInfo
-  }
+    userInfo?: WechatMiniprogram.UserInfo;
+  };
 }

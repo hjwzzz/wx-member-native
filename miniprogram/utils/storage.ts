@@ -1,4 +1,3 @@
-
 const appId = wx.getAccountInfoSync().miniProgram.appId;
 class Storage {
   // appId
@@ -6,7 +5,7 @@ class Storage {
     return appId;
   }
   // JqzAppId
-  static setJqzAppId(value: string | any) {
+  static setJqzAppId(value: string) {
     wx.setStorageSync('jqzAppid', value);
   }
   static getJqzAppId() {
@@ -16,7 +15,7 @@ class Storage {
     return wx.removeStorageSync('jqzAppid');
   }
   // mid
-  static setMid(value: string | any) {
+  static setMid(value: string) {
     wx.setStorageSync('mid', value);
   }
   static getMid() {
@@ -27,7 +26,7 @@ class Storage {
   }
 
   // token
-  static setToken(value: string | any) {
+  static setToken(value: string) {
     wx.setStorageSync('token', value);
   }
   static getToken() {
@@ -38,7 +37,7 @@ class Storage {
   }
 
   // epid
-  static setEpid(value: string | any) {
+  static setEpid(value: string) {
     wx.setStorageSync('epid', value);
   }
   static getEpid() {
@@ -49,7 +48,7 @@ class Storage {
   }
 
   // pages
-  static setPages(value: string | any) {
+  static setPages(value: string) {
     wx.setStorageSync('pages', value);
   }
   static getPages() {
@@ -60,19 +59,18 @@ class Storage {
   }
 
   // colorTheme
-  static setColorTheme(value: string | any) {
+  static setColorTheme(value: string) {
     wx.setStorageSync('colorTheme', value);
   }
   static getColorTheme() {
     return wx.getStorageSync('colorTheme');
   }
   // mainColor
-  static setMainColor(value: string | any) {
+  static setMainColor(value: string) {
     wx.setStorageSync('mainColor', value);
   }
   static getMainColor() {
     return wx.getStorageSync('mainColor');
   }
-
 }
 export default Storage;

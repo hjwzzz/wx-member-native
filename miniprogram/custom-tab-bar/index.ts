@@ -1,57 +1,68 @@
 import Storage from './../utils/storage';
-import { getWmmeberNav, getWmColorTheme } from '../api/server';
-// getWmmeberNav
+import { getWmmeberNavRequest, getWmColorTheme } from '../api/server';
+import {
+  CustomTabBarComponentData,
+  CustomTabBarComponentProperty,
+  CustomTabBarComponentMethod,
+} from './index.type';
+import commonPage from './../component/common-page/index';
 
-Component({
+Component<
+  CustomTabBarComponentData,
+  CustomTabBarComponentProperty,
+  CustomTabBarComponentMethod
+>({
   data: {
     list: [],
     bottomNavList: [],
     active: 0,
-    actionColor: ''
+    actionColor: undefined,
   },
+  behaviors: [commonPage],
   lifetimes: {
-    created() {
-      getWmColorTheme('')
-        .then(res => {
-          this.setData({ actionColor: res.data?.mainColor });
-          Storage.setColorTheme(res.data);
-          Storage.setMainColor(res.data?.mainColor || '');
-        });
-      getWmmeberNav('')
-        .then((res:any) => {
-          this.setData({ bottomNavList: res.data.bottomNavList || [] });
-        });
-      // console.log(JSON.stringify(this.data.list))
-    }
+    async created() {
+      const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
+        getWmColorTheme(),
+        getWmmeberNavRequest(),
+      ]);
+
+      this.setData({
+        bottomNavList: getWmmeberNavRequestRes.data.bottomNavList || [],
+        actionColor: getWmColorThemeRes.data.styleType,
+      });
+      // Storage.setColorTheme(res.data);
+      Storage.setMainColor(getWmColorThemeRes.data.mainColor);
+
+      const pages = getCurrentPages();
+      const currentPage = pages.at(-1);
+      if (!currentPage?.route) {
+        return;
+      }
+
+      this.selectTabbarItem(`/${currentPage.route}`);
+    },
   },
   methods: {
-
-    onChange(items:any) {
-      this.setData({ active: items.detail });
+    onChange(items) {
+      this.selectTabbarItem(this.data.bottomNavList[items.detail].miniUrl);
     },
-    onclick(items:any) {
 
-      const { icon, url } = items.target.dataset.item;
-      if(icon === 'home' || icon === 'logs') {
-        wx.switchTab({ url });
+    selectTabbarItem(url) {
+      const active = this.data.bottomNavList.findIndex(
+        ({ miniUrl }) => miniUrl === url
+      );
+
+      if (active === -1) {
+        return;
       }
-      // this.setData({ active: event.detail.value });
-      // wx.switchTab({
-      //   url: this.data.list[event.detail.value].url.startsWith('/')
-      //     ? this.data.list[event.detail.value].url
-      //     : `/${this.data.list[event.detail.value].url}`,
-      // });
-    },
 
-    // init() {
-    //   const page = getCurrentPages().pop();
-    //   const route = page ? page.route.split('?')[0] : '';
-    //   const active = this.data.list.findIndex(
-    //     (item) =>
-    //       (item.url.startsWith('/') ? item.url.substr(1) : item.url) ===
-    //       `${route}`,
-    //   );
-    //   this.setData({ active });
-    // },
+      this.setData({
+        active,
+      });
+
+      wx.switchTab({
+        url: this.data.bottomNavList[active].miniUrl,
+      });
+    },
   },
 });

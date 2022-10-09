@@ -15,10 +15,13 @@
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "eslint": "^8.23.1",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "miniprogram-api-typings": "^3.0.0",
     "postcss-less": "^6.0.0",
+    "prettier": "^2.7.1",
     "simple-git-hooks": "^2.8.0",
     "stylelint": "^14.12.1",
     "stylelint-config-recess-order": "^3.0.0",
@@ -31,6 +34,12 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged --concurrent false"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "endOfLine": "auto"
   },
   "stylelint": {
     "extends": [
@@ -47,25 +56,35 @@
     ],
     "overrides": [
       {
-        "files": ["miniprogram/**/*.less"],
+        "files": [
+          "miniprogram/**/*.less"
+        ],
         "customSyntax": "postcss-less",
         "rules": {
           "font-family-no-missing-generic-family-keyword": [
             true,
             {
-              "ignoreFontFamilies": ["iconfont"]
+              "ignoreFontFamilies": [
+                "iconfont"
+              ]
             }
           ],
           "unit-no-unknown": [
             true,
             {
-              "ignoreUnits": ["rpx"]
+              "ignoreUnits": [
+                "rpx"
+              ]
             }
           ],
-          "selector-class-pattern": [
-            "",
-            {}
-          ]
+          "selector-type-no-unknown": [
+            true,
+            {
+              "ignore": ["custom-elements", "default-namespace"],
+              "ignoreNamespaces": ["page", "swiper", "navigator"]
+            }
+          ],
+          "selector-class-pattern": ["", {}]
         }
       }
     ]

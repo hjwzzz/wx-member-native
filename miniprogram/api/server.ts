@@ -1,23 +1,38 @@
+import type { wxmeberFront, member } from '../typings/api';
 import { baseUrl } from '../utils/config';
 import request from '../utils/request';
 
 // 根据微信APPID获取EAPPID
-export const getEAppIdByWAppId = async (data: any) => {
+export const getEAppIdByWAppId = async (data: unknown) => {
   const url = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
   const res = await request(url, data);
   return res;
 };
 
 // 获取主题色系
-export const getWmColorTheme = async (data: any) => {
-  const url = `${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`;
-  const res = await request(url, data);
-  return res;
-};
+export const getWmColorTheme = async () =>
+  request<wxmeberFront.GetWmColorThemeRequestRes>(
+    `${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`,
+    ''
+  );
 
 // 微会员导航栏获取
-export const getWmmeberNav = async (data:any) => {
-  const url = `${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`;
-  const res = await request(url, data);
-  return res;
-};
+export const getWmmeberNavRequest = () =>
+  request<wxmeberFront.GetWmmeberNavRequestRes>(
+    `${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`,
+    ''
+  );
+
+// 获取企业LOGO
+export const getLogoRequest = async () =>
+  request<member.GetLogoRes>(
+    `${baseUrl}/emp-base/member/login/Front/getLogo`,
+    ''
+  );
+
+// 获取用户协议
+export const getMemberEulaRequest = async () =>
+  request<member.GetMemberEulaRequestRes>(
+    `${baseUrl}/emp-base/member/login/Front/getMemberEula`,
+    ''
+  );

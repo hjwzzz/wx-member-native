@@ -1,0 +1,21 @@
+<view class="center">
+  <view class="user">
+    <view class="user-info">
+      <view class="info-left">
+        <view class="info-img">
+          <!-- <image v-if="avatarUrl" :src="avatarUrl" mode="aspectFit" /> -->
+          <image class="avatar" src="../../static/img/person.png" mode="scaleToFill" />
+        </view>
+        <!-- <view v-if="checkHasLogined" class="use-info">
+          <text>{{ nickName || '' }}</text>
+        </view> -->
+        <view class="info-btn">
+          请先登录
+        </view>
+      </view>
+      <view class="info-right">
+        <image class="setting" src="../../static/img/setInfo.png" mode="scaleToFill" />
+      </view>
+    </view>
+  </view>
+</view>

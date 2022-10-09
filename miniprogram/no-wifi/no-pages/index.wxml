@@ -1,0 +1,6 @@
+<view class="container">
+  <view>
+    <image style="width: 126rpx; height: 126rpx" src="https://static.jqzplat.com/img/984baf6d-9bfc-4bff-9cfa-d3623a27ff29.png"></image>
+  </view>
+  <view class="fot">抱歉商家尚未开通积分商城</view>
+</view>
