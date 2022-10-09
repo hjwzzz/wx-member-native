@@ -1,15 +1,16 @@
 // index.ts
 // 获取应用实例
 
-// import Storage from "../../utils/storage";
+import Storage from '../../utils/storage';
 import { staticUrl } from '../../utils/config';
-import { wxmemberIndex } from '../../api/index';
+import { wxmemberIndex, getIndexAdBannerList } from '../../api/index';
 
 // const { staticUrl }=getApp().require('/utils/config.js')
 // const app = getApp<IAppOption>()
 
 Page({
   data: {
+    mainColor: Storage.getMainColor(),
     bannerList: [],
     dataList: {
       bannerList: [],
@@ -19,6 +20,20 @@ Page({
         },
       },
     },
+    adBannerList: [
+      {
+        image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+        title: '昨夜星辰昨夜风，画楼西畔桂堂东',
+      },
+      {
+        image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+        title: '身无彩凤双飞翼，心有灵犀一点通',
+      },
+      {
+        image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+        title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳',
+      },
+    ],
     ///
     indicatorDots: true,
     vertical: false,
@@ -37,7 +52,9 @@ Page({
   },
   onLoad() {
     this.getPageDate();
+    this.getPageDate1();
   },
+  // 页面数据
   async getPageDate() {
     const result = await wxmemberIndex('');
     const bannerList = result.data?.bannerList || [];
@@ -52,6 +69,32 @@ Page({
       title: result.data.wmMainRspVo?.param?.title,
     });
   },
+  // 获取广告 getIndexAdBannerList;
+  async getPageDate1() {
+    const result = await getIndexAdBannerList('');
+    //     const bannerList = result.data?.bannerList || [];
+
+    // //      const res = await getIndexAdBannerList('');
+    // this.adBannerList = res?.data.map(item => {
+    //   return {
+    //     image: item.imgUrl,
+    //     title: item.title,
+    //     url: item.url,
+    //   };
+    // });
+
+    const adBannerList = result?.data.map((item: any) => {
+      return {
+        image: item.imgUrl,
+        title: item.title,
+        url: item.url,
+      };
+    });
+    this.setData({
+      adBannerList: adBannerList,
+    });
+  },
+
   // 事件处理函数
   bindViewTap() {
     wx.navigateTo({ url: '../logs/logs' });

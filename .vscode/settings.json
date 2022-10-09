@@ -3,7 +3,12 @@
   "editor.formatOnSave": true,
   "eslint.run": "onSave",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
+ "stylelint.snippet": ["css", "less", "postcss", "scss", "sass"],
+  "[postcss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
 }

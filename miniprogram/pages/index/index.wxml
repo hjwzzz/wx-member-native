@@ -2,7 +2,7 @@
 <view>
   <view class="banner-show-background" style="margin-bottom:{{bannerList.length > 0 ? '54rpx' : '30rpx'}}">
     <view class="back-img" style="background:url({{dataList.wmMainRspVo.param.topBgImageUrl}}) center top / 100% auto no-repeat'"></view>
-    <swiper style="height:300rpx" class="banner" indicator-dots indicator-color indicator-active-color="#FF547B" autoplay>
+    <swiper style="height:300rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
       <block wx:for="{{bannerList}}" wx:key="*this">
         <swiper-item>
           <image class="" style="height:300rpx" src="{{item.imgUrl}}" mode="aspectFill"></image>
@@ -10,7 +10,29 @@
       </block>
     </swiper>
   </view>
-  1111111111111111
+  <view class="customer-diy">
+    <block class="" wx:for="{{dataList.wmMainRspVo.panelList}}" wx:key="*this">
+      <!-- v-if="item.kind === 'NOTICE'"
+          @click="goMore('/pages/post/index', item.param, item.updateTime)" -->
+      <view class="bulletin" wx:if="{{item.kind === 'NOTICE'}}">
+        <view class="bulletin-box">
+          <text class="iconfont icon-gonggao icon-text" style="color:{{mainColor}}"></text>
+          <text class="bulletin-text">{{ item.param.title }}111</text>
+        </view>
+        <van-icon name="arrow" />
+      </view>
+      <view class="ad-banner-list" wx:if="{{item.kind === 'BANNER' && adBannerList.length}}">
+        <swiper style="height:180rpx" class="banner" indicator-dots="{{adBannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
+          <block wx:for="{{adBannerList}}" wx:key="*this">
+            <swiper-item>
+              <image class="" style="height:180rpx" src="{{item. imgUrl || item.image}}" mode="aspectFill"></image>
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+      <!-- ad-banner-list -->
+    </block>
+  </view>
   <!-- <view class="userinfo">
 
     <block wx:if="{{canIUseOpenData}}">
