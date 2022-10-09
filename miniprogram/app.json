@@ -1,12 +1,17 @@
 {
   "pages": [
     "pages/index/index",
+
     "pages/center/index",
+    "pages/center/coupon-center/index",
+
+    "pages/login/index/index",
+
     "no-wifi/index/index",
     "no-wifi/disabled-serve/index",
     "no-wifi/no-pages/index",
-    "pages/login/index/index",
     "points-mall-pages/index",
+
     "reservation-service-pages/index"
   ],
   "tabBar": {

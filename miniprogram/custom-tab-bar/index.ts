@@ -7,6 +7,8 @@ import {
 } from './index.type';
 import commonPage from './../component/common-page/index';
 
+const switchTabUrl = ['/pages/tabbar/index', '/pages/center/index'];
+
 Component<
   CustomTabBarComponentData,
   CustomTabBarComponentProperty,
@@ -33,13 +35,13 @@ Component<
       // Storage.setColorTheme(res.data);
       Storage.setMainColor(getWmColorThemeRes.data.mainColor);
 
-      const pages = getCurrentPages();
-      const currentPage = pages.at(-1);
-      if (!currentPage?.route) {
-        return;
-      }
+      // const pages = getCurrentPages();
+      // const currentPage = pages.at(-1);
+      // if (!currentPage?.route) {
+      //   return;
+      // }
 
-      this.selectTabbarItem(`/${currentPage.route}`);
+      // this.selectTabbarItem(`/${currentPage.route}`);
     },
   },
   methods: {
@@ -47,9 +49,9 @@ Component<
       this.selectTabbarItem(this.data.bottomNavList[items.detail].miniUrl);
     },
 
-    selectTabbarItem(url) {
+    selectTabbarItem(selectUrl) {
       const active = this.data.bottomNavList.findIndex(
-        ({ miniUrl }) => miniUrl === url
+        ({ miniUrl }) => miniUrl === selectUrl
       );
 
       if (active === -1) {
@@ -60,9 +62,19 @@ Component<
         active,
       });
 
-      wx.switchTab({
-        url: this.data.bottomNavList[active].miniUrl,
-      });
+      const url = this.data.bottomNavList[active].miniUrl;
+
+      const isTab = switchTabUrl.includes(url);
+
+      if (isTab) {
+        wx.switchTab({
+          url,
+        });
+      } else {
+        wx.navigateTo({
+          url,
+        });
+      }
     },
   },
 });
