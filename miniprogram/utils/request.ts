@@ -103,7 +103,7 @@ const asyncRequest = <R>(
 // 请求
 const request = async <R = never>(
   url: any,
-  args: any,
+  args: any = '',
   method: any = 'POST',
   isLoading = true
 ) => {

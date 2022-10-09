@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "navigationBarTitleText": "领券中心",
+  "usingComponents": {
+    "page-footer": "./../../../component/page-footer/index"
+  }
 }

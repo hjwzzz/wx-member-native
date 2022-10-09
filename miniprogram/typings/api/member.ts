@@ -1,14 +1,14 @@
 export type GetLogoRes = string;
 
-export interface EULAS_KIND {
+export enum EULAS_KIND {
   /**
    * 注册协议
    */
-  REG: 'REG';
+  REG = 'REG',
   /**
    * 隐私协议
    */
-  PRIV: 'PRIV';
+  PRIV = 'PRIV',
 }
 
 export interface GetMemberEulaRequestResEulasItem {
