@@ -8,7 +8,6 @@ App<IAppOption>({
   globalData: {},
   onLaunch() {
     Storage.removeEpid();
-
     // setJqzAppId
     // getEAppIdByWAppId(Storage.getWXAppId())
     //   .then((res: any) => {

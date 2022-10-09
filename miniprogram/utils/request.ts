@@ -182,7 +182,7 @@ const request = async <R extends Record<string, unknown> = any>(
       const historyPages = getCurrentPages();
       Storage.setPages(historyPages[historyPages.length - 1].$page.fullPath);
       //  router.go(pages.login);  这里去登录
-      return Promise.reject(res);
+      return Promise.reject(res.data);
     }
     // 请求错误
     if (error) {
