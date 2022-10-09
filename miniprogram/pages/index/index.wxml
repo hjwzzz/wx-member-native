@@ -1,7 +1,16 @@
-<!--index.wxml-->
-<view class="container">
-
-  首页
+<!-- index.wxml -->
+<view>
+  <view class="banner-show-background" style="margin-bottom:{{bannerList.length > 0 ? '54rpx' : '30rpx'}}">
+    <view class="back-img" style="background:url({{dataList.wmMainRspVo.param.topBgImageUrl}}) center top / 100% auto no-repeat'"></view>
+    <swiper style="height:300rpx" class="banner" indicator-dots indicator-color indicator-active-color="#FF547B" autoplay>
+      <block wx:for="{{bannerList}}" wx:key="*this">
+        <swiper-item>
+          <image class="" style="height:300rpx" src="{{item.imgUrl}}" mode="aspectFill"></image>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+  1111111111111111
   <!-- <view class="userinfo">
 
     <block wx:if="{{canIUseOpenData}}">

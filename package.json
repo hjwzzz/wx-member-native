@@ -80,11 +80,21 @@
           "selector-type-no-unknown": [
             true,
             {
-              "ignore": ["custom-elements", "default-namespace"],
-              "ignoreNamespaces": ["page", "swiper", "navigator"]
+              "ignore": [
+                "custom-elements",
+                "default-namespace"
+              ],
+              "ignoreNamespaces": [
+                "page",
+                "swiper",
+                "navigator"
+              ]
             }
           ],
-          "selector-class-pattern": ["", {}]
+          "selector-class-pattern": [
+            "",
+            {}
+          ]
         }
       }
     ]
