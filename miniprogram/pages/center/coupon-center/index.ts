@@ -6,17 +6,17 @@ import commonPage from './../../../component/common-page/index';
 import type { CouponCenterData } from './index.type';
 
 Component({
+  behaviors: [commonPage],
   data: <CouponCenterData>{
     advertList: [],
     receiveCenterList: [],
     queryReceiveCenterListForm: {
       createTime: '',
-      opsId: '',
-      pageSize: 10,
+      opsId: '57614F85-F843-C47C-B965-0753D121430F',
+      pageSize: 10000,
       curPage: 1,
     },
   },
-  behaviors: [commonPage],
   pageLifetimes: {
     show() {
       this.queryAdvertFront();

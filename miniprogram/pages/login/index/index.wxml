@@ -3,7 +3,7 @@
     <view class="logo">
       <image src="{{logo}}" mode="aspectFit" />
     </view>
-    <view class="btn wx-auth">
+    <view class="btn wx-auth" bindtap="showWxMiniAuthModal">
       微信授权登录
     </view>
     <view class="btn no-login">
@@ -22,7 +22,7 @@
     </view>
   </view>
 
-  <van-popup show="{{ true }}" round>
+  <van-popup show="{{ wxMiniAuthInfo.modalConfig.show }}" round>
     <view class="popup">
       <view class="popup-content">
         <view class="popup-content-title">
@@ -33,10 +33,11 @@
         </view>
       </view>
       <view class="popup-btn">
-        <button class="popup-btn-btn popup-btn-reject">
+        <button bindtap="hideWxMiniAuthModal" class="popup-btn-btn popup-btn-reject">
           拒绝
         </button>
-        <button class="popup-btn-btn popup-btn-reslove" open-type="getPhoneNumber" bind:getphonenumber="decryptPhoneNumber">
+        <button class="popup-btn-btn popup-btn-reslove" open-type="getPhoneNumber"
+          bind:getphonenumber="decryptPhoneNumber">
           允许
         </button>
       </view>

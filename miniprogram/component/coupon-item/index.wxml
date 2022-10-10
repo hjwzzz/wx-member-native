@@ -1,0 +1,23 @@
+<view class="coupon-list-item">
+
+  <view
+    style="background-image: url({{ item.style.watermarkImgUrl }}), linear-gradient(270deg, {{item.style.topBgColorBottom}} 1%, {{item.style.topBgColorTop}} 99% 100%, #f5f5f5 );color: {{ item.style.mainColor }};"
+    class="coupon-list-item-top {{ item.style.watermarkPosition }}">
+    <!-- <image mode="heightFix" class="image {{ item.style.watermarkPosition }}" src="{{ item.style.watermarkImgUrl }}"> -->
+    <!-- </image> -->
+    <view class="name">{{ item.name }}</view>
+    <view class="handle" style="color: {{item.style.topBgColorTop}};">
+      <view class="receive" style="background: {{item.style.mainColor}};">领取</view>
+    </view>
+    <view class="stock">
+      <view class="currency-symbol">￥</view>
+      <view class="num">{{ getStockText }}</view>
+    </view>
+    <view class="threshold">满{{ item.paramVo.threshold }}可用</view>
+  </view>
+  <view class="coupon-list-item-bottom"
+    style="color: {{ item.style.complementaryColor }};background-color: linear-gradient(270deg, {{item.style.bottomBgColorTop}} 0%, {{item.style.bottomBgColorBottom }} 100%);">
+    <view>{{ item.couponValidTime }}</view>
+    <view>已领取 {{ item.percentage }}</view>
+  </view>
+</view>

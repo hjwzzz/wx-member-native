@@ -2,13 +2,6 @@ import type { wxmeberFront, member } from '../typings/api';
 import { baseUrl } from '../utils/config';
 import request from '../utils/request';
 
-// 根据微信APPID获取EAPPID
-export const getEAppIdByWAppId = async (data: unknown) => {
-  const url = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
-  const res = await request(url, data);
-  return res;
-};
-
 // 获取主题色系
 export const getWmColorTheme = async () =>
   request<wxmeberFront.GetWmColorThemeRequestRes>(
