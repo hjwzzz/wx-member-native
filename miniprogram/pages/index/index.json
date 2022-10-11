@@ -1,7 +1,9 @@
 {
  
   "usingComponents": {
-     "van-icon": "/vant-weapp/icon/index"
+     "van-icon": "/vant-weapp/icon/index",
+     "today-gold-price": "/component/today-gold-price/index"
   },
   "navigationBarTitleText": "首页"
 }
+

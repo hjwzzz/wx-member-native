@@ -1,7 +1,8 @@
 <!-- index.wxml -->
-<view>
+<view class="tab-page">
+  <!-- 首页轮播图 -->
   <view class="banner-show-background" style="margin-bottom:{{bannerList.length > 0 ? '54rpx' : '30rpx'}}">
-    <view class="back-img" style="background:url({{dataList.wmMainRspVo.param.topBgImageUrl}}) center top / 100% auto no-repeat'"></view>
+    <view class="back-img" style="background:url({{dataList.wmMainRspVo.param.topBgImageUrl}}) center top/100% auto no-repeat'"></view>
     <swiper style="height:300rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
       <block wx:for="{{bannerList}}" wx:key="*this">
         <swiper-item>
@@ -11,17 +12,18 @@
     </swiper>
   </view>
   <view class="customer-diy">
-    <block class="" wx:for="{{dataList.wmMainRspVo.panelList}}" wx:key="*this">
-      <!-- v-if="item.kind === 'NOTICE'"
-          @click="goMore('/pages/post/index', item.param, item.updateTime)" -->
-      <view class="bulletin" wx:if="{{item.kind === 'NOTICE'}}">
+    <block class="" wx:for="{{dataList.wmMainRspVo.panelList}}" wx:for-item="items" wx:key="*this">
+      <!-- @click="goMore('/pages/post/index', item.param, item.updateTime)" -->
+      <!-- 提示 -->
+      <view class="bulletin" wx:if="{{items.kind === 'NOTICE'}}">
         <view class="bulletin-box">
           <text class="iconfont icon-gonggao icon-text" style="color:{{mainColor}}"></text>
-          <text class="bulletin-text">{{ item.param.title }}111</text>
+          <text class="bulletin-text">{{ items.param.title }}</text>
         </view>
         <van-icon name="arrow" />
       </view>
-      <view class="ad-banner-list" wx:if="{{item.kind === 'BANNER' && adBannerList.length}}">
+      <!-- 广告图 -->
+      <view class="ad-banner-list" wx:if="{{items.kind === 'BANNER' && adBannerList.length}}">
         <swiper style="height:180rpx" class="banner" indicator-dots="{{adBannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
           <block wx:for="{{adBannerList}}" wx:key="*this">
             <swiper-item>
@@ -30,32 +32,30 @@
           </block>
         </swiper>
       </view>
-      <!-- ad-banner-list -->
-    </block>
-  </view>
-  <!-- <view class="userinfo">
-
-    <block wx:if="{{canIUseOpenData}}">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
+      <!-- 快捷导航 -->
+      <view class="quick-nav" wx:if="{{items.kind === 'QUICK_NAV' && swiperVav.length}}">
+        <swiper style="height:{{swiperVavHeight}}rpx" class="" indicator-dots="{{swiperVav.length > 1}}" indicator-color indicator-active-color="#FF547B">
+          <swiper-item wx:for="{{swiperVav}}" wx:for-item="navs" wx:key="*this">
+            <view class="item-shop" wx:for="{{navs}}" wx:key="*this">
+              <view class="item-header">
+                <image src="{{item.icoUrl}}" mode=""></image>
+              </view>
+              <view class="item-text">{{ item.title }}</view>
+            </view>
+          </swiper-item>
+        </swiper>
       </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称222 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      111
+      <!-- 富文本 -->
+      <view class="des-html" wx:if="{{items.kind === 'RICH_TEXT'}}">
+        <rich-text class="" wx:if="{{items.param.content}}" nodes="{{items.param.content}}"></rich-text>
+        <view class="empty-wrapper" wx:else>
+          <view class="content-empty">
+            <image src="{{staticUrl}}img/noneStatus.png" mode=""></image>
+          </view>
+          <view class="empty">暂无相关信息</view>
+        </view>
+      </view>
+      <today-gold-price wx:if="{{items.kind === 'GOLD_PRICE' }}"></today-gold-price>
     </block>
   </view>
-  <view class="usermotto">
-   <image class="" src="{{staticUrl}}wx-login.png" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload="">
-    
-   </image>
-    <text class="user-motto">{{motto}}</text>
-  </view> -->
 </view>

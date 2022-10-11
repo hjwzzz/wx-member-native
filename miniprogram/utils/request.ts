@@ -101,7 +101,7 @@ const asyncRequest = <R>(
   });
 
 // 请求
-const request = async <R = never>(
+const request = async <R = any>(
   url: any,
   args: any = '',
   method: any = 'POST',

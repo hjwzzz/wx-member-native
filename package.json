@@ -22,7 +22,6 @@
     "miniprogram-api-typings": "^3.0.0",
     "postcss-less": "^6.0.0",
     "prettier": "^2.7.1",
-    "simple-git-hooks": "^2.8.0",
     "stylelint": "^14.12.1",
     "stylelint-config-recess-order": "^3.0.0",
     "stylelint-config-standard": "^28.0.0",
@@ -31,9 +30,6 @@
   "lint-staged": {
     "*.{ts,js}": "npm run lint:script",
     "*.less": "npm run lint:style"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged --concurrent false"
   },
   "prettier": {
     "semi": true,
