@@ -28,6 +28,9 @@ Component({
   },
 
   methods: {
+    /**
+     * 自动登录
+     */
     async jsCodeLogin() {
       const jsCode = await this.getWxLoginCode();
 
@@ -40,10 +43,19 @@ Component({
       if (jsCodeLoginRequestRes.code !== 0) {
         return;
       }
+
+      const { token, mid } = jsCodeLoginRequestRes.data;
+
+      Storage.setToken(token);
+      Storage.setMid(mid);
     },
 
     async getLogo() {
       const getLogoRequestRes = await getLogoRequest();
+
+      if (getLogoRequestRes.code !== 0) {
+        return;
+      }
 
       this.setData({
         logo: getLogoRequestRes.data ?? '',
