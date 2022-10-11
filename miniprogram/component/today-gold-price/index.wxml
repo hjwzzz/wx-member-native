@@ -1,4 +1,3 @@
-<!-- component/page-footer/index.wxml -->
 <!-- @click="goMore('/pages/center/gold-price/index', item.param)" -->
 <view class="today-gold-price">
     <view class="" hover-class="none" hover-stop-propagation="false">今日金价</view>

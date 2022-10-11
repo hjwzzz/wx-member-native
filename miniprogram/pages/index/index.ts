@@ -8,7 +8,6 @@ import { wxmemberIndex, getIndexAdBannerList } from '../../api/index';
 Page({
   data: {
     staticUrl: staticUrl,
-    fffff: staticUrl + 'img/noneStatus.png',
     mainColor: Storage.getMainColor(),
     bannerList: [],
     swiperVav: [],

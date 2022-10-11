@@ -1,20 +1,42 @@
 <view class="center">
   <view class="user">
-    <view class="user-info">
-      <view class="info-left">
-        <view class="info-img">
-          <!-- <image v-if="avatarUrl" :src="avatarUrl" mode="aspectFit" /> -->
-          <image class="avatar" src="../../static/img/person.png" mode="scaleToFill" />
+    <view class="login-info">
+      <view class="user-info">
+        <view class="info-left">
+          <view class="info-img">
+            <image wx:if="{{checkHasLogined}}" src="{{avatarUrl}}" mode="scaleToFill" />
+            <image wx:else class="avatar" src="{{staticUrl}}img/person.png" mode="scaleToFill" />
+          </view>
+          <view wx:if="{{checkHasLogined}}" class="use-info">
+            <text>{{ nickName || '' }}</text>
+          </view>
+          <view wx:else class="info-btn" bindtap="login">请先登录</view>
         </view>
-        <!-- <view v-if="checkHasLogined" class="use-info">
-          <text>{{ nickName || '' }}</text>
-        </view> -->
-        <view class="info-btn" bindtap="login">
-          请先登录
+        <view class="info-right">
+          <image class="setting" src="{{staticUrl}}img/setInfo.png" mode="scaleToFill" />
         </view>
       </view>
-      <view class="info-right">
-        <image class="setting" src="../../static/img/setInfo.png" mode="scaleToFill" />
+      <!--  -->
+      <view class="login-list">
+        <block wx:for="{{loginList}}">
+          <view class="login-item" wx:if="{{item.showed}}">
+            <view class="item-num">{{ item.accountValue !== ' ' ? item.accountValue : 0 }}</view>
+            <view class="item-name">{{ item.title }}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
+    <view class="boot-equity" wx:if="{{checkHasLogined}}">
+      <view class="left">
+        <view class="icon">
+          <image src="{{staticUrl}}img/level.png" mode="aspectFit" />
+        </view>
+        <view class="text">{{ curLevelName || '' }}</view>
+      </view>
+      <view class="boot-equity-right">
+        <text class="text">查看权益</text>
+        <van-icon name="arrow" size="12" color="#975D17" />
       </view>
     </view>
   </view>

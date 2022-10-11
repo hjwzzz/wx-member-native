@@ -59,11 +59,16 @@ Component({
       const isTab = switchTabUrl.includes(url);
 
       if (isTab) {
+        console.log('22222', url);
         this.setActiveTab(url);
+        if (url === '/pages/tabbar/index') {
+          url = '/pages/index/index';
+        }
         wx.switchTab({
           url,
         });
       } else {
+        console.log('3333');
         wx.navigateTo({
           url,
         });
