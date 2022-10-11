@@ -138,7 +138,7 @@ const request = async <R = never>(
       header: {
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
-        token: Storage.getToken,
+        token: Storage.getToken(),
         sessionKey: '',
         refreshToken: '',
         epid,
