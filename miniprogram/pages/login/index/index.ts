@@ -48,6 +48,14 @@ Component({
 
       Storage.setToken(token);
       Storage.setMid(mid);
+
+      await wx.showToast({
+        title: '登录成功！',
+      });
+
+      setTimeout(() => {
+        wx.navigateBack();
+      }, 1000);
     },
 
     async getLogo() {
