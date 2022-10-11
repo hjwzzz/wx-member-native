@@ -65,6 +65,7 @@ class Storage {
   static getColorTheme() {
     return wx.getStorageSync('colorTheme');
   }
+
   // mainColor
   static setMainColor(value: string) {
     wx.setStorageSync('mainColor', value);

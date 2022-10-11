@@ -7,9 +7,8 @@
   </swiper>
 
   <view class="coupon-list">
-    <view class="coupon-list-item" wx:for="{{ receiveCenterList }}" wx:key="couponId">
-      {{ item.name }}
-    </view>
+    <coupon-item item="{{ item }}" wx:for="{{ receiveCenterList }}" wx:key="couponId">
+    </coupon-item>
   </view>
 
   <page-footer></page-footer>

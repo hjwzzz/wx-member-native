@@ -1,20 +1,12 @@
 import Storage from './../utils/storage';
 import { getWmmeberNavRequest, getWmColorTheme } from '../api/server';
-import {
-  CustomTabBarComponentData,
-  CustomTabBarComponentProperty,
-  CustomTabBarComponentMethod,
-} from './index.type';
+import { CustomTabBarComponentData } from './index.type';
 import commonPage from './../component/common-page/index';
 
 const switchTabUrl = ['/pages/tabbar/index', '/pages/center/index'];
 
-Component<
-  CustomTabBarComponentData,
-  CustomTabBarComponentProperty,
-  CustomTabBarComponentMethod
->({
-  data: {
+Component({
+  data: <CustomTabBarComponentData>{
     list: [],
     bottomNavList: [],
     active: 0,
@@ -35,21 +27,21 @@ Component<
       // Storage.setColorTheme(res.data);
       Storage.setMainColor(getWmColorThemeRes.data.mainColor);
 
-      // const pages = getCurrentPages();
-      // const currentPage = pages.at(-1);
-      // if (!currentPage?.route) {
-      //   return;
-      // }
+      const pages = getCurrentPages();
+      const currentPage = pages[pages.length - 1];
+      if (!currentPage?.route) {
+        return;
+      }
 
-      // this.selectTabbarItem(`/${currentPage.route}`);
+      this.setActiveTab(`/${currentPage.route}`);
     },
   },
   methods: {
-    onChange(items) {
+    onChange(items: WechatMiniprogram.CustomEvent<number>) {
       this.selectTabbarItem(this.data.bottomNavList[items.detail].miniUrl);
     },
 
-    selectTabbarItem(selectUrl) {
+    setActiveTab(selectUrl: string) {
       const active = this.data.bottomNavList.findIndex(
         ({ miniUrl }) => miniUrl === selectUrl
       );
@@ -61,12 +53,13 @@ Component<
       this.setData({
         active,
       });
+    },
 
-      const url = this.data.bottomNavList[active].miniUrl;
-
+    selectTabbarItem(url: string) {
       const isTab = switchTabUrl.includes(url);
 
       if (isTab) {
+        this.setActiveTab(url);
         wx.switchTab({
           url,
         });

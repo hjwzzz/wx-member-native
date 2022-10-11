@@ -149,7 +149,19 @@ export interface AddCouponParamReqVo {
 }
 
 export interface CouponConversionVo {
-  code?: string;
+  /**
+   * - labor_cost_discount_coupon: 工费折扣券
+   * - labor_cost_deduction_coupon: 工费抵扣券
+   * - random_money_coupon: 随机券
+   * - discount_coupon: 折扣券
+   * - full_reduction_coupon: 满减券
+   */
+  code?:
+    | 'labor_cost_discount_coupon'
+    | 'labor_cost_deduction_coupon'
+    | 'random_money_coupon'
+    | 'random_money_coupon'
+    | 'discount_coupon';
   name?: string;
 }
 

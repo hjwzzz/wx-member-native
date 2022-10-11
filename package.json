@@ -90,7 +90,14 @@
           "selector-class-pattern": [
             "",
             {}
-          ]
+          ],
+          "declaration-block-no-duplicate-properties": [
+            true,
+            {
+              "ignoreProperties": ["/-webkit-/", "/mask-/"]
+            }
+          ],
+          "property-no-vendor-prefix": [null, {}]
         }
       }
     ]
