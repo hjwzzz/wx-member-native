@@ -4,6 +4,7 @@
 import Storage from '../../utils/storage';
 import { staticUrl } from '../../utils/config';
 import { wxmemberIndex, getIndexAdBannerList } from '../../api/index';
+import { queryGoldPriceByPage } from '../../api/server';
 // {{staticUrl}}img/noneStatus.png
 Page({
   data: {
@@ -22,6 +23,8 @@ Page({
       },
     },
     adBannerList: [],
+    goldPrice: [],
+    todayGoldPriceShowed: '',
     ///
     // indicatorDots: true,
     // vertical: false,
@@ -38,9 +41,12 @@ Page({
     //   wx.canIUse('open-data.type.userAvatarUrl') &&
     //   wx.canIUse('open-data.type.userNickName'), // 如需尝试获取用户信息可改为false
   },
-  onLoad() {
+  // onLoad() {},
+  onShow() {
+    this.getTabBar().init();
     this.getPageDate();
     this.getAdBannerList();
+    this.getGoldPriceByPage();
   },
   // 页面数据
   async getPageDate() {
@@ -95,6 +101,27 @@ Page({
     });
   },
 
+  // 获取今日金价
+  async getGoldPriceByPage() {
+    const res = await queryGoldPriceByPage('WM_CENTER');
+    if (res.code === 0 && res.data) {
+      const { branPriceList, param, uiParam: todayGoldPriceShowed } = res.data;
+      // this.uiParam = uiParam;
+      const { showNum } = param;
+      const result: unknown = [];
+
+      branPriceList.map((item: unknown, index: number) => {
+        if (index < showNum) {
+          result.push(item);
+        }
+      });
+      this.setData({
+        todayGoldPriceShowed,
+        goldPrice: result,
+      });
+      console.log('goldPrice', result);
+    }
+  },
   // // 事件处理函数
   // bindViewTap() {
   //   wx.navigateTo({ url: '../logs/logs' });

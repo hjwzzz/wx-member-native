@@ -26,17 +26,15 @@ Component({
       });
       // Storage.setColorTheme(res.data);
       Storage.setMainColor(getWmColorThemeRes.data.mainColor);
-
-      const pages = getCurrentPages();
-      const currentPage = pages[pages.length - 1];
-      if (!currentPage?.route) {
-        return;
-      }
-
-      this.setActiveTab(`/${currentPage.route}`);
+      this.init();
     },
   },
   methods: {
+    init() {
+      const page = getCurrentPages().pop();
+      const route = page ? page.route.split('?')[0] : '';
+      this.setActiveTab(`/${route}`);
+    },
     onChange(items: WechatMiniprogram.CustomEvent<number>) {
       this.selectTabbarItem(this.data.bottomNavList[items.detail].miniUrl);
     },
@@ -45,11 +43,12 @@ Component({
       const active = this.data.bottomNavList.findIndex(
         ({ miniUrl }) => miniUrl === selectUrl
       );
-
+      console.log('this.data.bottomNavList', this.data.bottomNavList);
+      console.log('selectUrl', selectUrl);
       if (active === -1) {
         return;
       }
-
+      console.log('active', active);
       this.setData({
         active,
       });
@@ -59,16 +58,11 @@ Component({
       const isTab = switchTabUrl.includes(url);
 
       if (isTab) {
-        console.log('22222', url);
         this.setActiveTab(url);
-        if (url === '/pages/tabbar/index') {
-          url = '/pages/index/index';
-        }
         wx.switchTab({
           url,
         });
       } else {
-        console.log('3333');
         wx.navigateTo({
           url,
         });

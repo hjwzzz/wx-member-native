@@ -1,4 +1,4 @@
-<view class="center">
+<view class="user-center">
   <view class="user">
     <view class="login-info">
       <view class="user-info">
@@ -18,7 +18,7 @@
       </view>
       <!--  -->
       <view class="login-list">
-        <block wx:for="{{loginList}}">
+        <block wx:for="{{loginList}}" wx:key="index">
           <view class="login-item" wx:if="{{item.showed}}">
             <view class="item-num">{{ item.accountValue !== ' ' ? item.accountValue : 0 }}</view>
             <view class="item-name">{{ item.title }}</view>
@@ -39,5 +39,37 @@
         <van-icon name="arrow" size="12" color="#975D17" />
       </view>
     </view>
+  </view>
+  <!-- 配置显示 -->
+  <view class="reveal-grid ">
+    <block wx:for="{{panelList}}" wx:key="index">
+      <view class="grid-list" wx:if="{{item.kind === entryType.EN}}">
+        <!-- GONGGE  LIST -->
+        <view class=" {{item.param.showType === 'LIST'?'wrapper-list':'wrapper-grid' }} " wx:if="{{item.param.showType }}">
+          <block wx:for="{{item.param.linkList}}" wx:for-item="entry" wx:key="index">
+            <!-- @click="handleEntryUrl(entry)" -->
+            <view class="list-item" wx:if="{{entry.showed}}">
+              <view class="item-icon">
+                <image src="{{entry.icoUrl}}" mode="aspectFit" />
+              </view>
+              <view class="item-name">{{ entry.title }}</view>
+              <van-icon wx:if="{{item.param.showType == 'LIST'}}" name="arrow" size="12" color="#975D17" />
+            </view>
+          </block>
+        </view>
+      </view>
+      <!-- 广告 -->
+      <view class="grid-ad" wx:if="{{item.kind === entryType.BA && bannerList.length > 0}}">
+        <swiper style="height:180rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
+          <block wx:for="{{bannerList}}" wx:key="index" wx:for-item="entry">
+            <swiper-item>
+              <image class="" style="height:180rpx" src="{{  entry.image ||entry.imgUrl}}" mode="aspectFill"></image>
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+      <!-- 今日金价 -->
+      <today-gold-price wx:if="{{item.kind === entryType.GO }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{item.param.title}}"></today-gold-price>
+    </block>
   </view>
 </view>

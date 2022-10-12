@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "个人中心",
   "usingComponents": {
-    "van-icon": "/vant-weapp/icon/index"
+    "van-icon": "/vant-weapp/icon/index",
+    "today-gold-price": "/component/today-gold-price/index",
+    "none-data": "/component/none-data/index"
   }
 }

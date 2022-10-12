@@ -1,24 +1,21 @@
 {
   "pages": [
-    "pages/index/index",
-
+    "pages/tabbar/index",
     "pages/center/index",
     "pages/center/coupon-center/index",
-
     "pages/login/index/index",
 
     "no-wifi/index/index",
     "no-wifi/disabled-serve/index",
     "no-wifi/no-pages/index",
     "points-mall-pages/index",
-
     "reservation-service-pages/index"
   ],
   "tabBar": {
     "custom": true,
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/tabbar/index",
         "text": "首页"
       },
       {

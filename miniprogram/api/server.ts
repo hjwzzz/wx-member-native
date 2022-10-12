@@ -29,3 +29,9 @@ export const getMemberEulaRequest = async () =>
     `${baseUrl}/emp-base/member/login/Front/getMemberEula`,
     ''
   );
+
+// 个人中心今日金价
+export const queryGoldPriceByPage = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/priceFront/usr/queryGoldPriceByPage`;
+  return await request(url, data);
+};

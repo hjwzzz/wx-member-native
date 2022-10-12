@@ -48,14 +48,10 @@
       <!-- 富文本 -->
       <view class="des-html" wx:if="{{items.kind === 'RICH_TEXT'}}">
         <rich-text class="" wx:if="{{items.param.content}}" nodes="{{items.param.content}}"></rich-text>
-        <view class="empty-wrapper" wx:else>
-          <view class="content-empty">
-            <image src="{{staticUrl}}img/noneStatus.png" mode=""></image>
-          </view>
-          <view class="empty">暂无相关信息</view>
-        </view>
+        <none-data wx:else></none-data>
       </view>
-      <today-gold-price wx:if="{{items.kind === 'GOLD_PRICE' }}"></today-gold-price>
+      <!-- 今日金价 -->
+      <today-gold-price wx:if="{{items.kind === 'GOLD_PRICE' }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{items.param.title}}"></today-gold-price>
     </block>
   </view>
 </view>
