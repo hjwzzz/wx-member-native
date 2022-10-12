@@ -1,0 +1,26 @@
+<view class="grid-gift">
+    <view class="header">
+        <view class="left">
+            <text class="title">{{ title || "推荐礼品" }}</text>
+            <text class="number"></text>
+        </view>
+        <view class="right">
+            <text class="more">更多</text>
+            <van-icon name="arrow" size="12" color="#975D17" />
+        </view>
+    </view>
+    <view class="content-mall" wx:if="{{mallList.length > 0}}">
+        <!-- @click="toDetails(item.id)" -->
+        <view class="mall-item" wx:for="{{mallList}}" wx:key="index">
+            <view class="img">
+                <image src="{{item.displayImgUrl}}" mode=""></image>
+            </view>
+            <view class="text">{{ item.name }}</view>
+            <view class="text _price">
+                <text>{{ item.displayPoint }}{{ item.acctName }}</text>
+                <text wx:if="{{Number(item.displayPrice) > 0}}">+{{ item.displayPrice }}元</text>
+            </view>
+        </view>
+    </view>
+    <none-data wx:else></none-data>
+</view>

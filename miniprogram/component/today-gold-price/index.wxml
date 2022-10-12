@@ -38,4 +38,5 @@
             </swiper-item>
         </swiper>
     </view>
+    <none-data wx:else></none-data>
 </view>

@@ -103,7 +103,7 @@ Page({
 
   // 获取今日金价
   async getGoldPriceByPage() {
-    const res = await queryGoldPriceByPage('WM_CENTER');
+    const res = await queryGoldPriceByPage('WM_HOME');
     if (res.code === 0 && res.data) {
       const { branPriceList, param, uiParam: todayGoldPriceShowed } = res.data;
       // this.uiParam = uiParam;

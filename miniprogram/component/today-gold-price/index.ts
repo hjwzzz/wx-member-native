@@ -1,5 +1,5 @@
 //  queryGoldPriceByPage
-import { queryGoldPriceByPage } from '../../api/index';
+// import { queryGoldPriceByPage } from '../../api/index';
 import Storage from '../../utils/storage';
 Component({
   /**
@@ -43,10 +43,10 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    async getGoldPriceByPage() {
-      const sss = await queryGoldPriceByPage('');
-      console.log('2222222222222', sss);
-      console.log('2222222222222');
-    },
+    // async getGoldPriceByPage() {
+    //   const sss = await queryGoldPriceByPage('');
+    //   console.log('2222222222222', sss);
+    //   console.log('2222222222222');
+    // },
   },
 });

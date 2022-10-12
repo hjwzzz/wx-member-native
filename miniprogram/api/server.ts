@@ -30,7 +30,7 @@ export const getMemberEulaRequest = async () =>
     ''
   );
 
-// 个人中心今日金价
+// 根据页面类型获取今日金价(首页:WM_HOME,个人中心:WM_CENTER)
 export const queryGoldPriceByPage = async (data: unknown) => {
   const url = `${baseUrl}/emp-base/priceFront/usr/queryGoldPriceByPage`;
   return await request(url, data);

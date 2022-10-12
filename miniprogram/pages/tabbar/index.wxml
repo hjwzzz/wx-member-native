@@ -23,7 +23,7 @@
         <van-icon name="arrow" />
       </view>
       <!-- 广告图 -->
-      <view class="ad-banner-list" wx:if="{{items.kind === 'BANNER' && adBannerList.length}}">
+      <view class="ad-banner-list" wx:elif="{{items.kind === 'BANNER' && adBannerList.length}}">
         <swiper style="height:180rpx" class="banner" indicator-dots="{{adBannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
           <block wx:for="{{adBannerList}}" wx:key="*this">
             <swiper-item>
@@ -33,7 +33,7 @@
         </swiper>
       </view>
       <!-- 快捷导航 -->
-      <view class="quick-nav" wx:if="{{items.kind === 'QUICK_NAV' && swiperVav.length}}">
+      <view class="quick-nav" wx:elif="{{items.kind === 'QUICK_NAV' && swiperVav.length}}">
         <swiper style="height:{{swiperVavHeight}}rpx" class="" indicator-dots="{{swiperVav.length > 1}}" indicator-color indicator-active-color="#FF547B">
           <swiper-item wx:for="{{swiperVav}}" wx:for-item="navs" wx:key="*this">
             <view class="item-shop" wx:for="{{navs}}" wx:key="*this">
@@ -46,12 +46,14 @@
         </swiper>
       </view>
       <!-- 富文本 -->
-      <view class="des-html" wx:if="{{items.kind === 'RICH_TEXT'}}">
+      <view class="des-html" wx:elif="{{items.kind === 'RICH_TEXT'}}">
         <rich-text class="" wx:if="{{items.param.content}}" nodes="{{items.param.content}}"></rich-text>
         <none-data wx:else></none-data>
       </view>
       <!-- 今日金价 -->
-      <today-gold-price wx:if="{{items.kind === 'GOLD_PRICE' }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{items.param.title}}"></today-gold-price>
+      <today-gold-price wx:elif="{{items.kind === 'GOLD_PRICE' }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{items.param.title}}"></today-gold-price>
+      <!-- 积分商城推荐 -->
+      <content-mall wx:elif="{{items.kind === 'REC_GIFTS' }}" title="{{items.param.title}}"></content-mall>
     </block>
   </view>
 </view>

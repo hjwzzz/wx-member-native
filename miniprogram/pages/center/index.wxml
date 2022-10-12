@@ -59,7 +59,7 @@
         </view>
       </view>
       <!-- 广告 -->
-      <view class="grid-ad" wx:if="{{item.kind === entryType.BA && bannerList.length > 0}}">
+      <view class="grid-ad" wx:elif="{{item.kind === entryType.BA && bannerList.length > 0}}">
         <swiper style="height:180rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
           <block wx:for="{{bannerList}}" wx:key="index" wx:for-item="entry">
             <swiper-item>
@@ -69,7 +69,8 @@
         </swiper>
       </view>
       <!-- 今日金价 -->
-      <today-gold-price wx:if="{{item.kind === entryType.GO }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{item.param.title}}"></today-gold-price>
+      <today-gold-price wx:elif="{{item.kind === entryType.GO }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{item.param.title}}"></today-gold-price>
+      <content-mall wx:elif="{{item.kind === entryType.RE }}"></content-mall>
     </block>
   </view>
 </view>

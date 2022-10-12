@@ -3,6 +3,7 @@
   "usingComponents": {
      "van-icon": "/vant-weapp/icon/index",
      "today-gold-price": "/component/today-gold-price/index",
+     "content-mall": "/component/content-mall/index",
      "none-data": "/component/none-data/index"
   },
   "navigationBarTitleText": "首页"
