@@ -63,14 +63,21 @@
         <swiper style="height:180rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
           <block wx:for="{{bannerList}}" wx:key="index" wx:for-item="entry">
             <swiper-item>
-              <image class="" style="height:180rpx" src="{{  entry.image ||entry.imgUrl}}" mode="aspectFill"></image>
+              <image class="image" style="height:180rpx" src="{{  entry.image ||entry.imgUrl}}" mode="aspectFill"></image>
             </swiper-item>
           </block>
         </swiper>
       </view>
       <!-- 今日金价 -->
       <today-gold-price wx:elif="{{item.kind === entryType.GO }}" showed="{{todayGoldPriceShowed}}" goldPrice="{{goldPrice}}" title="{{item.param.title}}"></today-gold-price>
+      <!-- 积分商品推荐 -->
       <content-mall wx:elif="{{item.kind === entryType.RE }}"></content-mall>
+      <!-- 我的奖品 -->
+      <my-prize wx:elif="{{item.kind === entryType.MY }}" title="{{item.param.title}}" item="{{item}}"></my-prize>
+      <!-- 预约服务 -->
+      <my-service wx:elif="{{item.kind === entryType.RES }}" srvProshowNum="{{srvProshowNum}}" title="{{item.param.title}}"></my-service>
+      <!-- policyListNum -->
+      <my-quality wx:elif="{{item.kind === entryType.WA }}" policyListNum="{{policyListNum}}" title="{{item.param.title}}"></my-quality>
     </block>
   </view>
 </view>

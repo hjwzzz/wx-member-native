@@ -15,6 +15,8 @@ Page({
     bannerList: [],
     goldPrice: [],
     todayGoldPriceShowed: '',
+    srvProshowNum: 1,
+    policyListNum: 0,
     entryType: {
       BA: 'BANNER',
       EN: 'ENTRANCE',
@@ -48,12 +50,23 @@ Page({
       const { avatarUrl, nickName, wmCenterRspVo, curLevelName } = res.data;
       const loginList = wmCenterRspVo.param.quickNavList;
       const panelList = wmCenterRspVo.panelList;
+
+      const srvObj = panelList.find(
+        (item: unknown) => item.kind === this.data.entryType.RES
+      );
+
+      const policyList = panelList.find(
+        (item: unknown) => item.kind === this.data.entryType.WA
+      );
+
       this.setData({
+        srvProshowNum: srvObj.param.showNum || 1,
         avatarUrl,
         nickName,
         loginList,
         curLevelName,
         panelList,
+        policyListNum: policyList.param.showNum || 0,
       });
     }
   },

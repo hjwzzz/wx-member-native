@@ -4,6 +4,9 @@
     "van-icon": "/vant-weapp/icon/index",
     "today-gold-price": "/component/today-gold-price/index",
     "content-mall": "/component/content-mall/index",
+    "my-prize": "/component/my-prize/index",
+    "my-service": "/component/my-service/index",
+    "my-quality": "/component/my-quality/index",
     "none-data": "/component/none-data/index"
   }
 }

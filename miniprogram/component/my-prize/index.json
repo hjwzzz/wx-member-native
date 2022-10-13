@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "none-data": "/component/none-data/index",
+    "van-icon": "/vant-weapp/icon/index"
+  }
+}

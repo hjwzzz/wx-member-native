@@ -1,0 +1,34 @@
+<!-- @click="handleSysUrl(item)" -->
+<view class="grid-policy-act">
+    <view class="header">
+        <view class="header-left">
+            <text class="title">{{ title || '质保单' }}</text>
+            <view class="number" style="color:{{mainColor}}">
+                ({{policyList.totalRecord || 0 }})
+            </view>
+        </view>
+        <view class="right">
+            <text class="more">更多</text>
+            <van-icon name="arrow" size="12" color="#b7b8c4" />
+        </view>
+    </view>
+    <view class="content" wx:for="{{policyList.records}}" wx:for-item="policy" wx:key="id">
+        <view class="orderId">
+            <view class="title">单号：</view>
+            <view class="text">{{ policy.number }}</view>
+        </view>
+        <view class="shopName">
+            <view class="icon">
+                <image src="{{staticUrl}}img/store.png" mode="aspectFill" />
+            </view>
+            <view class="name">{{ policy.storeName }}</view>
+        </view>
+        <view class="orderTime">
+            <view class="icon">
+                <image src="{{staticUrl}}img/time.png" mode="aspectFill" />
+            </view>
+            <view class="time">{{ policy.bizTime }}</view>
+        </view>
+    </view>
+    <none-data wx:if="{{!policyList.totalRecord}}"></none-data>
+</view>
