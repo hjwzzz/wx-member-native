@@ -1,0 +1,20 @@
+<!--pages/center/user-theprize/component/good-row/index.wxml-->
+<view class="card">
+  <view class="top">
+    <view class="left">
+      <image src="{{item.url}}" mode="" />
+      <view class="center">
+        <view class=""> {{ item.prizeName }} </view>
+        <view class="amount"> x{{ item.quantity }} </view>
+        <view class="amount"> {{ item.relatedKind.name }} </view>
+      </view>
+    </view>
+    <view class="right" wx:if="{{status}}">
+      <text style="color: {{mainColor}} ">
+        {{ item.status.name }}
+      </text>
+    </view>
+
+  </view>
+  <slot></slot>
+</view>

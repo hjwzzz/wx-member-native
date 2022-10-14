@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "兑换奖品",
+  "usingComponents": {
+    "good": "../../component/good-row/index"
+  }
+}
