@@ -35,3 +35,9 @@ export const queryGoldPriceByPage = async (data: unknown) => {
   const url = `${baseUrl}/emp-base/priceFront/usr/queryGoldPriceByPage`;
   return await request(url, data);
 };
+
+// 获取质保单列表
+export const queryPolicyList = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
+  return await request(url, data);
+};

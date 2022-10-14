@@ -1,0 +1,27 @@
+<!--  -->
+<view class="grid-serve">
+    <view class="header">
+        <view class="left">
+            <text class="title">{{title || '预约服务'}}</text>
+        </view>
+        <!-- @click="handleSysUrl(item)" -->
+        <view class="right">
+            <text class="more">更多</text>
+            <van-icon name="arrow" size="12" color="#b7b8c4" />
+        </view>
+    </view>
+    <view class="content">
+        <!-- @click="goServeDetail(serve)" -->
+        <view class="grid-serve-item" wx:for="{{srvProList}}" wx:for-item="serve" wx:key="index">
+            <image class="grid-serve-item-img" src="{{serve.imgUrl}}" alt="" />
+            <view class="grid-serve-item-wrapper">
+                <view class="grid-serve-item-wrapper-name">{{ serve.name }}</view>
+                <view class="grid-serve-item-wrapper-btn" style="color:{{mainColor}}">
+                    {{!serve.acctId? '免费' : parseInt(serve.value) + serve.acctName }}
+                </view>
+                <van-icon name="arrow" size="18" color="#b7b8c4" class="right-arrow" />
+            </view>
+        </view>
+        <none-data wx:if="{{srvProList.length===0}}"></none-data>
+    </view>
+</view>

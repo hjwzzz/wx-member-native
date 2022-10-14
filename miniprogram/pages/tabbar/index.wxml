@@ -4,7 +4,7 @@
   <view class="banner-show-background" style="margin-bottom:{{bannerList.length > 0 ? '54rpx' : '30rpx'}}">
     <view class="back-img" style="background:url({{dataList.wmMainRspVo.param.topBgImageUrl}}) center top/100% auto no-repeat'"></view>
     <swiper style="height:300rpx" class="banner" indicator-dots="{{bannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
-      <block wx:for="{{bannerList}}" wx:key="*this">
+      <block wx:for="{{bannerList}}" wx:key="index">
         <swiper-item>
           <image class="" style="height:300rpx" src="{{item.imgUrl}}" mode="aspectFill"></image>
         </swiper-item>
@@ -12,7 +12,7 @@
     </swiper>
   </view>
   <view class="customer-diy">
-    <block class="" wx:for="{{dataList.wmMainRspVo.panelList}}" wx:for-item="items" wx:key="*this">
+    <block class="" wx:for="{{dataList.wmMainRspVo.panelList}}" wx:for-item="items" wx:key="index">
       <!-- @click="goMore('/pages/post/index', item.param, item.updateTime)" -->
       <!-- 提示 -->
       <view class="bulletin" wx:if="{{items.kind === 'NOTICE'}}">
@@ -25,7 +25,7 @@
       <!-- 广告图 -->
       <view class="ad-banner-list" wx:elif="{{items.kind === 'BANNER' && adBannerList.length}}">
         <swiper style="height:180rpx" class="banner" indicator-dots="{{adBannerList.length > 1}}" indicator-color indicator-active-color="#FF547B" autoplay>
-          <block wx:for="{{adBannerList}}" wx:key="*this">
+          <block wx:for="{{adBannerList}}" wx:key="index">
             <swiper-item>
               <image class="" style="height:180rpx" src="{{item. imgUrl || item.image}}" mode="aspectFill"></image>
             </swiper-item>
@@ -35,7 +35,7 @@
       <!-- 快捷导航 -->
       <view class="quick-nav" wx:elif="{{items.kind === 'QUICK_NAV' && swiperVav.length}}">
         <swiper style="height:{{swiperVavHeight}}rpx" class="" indicator-dots="{{swiperVav.length > 1}}" indicator-color indicator-active-color="#FF547B">
-          <swiper-item wx:for="{{swiperVav}}" wx:for-item="navs" wx:key="*this">
+          <swiper-item wx:for="{{swiperVav}}" wx:for-item="navs" wx:key="index">
             <view class="item-shop" wx:for="{{navs}}" wx:key="*this">
               <view class="item-header">
                 <image src="{{item.icoUrl}}" mode=""></image>
