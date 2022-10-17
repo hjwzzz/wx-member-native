@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Ref, ref, computed, ComputedRef } from 'vue';
+import { Ref, ref, computed } from 'vue';
 import Storage from '@/utils/storage';
 
 export const useBasicsData = defineStore(
@@ -7,7 +7,7 @@ export const useBasicsData = defineStore(
   () => {
     // 主颜色
     const colorTheme: Ref<any> = ref({});
-    const mainColor: Ref<string> = ref('');
+    const mainColor = ref('');
     const setColorTheme = (item: any) => {
       colorTheme.value = item || {};
     };
@@ -20,13 +20,13 @@ export const useBasicsData = defineStore(
       bottomNavList.value = item || [];
     };
 
-    const useMid: Ref<string | boolean> = ref('');
+    const useMid = ref('');
     const setUseMid = (login: string) => {
       useMid.value = login;
       Storage.setMid(login);
     };
 
-    const checkLogin: ComputedRef<boolean> = computed(() => !!useMid.value);
+    const checkLogin = computed(() => !!useMid.value);
 
     return {
       useMid,
