@@ -1,4 +1,4 @@
-const appId = uni.getAccountInfoSync().miniProgram.appId;
+const appId = uni?.getAccountInfoSync?.()?.miniProgram?.appId;
 class Storage {
   // appId
   static getWXAppId() {
