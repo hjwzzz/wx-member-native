@@ -1,10 +1,16 @@
 import Storage from './storage';
+/**
+ * 拦截 page 及内部周期 添加部分方法
+ * @func $set 通过setData({k:v}) 设置 data-k="v" 到 data 中
+ * @func $set 
+ */
 export default function () {
   const originalPage = Page;
   Page = function (config: any) {
     const {
       onLoad, // 每个页面启动前设置状态栏高和检查更新
-      $set,
+      // $set,
+      // $setkv,
       // onPullDownRefresh, // 刷新方法 添加默认选项
       // onReachBottom, // 加载方法 添加默认选项
       // //自定义常用方法
@@ -21,11 +27,6 @@ export default function () {
       // dt_previewImage, //预览图片
 
     } = config
-    console.log($set)
-    config.$set = function () {
-      console.log("$set .. ");
-
-    }
     config.onLoad = function (d = {}) {
       this.setData({
         mainColor: Storage.getMainColor(),
@@ -34,10 +35,14 @@ export default function () {
 
       onLoad && typeof onLoad === 'function' ? onLoad.call(this, d) : ""
     }
-    // //  点击修改数据方法
-    // config.dt_fix = function (e) {
+    // config.$set = function () {
+    //   console.log("$set .. ");
+
+    // }
+    // //  修改 data 数据
+    // config.$set = function (e) {
     //   this.setData(e.currentTarget.dataset)
-    //   dt_fix && typeof dt_fix === 'function' ? dt_fix.call(this, e) : ""
+    //   $set && typeof $set === 'function' ? $set.call(this, e) : ""
     // }
     // //  点击修改数据方法
     // config.dt_fix_kv = function (e) {

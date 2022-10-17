@@ -24,6 +24,7 @@ Page({
   onLoad(options: any) {
     this.setData(options)
     this.getData()
+
   },
   tapClick(e: any) {
 

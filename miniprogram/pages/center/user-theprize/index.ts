@@ -26,7 +26,6 @@ Page({
         key: ["CLOSED"],
         name: "已失效"
       },
-
     ],
     list: []
   },
