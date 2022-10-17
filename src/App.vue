@@ -44,7 +44,7 @@ setTimeout(() => {
 
 provide('test', dddd);
 </script>
-<style lang="less">
+<style lang="scss">
 .dddd {
   height: 22rpx;
 

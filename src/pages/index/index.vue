@@ -25,7 +25,7 @@ watch(sss, ss => {
 console.log(sss.value);
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .content {
   display: flex;
   flex-direction: column;
