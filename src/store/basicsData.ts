@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 import Storage from '@/utils/storage';
 
-export const UseBasicsData = defineStore('useBasicsData', () => {
+export const useBasicsData = defineStore('useBasicsData', () => {
   // 主颜色
   const colorTheme: Ref<any> = ref({});
   const mainColor: Ref<string> = ref('');
@@ -18,6 +18,7 @@ export const UseBasicsData = defineStore('useBasicsData', () => {
   const bottomNavList: Ref<any[]> = ref([]);
   const setBottomNavList = (item: any[]) => {
     bottomNavList.value = item;
+    Storage.setBottomNavList(item);
   };
 
   // 登录

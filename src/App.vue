@@ -2,6 +2,9 @@
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
 import { provide, ref } from 'vue';
 import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
 
 // 获取基础数据
 const initData = async () => {
@@ -9,6 +12,9 @@ const initData = async () => {
     getWmColorTheme(),
     getWmmeberNavRequest(),
   ]);
+  initBasicsData.setBottomNavList(getWmmeberNavRequestRes.data.bottomNavList);
+  initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
+  initBasicsData.setColorTheme(getWmColorThemeRes.data);
 };
 
 onLaunch(() => {
