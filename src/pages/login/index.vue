@@ -114,7 +114,7 @@ const getMemberEula = async() => {
 
 };
 
-const decryptPhoneNumber = async({ detail: { errMsg, encryptedData, iv } }) => {
+const decryptPhoneNumber = async({ detail: { errMsg, encryptedData, iv } }: any) => {
   if (errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
@@ -288,10 +288,11 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding-top: 80rpx;
   overflow: hidden;
   background-color: #fff;
+  box-sizing: border-box;
 
   .logo {
     width: 354rpx;
@@ -315,13 +316,13 @@ onMounted(() => {
     &.wx-auth {
       margin-bottom: 40rpx;
       color: #fff;
-      background: var(--main-color);
+      background: v-bind('initBasicsData.mainColor');
     }
 
     &.no-login {
-      color: var(--main-color);
+      color: v-bind('initBasicsData.mainColor');
       background: transparent;
-      border: 2rpx solid var(--main-color);
+      border: 2rpx solid v-bind('initBasicsData.mainColor');
     }
   }
 
@@ -340,7 +341,7 @@ onMounted(() => {
       color: #b7b8c4;
 
       .eula-name {
-        color: var(--main-color);
+        color: v-bind('initBasicsData.mainColor');
       }
     }
   }
@@ -382,7 +383,7 @@ onMounted(() => {
 
     &-reslove {
       color: #fff;
-      background-color: var(--main-color);
+      background-color: v-bind('initBasicsData.mainColor');
     }
   }
 }
