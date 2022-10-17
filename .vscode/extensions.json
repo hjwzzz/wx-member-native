@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "sporiley.css-auto-prefix",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "Vue.volar",
+    "rvest.vs-code-prettier-eslint",
+    "Vue.vscode-typescript-vue-plugin"
+  ]
+}

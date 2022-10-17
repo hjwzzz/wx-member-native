@@ -1,20 +1,73 @@
 {
+  "editor.formatOnType": true,
   "editor.formatOnSave": true,
-  "eslint.run": "onSave",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.fixAll.stylelint": true
+  "explorer.confirmDelete": false,
+  //eslint 或者 tslint格式化代码
+  "html.format.wrapAttributes": "aligned-multiple",
+  "html.format.preserveNewLines": true,
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
+  "files.associations": {
+    "*.vue": "vue"
   },
-  "stylelint.snippet": [
-    "css",
-    "less",
-    "postcss",
-    "scss",
-    "sass"
+  "eslint.options": {
+    "extensions": [".js", ".vue", ".ts", ".tsx"]
+  },
+  "eslint.run": "onSave", // 保存就校验
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "html",
+    "vue",
+    "typescript"
   ],
-  "[postcss]": {
-    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  "eslint.format.enable": true,
+  "eslint.alwaysShowStatus": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist": true
   },
-  "typescript.tsdk": "node_modules\\typescript\\lib",
-  "html.validate.styles": false,
+  "emmet.syntaxProfiles": {
+    "javascript": "jsx",
+    "vue": "html",
+    "vue-html": "html"
+  },
+  "git.confirmSync": false,
+  "editor.renderWhitespace": "boundary",
+  "editor.cursorBlinking": "smooth",
+  "editor.minimap.enabled": true,
+  "editor.minimap.renderCharacters": false,
+  "window.title": "${dirty}${activeEditorMedium}${separator}${rootName}",
+  "editor.codeLens": true,
+  "editor.snippetSuggestions": "top",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": false,
+    "source.fixAll.eslint": true,
+    "source.fixAll.tslint": true,
+    "eslint.autoFixOnSave": true
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "explorer.compactFolders": false,
+  "terminal.integrated.fontFamily": "monospace",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.autoSave": "onFocusChange",
+  "[html]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

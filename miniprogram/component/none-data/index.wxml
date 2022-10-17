@@ -1,7 +1,0 @@
-<!-- component/none-data/index.wxml -->
-<view class="empty-wrapper">
-    <view class="content-empty">
-        <image class="image" src="{{staticUrl}}img/noneStatus.png" mode=""></image>
-    </view>
-    <view class="empty">暂无相关信息</view>
-</view>
