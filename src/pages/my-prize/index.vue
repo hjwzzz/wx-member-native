@@ -1,5 +1,5 @@
 <template>
-  <view class="content">
+  <view class="top">
     <uni-segmented-control
       :current="current"
       :values="showItems"
@@ -144,6 +144,9 @@ const changeTab = (e: any) => {
   background-color: white;
 }
 
+.content {
+  padding: 0 30rpx;
+}
 .bottom {
   margin-top: 25rpx;
   margin-bottom: 15rpx;

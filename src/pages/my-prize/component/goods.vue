@@ -2,16 +2,16 @@
   <view class="card">
     <view class="top">
       <view class="left">
-        <image :src="url" mode="" />
+        <image :src="props.item.url" mode="" />
         <view class="center">
-          <view class=""> {{ prizeName }} </view>
-          <view class="amount"> x{{ quantity }} </view>
-          <view class="amount"> {{ relatedKind.name }} </view>
+          <view class=""> {{ props.item.prizeName }} </view>
+          <view class="amount"> x{{ props.item.quantity }} </view>
+          <view class="amount"> {{ props.item.relatedKind?.name }} </view>
         </view>
       </view>
       <view class="right" v-if="props.status">
         <text :style="`color:${basicsData.mainColor}`">
-          {{ status.name }}
+          {{ props.item.status?.name }}
         </text>
       </view>
     </view>
@@ -20,11 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 const basicsData = useBasicsData();
-const props = defineProps<propsType>();
-
 interface propsType {
   item: {
     url: string;
@@ -35,12 +32,12 @@ interface propsType {
   };
   status: boolean;
 }
-const { prizeName, quantity, relatedKind, status, url } = toRefs(props.item);
+const props = defineProps<propsType>();
 </script>
 
 <style scoped lang="scss">
 .card {
-  margin: 30rpx 30rpx 0 30rpx;
+  margin-top: 30rpx;
   background: #ffffff;
   border-radius: 16rpx;
   padding: 30rpx;
