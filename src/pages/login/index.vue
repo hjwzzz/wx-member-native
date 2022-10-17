@@ -51,8 +51,12 @@
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
 import { getLogoRequest, getMemberEulaRequest } from '@/api/server';
 import type { login } from '@/typings/api';
+import Storage from '@/utils/storage';
 import { onMounted, reactive, ref } from 'vue';
 import type { Protocol, WxMiniAuthInfo } from './index.type';
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
 
 const logo = ref('');
 
@@ -79,10 +83,10 @@ const jsCodeLogin = async() => {
 
   const { token, mid } = jsCodeLoginRequestRes.data;
 
-  // Storage.setToken(token);
-  // Storage.setMid(mid);
+  Storage.setToken(token);
+  initBasicsData.setUseMid(mid);
 
-  await uni.showToast({ title: '登录成功！' });
+  uni.showToast({ title: '登录成功！' });
 
   setTimeout(() => {
     uni.navigateBack();
@@ -277,7 +281,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang='less' scoped>
+<style lang='scss' scoped>
 .login {
   position: relative;
   display: flex;
