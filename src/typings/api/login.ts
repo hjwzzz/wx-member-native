@@ -5,6 +5,7 @@ export enum SEX {
 }
 
 export interface WxMiniAuthRequestParams {
+
   /** 头像 */
   avatarUrl?: string;
 
@@ -28,6 +29,7 @@ export interface WxMiniAuthRequestParams {
 }
 
 export interface WxMiniAuthRequestRes {
+
   /** mid */
   mid: string;
 
@@ -44,6 +46,7 @@ export interface WxMiniAuthRequestRes {
 /** wx.login 返回的 code */
 export type JsCodeLoginRequestParams = string;
 export interface JsCodeLoginRequestRes {
+
   /** mid */
   mid: string;
 
