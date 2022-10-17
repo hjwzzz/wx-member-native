@@ -4,13 +4,12 @@
     <view class="logo">
       <image :src="logo" mode="aspectFit" />
     </view>
-    <view class="btn wx-auth" @click="showWxMiniAuthModal">
-      微信授权登录
-    </view>
-    <view class="btn no-login">
-      暂不登录
-    </view>
-    <view v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed" class="footer">
+    <view class="btn wx-auth" @click="showWxMiniAuthModal"> 微信授权登录 </view>
+    <view class="btn no-login"> 暂不登录 </view>
+    <view
+      v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
+      class="footer"
+    >
       <view class="protocol">
         <text>登录代表阅读并同意</text>
         <text class="eula-name" v-if="protocol.regAgreementShowed">
@@ -23,52 +22,57 @@
     </view>
   </view>
 
-  <!-- <van-popup show="{{ wxMiniAuthInfo.modalConfig.show }}" round>
+  <uni-popup
+    ref="PopupRef"
+    type="center"
+  >
     <view class="popup">
       <view class="popup-content">
-        <view class="popup-content-title">
-          授权申请
-        </view>
+        <view class="popup-content-title"> 授权申请 </view>
         <view class="popup-content-box">
           为了您更好的体验，请先绑定手机号才能登录噢！
         </view>
       </view>
       <view class="popup-btn">
-        <button bindtap="hideWxMiniAuthModal" class="popup-btn-btn popup-btn-reject">
+        <button
+          @click="hideWxMiniAuthModal"
+          class="popup-btn-btn popup-btn-reject"
+        >
           拒绝
         </button>
-        <button class="popup-btn-btn popup-btn-reslove" open-type="getPhoneNumber"
-          bind:getphonenumber="decryptPhoneNumber">
+        <button
+          class="popup-btn-btn popup-btn-reslove"
+          open-type="getPhoneNumber"
+          @getphonenumber="decryptPhoneNumber"
+        >
           允许
         </button>
       </view>
     </view>
-
-  </van-popup> -->
-<!-- </page-meta> -->
+  </uni-popup>
+  <!-- </page-meta> -->
 </template>
-<script lang='ts' setup>
+<script lang="ts" setup>
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
 import { getLogoRequest, getMemberEulaRequest } from '@/api/server';
 import type { login } from '@/typings/api';
 import Storage from '@/utils/storage';
 import { onMounted, reactive, ref } from 'vue';
-import type { Protocol, WxMiniAuthInfo } from './index.type';
+import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
 
 const initBasicsData = useBasicsData();
 
 const logo = ref('');
+const PopupRef = ref<any>(null);
 
 const protocol = reactive<Protocol>({});
 
-const wxMiniAuthInfo = reactive<WxMiniAuthInfo>({ modalConfig: { show: false } });
-
 
 /**
-     * 自动登录
-     */
-const jsCodeLogin = async() => {
+ * 自动登录
+ */
+const jsCodeLogin = async () => {
   const jsCode = await getWxLoginCode();
 
   if (!jsCode) {
@@ -103,7 +107,7 @@ const getLogo = async () => {
   logo.value = getLogoRequestRes.data ?? '';
 };
 
-const getMemberEula = async() => {
+const getMemberEula = async () => {
   const getMemberEulaRequestRes = await getMemberEulaRequest();
 
   if (!getMemberEulaRequestRes.data) {
@@ -111,10 +115,9 @@ const getMemberEula = async() => {
   }
 
   Object.assign(protocol, getMemberEulaRequestRes.data);
-
 };
 
-const decryptPhoneNumber = async({ detail: { errMsg, encryptedData, iv } }) => {
+const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
   if (errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
@@ -146,12 +149,11 @@ const getWxLoginCode = () => new Promise<string>((resolve, reject) => {
 });
 
 const showWxMiniAuthModal = () => {
-  wxMiniAuthInfo.modalConfig.show = true;
+  PopupRef.value.open();
 };
 
 const hideWxMiniAuthModal = () => {
-  wxMiniAuthInfo.modalConfig.show = false;
-
+  PopupRef.value.close();
 };
 
 const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
@@ -164,7 +166,6 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
       content: wxMiniAuthRequestRes.msg,
       showCancel: false,
     });
-
   }
 
   //   .then(res => {
@@ -273,25 +274,26 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   // });
 };
 
-
 onMounted(() => {
   getLogo();
   getMemberEula();
-  jsCodeLogin();
+  // jsCodeLogin();
+
 });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .login {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding-top: 80rpx;
   overflow: hidden;
   background-color: #fff;
+  box-sizing: border-box;
 
   .logo {
     width: 354rpx;
@@ -315,13 +317,13 @@ onMounted(() => {
     &.wx-auth {
       margin-bottom: 40rpx;
       color: #fff;
-      background: var(--main-color);
+      background: v-bind("initBasicsData.mainColor");
     }
 
     &.no-login {
-      color: var(--main-color);
+      color: v-bind("initBasicsData.mainColor");
       background: transparent;
-      border: 2rpx solid var(--main-color);
+      border: 2rpx solid v-bind("initBasicsData.mainColor");
     }
   }
 
@@ -340,7 +342,7 @@ onMounted(() => {
       color: #b7b8c4;
 
       .eula-name {
-        color: var(--main-color);
+        color: v-bind("initBasicsData.mainColor");
       }
     }
   }
@@ -348,6 +350,9 @@ onMounted(() => {
 
 .popup {
   width: 580rpx;
+  background-color: #fff;
+  border-radius: 14rpx;
+  overflow: hidden;
 
   &-content {
     &-title {
@@ -382,7 +387,7 @@ onMounted(() => {
 
     &-reslove {
       color: #fff;
-      background-color: var(--main-color);
+      background-color: v-bind("initBasicsData.mainColor");
     }
   }
 }
