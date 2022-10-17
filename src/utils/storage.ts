@@ -73,5 +73,13 @@ class Storage {
   static getMainColor() {
     return uni.getStorageSync('mainColor');
   }
+
+  // bottomNavList
+  static setBottomNavList(value: any[]) {
+    uni.setStorageSync('bottomNavList', value);
+  }
+  static getBottomNavList() {
+    return uni.getStorageSync('bottomNavList');
+  }
 }
 export default Storage;

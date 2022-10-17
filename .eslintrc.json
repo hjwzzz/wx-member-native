@@ -9,7 +9,7 @@
     "plugin:vue/vue3-essential",
     "plugin:@typescript-eslint/recommended"
   ],
-  "globals": { "wx": true },
+  "globals": { "uni": "readonly" },
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",

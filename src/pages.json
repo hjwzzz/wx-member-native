@@ -1,4 +1,4 @@
-{
+{ 
   "easycom": {
     "autoscan": true,
     "custom": {
@@ -20,6 +20,12 @@
         "navigationBarTitleText": "首页-app"
       }
     },
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}
     {
       "path": "pages/center/user-theprize/index",
       "style": {
@@ -33,8 +39,7 @@
         "enablePullDownRefresh": false
       }
     }
-  ],
-
+  ], 
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
