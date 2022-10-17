@@ -27,13 +27,13 @@
       }
     },
     {
-      "path": "pages/center/my-prize/index",
+      "path": "pages/my-prize/index",
       "style": {
         "navigationBarTitleText": "我的奖品"
       }
     },
     {
-      "path": "pages/center/my-prize/redeem",
+      "path": "pages/my-prize/redeem",
       "style": {
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false
