@@ -1,7 +1,10 @@
 <template>
+  <uni-goods-nav @click="onClick" />
   <view class="content">
     <view class="text-area">
-      <text class="title">{{ title }}1111111111111</text>
+      <view>
+        <text class="title">{{ title }}1111111111111</text>
+      </view>
     </view>
   </view>
 </template>
@@ -18,7 +21,7 @@ const dddd = async () => {
 onMounted(() => {
   dddd();
 });
-
+const onClick = () => {};
 const title = ref('Hello');
 const sss: any = inject('test');
 watch(sss, ss => {

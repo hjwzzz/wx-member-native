@@ -9,7 +9,7 @@ export default defineConfig({
       less: {
         javascriptEnabled: true,
         charset: false,
-        additionalData: '@import "./src/assets/style/global.less";',
+        // additionalData: '@import "./src/assets/style/global.less";',
         modifyVars: {},
       },
     },
