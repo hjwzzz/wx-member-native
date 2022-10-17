@@ -12,7 +12,7 @@ export const useBasicsData = defineStore(
       colorTheme.value = item || {};
     };
     const setMainColor = (color: string) => {
-      colorTheme.value = color || '';
+      mainColor.value = color || '';
     };
     // 微会员配置tab
     const bottomNavList: Ref<any[]> = ref([]);

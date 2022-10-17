@@ -33,9 +33,9 @@
       }
     },
     {
-      "path": "pages/my-prize/redeem",
+      "path": "pages/my-prize/prize-detail",
       "style": {
-        "navigationBarTitleText": "",
+        "navigationBarTitleText": "我的奖品",
         "enablePullDownRefresh": false
       }
     }

@@ -44,12 +44,9 @@ setTimeout(() => {
 
 provide('test', dddd);
 </script>
-<style lang="scss">
-.dddd {
-  height: 22rpx;
 
-  .aaa {
-    height: 22rpx;
-  }
+<style lang="scss">
+page {
+  background-color: #f5f5f5;
 }
 </style>
