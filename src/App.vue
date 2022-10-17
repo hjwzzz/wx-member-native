@@ -1,9 +1,25 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
 import { provide, ref } from 'vue';
+import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
+
+// 获取基础数据
+const initData = async () => {
+  const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
+    getWmColorTheme(),
+    getWmmeberNavRequest(),
+  ]);
+};
 
 onLaunch(() => {
-  console.log('App Launch');
+  initData();
+  // this.setData({
+  //   bottomNavList: getWmmeberNavRequestRes.data.bottomNavList || [],
+  //   actionColor: getWmColorThemeRes.data.styleType,
+  // });
+  // // Storage.setColorTheme(res.data);
+  // Storage.setMainColor(getWmColorThemeRes.data.mainColor);
+  // console.log('App Launch');
 });
 onShow(() => {
   console.log('App Show');
