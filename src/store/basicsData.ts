@@ -1,41 +1,44 @@
 import { defineStore } from 'pinia';
-import { Ref, ref } from 'vue';
+import { Ref, ref, computed, ComputedRef } from 'vue';
 import Storage from '@/utils/storage';
 
-export const useBasicsData = defineStore('useBasicsData', () => {
-  // 主颜色
-  const colorTheme: Ref<any> = ref({});
-  const mainColor: Ref<string> = ref('');
-  const setColorTheme = (item: any) => {
-    colorTheme.value = item;
-    Storage.setColorTheme(item);
-  };
-  const setMainColor = (color: string) => {
-    colorTheme.value = color;
-    Storage.setMainColor(color);
-  };
-  // 微会员配置tab
-  const bottomNavList: Ref<any[]> = ref([]);
-  const setBottomNavList = (item: any[]) => {
-    bottomNavList.value = item;
-    Storage.setBottomNavList(item);
-  };
+export const useBasicsData = defineStore(
+  'useBasicsData',
+  () => {
+    // 主颜色
+    const colorTheme: Ref<any> = ref({});
+    const mainColor: Ref<string> = ref('');
+    const setColorTheme = (item: any) => {
+      colorTheme.value = item || {};
+    };
+    const setMainColor = (color: string) => {
+      colorTheme.value = color || '';
+    };
+    // 微会员配置tab
+    const bottomNavList: Ref<any[]> = ref([]);
+    const setBottomNavList = (item: any[]) => {
+      bottomNavList.value = item || [];
+    };
 
-  // 登录
-  const checkLogin: Ref<string | boolean> = ref('');
-  const setCheckLogin = (login: string) => {
-    checkLogin.value = !!login;
-    Storage.setMid(login);
-  };
+    const useMid: Ref<string | boolean> = ref('');
+    const setUseMid = (login: string) => {
+      useMid.value = login;
+      Storage.setMid(login);
+    };
 
-  return {
-    mainColor,
-    colorTheme,
-    checkLogin,
-    bottomNavList,
-    setMainColor,
-    setColorTheme,
-    setCheckLogin,
-    setBottomNavList,
-  };
-});
+    const checkLogin: ComputedRef<boolean> = computed(() => !!useMid.value);
+
+    return {
+      useMid,
+      mainColor,
+      colorTheme,
+      checkLogin,
+      bottomNavList,
+      setUseMid,
+      setMainColor,
+      setColorTheme,
+      setBottomNavList,
+    };
+  },
+  { persist: { enabled: true } }
+);

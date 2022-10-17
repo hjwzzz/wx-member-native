@@ -8,6 +8,7 @@ const initBasicsData = useBasicsData();
 
 // 获取基础数据
 const initData = async () => {
+  console.log('initBasicsData.bottomNavList');
   const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
     getWmColorTheme(),
     getWmmeberNavRequest(),
@@ -15,6 +16,8 @@ const initData = async () => {
   initBasicsData.setBottomNavList(getWmmeberNavRequestRes.data.bottomNavList);
   initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
   initBasicsData.setColorTheme(getWmColorThemeRes.data);
+  console.log('initBasicsData.bottomNavList');
+  console.log('initBasicsData.bottomNavListw', initBasicsData.bottomNavList);
 };
 
 onLaunch(() => {

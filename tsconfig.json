@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "types": ["@dcloudio/types"],
+    "types": ["@dcloudio/types", "pinia-plugin-persist-uni"],
     "paths": {
       "@/*": [
         //指定后可以在文件之直接 import * from 'src';

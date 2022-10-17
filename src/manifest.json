@@ -1,6 +1,6 @@
 {
     "name" : "微会员",
-    "appid" : "wx55776771de6369cc",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -48,9 +48,9 @@
     },
     /* 快应用特有相关 */
     "quickapp" : {},
-    /* 小程序特有相关 */
+    /* 小程序特有相关  dev开发环境： wxd850ff0cc3cc960c fat测试环境： wx55776771de6369cc UAT环境： wx9bb3bd01db33ef27 生产：wx2075f2e57d7a2994 */
     "mp-weixin" : {
-        "appid" : "wx55776771de6369cc",
+        "appid" : "wxd850ff0cc3cc960c",
         "setting" : {
             "urlCheck" : false
         },

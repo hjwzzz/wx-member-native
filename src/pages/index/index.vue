@@ -11,13 +11,10 @@
 
 <script setup lang="ts">
 import { ref, inject, watch, onMounted } from 'vue';
-import { getWmColorTheme } from '@/api/server';
-const dddd = async () => {
-  const ddd = await getWmColorTheme();
-  console.log('getWmColorTheme', ddd);
-};
+// import { getWmColorTheme } from '@/api/server';
+
 onMounted(() => {
-  dddd();
+  console.log('onMounted');
 });
 const onClick = () => {};
 const title = ref('Hello');
