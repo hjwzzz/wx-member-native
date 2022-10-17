@@ -95,7 +95,7 @@ const asyncRequest = (params: any) => new Promise<[null, any]>((resolve, reject)
 });
 
 // 请求
-const request = async <R = any>(
+const request = async(
   url: any,
   args: any = '',
   method: any = 'POST',
@@ -128,7 +128,7 @@ const request = async <R = any>(
     // 接口必须epid
     const epid = Storage.getEpid() ? Storage.getEpid() : await getEpid();
     // 开始asyncRequest请求
-    const [error, res] = await asyncRequest<R>({
+    const [error, res] = await asyncRequest({
       header: {
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),

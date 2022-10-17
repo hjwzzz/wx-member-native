@@ -1,30 +1,49 @@
 {
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			// uni-ui 规则如下配置
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
-		}
-	},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "个人中心-app"
-			}
-		},
-		{
-			"path": "pages/center/index",
-			"style": {
-				"navigationBarTitleText": "首页-app"
-			}
-		}
-	],
-
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      // uni-ui 规则如下配置
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+    }
+  },
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "个人中心-app"
+      }
+    },
+    {
+      "path": "pages/center/index",
+      "style": {
+        "navigationBarTitleText": "首页-app"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/center/my-prize/index",
+      "style": {
+        "navigationBarTitleText": "我的奖品"
+      }
+    },
+    {
+      "path": "pages/center/my-prize/redeem",
+      "style": {
+        "navigationBarTitleText": "",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#FFF",
+    "backgroundColor": "#F5F5F5"
+  }
 }
