@@ -1,56 +1,511 @@
 <template>
-  <view class="content">
-    <view class="text-area">
-      <text class="title">{{ title }}1111111111111</text>
+  <view class="user-center">
+    <view class="user">
+      <view class="login-info">
+        <view class="user-info">
+          <view class="info-left">
+            <view class="info-img">
+              <image
+                v-if="initBasicsData.checkLogin"
+                :src="userInfo.avatarUrl"
+                mode="scaleToFill"
+              />
+              <image
+                v-else
+                class="avatar"
+                :src="imageUrl + 'img/person.png'"
+                mode="scaleToFill"
+              />
+            </view>
+            <view v-if="initBasicsData.checkLogin" class="use-info">
+              <text>{{ userInfo.nickName || '' }}</text>
+            </view>
+            <view v-else class="info-btn" @click="login">请先登录</view>
+          </view>
+          <view class="info-right">
+            <image
+              class="setting"
+              :src="imageUrl + 'img/setInfo.png'"
+              mode="scaleToFill"
+            />
+          </view>
+        </view>
+        <!--  -->
+        <view class="login-list">
+          <block v-for="(item, index) in loginList" :key="index">
+            <view class="login-item" v-if="item.showed">
+              <view class="item-num">{{
+                item.accountValue !== ' ' ? item.accountValue : 0
+              }}</view>
+              <view class="item-name">{{ item.title }}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+      <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
+      <view class="boot-equity" v-if="initBasicsData.checkLogin">
+        <view class="left">
+          <view class="icon">
+            <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
+          </view>
+          <view class="text">{{ userInfo.curLevelName || '' }}</view>
+        </view>
+        <view class="boot-equity-right">
+          <text class="text">查看权益</text>
+          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        </view>
+      </view>
+    </view>
+    <view class="reveal-grid">
+      <block v-for="(item, index) in panelList" :key="index">
+        <view class="grid-list" v-if="item.kind === entryType.EN">
+          <!-- GONGGE  LIST -->
+          <view
+            :class="
+              item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
+            "
+            v-if="item.param.showType"
+          >
+            <block v-for="(entry, index) in item.param.linkList" :key="index">
+              <!-- @click="handleEntryUrl(entry)" -->
+              <view class="list-item" v-if="entry.showed">
+                <view class="item-icon">
+                  <image :src="entry.icoUrl" mode="aspectFit" />
+                </view>
+                <view class="item-name">{{ entry.title }}</view>
+                <uni-icons
+                  v-if="item.param.showType == 'LIST'"
+                  name="arrow"
+                  size="12"
+                  color="#975D17"
+                />
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, watch, onMounted } from 'vue';
-import { getWmColorTheme } from '@/api/server';
+import { onShow } from '@dcloudio/uni-app';
+import { ref, inject, watch, onMounted, reactive, Ref } from 'vue';
+import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
+import { queryGoldPriceByPage } from '@/api/server';
+import { staticUrl } from '@/utils/config';
+import { useBasicsData } from '@/store/basicsData';
+// import NoneData from '../component/NoneData.vue';
+// import TodayGoldPrice from '../component/TodayGoldPrice.vue';
+// import ContentMall from '../component/ContentMall.vue';
+const imageUrl = staticUrl;
+const initBasicsData = useBasicsData();
+const entryType = {
+  BA: 'BANNER',
+  EN: 'ENTRANCE',
+  GO: 'GOLD_PRICE',
+  MY: 'MY_AWARD',
+  NO: 'NOTICE',
+  QR: 'ORDER',
+  QU: 'QUICK_NAV',
+  RE: 'REC_GIFTS',
+  REC: 'REC_GOODS',
+  RES: 'RES_SVC',
+  RI: 'RICH_TEXT',
+  WA: 'WARRANTY',
+};
+const userInfo = reactive({
+  avatarUrl: '',
+  nickName: '',
+  curLevelName: '',
+});
+const loginList: Ref<any> = ref([]);
+const panelList: Ref<any> = ref([]);
+const bannerList: Ref<any> = ref([]);
+const goldPrice: Ref<any> = ref([]);
+const todayGoldPriceShowed = ref('');
+const srvProshowNum = ref(1);
+const policyListNum = ref(0);
 
-const dddd = async () => {
-  const ddd = await getWmColorTheme();
-  console.log('getWmColorTheme', ddd);
+const login = () => {
+  uni.navigateTo({ url: '/pages/login/index' });
 };
 
-onMounted(() => {
-  dddd();
+onShow(() => {
+  getMemberCentertIndex();
+  getBannerData();
+  getGoldPriceByPage();
 });
 
-const title = ref('Hello');
-const sss: any = inject('test');
-watch(sss, ss => {
-  console.log(ss);
-});
-console.log(sss.value);
+const getMemberCentertIndex = async () => {
+  const res = await memberCentertIndex('');
+  if (res.code === 0 && res.data) {
+    const { avatarUrl, nickName, wmCenterRspVo, curLevelName } = res.data;
+    const quickNavList = wmCenterRspVo.param?.quickNavList || [];
+    const panelListItem: any = wmCenterRspVo.panelList;
+    const srvObj =
+      panelListItem.find((item: any) => item.kind === entryType.RES) || {};
+    const policyList =
+      panelListItem.find((item: any) => item.kind === entryType.WA) || {};
+
+    srvProshowNum.value = srvObj.param?.showNum || 1;
+    policyListNum.value = policyList.param?.showNum || 0;
+    userInfo.avatarUrl = avatarUrl || '';
+    userInfo.nickName = nickName;
+    userInfo.curLevelName = curLevelName;
+    loginList.value = quickNavList;
+    panelList.value = panelListItem;
+  }
+};
+
+// 获取广告
+const getBannerData = async () => {
+  const res = await getIndexAdBannerList('');
+  if (res.code === 0 && res.data) {
+    const result: any = [];
+    res.data.map((item: any) => {
+      result.push({
+        image: item.imgUrl,
+        title: '',
+        h5Url: item.h5Url,
+        miniUrl: item.miniUrl,
+      });
+    });
+    bannerList.value = result;
+  }
+};
+
+// 获取今日金价
+const getGoldPriceByPage = async () => {
+  if (!initBasicsData.checkLogin) {
+    return;
+  }
+  const res = await queryGoldPriceByPage('WM_CENTER');
+  if (res.code === 0 && res.data) {
+    const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
+    // this.uiParam = uiParam;
+    const { showNum } = param;
+    const result: any = [];
+
+    branPriceList.map((item: any, index: number) => {
+      if (index < showNum) {
+        result.push(item);
+      }
+    });
+    todayGoldPriceShowed.value = todayGoldPrice;
+    goldPrice.value = result;
+    // this.setData({
+    //   todayGoldPriceShowed,
+    //   goldPrice: result,
+    // });
+    // console.log('goldPrice', result);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+page {
+  width: 100%;
+  height: 100%;
+}
 
-  .logo {
-    height: 200rpx;
-    width: 200rpx;
-    margin-top: 200rpx;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 50rpx;
+.user-center {
+  width: 100%;
+  height: 100%;
+  padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
+  overflow: scroll;
+}
+
+.user-center {
+  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+}
+
+.user {
+  width: 100%;
+  height: 400rpx;
+  background-image: url('https://static.jqzplat.com/web/c_default_center_bg.jpg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  .login-info {
+    height: 295rpx;
   }
 
-  .text-area {
+  .user-info {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40rpx 30rpx;
+
+    .info-left {
+      display: flex;
+      align-items: center;
+
+      .info-img {
+        width: 100rpx;
+        height: 100rpx;
+        overflow: hidden;
+        border: 4rpx solid #fff;
+        border-radius: 70rpx;
+
+        image {
+          width: 100rpx;
+          height: 100rpx;
+        }
+
+        .avatar {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .info-btn {
+        width: 176rpx;
+        height: 60rpx;
+        margin-left: 20rpx;
+        font-size: 28rpx;
+        font-weight: 400;
+        line-height: 60rpx;
+        color: #fff;
+        text-align: center;
+        background: #ff547b;
+        border-radius: 30rpx;
+      }
+
+      .use-info {
+        margin-left: 20rpx;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .info-right {
+      width: 64rpx;
+      height: 64rpx;
+      overflow: hidden;
+      background: rgb(255 255 255 / 50%);
+      border-radius: 32rpx;
+
+      .setting {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 
-  .title {
-    font-size: 36rpx;
-    color: #8f8f94;
+  .login-list {
+    display: flex;
+    justify-content: space-around;
+
+    .login-item {
+      text-align: center;
+
+      .item-num {
+        height: 44rpx;
+        font-size: 32rpx;
+        font-weight: 800;
+        line-height: 44rpx;
+        color: #323338;
+      }
+
+      .item-name {
+        height: 28rpx;
+        font-size: 20rpx;
+        font-weight: 400;
+        line-height: 28rpx;
+        color: #b7b8c4;
+      }
+    }
+  }
+}
+
+.boot-equity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 630rpx;
+  height: calc(400rpx - 296rpx);
+  padding: 0 30rpx;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #ffefd2 0%, #ffddad 100%);
+  border-radius: 16rpx 16rpx 0rpx 0rpx;
+
+  .left {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      display: inline-block;
+      width: 37rpx;
+      height: 32rpx;
+      overflow: hidden;
+
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .text {
+      height: 40rpx;
+      margin-left: 12rpx;
+      font-size: 28rpx;
+      font-weight: 800;
+      line-height: 40rpx;
+      color: #975d17;
+    }
+  }
+
+  .boot-equity-right {
+    display: flex;
+    align-items: center;
+
+    .text {
+      width: 96rpx;
+      height: 32rpx;
+      margin-right: 6rpx;
+      font-size: 24rpx;
+      font-weight: 400;
+      line-height: 32rpx;
+      color: #975d17;
+    }
+  }
+}
+
+.reveal-grid {
+  position: relative;
+  z-index: 999;
+  // width: 750rpx;
+  padding: 30rpx;
+  padding-top: 15rpx;
+  margin-top: 15rpx;
+  background: #f5f5f5;
+}
+
+.grid-list {
+  padding: 20 30rpx;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 16rpx;
+
+  .wrapper-list {
+    padding: 0rpx 30rpx;
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 100rpx;
+      line-height: 100rpx;
+      border-bottom: solid 1rpx #f8f8f8;
+      // padding: 0 20rpx;
+      .item-icon {
+        width: 48rpx;
+        height: 48rpx;
+        margin-right: 30rpx;
+        overflow: hidden;
+        line-height: 48rpx;
+        background: #fff;
+        border-radius: 12rpx;
+
+        image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .item-name {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 12rpx;
+
+        .badge {
+          width: 20rpx;
+          height: 20rpx;
+          background: #ff4c4c;
+          border-radius: 16rpx;
+        }
+      }
+
+      .more {
+        width: 10rpx;
+        color: #b7b8c4;
+      }
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .wrapper-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 20rpx 0;
+
+    .list-item {
+      position: relative;
+      display: inline-block;
+      width: 25%;
+      padding: 20rpx 0;
+      text-align: center;
+
+      .badge {
+        position: absolute;
+        top: 14rpx;
+        right: 38rpx;
+        z-index: 100;
+        width: 20rpx;
+        height: 20rpx;
+        background: #ff4c4c;
+        border-radius: 16rpx;
+      }
+
+      .item-icon {
+        width: 88rpx;
+        height: 88rpx;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 22rpx;
+
+        image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .item-name {
+        width: 100%;
+        height: 34rpx;
+        margin-top: 16rpx;
+        font-size: 24rpx;
+        font-weight: 400;
+        line-height: 34rpx;
+        color: #323338;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.grid-ad {
+  width: 690rpx;
+  height: 180rpx;
+  margin: 30rpx 0rpx;
+  overflow: hidden;
+  line-height: 180rpx;
+  border-radius: 16rpx;
+
+  .image {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
