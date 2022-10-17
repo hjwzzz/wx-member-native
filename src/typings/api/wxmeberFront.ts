@@ -35,10 +35,12 @@ export type GetWmmeberNavRequestResLevitationNavListItem =
   GetWmmeberNavRequestResDataBottomNavListItem;
 
 export interface GetWmmeberNavRequestRes {
+
   /**
    * 导航设置选项
    */
   bottomNavList: GetWmmeberNavRequestResDataBottomNavListItem[];
+
   /**
    * 悬浮导航项
    */
@@ -57,22 +59,27 @@ export enum STYLE_TYPE {
  * 获取主题色系
  */
 export interface GetWmColorThemeRequestRes {
+
   /**
    * 主题辅色
    */
   complementaryColor: string;
+
   /**
    * 历史自定义主题辅色
    */
   historyCustomComplementaryColor: string;
+
   /**
    * 历史自定义主题主色
    */
   historyCustomMainColor: string;
+
   /**
    * 主题主色
    */
   mainColor: string;
+
   /**
    * 样式风格
    * - BLUE:蓝色主题
