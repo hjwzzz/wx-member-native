@@ -1,15 +1,16 @@
-# wx-enterprise
+# wx-member-native
 
 #### 介绍
-企微宝
+小程序
 
 #### 软件架构
 软件架构说明
+   uniapp转译   vue3框架开发   pinia状态库
 
 
 #### 安装教程
 
-1.  xxxx
+1.  按照平常的vue项目流程
 2.  xxxx
 3.  xxxx
 

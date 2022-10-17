@@ -1,4 +1,4 @@
-# wx-enterprise
+# wx-member-native
 
 #### Software Architecture
 Software architecture description
