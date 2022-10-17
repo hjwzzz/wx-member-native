@@ -7,14 +7,13 @@
         marginBottom: dataList.bannerList?.length > 0 ? '54rpx' : '30rpx',
       }"
     >
-      <!-- :style="{
-          background:
-            'url(' +
-            dataList.wmMainRspVo?.param?.topBgImageUrl +
-            ')' +
-            'center top / 100% auto no-repeat',
-        }" -->
-      <view class="back-img"></view>
+      <view
+        class="back-img"
+        :style="{
+          background: topBgImageUrl,
+        }"
+      >
+      </view>
     </view>
 
     <view class="customer-diy">
@@ -25,11 +24,11 @@
         <!-- 提示 -->
         <view class="bulletin" v-if="items.kind === 'NOTICE'">
           <view class="bulletin-box">
-            <!--  style="color:{{mainColor}}" -->
             <text
               :style="{ color: mainColor }"
               class="iconfont icon-gonggao icon-text"
-            ></text>
+            >
+            </text>
             <text class="bulletin-text">{{ items.param.title }}</text>
           </view>
           <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
@@ -112,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
 import { wxmemberIndex, getIndexAdBannerList } from '@/api/index';
 import { useBasicsData } from '@/store/basicsData';
@@ -126,15 +125,15 @@ const mainColor = initBasicsData.mainColor;
 onMounted(() => {
   getPageDate();
   getAdBannerList();
-  // getGoldPriceByPage();
+  getGoldPriceByPage();
 });
 
-const bannerList = ref([]);
-const swiperVav = ref([]);
+const bannerList: Ref<any> = ref([]);
+const swiperVav: Ref<any> = ref([]);
 const swiperVavHeight = ref(196);
-const dataList = ref({});
-const adBannerList = ref([]);
-const goldPrice = ref([]);
+const dataList: Ref<any> = ref({});
+const adBannerList: Ref<any> = ref([]);
+const goldPrice: Ref<any> = ref([]);
 const todayGoldPriceShowed = ref(false);
 // 页面数据
 const getPageDate = async () => {
@@ -188,6 +187,9 @@ const getAdBannerList = async () => {
 
 // 获取今日金价
 const getGoldPriceByPage = async () => {
+  if (!initBasicsData.checkLogin) {
+    return;
+  }
   const res = await queryGoldPriceByPage('WM_HOME');
   if (res.code === 0 && res.data) {
     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
@@ -215,16 +217,14 @@ const richImage = (item: string) => {
   );
   return content;
 };
-// onMounted(() => {
-//   console.log('onMounted');
-// });
-// const onClick = () => {};
-// const title = ref('Hello');
-// const sss: any = inject('test');
-// watch(sss, ss => {
-//   console.log(ss);
-// });
-// console.log(sss.value);
+
+const topBgImageUrl = computed(() => {
+  const imageUrl = dataList.value.wmMainRspVo?.param?.topBgImageUrl;
+  if (imageUrl) {
+    return `url(${imageUrl}) center top / 100% auto no-repeat`;
+  }
+  return 'linear-gradient(121deg, #fff0eb 0%, #dce2fb 100%)';
+});
 </script>
 
 <style lang="scss" scoped>
@@ -243,7 +243,6 @@ const richImage = (item: string) => {
   .back-img {
     width: 750rpx;
     height: 256rpx;
-    background: linear-gradient(121deg, #fff0eb 0%, #dce2fb 100%);
   }
 
   .banner {
@@ -264,7 +263,10 @@ const richImage = (item: string) => {
 .customer-diy {
   display: flex;
   flex-direction: column;
-  margin: 0 30rpx;
+  width: calc(100vw - 60rpx);
+  // margin: 0 30rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
 
   .iconfont {
     margin-right: 10px;
@@ -272,7 +274,7 @@ const richImage = (item: string) => {
   }
 
   .ad-banner-list {
-    width: 690rpx;
+    width: 100%;
     height: 180rpx;
     margin-bottom: 30rpx;
     background-color: #323338;
@@ -290,7 +292,7 @@ const richImage = (item: string) => {
   }
 
   .quick-nav {
-    width: 650rpx;
+    // width: 100%;
     padding: 50rpx 20rpx 20rpx;
     margin-bottom: 30rpx;
     background: #fff;
@@ -352,7 +354,7 @@ const richImage = (item: string) => {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: 690rpx;
+  width: 100%;
   height: 72rpx;
   margin-bottom: 30rpx;
   font-size: 24rpx;

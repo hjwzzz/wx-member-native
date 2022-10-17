@@ -78,7 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
 .grid-price {
   width: 630rpx;
   padding: 30rpx;
-  margin: 30rpx 0rpx;
+  margin-bottom: 30rpx;
   background: #fff;
   border-radius: 16rpx;
 
