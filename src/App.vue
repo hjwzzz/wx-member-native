@@ -12,9 +12,13 @@ const initData = async () => {
     getWmColorTheme(),
     getWmmeberNavRequest(),
   ]);
-  initBasicsData.setBottomNavList(getWmmeberNavRequestRes.data.bottomNavList);
-  initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
-  initBasicsData.setColorTheme(getWmColorThemeRes.data);
+  if (getWmmeberNavRequestRes.data) {
+    initBasicsData.setBottomNavList(getWmmeberNavRequestRes.data.bottomNavList);
+  }
+  if (getWmColorThemeRes.data) {
+    initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
+    initBasicsData.setColorTheme(getWmColorThemeRes.data);
+  }
 };
 
 onLaunch(() => {

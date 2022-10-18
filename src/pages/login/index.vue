@@ -22,10 +22,7 @@
     </view>
   </view>
 
-  <uni-popup
-    ref="PopupRef"
-    type="center"
-  >
+  <uni-popup ref="PopupRef" type="center">
     <view class="popup">
       <view class="popup-content">
         <view class="popup-content-title"> 授权申请 </view>
@@ -67,7 +64,6 @@ const logo = ref('');
 const PopupRef = ref<any>(null);
 
 const protocol = reactive<Protocol>({});
-
 
 /**
  * 自动登录
@@ -277,8 +273,7 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
 onMounted(() => {
   getLogo();
   getMemberEula();
-  // jsCodeLogin();
-
+  jsCodeLogin();
 });
 </script>
 
@@ -317,13 +312,13 @@ onMounted(() => {
     &.wx-auth {
       margin-bottom: 40rpx;
       color: #fff;
-      background: v-bind("initBasicsData.mainColor");
+      background: v-bind('initBasicsData.mainColor');
     }
 
     &.no-login {
-      color: v-bind("initBasicsData.mainColor");
+      color: v-bind('initBasicsData.mainColor');
       background: transparent;
-      border: 2rpx solid v-bind("initBasicsData.mainColor");
+      border: 2rpx solid v-bind('initBasicsData.mainColor');
     }
   }
 
@@ -342,7 +337,7 @@ onMounted(() => {
       color: #b7b8c4;
 
       .eula-name {
-        color: v-bind("initBasicsData.mainColor");
+        color: v-bind('initBasicsData.mainColor');
       }
     }
   }
@@ -387,7 +382,7 @@ onMounted(() => {
 
     &-reslove {
       color: #fff;
-      background-color: v-bind("initBasicsData.mainColor");
+      background-color: v-bind('initBasicsData.mainColor');
     }
   }
 }

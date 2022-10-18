@@ -1,113 +1,115 @@
 <template>
-  <view class="tab-page">
-    <!-- 首页轮播图 -->
-    <view
-      class="banner-show-background"
-      :style="{
-        marginBottom: dataList.bannerList?.length > 0 ? '54rpx' : '30rpx',
-      }"
-    >
+  <CustomPage :bottom="true">
+    <view class="tab-page">
+      <!-- 首页轮播图 -->
       <view
-        class="back-img"
+        class="banner-show-background"
         :style="{
-          background: topBgImageUrl,
+          marginBottom: dataList.bannerList?.length > 0 ? '54rpx' : '30rpx',
         }"
       >
+        <view
+          class="back-img"
+          :style="{
+            background: topBgImageUrl,
+          }"
+        >
+        </view>
+      </view>
+
+      <view class="customer-diy">
+        <block
+          v-for="(items, index) in dataList.wmMainRspVo?.panelList"
+          :key="index"
+        >
+          <!-- 提示 -->
+          <view class="bulletin" v-if="items.kind === 'NOTICE'">
+            <view class="bulletin-box">
+              <text
+                :style="{ color: mainColor }"
+                class="iconfont icon-gonggao icon-text"
+              >
+              </text>
+              <text class="bulletin-text">{{ items.param.title }}</text>
+            </view>
+            <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+          </view>
+          <!-- 广告图 -->
+          <view
+            class="ad-banner-list"
+            v-else-if="items.kind === 'BANNER' && adBannerList.length"
+          >
+            <swiper
+              style="height: 180rpx"
+              class="banner"
+              :indicator-dots="adBannerList.length > 1"
+              indicator-color
+              indicator-active-color="#FF547B"
+              autoplay
+            >
+              <block v-for="(item, index) in adBannerList" :key="index">
+                <swiper-item>
+                  <image
+                    class=""
+                    style="height: 180rpx"
+                    :src="item.image"
+                    mode="aspectFill"
+                  ></image>
+                </swiper-item>
+              </block>
+            </swiper>
+          </view>
+          <!-- 快捷导航 -->
+          <view
+            class="quick-nav"
+            v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length"
+          >
+            <swiper
+              :style="{ height: swiperVavHeight + 'rpx' }"
+              class=""
+              :indicator-dots="swiperVav.length > 1"
+              indicator-color
+              indicator-active-color="#FF547B"
+            >
+              <swiper-item v-for="(navs, index) in swiperVav" :key="index">
+                <view
+                  class="item-shop"
+                  v-for="(item, index) in navs"
+                  :key="index"
+                >
+                  <view class="item-header">
+                    <image :src="item.icoUrl" mode=""></image>
+                  </view>
+                  <view class="item-text">{{ item.title }}</view>
+                </view>
+              </swiper-item>
+            </swiper>
+          </view>
+          <!-- 富文本 -->
+          <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
+            <view
+              v-if="items.param.content"
+              v-html="richImage(items.param.content)"
+            >
+            </view>
+            <NoneData v-else> </NoneData>
+          </view>
+          <!-- 今日金价 -->
+          <TodayGoldPrice
+            v-else-if="items.kind === 'GOLD_PRICE'"
+            :showed="todayGoldPriceShowed"
+            :goldPrice="goldPrice"
+            :title="items.param.title"
+          ></TodayGoldPrice>
+          <!-- 积分商城推荐  -->
+          <ContentMall
+            v-else-if="items.kind === 'REC_GIFTS'"
+            :title="items.param.title"
+          ></ContentMall>
+        </block>
       </view>
     </view>
-
-    <view class="customer-diy">
-      <block
-        v-for="(items, index) in dataList.wmMainRspVo?.panelList"
-        :key="index"
-      >
-        <!-- 提示 -->
-        <view class="bulletin" v-if="items.kind === 'NOTICE'">
-          <view class="bulletin-box">
-            <text
-              :style="{ color: mainColor }"
-              class="iconfont icon-gonggao icon-text"
-            >
-            </text>
-            <text class="bulletin-text">{{ items.param.title }}</text>
-          </view>
-          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-        </view>
-        <!-- 广告图 -->
-        <view
-          class="ad-banner-list"
-          v-else-if="items.kind === 'BANNER' && adBannerList.length"
-        >
-          <swiper
-            style="height: 180rpx"
-            class="banner"
-            :indicator-dots="adBannerList.length > 1"
-            indicator-color
-            indicator-active-color="#FF547B"
-            autoplay
-          >
-            <block v-for="(item, index) in adBannerList" :key="index">
-              <swiper-item>
-                <image
-                  class=""
-                  style="height: 180rpx"
-                  :src="item.image"
-                  mode="aspectFill"
-                ></image>
-              </swiper-item>
-            </block>
-          </swiper>
-        </view>
-        <!-- 快捷导航 -->
-        <view
-          class="quick-nav"
-          v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length"
-        >
-          <swiper
-            :style="{ height: swiperVavHeight + 'rpx' }"
-            class=""
-            :indicator-dots="swiperVav.length > 1"
-            indicator-color
-            indicator-active-color="#FF547B"
-          >
-            <swiper-item v-for="(navs, index) in swiperVav" :key="index">
-              <view
-                class="item-shop"
-                v-for="(item, index) in navs"
-                :key="index"
-              >
-                <view class="item-header">
-                  <image :src="item.icoUrl" mode=""></image>
-                </view>
-                <view class="item-text">{{ item.title }}</view>
-              </view>
-            </swiper-item>
-          </swiper>
-        </view>
-        <!-- 富文本 -->
-        <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
-          <view
-            v-if="items.param.content"
-            v-html="richImage(items.param.content)"
-          >
-          </view>
-          <NoneData v-else> </NoneData>
-        </view>
-        <!-- 今日金价 -->
-        <TodayGoldPrice
-          v-else-if="items.kind === 'GOLD_PRICE'"
-          :showed="todayGoldPriceShowed"
-          :goldPrice="goldPrice"
-          :title="items.param.title"
-        ></TodayGoldPrice>
-        <!-- 积分商城推荐  -->
-        <ContentMall
-          v-else-if="items.kind === 'REC_GIFTS'"
-          :title="items.param.title"
-        ></ContentMall>
-      </block>
-    </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script setup lang="ts">
@@ -115,6 +117,7 @@ import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
 import { wxmemberIndex, getIndexAdBannerList } from '@/api/index';
 import { useBasicsData } from '@/store/basicsData';
+import CustomPage from '@/components/CustomPage/index.vue';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -175,14 +178,16 @@ const getPanelList = () => {
 // 获取广告
 const getAdBannerList = async () => {
   const result = await getIndexAdBannerList('');
-  const list =
-    result?.data.map((item: any) => ({
-      image: item.imgUrl,
-      title: item.title,
-      url: item.url,
-    })) || [];
-  // console.log('list', adBannerList.value);
-  adBannerList.value = list;
+  if (result?.data && result?.data.length) {
+    const list =
+      result?.data.map((item: any) => ({
+        image: item.imgUrl,
+        title: item.title,
+        url: item.url,
+      })) || [];
+    // console.log('list', adBannerList.value);
+    adBannerList.value = list;
+  }
 };
 
 // 获取今日金价

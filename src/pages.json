@@ -20,6 +20,12 @@
       }
     },
     {
+      "path": "pages/center/coupon-center/index",
+      "style": {
+        "navigationBarTitleText": "优惠券"
+      }
+    },
+    {
       "path": "pages/login/index",
       "style": {
         "navigationBarTitleText": "登录"

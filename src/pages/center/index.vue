@@ -75,14 +75,65 @@
                 <view class="item-name">{{ entry.title }}</view>
                 <uni-icons
                   v-if="item.param.showType == 'LIST'"
-                  name="arrow"
-                  size="12"
-                  color="#975D17"
+                  type="arrowright"
+                  size="14"
+                  color="#B7B8C4"
                 />
               </view>
             </block>
           </view>
         </view>
+        <view
+          class="grid-ad"
+          v-else-if="item.kind === entryType.BA && bannerList.length > 0"
+        >
+          <swiper
+            style="height: 180rpx"
+            class="banner"
+            :indicator-dots="bannerList.length > 1"
+            indicator-color
+            indicator-active-color="#FF547B"
+            autoplay
+          >
+            <block v-for="(entry, index) in bannerList" :key="index">
+              <swiper-item>
+                <image
+                  class="image"
+                  style="height: 180rpx"
+                  :src="entry.image || entry.imgUrl"
+                  mode="aspectFill"
+                ></image>
+              </swiper-item>
+            </block>
+          </swiper>
+        </view>
+        <!-- 今日金价 -->
+        <TodayGoldPrice
+          v-else-if="item.kind === entryType.GO"
+          :showed="todayGoldPriceShowed"
+          :goldPrice="goldPrice"
+          :title="item.param.title"
+        />
+        <!-- 积分商品推荐 -->
+        <ContentMall v-else-if="item.kind === entryType.RE" />
+        <!-- 我的奖品 -->
+        <MyPrizes
+          v-else-if="item.kind === entryType.MY"
+          :item="item"
+          :title="item.param.title"
+        />
+        <!-- 预约服务 -->
+        <MyService
+          v-else-if="item.kind === entryType.RES"
+          :title="item.param.title"
+          :srvProshowNum="srvProshowNum"
+        />
+        <!-- 质保单 -->
+        <MyQuality
+          v-else-if="item.kind === entryType.WA"
+          :title="item.param.title"
+          :policyListNum="policyListNum"
+        />
       </block>
     </view>
   </view>
@@ -90,14 +141,18 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, inject, watch, onMounted, reactive, Ref } from 'vue';
+import { ref, reactive, Ref } from 'vue';
 import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
 import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 // import NoneData from '../component/NoneData.vue';
-// import TodayGoldPrice from '../component/TodayGoldPrice.vue';
-// import ContentMall from '../component/ContentMall.vue';
+import TodayGoldPrice from '../component/TodayGoldPrice.vue';
+import ContentMall from '../component/ContentMall.vue';
+import MyPrizes from '../component/MyPrizes.vue';
+import MyService from '../component/MyService.vue';
+import MyQuality from '../component/MyQuality.vue';
+
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
 const entryType = {
@@ -123,7 +178,7 @@ const loginList: Ref<any> = ref([]);
 const panelList: Ref<any> = ref([]);
 const bannerList: Ref<any> = ref([]);
 const goldPrice: Ref<any> = ref([]);
-const todayGoldPriceShowed = ref('');
+const todayGoldPriceShowed = ref(false);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
@@ -192,13 +247,8 @@ const getGoldPriceByPage = async () => {
         result.push(item);
       }
     });
-    todayGoldPriceShowed.value = todayGoldPrice;
+    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
     goldPrice.value = result;
-    // this.setData({
-    //   todayGoldPriceShowed,
-    //   goldPrice: result,
-    // });
-    // console.log('goldPrice', result);
   }
 };
 </script>
@@ -378,9 +428,11 @@ page {
   z-index: 999;
   // width: 750rpx;
   padding: 30rpx;
-  padding-top: 15rpx;
-  margin-top: 15rpx;
+  padding-top: 35rpx;
+  margin-top: -15rpx;
   background: #f5f5f5;
+  box-shadow: 0px -10rpx 20rpx -10rpx rgba(0, 0, 0, 0.1);
+  border-radius: 16rpx 16rpx 0px 0px;
 }
 
 .grid-list {
@@ -388,6 +440,7 @@ page {
   overflow: hidden;
   background: #fff;
   border-radius: 16rpx;
+  margin-bottom: 30rpx;
 
   .wrapper-list {
     padding: 0rpx 30rpx;
