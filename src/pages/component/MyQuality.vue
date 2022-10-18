@@ -9,7 +9,7 @@
       </view>
       <view class="right">
         <text class="more">更多</text>
-        <van-icon name="arrow" size="12" color="#b7b8c4" />
+        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
     </view>
     <view

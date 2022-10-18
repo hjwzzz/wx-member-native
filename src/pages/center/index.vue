@@ -428,9 +428,11 @@ page {
   z-index: 999;
   // width: 750rpx;
   padding: 30rpx;
-  padding-top: 15rpx;
-  margin-top: 15rpx;
+  padding-top: 35rpx;
+  margin-top: -15rpx;
   background: #f5f5f5;
+  box-shadow: 0px -10rpx 20rpx -10rpx rgba(0, 0, 0, 0.1);
+  border-radius: 16rpx 16rpx 0px 0px;
 }
 
 .grid-list {
