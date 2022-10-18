@@ -56,7 +56,7 @@ const getMemberRecommend = async () => {
   justify-content: flex-start;
   width: 100%;
   // background-color: white;
-  height: 332rpx;
+  min-height: 300rpx;
   padding-top: 35rpx;
   padding-bottom: 10rpx;
   border-radius: 8px;
@@ -95,7 +95,7 @@ const getMemberRecommend = async () => {
 }
 
 .grid-gift {
-  width: 630rpx;
+  // width: 630rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
   // height: 432rpx;

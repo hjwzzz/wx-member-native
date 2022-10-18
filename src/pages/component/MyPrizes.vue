@@ -1,0 +1,207 @@
+<template>
+  <view class="grid-prize">
+    <view class="header">
+      <view class="left">
+        <text class="title">{{ props.title }}</text>
+      </view>
+      <!-- @click="handleSysUrl(item)" -->
+      <view class="right">
+        <text class="more">更多</text>
+        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+      </view>
+    </view>
+    <view class="content">
+      <view
+        class="content-item"
+        v-for="(prize, index) in prizeList"
+        :key="index"
+      >
+        <view class="content-header">
+          <view class="circel">
+            <image class="image" :src="imageUrl" mode="scaleToFill" />
+            <view class="badge" v-if="prize.status === 0 && texcCnt > 0">
+              {{ texcCnt > 99 ? '99+' : texcCnt }}
+            </view>
+            <view class="badge" v-else-if="prize.status === 1 && notGetCnt > 0">
+              {{ notGetCnt > 99 ? '99+' : notGetCnt }}
+            </view>
+          </view>
+          <view
+            class="icon iconfont"
+            :class="prize.img"
+            :style="{ color: mainColor }"
+          ></view>
+        </view>
+        <view class="content-footer">{{ prize.name }}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { staticUrl } from '@/utils/config';
+import { useBasicsData } from '@/store/basicsData';
+import { computed } from 'vue';
+
+const imageUrl = `${staticUrl}img/circle.png`;
+interface Props {
+  title?: string;
+  item?: any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  title: '我的奖品',
+  item: () => ({}),
+});
+
+const texcCnt = computed(() => props.item.param.texcCnt);
+const notGetCnt = computed(() => props.item.param.notGetCnt);
+const initBasicsData = useBasicsData();
+const mainColor = initBasicsData.mainColor;
+const prizeList = [
+  {
+    id: Math.random(),
+    name: '待兑换',
+    img: 'icon-daiduihuan',
+    status: 0,
+  },
+  {
+    id: Math.random(),
+    name: '待领取',
+    img: 'icon-dailingqu',
+    status: 1,
+  },
+  {
+    id: Math.random(),
+    name: '已领取',
+    img: 'icon-yilingqu',
+    status: 2,
+  },
+  {
+    id: Math.random(),
+    name: '已失效',
+    img: 'icon-yishixiao',
+    status: 3,
+  },
+];
+</script>
+
+<style lang="scss" scoped>
+.grid-prize {
+  height: 240rpx;
+  padding: 30rpx;
+  margin: 30rpx 0rpx;
+  background: #fff;
+  border-radius: 16rpx;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+      .title {
+        width: 160rpx;
+        height: 44rpx;
+        font-size: 32rpx;
+        font-weight: 800;
+        line-height: 44rpx;
+        color: #323338;
+      }
+
+      .number {
+        width: 36rpx;
+        height: 40rpx;
+        margin-left: 4rpx;
+        font-size: 28rpx;
+        font-weight: 800;
+        line-height: 40rpx;
+        color: #ff547b;
+      }
+    }
+
+    .right {
+      .more {
+        width: 48rpx;
+        height: 34rpx;
+        margin-right: 2rpx;
+        font-size: 24rpx;
+        font-weight: 400;
+        line-height: 34rpx;
+        color: #b7b8c4;
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40rpx;
+
+    .content-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      .content-header {
+        position: relative;
+        width: 48rpx;
+        height: 48rpx;
+        text-align: center;
+
+        .circel {
+          position: relative;
+          width: 48rpx;
+          height: 48rpx;
+
+          /* overflow: hidden; */
+          color: red;
+
+          .badge {
+            position: absolute;
+            top: -16rpx;
+            left: 30rpx;
+            box-sizing: border-box;
+
+            /* display: grid; */
+
+            /* place-content: center; */
+
+            /* place-items: center; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32rpx;
+            height: 32rpx;
+            padding: 0 10rpx;
+            font-size: 24rpx;
+            color: #fff;
+            background-color: #ff4c4c;
+            border-radius: 16rpx;
+          }
+
+          .image {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .icon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          font-size: 48rpx;
+        }
+      }
+
+      .content-footer {
+        height: 24rpx;
+        margin-top: 20rpx;
+        font-size: 24rpx;
+        font-weight: 400;
+        line-height: 24rpx;
+        color: #333;
+      }
+    }
+  }
+}
+</style>

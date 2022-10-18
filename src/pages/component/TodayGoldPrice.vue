@@ -2,7 +2,7 @@
   <view class="grid-price">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title }}</text>
+        <text class="title">{{ props.title || '今日金价' }}</text>
       </view>
       <view class="right">
         <text class="more">更多</text>
@@ -29,7 +29,7 @@
                   <view class="swiper-title left">
                     {{ price.met || '' }}{{ price.metCtn || '' }}
                   </view>
-                  <text v-if="price.brandName" class="swiper-line" />
+                  <view v-if="price.brandName" class="swiper-line" />
                   <view class="swiper-title rigth">
                     {{ price.brandName || '' }}
                   </view>
@@ -50,7 +50,7 @@
         </swiper-item>
       </swiper>
     </view>
-    <NoneData wx:else></NoneData>
+    <NoneData v-else></NoneData>
   </view>
 </template>
 
@@ -76,8 +76,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style lang="scss" scoped>
 .grid-price {
-  width: 630rpx;
+  // width: 630rpx;
   padding: 30rpx;
+  // margin-top: 30rpx;
   margin-bottom: 30rpx;
   background: #fff;
   border-radius: 16rpx;
@@ -131,6 +132,20 @@ const props = withDefaults(defineProps<Props>(), {
       .rigth {
         text-align: left;
       }
+    }
+    .swiper-title {
+      color: #323338;
+      font-size: 28rpx;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .swiper-line {
+      display: inline-block;
+      width: 2rpx;
+      height: 24rpx;
+      background: #b7b8c4;
+      margin: 0 12rpx;
     }
 
     .detail-header {

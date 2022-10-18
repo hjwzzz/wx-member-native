@@ -95,7 +95,7 @@ const asyncRequest = (params: any) => new Promise<[null, any]>((resolve, reject)
 });
 
 // 请求
-const request = async(
+const request = async (
   url: any,
   args: any = '',
   method: any = 'POST',

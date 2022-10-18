@@ -175,14 +175,16 @@ const getPanelList = () => {
 // 获取广告
 const getAdBannerList = async () => {
   const result = await getIndexAdBannerList('');
-  const list =
-    result?.data.map((item: any) => ({
-      image: item.imgUrl,
-      title: item.title,
-      url: item.url,
-    })) || [];
-  // console.log('list', adBannerList.value);
-  adBannerList.value = list;
+  if (result?.data && result?.data.length) {
+    const list =
+      result?.data.map((item: any) => ({
+        image: item.imgUrl,
+        title: item.title,
+        url: item.url,
+      })) || [];
+    // console.log('list', adBannerList.value);
+    adBannerList.value = list;
+  }
 };
 
 // 获取今日金价
