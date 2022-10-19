@@ -1,98 +1,113 @@
 <template>
-  <view>
-    <view v-if="list.length > 0">
-      <view class="item item-page">
-        <view
-          class="list-item"
-          v-for="(item, index) in list"
-          :key="index"
-          @click="onChecked(item)"
+  <CustomPage bottom>
+    <view class="storesList">
+      <view class="search-bar-bg">
+        <uni-search-bar
+          class="search-bar"
+          :focus="true"
+          radius="100"
+          placeholder="搜索"
+          bgColor="#F5F5F5"
+          cancelButton="none"
+        />
+        <view class="sure-btn" :style="`color:${initBasicsData.mainColor};`"
+          >搜索</view
         >
-          <view class="top">
-            <view
-              class="left"
-              style="
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-              "
-            >
-              {{ item.storeName }}
-            </view>
-            <view class="right">
-              <text v-if="item.range">
-                <text
-                  :style="{ color: mainColor }"
-                  v-if="item.range * 1000 >= 1000"
-                  >{{ item.range }}km</text
-                >
-                <text :style="{ color: mainColor }" v-else
-                  >{{ item.range * 1000 }}m</text
-                >
-              </text>
-            </view>
-          </view>
-          <view class="item-three">
-            <view class="left">
-              <image src="@/static/prize/store/address.png" mode=""></image>
-              <text style="font-size: 24rpx" class="address">
-                {{
-                  item.province + item.city + item.district + item.address ||
-                  '--'
-                }}
-              </text>
-            </view>
-            <view class="right">
+      </view>
+
+      <view v-if="list.length > 0">
+        <view class="item item-page">
+          <view
+            class="list-item"
+            v-for="(item, index) in list"
+            :key="index"
+            @click="onChecked(item)"
+          >
+            <view class="top">
               <view
-                :class="[
-                  'radio_box',
-                  item.distId === idword ? 'radio_box_none' : '',
-                ]"
-                :style="{
-                  backgroundColor: item.distId === idword ? mainColor : '',
-                }"
+                class="left"
+                style="
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                "
               >
-                <!--  top="-4" -->
-                <u-icon
-                  style="font-size: 24rpx"
-                  color="#ffffff"
-                  v-if="item.distId === idword"
-                  name="checkbox-mark"
-                ></u-icon>
+                {{ item.storeName }}
+              </view>
+              <view class="right">
+                <text v-if="item.range">
+                  <text
+                    :style="{ color: mainColor }"
+                    v-if="item.range * 1000 >= 1000"
+                    >{{ item.range }}km</text
+                  >
+                  <text :style="{ color: mainColor }" v-else
+                    >{{ item.range * 1000 }}m</text
+                  >
+                </text>
               </view>
             </view>
-          </view>
-          <view class="item-four">
-            <image src="/static/phone.png" mode=""></image>
-            <text style="font-size: 24rpx" class="address">
-              {{ item.tel || '--' }}
-            </text>
+            <view class="item-three">
+              <view class="left">
+                <image
+                  :src="`${imageUrl}/prize/store/address.png`"
+                  mode=""
+                ></image>
+                <text style="font-size: 24rpx" class="address">
+                  {{
+                    item.province + item.city + item.district + item.address ||
+                    '--'
+                  }}
+                </text>
+              </view>
+              <view class="right">
+                <view
+                  :class="[
+                    'radio_box',
+                    item.distId === idword ? 'radio_box_none' : '',
+                  ]"
+                  :style="{
+                    backgroundColor: item.distId === idword ? mainColor : '',
+                  }"
+                >
+                  <!--  top="-4" -->
+                  <u-icon
+                    style="font-size: 24rpx"
+                    color="#ffffff"
+                    v-if="item.distId === idword"
+                    name="checkbox-mark"
+                  ></u-icon>
+                </view>
+              </view>
+            </view>
+            <view class="item-four">
+              <image :src="`${imageUrl}/prize/store/phone.png`" mode=""></image>
+              <text style="font-size: 24rpx" class="address">
+                {{ item.tel || '--' }}
+              </text>
+            </view>
           </view>
         </view>
-      </view>
-      <view class="footer">
-        <text>技术支持：金千枝数智云</text>
-      </view>
-      <view class="button">
-        <button
-          type="error"
-          :style="{ backgroundColor: mainColor }"
-          @click="toprize"
-        >
-          确认
-        </button>
+        <view class="button">
+          <button :style="{ backgroundColor: mainColor }" @click="toprize">
+            确认
+          </button>
+        </view>
       </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script setup lang="ts">
 import { updateNearStore } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { reactive, ref } from 'vue';
+import { staticUrl } from '@/utils/config';
+import { useBasicsData } from '@/store/basicsData';
+const initBasicsData = useBasicsData();
+const imageUrl = staticUrl;
 
 const idword = '';
-const mainColor = '';
 
 const props = defineProps<{
   id: string;
@@ -144,6 +159,8 @@ const updateNearStorePost = async () => {
   };
   const { code, data } = await updateNearStore(body);
   if (code === 0) list.value = data;
+  console.log(list.value);
+  console.log(data);
 };
 const location = () => {
   uni.getLocation({
@@ -168,22 +185,23 @@ const location = () => {
 onLoad(() => {
   location();
 });
+
+const toprize = () => [];
 </script>
 
 <style scoped lang="scss">
-.item-page {
-  min-height: calc(100vh - 220rpx - constant(safe-area-inset-bottom));
-  min-height: calc(100vh - 220rpx - env(safe-area-inset-bottom));
-}
-.footer {
-  // margin-bottom: 185rpx;
-  font-size: 24rpx;
-  font-weight: 400;
-  color: #d8d9e0;
+.search-bar-bg {
+  background-color: #fff;
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  margin-top: 40rpx;
+  align-items: center;
+  .search-bar {
+    flex: 1;
+  }
+  .sure-btn {
+    margin-left: 10rpx;
+    width: 80rpx;
+    font-size: 28rpx;
+  }
 }
 .radio_box {
   border: 1px solid #cccccc;
@@ -205,6 +223,7 @@ onLoad(() => {
   bottom: 0;
   left: 0;
   width: 100%;
+  box-sizing: border-box;
   // height: 100rpx;
   background-color: #ffffff;
 
@@ -253,8 +272,7 @@ onLoad(() => {
   }
 
   .item {
-    padding: 100rpx 30rpx 0rpx 30rpx;
-    padding-bottom: 100px;
+    padding: 0 30rpx;
 
     .list-item {
       padding: 30rpx;

@@ -1,26 +1,27 @@
 <template>
-  <view class="toreceive">
-    <!-- 状态 -->
-    <view
-      class="receive"
-      v-if="remindObj[detail.recvManner?.code]?.[
+  <CustomPage bottom>
+    <view class="toreceive">
+      <!-- 状态 -->
+      <view
+        class="receive"
+        v-if="remindObj[detail.recvManner?.code]?.[
             statusName as keyof typeof remindObj[1]
           ]"
-    >
-      <view class="left">
-        <image class="img" src="@/static/prize/dailingqu.png" mode="" />
+      >
+        <view class="left">
+          <image class="img" :src="`${imageUrl}prize/dailingqu.png`" mode="" />
+        </view>
+        <view class="right">
+          <view class="title">{{ statusName }}</view>
+          <view class="text">{{
+            remindObj[detail.recvManner.code][
+              statusName as keyof typeof remindObj[1]
+            ]
+          }}</view>
+        </view>
       </view>
-      <view class="right">
-        <view class="title">{{ statusName }}</view>
-        <view class="text">{{
-          remindObj[detail.recvManner.code][
-            statusName as keyof typeof remindObj[1]
-          ]
-        }}</view>
-      </view>
-    </view>
-    <!-- 核销码 -->
-    <!-- <view class="Qrode">
+      <!-- 核销码 -->
+      <!-- <view class="Qrode">
       <view class="verification"> 核销码：{{ detail.vcode }} </view>
       <view class="erweima">
         <tkiQrcode val="2222"></tkiQrcode>
@@ -31,16 +32,16 @@
       </view>
       <view class="guoqi"> 有效期至：{{ detail.cutExpireTime }} </view>
     </view> -->
-    <!-- 领取成功状态 -->
-    <view class="Qrode" v-if="statusName === '已领取'">
-      <view class="erweima">
-        <image src="@/static/prize/lingquchenggong.png" mode="" />
+      <!-- 领取成功状态 -->
+      <view class="Qrode" v-if="statusName === '已领取'">
+        <view class="erweima">
+          <image :src="`${imageUrl}prize/lingquchenggong.png`" mode="" />
+        </view>
+        <view class="successful"> 奖品领取成功 </view>
+        <view class="guoqi"> 领取时间：{{ detail.recvTime }} </view>
       </view>
-      <view class="successful"> 奖品领取成功 </view>
-      <view class="guoqi"> 领取时间：{{ detail.recvTime }} </view>
-    </view>
-    <!-- 收件人信息 -->
-    <!-- <view
+      <!-- 收件人信息 -->
+      <!-- <view
       v-if="
         detail.receiver !== null ||
         detail.phone !== null ||
@@ -84,125 +85,126 @@
       </view>
     </view> -->
 
-    <Goods :item="detail" :status="false">
-      <view class="addTime">
-        兑换有效期：{{ detail.cutValidTime }}至{{ detail.cutExpireTime }}
-      </view>
-    </Goods>
-    <!-- 兑奖方式 -->
-    <Exchange v-if="statusName === '待兑换'"></Exchange>
-    <!-- 门店信息 -->
-    <view
-      class="information"
-      v-if="
-        detail.distName !== null ||
-        detail.disCity !== null ||
-        detail.disAddress !== null
-      "
-    >
-      <view class="title"> 兑换信息 </view>
-      <view class="address">
-        <view class="a1">
-          <view class="left"> 领取门店 </view>
-          <view class="right dist-name">
-            <text>{{ detail.distName || '--' }}</text>
-          </view>
+      <Goods :item="detail" :status="false">
+        <view class="addTime">
+          兑换有效期：{{ detail.cutValidTime }}至{{ detail.cutExpireTime }}
         </view>
-        <view class="a1">
-          <view class="left"> 门店地址 </view>
-          <view class="right dist-name1" style="text-align: justify">
-            <text>
-              {{
-                detail.disProvince +
-                  detail.disCity +
-                  detail.disDistrict +
-                  detail.disAddress || '--'
-              }}
-            </text>
-          </view>
-        </view>
-        <view class="a1">
-          <view class="left"> 门店电话 </view>
-          <view class="right">
-            {{ detail.tel || '--' }}
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- 领取人信息 -->
-    <view
-      class="foohead"
-      v-if="
-        detail.receiver !== null ||
-        detail.phone !== null ||
-        detail.bizTime !== null
-      "
-    >
-      <view class="a1">
-        <view class="left" style="width: 130rpx"> 领取人 </view>
-        <view class="right" style="width: 470rpx">
-          {{ detail.receiver || '--' }}
-        </view>
-      </view>
-      <view class="a1">
-        <view class="left" style="width: 130rpx"> 手机号 </view>
-        <view class="right">
-          {{ detail.phone || '--' }}
-        </view>
-      </view>
-      <view class="a1">
-        <view class="left" style="width: 130rpx"> 兑换时间 </view>
-        <view class="right">
-          {{ detail.bizTime || '--' }}
-        </view>
-      </view>
-      <view class="a1">
-        <view class="left" style="width: 130rpx"> 流水号 </view>
-        <view class="right">
-          {{ detail.recvBillNo || '--' }}
-        </view>
-      </view>
-    </view>
-    <!-- 发货信息 -->
-    <view
-      v-if="['已领取', '待领取', '已发货'].includes(statusName)"
-      class="foohead"
-      style="border-radius: 12rpx"
-    >
-      <view class="title ttt" style="margin-bottom: 30rpx"> 发货信息 </view>
-      <view class="a1">
-        <view class="left"> 快递单号 </view>
-        <view class="right">
-          {{ detail.expNo || '--' }}
-        </view>
-      </view>
-      <view class="a1">
-        <view class="left"> 快递公司 </view>
-        <view class="right">
-          {{ detail.express || '--' }}
-        </view>
-      </view>
-      <view class="a1">
-        <view class="left"> 发货时间 </view>
-        <view class="right">
-          {{ detail.shipTime || '--' }}
-        </view>
-      </view>
-    </view>
-
-    <view
-      v-if="true || statusName === '待领取' || statusName === '已发货'"
-      class="button"
-    >
-      <button
-        :style="{ backgroundColor: basicsData.mainColor }"
-        type="button"
-        @click="getPrize"
+      </Goods>
+      <!-- 兑奖方式 -->
+      <Exchange :item="detail" v-if="statusName === '待兑换'"></Exchange>
+      <!-- 门店信息 -->
+      <view
+        class="information"
+        v-if="
+          detail.distName !== null ||
+          detail.disCity !== null ||
+          detail.disAddress !== null
+        "
       >
-        确认领取
-      </button>
+        <view class="title"> 兑换信息 </view>
+        <view class="address">
+          <view class="a1">
+            <view class="left"> 领取门店 </view>
+            <view class="right dist-name">
+              <text>{{ detail.distName || '--' }}</text>
+            </view>
+          </view>
+          <view class="a1">
+            <view class="left"> 门店地址 </view>
+            <view class="right dist-name1" style="text-align: justify">
+              <text>
+                {{
+                  detail.disProvince +
+                    detail.disCity +
+                    detail.disDistrict +
+                    detail.disAddress || '--'
+                }}
+              </text>
+            </view>
+          </view>
+          <view class="a1">
+            <view class="left"> 门店电话 </view>
+            <view class="right">
+              {{ detail.tel || '--' }}
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 领取人信息 -->
+      <view
+        class="foohead"
+        v-if="
+          detail.receiver !== null ||
+          detail.phone !== null ||
+          detail.bizTime !== null
+        "
+      >
+        <view class="a1">
+          <view class="left" style="width: 130rpx"> 领取人 </view>
+          <view class="right" style="width: 470rpx">
+            {{ detail.receiver || '--' }}
+          </view>
+        </view>
+        <view class="a1">
+          <view class="left" style="width: 130rpx"> 手机号 </view>
+          <view class="right">
+            {{ detail.phone || '--' }}
+          </view>
+        </view>
+        <view class="a1">
+          <view class="left" style="width: 130rpx"> 兑换时间 </view>
+          <view class="right">
+            {{ detail.bizTime || '--' }}
+          </view>
+        </view>
+        <view class="a1">
+          <view class="left" style="width: 130rpx"> 流水号 </view>
+          <view class="right">
+            {{ detail.recvBillNo || '--' }}
+          </view>
+        </view>
+      </view>
+      <!-- 发货信息 -->
+      <view
+        v-if="['已领取', '待领取', '已发货'].includes(statusName)"
+        class="foohead"
+        style="border-radius: 12rpx"
+      >
+        <view class="title ttt" style="margin-bottom: 30rpx"> 发货信息 </view>
+        <view class="a1">
+          <view class="left"> 快递单号 </view>
+          <view class="right">
+            {{ detail.expNo || '--' }}
+          </view>
+        </view>
+        <view class="a1">
+          <view class="left"> 快递公司 </view>
+          <view class="right">
+            {{ detail.express || '--' }}
+          </view>
+        </view>
+        <view class="a1">
+          <view class="left"> 发货时间 </view>
+          <view class="right">
+            {{ detail.shipTime || '--' }}
+          </view>
+        </view>
+      </view>
+
+      <view
+        v-if="true || statusName === '待领取' || statusName === '已发货'"
+        class="button"
+      >
+        <button
+          :style="{ backgroundColor: basicsData.mainColor }"
+          type="button"
+          @click="getPrize"
+        >
+          确认领取
+        </button>
+      </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script setup lang="ts">
@@ -210,11 +212,12 @@ import { queryStatus, updateReceiveSend } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, toRef } from 'vue';
 import Goods from './component/Goods.vue';
-// import tkiQrcode from '../../../node_modules/tki-qrcode/components/tki-qrcode/tki-qrcode.vue';
 import { useBasicsData } from '@/store/basicsData';
 import Exchange from './component/Exchange.vue';
-const basicsData = useBasicsData();
+import { staticUrl } from '@/utils/config';
+const imageUrl = staticUrl;
 
+const basicsData = useBasicsData();
 const props = defineProps<{
   name: string;
   id: string;

@@ -1,44 +1,47 @@
 <template>
-  <view class="top">
-    <uni-segmented-control
-      :current="current"
-      :values="showItems"
-      @clickItem="changeTab"
-      styleType="text"
-      :activeColor="basicsData.mainColor"
-    ></uni-segmented-control>
-    <view class="content" v-for="item in list" :key="item.id">
-      <goods :item="item" status>
-        <view class="bottom">
-          <!-- 待兑换，显示兑换日期 -->
-          <view class="b-texc">
-            {{ dateLableString(item) }}
+  <CustomPage>
+    <view class="top">
+      <uni-segmented-control
+        :current="current"
+        :values="showItems"
+        @clickItem="changeTab"
+        styleType="text"
+        :activeColor="basicsData.mainColor"
+      ></uni-segmented-control>
+      <view class="content" v-for="item in list" :key="item.id">
+        <goods :item="item" status>
+          <view class="bottom">
+            <!-- 待兑换，显示兑换日期 -->
+            <view class="b-texc">
+              {{ dateLableString(item) }}
+            </view>
+            <!-- 确认领取按钮 -->
+            <view
+              v-if="
+                (item.status.name == '待领取' ||
+                  item.status.name == '已发货') &&
+                ['1', '2'].includes(item.recvManner.code) &&
+                item.param.allowGet === 'Y'
+              "
+              class="b1 button"
+              :style="{ backgroundColor: basicsData.mainColor }"
+              @click="determine(item)"
+            >
+              确认领取
+            </view>
+            <!-- 详情按钮 -->
+            <view
+              :class="[{ disabledBg: current === 1 && item.tommorry }, 'b2']"
+              :style="`color:${basicsData.mainColor}`"
+              @click="showDetail(item)"
+            >
+              {{ current === 0 ? '兑换' : '查看' }}
+            </view>
           </view>
-          <!-- 确认领取按钮 -->
-          <view
-            v-if="
-              (item.status.name == '待领取' || item.status.name == '已发货') &&
-              ['1', '2'].includes(item.recvManner.code) &&
-              item.param.allowGet === 'Y'
-            "
-            class="b1 button"
-            :style="{ backgroundColor: basicsData.mainColor }"
-            @click="determine(item)"
-          >
-            确认领取
-          </view>
-          <!-- 详情按钮 -->
-          <view
-            :class="[{ disabledBg: current === 1 && item.tommorry }, 'b2']"
-            :style="`color:${basicsData.mainColor}`"
-            @click="showDetail(item)"
-          >
-            {{ current === 0 ? '兑换' : '查看' }}
-          </view>
-        </view>
-      </goods>
+        </goods>
+      </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script setup lang="ts">
