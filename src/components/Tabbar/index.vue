@@ -72,9 +72,9 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
-  console.log('selected.value', selected.value);
-  console.log('index', index);
-  console.log('item', item);
+  // console.log('selected.value', selected.value);
+  // console.log('index', index);
+  // console.log('item', item);
 
   const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
   if (switchTabUrl.includes(item.miniUrl)) {
@@ -109,8 +109,8 @@ const initTab = (list: any) => {
   position: fixed;
   bottom: 0;
   left: 0;
-  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
-  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
   background: rgba(255, 255, 255, 1);
 }
 
@@ -121,8 +121,8 @@ const initTab = (list: any) => {
   position: fixed;
   left: 0;
   bottom: 0;
-  padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
-  padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .tarbar-list-ul {
@@ -159,10 +159,10 @@ const initTab = (list: any) => {
   justify-content: center;
 }
 
-.tarbar-list-li-icon image {
-  width: 36rpx;
-  height: 36rpx;
-}
+// .tarbar-list-li-icon .image {
+//   width: 36rpx;
+//   height: 36rpx;
+// }
 
 .tarbar-list-li-name {
   width: 100%;
