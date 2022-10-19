@@ -20,7 +20,6 @@ const props = withDefaults(defineProps<Props>(), { bottom: false });
   font-size: 24rpx;
   color: #d8d9e0;
   text-align: center;
-  background: #f5f5f5;
 }
 
 .page-bottom1 {
