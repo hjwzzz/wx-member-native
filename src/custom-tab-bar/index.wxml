@@ -1,12 +1,2 @@
 <!-- index.wxml -->
-<view class="tab-index">
-  <!-- inactive-color="{{actionColor}}"  -->
-  <van-tabbar active="{{ active }}" bind:change="onChange" active-color="{{actionColor}}">
-    <van-tabbar-item wx:for="{{bottomNavList}}" wx:for-item="item" wx:for-index="index" wx:key="index">
-      <text slot="icon" class="iconfont {{item.icoUrl}}">
-      </text>
-      <text slot="icon-active" class="iconfont {{item.icoUrl}}"></text>
-      {{item.title}}
-    </van-tabbar-item>
-  </van-tabbar>
-</view>
+<view></view>

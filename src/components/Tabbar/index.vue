@@ -72,10 +72,6 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
-  // console.log('selected.value', selected.value);
-  // console.log('index', index);
-  // console.log('item', item);
-
   const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
   if (switchTabUrl.includes(item.miniUrl)) {
     uni.switchTab({ url: item.miniUrl });

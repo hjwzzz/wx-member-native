@@ -50,7 +50,22 @@
         "navigationBarTitleText": "选择门店",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/member-equity/index",
+      "style": {
+        "navigationBarTitleText": "会员权益"
+      }
+    },
+    {
+      "path": "pages/member-equity/growth-details",
+      "style": {
+        "navigationBarTitleText": "我的成长值"
+      }
     }
+
+    
+    
   ],
   "tabBar": {
     "custom": true,

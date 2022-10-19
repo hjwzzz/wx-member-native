@@ -44,7 +44,11 @@
           </view>
         </view>
         <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
-        <view class="boot-equity" v-if="initBasicsData.checkLogin">
+        <view
+          class="boot-equity"
+          v-if="initBasicsData.checkLogin"
+          @click="handleFixedSysUrl('benefits')"
+        >
           <view class="left">
             <view class="icon">
               <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
@@ -139,7 +143,6 @@
       </view>
     </view>
   </CustomPage>
-
   <Tabbar> </Tabbar>
 </template>
 
@@ -256,6 +259,10 @@ const getGoldPriceByPage = async () => {
     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
     goldPrice.value = result;
   }
+};
+
+const handleFixedSysUrl = () => {
+  uni.navigateTo({ url: '/pages/member-equity/index' });
 };
 </script>
 
