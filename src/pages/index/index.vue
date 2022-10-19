@@ -110,6 +110,8 @@
       </view>
     </view>
   </CustomPage>
+
+  <Tabbar :current="0"> </Tabbar>
 </template>
 
 <script setup lang="ts">
@@ -121,6 +123,8 @@ import CustomPage from '@/components/CustomPage/index.vue';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
+// import CustomTabBar from '../component/CustomTabBar.vue';
+import Tabbar from '@/components/Tabbar/index.vue';
 
 const initBasicsData = useBasicsData();
 const mainColor = initBasicsData.mainColor;
@@ -234,11 +238,8 @@ const topBgImageUrl = computed(() => {
 
 <style lang="scss" scoped>
 .tab-page {
-  padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
-}
-
-.tab-page {
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .banner-show-background {
