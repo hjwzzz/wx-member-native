@@ -52,6 +52,7 @@
   "mp-weixin": {
     "appid": "wxd850ff0cc3cc960c",
     "setting": {
+      "ignoreDevUnusedFiles" : false,
       "urlCheck": false
     },
     "requiredPrivateInfos": ["getLocation"],

@@ -139,7 +139,6 @@
       </view>
     </view>
   </CustomPage>
-
   <Tabbar> </Tabbar>
 </template>
 
