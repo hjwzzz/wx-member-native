@@ -110,8 +110,7 @@
       </view>
     </view>
   </CustomPage>
-
-  <Tabbar :current="0"> </Tabbar>
+  <Tabbar> </Tabbar>
 </template>
 
 <script setup lang="ts">
@@ -123,7 +122,6 @@ import CustomPage from '@/components/CustomPage/index.vue';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
-// import CustomTabBar from '../component/CustomTabBar.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
 
 const initBasicsData = useBasicsData();

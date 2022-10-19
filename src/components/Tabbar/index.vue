@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 
 const initBasicsData = useBasicsData();
@@ -53,7 +53,11 @@ const props = withDefaults(defineProps<Props>(), {
   tabBar: () => ({}),
 });
 
-const tabBarList = computed(() => initBasicsData.bottomNavList);
+const tabBarList = computed(() => {
+  const list = initBasicsData.bottomNavList;
+  initTab(list);
+  return list;
+});
 const tabBarStyle = reactive({
   color: '#323338',
   selectedColor: computed(() => initBasicsData.mainColor),
@@ -62,13 +66,38 @@ const tabBarStyle = reactive({
   position: 'bottom',
 });
 
-const emits = defineEmits(['change']);
+// const emits = defineEmits(['change']);
 const selected = ref(props.current);
 const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
-  emits('change', index, item);
+  console.log('selected.value', selected.value);
+  console.log('index', index);
+  console.log('item', item);
+
+  const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
+  if (switchTabUrl.includes(item.miniUrl)) {
+    uni.switchTab({ url: item.miniUrl });
+  } else {
+    uni.navigateTo({ url: item.miniUrl });
+  }
+  // emits('change', index, item);
+};
+
+onMounted(() => {
+  initTab(initBasicsData.bottomNavList);
+});
+
+const initTab = (list: any) => {
+  const page: any = getCurrentPages()
+    .pop();
+  const route = page ? page.route.split('?')[0] : '';
+  const selectUrl = `/${route}`;
+  const active = list.findIndex(({ miniUrl }: any) => miniUrl === selectUrl);
+  if (active) {
+    selected.value = active;
+  }
 };
 </script>
 
@@ -99,10 +128,18 @@ const setSelected = (index: number, item: any) => {
 .tarbar-list-ul {
   width: 100%;
   height: 100%;
-  padding: 20rpx 60rpx 10rpx;
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
+}
+
+.tarbar-list-ul {
+  padding: 6rpx 0rpx 10rpx 0rpx;
+  .tarbar-list-li {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+  }
 }
 
 .tarbar-list-li {
