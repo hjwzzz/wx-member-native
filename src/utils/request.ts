@@ -132,7 +132,9 @@ const request = async (
       header: {
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
-        token: Storage.getToken(),
+        token:
+          Storage.getToken() ||
+          'emp:wx:login:tk:20BDD6F1-794B-C1CC-3E55-07FCC9D4590D:fdedb34b-996a-4ac3-8bd5-58c850c01a77',
         sessionKey: '',
         refreshToken: '',
         epid,

@@ -44,9 +44,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { queryFront } from '@/api/my-prize';
-import goods from './component/goods.vue';
+import goods from './component/Goods.vue';
 
 const basicsData = useBasicsData();
 const items = reactive([
@@ -106,6 +106,11 @@ const getData = async (curPage = 1) => {
 };
 onLoad(() => {
   getData();
+  // 奖品详情修改后，切换tab栏
+  uni.$on('changeTab', changeTab);
+});
+onUnload(() => {
+  uni.$off('changeTab');
 });
 // 截至日期显示内容
 const dateLableString = (item: prizeType) => {
@@ -133,7 +138,7 @@ const showDetail = (item: prizeType) => {
   uni.navigateTo({ url: `/pages/my-prize/prize-detail?name=${item.status.name}&id=${item.id}` });
 };
 const changeTab = (e: any) => {
-  current.value = e.currentIndex;
+  current.value = e?.currentIndex ?? e;
   list.value = [];
   getData();
 };

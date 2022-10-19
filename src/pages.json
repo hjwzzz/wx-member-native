@@ -43,6 +43,13 @@
         "navigationBarTitleText": "我的奖品",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/my-prize/store-list",
+      "style": {
+        "navigationBarTitleText": "选择门店",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "globalStyle": {
@@ -50,5 +57,18 @@
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#FFF",
     "backgroundColor": "#F5F5F5"
-  }
+  },
+  "subPackages": [
+    {
+      "root": "points-mall-pages",
+      "pages": [
+        {
+          "path": "address/address-list",
+          "style": {
+            "navigationBarTitleText": "收货地址"
+          }
+        }
+      ]
+    }
+  ]
 }

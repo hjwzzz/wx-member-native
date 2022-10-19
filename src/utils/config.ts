@@ -1,5 +1,5 @@
-// const baseUrl = 'https://backend.dev.jqzplat.com';
-const baseUrl = 'https://backend.fat.jqzplat.com';
+const baseUrl = 'https://backend.dev.jqzplat.com';
+// const baseUrl = 'https://backend.fat.jqzplat.com';
 // const baseUrl =  "https://backend.uat.jqzplat.com";
 // const baseUrl =  "https://backend.jqzplat.com";
 
