@@ -1,142 +1,146 @@
 <template>
-  <view class="user-center">
-    <view class="user">
-      <view class="login-info">
-        <view class="user-info">
-          <view class="info-left">
-            <view class="info-img">
-              <image
-                v-if="initBasicsData.checkLogin"
-                :src="userInfo.avatarUrl"
-                mode="scaleToFill"
-              />
-              <image
-                v-else
-                class="avatar"
-                :src="imageUrl + 'img/person.png'"
-                mode="scaleToFill"
-              />
-            </view>
-            <view v-if="initBasicsData.checkLogin" class="use-info">
-              <text>{{ userInfo.nickName || '' }}</text>
-            </view>
-            <view v-else class="info-btn" @click="login">请先登录</view>
-          </view>
-          <view class="info-right">
-            <image
-              class="setting"
-              :src="imageUrl + 'img/setInfo.png'"
-              mode="scaleToFill"
-            />
-          </view>
-        </view>
-        <!--  -->
-        <view class="login-list">
-          <block v-for="(item, index) in loginList" :key="index">
-            <view class="login-item" v-if="item.showed">
-              <view class="item-num">{{
-                item.accountValue !== ' ' ? item.accountValue : 0
-              }}</view>
-              <view class="item-name">{{ item.title }}</view>
-            </view>
-          </block>
-        </view>
-      </view>
-      <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
-      <view class="boot-equity" v-if="initBasicsData.checkLogin">
-        <view class="left">
-          <view class="icon">
-            <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
-          </view>
-          <view class="text">{{ userInfo.curLevelName || '' }}</view>
-        </view>
-        <view class="boot-equity-right">
-          <text class="text">查看权益</text>
-          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-        </view>
-      </view>
-    </view>
-    <view class="reveal-grid">
-      <block v-for="(item, index) in panelList" :key="index">
-        <view class="grid-list" v-if="item.kind === entryType.EN">
-          <!-- GONGGE  LIST -->
-          <view
-            :class="
-              item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
-            "
-            v-if="item.param.showType"
-          >
-            <block v-for="(entry, index) in item.param.linkList" :key="index">
-              <!-- @click="handleEntryUrl(entry)" -->
-              <view class="list-item" v-if="entry.showed">
-                <view class="item-icon">
-                  <image :src="entry.icoUrl" mode="aspectFit" />
-                </view>
-                <view class="item-name">{{ entry.title }}</view>
-                <uni-icons
-                  v-if="item.param.showType == 'LIST'"
-                  type="arrowright"
-                  size="14"
-                  color="#B7B8C4"
+  <CustomPage :bottom="true">
+    <view class="user-center">
+      <view class="user">
+        <view class="login-info">
+          <view class="user-info">
+            <view class="info-left">
+              <view class="info-img">
+                <image
+                  v-if="initBasicsData.checkLogin"
+                  :src="userInfo.avatarUrl"
+                  mode="scaleToFill"
                 />
+                <image
+                  v-else
+                  class="avatar"
+                  :src="imageUrl + 'img/person.png'"
+                  mode="scaleToFill"
+                />
+              </view>
+              <view v-if="initBasicsData.checkLogin" class="use-info">
+                <text>{{ userInfo.nickName || '' }}</text>
+              </view>
+              <view v-else class="info-btn" @click="login">请先登录</view>
+            </view>
+            <view class="info-right">
+              <image
+                class="setting"
+                :src="imageUrl + 'img/setInfo.png'"
+                mode="scaleToFill"
+              />
+            </view>
+          </view>
+          <!--  -->
+          <view class="login-list">
+            <block v-for="(item, index) in loginList" :key="index">
+              <view class="login-item" v-if="item.showed">
+                <view class="item-num">{{
+                  item.accountValue !== ' ' ? item.accountValue : 0
+                }}</view>
+                <view class="item-name">{{ item.title }}</view>
               </view>
             </block>
           </view>
         </view>
-        <view
-          class="grid-ad"
-          v-else-if="item.kind === entryType.BA && bannerList.length > 0"
-        >
-          <swiper
-            style="height: 180rpx"
-            class="banner"
-            :indicator-dots="bannerList.length > 1"
-            indicator-color
-            indicator-active-color="#FF547B"
-            autoplay
-          >
-            <block v-for="(entry, index) in bannerList" :key="index">
-              <swiper-item>
-                <image
-                  class="image"
-                  style="height: 180rpx"
-                  :src="entry.image || entry.imgUrl"
-                  mode="aspectFill"
-                ></image>
-              </swiper-item>
-            </block>
-          </swiper>
+        <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
+        <view class="boot-equity" v-if="initBasicsData.checkLogin">
+          <view class="left">
+            <view class="icon">
+              <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
+            </view>
+            <view class="text">{{ userInfo.curLevelName || '' }}</view>
+          </view>
+          <view class="boot-equity-right">
+            <text class="text">查看权益</text>
+            <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+          </view>
         </view>
-        <!-- 今日金价 -->
-        <TodayGoldPrice
-          v-else-if="item.kind === entryType.GO"
-          :showed="todayGoldPriceShowed"
-          :goldPrice="goldPrice"
-          :title="item.param.title"
-        />
-        <!-- 积分商品推荐 -->
-        <ContentMall v-else-if="item.kind === entryType.RE" />
-        <!-- 我的奖品 -->
-        <MyPrizes
-          v-else-if="item.kind === entryType.MY"
-          :item="item"
-          :title="item.param.title"
-        />
-        <!-- 预约服务 -->
-        <MyService
-          v-else-if="item.kind === entryType.RES"
-          :title="item.param.title"
-          :srvProshowNum="srvProshowNum"
-        />
-        <!-- 质保单 -->
-        <MyQuality
-          v-else-if="item.kind === entryType.WA"
-          :title="item.param.title"
-          :policyListNum="policyListNum"
-        />
-      </block>
+      </view>
+      <view class="reveal-grid">
+        <block v-for="(item, index) in panelList" :key="index">
+          <view class="grid-list" v-if="item.kind === entryType.EN">
+            <!-- GONGGE  LIST -->
+            <view
+              :class="
+                item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
+              "
+              v-if="item.param.showType"
+            >
+              <block v-for="(entry, index) in item.param.linkList" :key="index">
+                <!-- @click="handleEntryUrl(entry)" -->
+                <view class="list-item" v-if="entry.showed">
+                  <view class="item-icon">
+                    <image :src="entry.icoUrl" mode="aspectFit" />
+                  </view>
+                  <view class="item-name">{{ entry.title }}</view>
+                  <uni-icons
+                    v-if="item.param.showType == 'LIST'"
+                    type="arrowright"
+                    size="14"
+                    color="#B7B8C4"
+                  />
+                </view>
+              </block>
+            </view>
+          </view>
+          <view
+            class="grid-ad"
+            v-else-if="item.kind === entryType.BA && bannerList.length > 0"
+          >
+            <swiper
+              style="height: 180rpx"
+              class="banner"
+              :indicator-dots="bannerList.length > 1"
+              indicator-color
+              indicator-active-color="#FF547B"
+              autoplay
+            >
+              <block v-for="(entry, index) in bannerList" :key="index">
+                <swiper-item>
+                  <image
+                    class="image"
+                    style="height: 180rpx"
+                    :src="entry.image || entry.imgUrl"
+                    mode="aspectFill"
+                  ></image>
+                </swiper-item>
+              </block>
+            </swiper>
+          </view>
+          <!-- 今日金价 -->
+          <TodayGoldPrice
+            v-else-if="item.kind === entryType.GO"
+            :showed="todayGoldPriceShowed"
+            :goldPrice="goldPrice"
+            :title="item.param.title"
+          />
+          <!-- 积分商品推荐 -->
+          <ContentMall v-else-if="item.kind === entryType.RE" />
+          <!-- 我的奖品 -->
+          <MyPrizes
+            v-else-if="item.kind === entryType.MY"
+            :item="item"
+            :title="item.param.title"
+          />
+          <!-- 预约服务 -->
+          <MyService
+            v-else-if="item.kind === entryType.RES"
+            :title="item.param.title"
+            :srvProshowNum="srvProshowNum"
+          />
+          <!-- 质保单 -->
+          <MyQuality
+            v-else-if="item.kind === entryType.WA"
+            :title="item.param.title"
+            :policyListNum="policyListNum"
+          />
+        </block>
+      </view>
     </view>
-  </view>
+  </CustomPage>
+
+  <Tabbar> </Tabbar>
 </template>
 
 <script setup lang="ts">
@@ -146,7 +150,9 @@ import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
 import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-// import NoneData from '../component/NoneData.vue';
+
+import CustomPage from '@/components/CustomPage/index.vue';
+import Tabbar from '@/components/Tabbar/index.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import MyPrizes from '../component/MyPrizes.vue';

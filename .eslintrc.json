@@ -9,7 +9,7 @@
     "plugin:vue/vue3-essential",
     "plugin:@typescript-eslint/recommended"
   ],
-  "globals": { "uni": "readonly" },
+  "globals": { "uni": "readonly", "getCurrentPages": "readonly" },
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",

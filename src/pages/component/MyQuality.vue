@@ -23,13 +23,21 @@
       </view>
       <view class="shopName">
         <view class="icon">
-          <image :src="staticUrl + 'img/store.png'" mode="aspectFill" />
+          <image
+            class="image"
+            :src="staticUrl + 'img/store.png'"
+            mode="aspectFill"
+          />
         </view>
         <view class="name">{{ policy.storeName }}</view>
       </view>
       <view class="orderTime">
         <view class="icon">
-          <image :src="staticUrl + 'img/time.png'" mode="aspectFill" />
+          <image
+            class="image"
+            :src="staticUrl + 'img/time.png'"
+            mode="aspectFill"
+          />
         </view>
         <view class="time">{{ policy.bizTime }}</view>
       </view>
@@ -46,7 +54,7 @@ import { useBasicsData } from '@/store/basicsData';
 
 import NoneData from './NoneData.vue';
 
-const imageUrl = staticUrl;
+// const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
 
 interface Props {
@@ -171,7 +179,7 @@ watch(
         margin-right: 5rpx;
         overflow: hidden;
 
-        image {
+        .image {
           width: 100%;
           height: 100%;
         }
@@ -200,7 +208,7 @@ watch(
         margin-right: 5rpx;
         overflow: hidden;
 
-        image {
+        .image {
           width: 100%;
           height: 100%;
         }
@@ -213,36 +221,6 @@ watch(
         font-weight: 400;
         line-height: 40rpx;
         color: #323338;
-      }
-    }
-
-    .empty-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-
-      .content-empty {
-        width: 200rpx;
-        height: 200rpx;
-        margin: 0 auto;
-        overflow: hidden;
-
-        image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .empty {
-        width: 144rpx;
-        height: 34rpx;
-        margin: 0 auto;
-        font-size: 24rpx;
-        font-weight: 400;
-        line-height: 34rpx;
-        color: #b7b8c4;
       }
     }
   }
