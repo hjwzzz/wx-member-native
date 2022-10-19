@@ -12,12 +12,7 @@
           bgColor="#F5F5F5"
           cancelButton="none"
         />
-        <view
-          class="sure-btn"
-          @click="updateNearStorePost"
-          :style="`color:${initBasicsData.mainColor};`"
-          >搜索</view
-        >
+        <view class="sure-btn" @click="updateNearStorePost">搜索</view>
       </view>
 
       <view v-if="list.length > 0">
@@ -33,10 +28,7 @@
                 {{ item.storeName }}
               </view>
               <view class="right">
-                <text
-                  v-if="item.range"
-                  :style="{ color: initBasicsData.mainColor }"
-                >
+                <text v-if="item.range">
                   <text v-if="item.range >= 1">{{ item.range }}km</text>
                   <text v-else>{{ item.range * 1000 }}m</text>
                 </text>
@@ -58,10 +50,6 @@
               <view class="right">
                 <view
                   :class="['radio_box', { radio_box_none: isActive(item) }]"
-                  :style="{
-                    backgroundColor:
-                      (isActive(item) && initBasicsData.mainColor) || '',
-                  }"
                 >
                   <uni-icons
                     type="checkmarkempty"
@@ -84,13 +72,7 @@
           </view>
         </view>
         <view class="button">
-          <button
-            class="btn"
-            :style="{ backgroundColor: initBasicsData.mainColor }"
-            @click="confimStore"
-          >
-            确认
-          </button>
+          <button class="btn" @click="confimStore">确认</button>
         </view>
       </view>
       <view class="empty-view" v-else>
@@ -106,8 +88,6 @@ import { updateNearStore } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
-import { useBasicsData } from '@/store/basicsData';
-const initBasicsData = useBasicsData();
 
 const props = defineProps<{
   id: string;
@@ -201,6 +181,7 @@ const confimStore = () => {
     flex: 1;
   }
   .sure-btn {
+    color: var(--main-color);
     margin-left: 10rpx;
     width: 80rpx;
     font-size: 28rpx;
@@ -214,12 +195,14 @@ const confimStore = () => {
   display: flex;
   justify-content: center;
   align-items: flex-end;
+
   &.active {
     background-color: #ff547b;
   }
 }
 .radio_box_none {
-  border: none;
+  background-color: var(--main-color);
+  border: 1px solid var(--main-color);
 }
 .button {
   position: fixed;
@@ -268,7 +251,7 @@ const confimStore = () => {
           font-size: 20rpx;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
-          color: #ff6a8c;
+          color: var(--main-color);
           background-color: #ffffff;
           margin-left: 10rpx;
         }

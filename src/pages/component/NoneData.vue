@@ -19,7 +19,7 @@ interface Props {
   /**
    * 图标： 其他 、积分、地址、奖品、优惠券、门店、 导购、 金价、 网络、未开通、 余额、
    */
-  icon:
+  icon?:
     | 'status' // 其他空状态
     | 'noIntegral' // 积分
     | 'address' // 地址
@@ -31,7 +31,7 @@ interface Props {
     | 'wifi-none' // 网络
     | 'wukaidong' // 未开通
     | 'wuyuer'; // 余额
-  text: string;
+  text?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
