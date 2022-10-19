@@ -9,15 +9,12 @@
         <uni-icons type="right" color="#bbb" size="16"></uni-icons>
       </view>
     </picker>
-    <navigator
-      :url="`store-list?id=${props.item.prizeId}&name=${props.item.distName}&relatedId=${props.item.relatedId}`"
-    >
-      <view class="custom-cell bb" @click="stores">
-        <view class="cell-label">领取门店</view>
-        <view class="cell-body-input">{{ storeName }}</view>
-        <uni-icons type="right" color="#bbb" size="16"></uni-icons>
-      </view>
-    </navigator>
+
+    <view class="custom-cell bb" @click="goStore">
+      <view class="cell-label">领取门店</view>
+      <view class="cell-body-input">{{ storeInfo.storeName }}</view>
+      <uni-icons type="right" color="#bbb" size="16"></uni-icons>
+    </view>
     <view v-if="exchangeCode === 1" class="custom-cell bb">
       <view class="cell-label">领取人</view>
       <input
@@ -55,21 +52,27 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 
-const props = defineProps({ item: {} });
+const props = defineProps<{ item: any }>();
 
 const form = reactive({ name: '', phone: '' });
 
-const storeName = ref();
-const stores = ref();
+const storeInfo = ref<any>({});
+
 const showAdress = ref(true);
 const exchangeName = computed(() => ['', '到店', '邮寄'][exchangeCode.value]);
 const exchangeCode = ref(1);
 const goAdress = () => [];
 
-const chooseChangeType = (e: any) => {
-  console.log(e);
+const chooseChangeType = (e: any) => exchangeCode.value = parseInt(e.detail.value) + 1;
 
-  exchangeCode.value = parseInt(e.detail.value) + 1;
+// 选择店铺
+const goStore = () => {
+  const { prizeId, distName, relatedId } = props.item;
+  uni.$once('chooseStore', e => {
+    console.log(e);
+    storeInfo.value = e;
+  });
+  uni.navigateTo({ url: `store-list?id=${prizeId}&name=${distName}&relatedId=${relatedId}` });
 };
 </script>
 

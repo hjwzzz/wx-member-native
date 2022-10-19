@@ -208,7 +208,7 @@
 </template>
 
 <script setup lang="ts">
-import { queryStatus, updateReceiveSend } from '@/api/my-prize';
+import { queryDetail, queryStatus, updateReceiveSend } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, toRef } from 'vue';
 import Goods from './component/Goods.vue';
@@ -279,7 +279,7 @@ const detail = ref<prizeType>({} as prizeType);
 const statusName = toRef(props, 'name');
 
 const createdtatus = async () => {
-  const { data, code } = await queryStatus(props.id || '80D98B4D-FF73-D8D4-FE07-07FCC9EBB251');
+  const { data, code } = await queryDetail(props.id || '80D98B4D-FF73-D8D4-FE07-07FCC9EBB251');
   data.param = JSON.parse(data.param);
   if (code === 0) {
     data.name ??= data.prizeName;

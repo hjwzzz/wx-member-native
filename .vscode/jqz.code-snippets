@@ -18,9 +18,7 @@
   "staticUrl": {
     "scope": "javascript,typescript",
     "prefix": "jimageurl",
-    "body": [
-      "import { staticUrl } from '@/utils/config';\nconst ${1:imageUrl} = staticUrl;"
-    ],
+    "body": ["import { staticUrl } from '@/utils/config';"],
     "description": "静态文件地址"
   },
   "init pinia": {
