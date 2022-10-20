@@ -39,7 +39,7 @@
                 </text>
               </view>
               <view class="detail-content">
-                <view class="left" :style="{ color: mainColor }">
+                <view class="left detail-content-left">
                   {{ price.price }}
                 </view>
                 <view class="right">元/克</view>
@@ -55,12 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { useBasicsData } from '@/store/basicsData';
+// import { useBasicsData } from '@/store/basicsData';
 // import { onMounted } from 'vue';
 import NoneData from './NoneData.vue';
-
-const initBasicsData = useBasicsData();
-const mainColor = initBasicsData.mainColor;
+// const initBasicsData = useBasicsData();
+// const mainColor = initBasicsData.mainColor;
 
 interface Props {
   title?: string;
@@ -187,13 +186,13 @@ const props = withDefaults(defineProps<Props>(), {
       justify-content: center;
       margin-top: 4rpx;
 
-      .left {
+      .detail-content-left {
         height: 100rpx;
         margin-right: 6rpx;
         font-size: 72rpx;
         font-weight: 800;
         line-height: 100rpx;
-        color: #ff547b;
+        color: var(--main-color);
       }
 
       .right {

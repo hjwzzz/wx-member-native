@@ -25,11 +25,7 @@
           <!-- 提示 -->
           <view class="bulletin" v-if="items.kind === 'NOTICE'">
             <view class="bulletin-box">
-              <text
-                :style="{ color: mainColor }"
-                class="iconfont icon-gonggao icon-text"
-              >
-              </text>
+              <text class="iconfont icon-gonggao icon-text"> </text>
               <text class="bulletin-text">{{ items.param.title }}</text>
             </view>
             <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
@@ -118,14 +114,13 @@ import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
 import { wxmemberIndex, getIndexAdBannerList } from '@/api/index';
 import { useBasicsData } from '@/store/basicsData';
-import CustomPage from '@/components/CustomPage/index.vue';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
 
 const initBasicsData = useBasicsData();
-const mainColor = initBasicsData.mainColor;
+// const mainColor = initBasicsData.mainColor;
 
 onMounted(() => {
   getPageDate();
@@ -235,10 +230,10 @@ const topBgImageUrl = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.tab-page {
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-}
+// .tab-page {
+//   padding-bottom: constant(safe-area-inset-bottom);
+//   padding-bottom: env(safe-area-inset-bottom);
+// }
 
 .banner-show-background {
   position: relative;
@@ -275,6 +270,7 @@ const topBgImageUrl = computed(() => {
   .iconfont {
     margin-right: 10px;
     font-size: 16px;
+    color: var(--main-color);
   }
 
   .ad-banner-list {

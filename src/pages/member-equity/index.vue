@@ -138,7 +138,6 @@
 import { computed, onMounted, ref, Ref } from 'vue';
 import { queryAllLevelRights } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
-import CustomPage from '@/components/CustomPage/index.vue';
 import { staticUrl } from '@/utils/config';
 
 const initBasicsData = useBasicsData();

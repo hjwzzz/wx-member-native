@@ -1,10 +1,6 @@
 <template>
   <CustomPage>
-    <view class="main-color"> ddddddddddddddddddddddddddddddd </view>
-    <view
-      class="growthDetails"
-      :style="{ '--color': mainColor, '--transColor': transColor }"
-    >
+    <view class="growthDetails" :style="{ '--transColor': transColor }">
       <scroll-view
         class="wrapper"
         :scroll-y="true"
@@ -12,7 +8,7 @@
         @scrolltolower="scrolltolower"
       >
         <view class="content">
-          <view class="top">
+          <view class="content-top" :style="{ background: backgroundStyle }">
             <view class="box">
               <view class="title"> 我的成长值 </view>
               <view class="num">
@@ -56,9 +52,14 @@
               margin-top="30"
               color="#D8D9E0"
             /> -->
+            <uni-load-more :status="status" color="#D8D9E0"></uni-load-more>
           </template>
           <view v-else class="no-data">
-            <image class="img" src="../../../static/noIntegral.png" mode="" />
+            <image
+              class="img"
+              :src="staticUrl + 'img/noIntegral.png'"
+              mode=""
+            />
             <view class="tip"> 暂无成长值记录 </view>
           </view>
         </view>
@@ -68,98 +69,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref } from 'vue';
-import { queryAllLevelRights } from '@/api/server';
+import { onMounted, ref, Ref } from 'vue';
+import { queryGrowthCount, queryMemberGrowthHistoryPage } from '@/api/center';
 import { useBasicsData } from '@/store/basicsData';
-import CustomPage from '@/components/CustomPage/index.vue';
 import { staticUrl } from '@/utils/config';
 
 const initBasicsData = useBasicsData();
-const mainColor = computed(() => initBasicsData.mainColor);
 
-const benefitsData: Ref<any> = ref(null);
-const curLevelId: Ref<any> = ref(null);
-const currentBenefitsData: Ref<any> = ref(null);
-const levelList: Ref<any> = ref(null);
+const backgroundStyle = `url('${staticUrl}quality/integar-bg.png') var(--main-color) center center / 100% 100% no-repeat`;
 
 const growth = ref(0);
-const nextUpgradeGrowth = ref(0);
-const currentIndex = ref(0);
-const curLevelName = ref('');
-const benefitsDataFlag = ref('nodata');
+const total = ref(0);
+const curPage = ref(1);
+const status = ref('loading');
+const transColor = ref('');
+const growthList: Ref<any> = ref([]);
+
+// 将hex颜色转成rgb
+const hexToRgba = (hex: string, opacity: number) => `rgba(${parseInt(`0x${hex.slice(1, 3)}`)},${parseInt(`0x${hex.slice(3, 5)}`)},${parseInt(`0x${hex.slice(5, 7)}`)}, ${opacity})`;
+
+const getGrowthCount = async () => {
+  const res = await queryGrowthCount(initBasicsData.useMid);
+  growth.value = res.data.growth || 0;
+};
+//
+const queryGrowthHistoryList = async () => {
+  const res = await queryMemberGrowthHistoryPage({
+    curPage: curPage.value,
+    pageSize: 50,
+    mid: initBasicsData.useMid,
+  });
+  growthList.value = res.data.records;
+  total.value = res.data.totalRecord;
+  status.value = growthList.value.length < total.value ? 'more' : 'no-more';
+};
+
+const scrolltolower = () => {
+  if (status.value === 'no-more') {
+    return;
+  }
+  curPage.value++;
+  queryGrowthHistoryList();
+};
 
 onMounted(() => {
-  getAllBenefits();
-});
-
-const onChangeSwp = (e: any) => {
-  currentIndex.value = e.detail.current;
-  currentBenefitsData.value = levelList.value[e.detail.current];
-};
-
-// 处理富文本图片
-const richImage = (item: any) => {
-  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  let content = item.replace(reg, '<img style="max-width: 100%;" src="$1" />');
-  const regP = /<p.*?>/g;
-  content = item.replace(
-    regP,
-    '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
-  );
-  return content;
-};
-
-const getAllBenefits = async () => {
-  // 获取会员权益数据
-  const params = '';
-  const res = await queryAllLevelRights(params);
-  benefitsData.value = res.data;
-  if (benefitsData.value) {
-    curLevelId.value = benefitsData.value.curLevelId;
-    curLevelName.value = benefitsData.value.curLevelName;
-    growth.value = benefitsData.value.growth;
-    nextUpgradeGrowth.value = benefitsData.value.nextUpgradeGrowth;
-    levelList.value = benefitsData.value.levelList;
-
-    let hasLevelPage = 0;
-
-    levelList.value.forEach((item: any, index: number) => {
-      if (curLevelId.value === item.levelId) {
-        currentIndex.value = index;
-      }
-      if (item.levelId) {
-        hasLevelPage++;
-      }
-    });
-
-    if (hasLevelPage) {
-      benefitsDataFlag.value = 'finish';
-    } else {
-      benefitsDataFlag.value = 'nodata';
-    }
-
-    currentBenefitsData.value = levelList.value[currentIndex.value];
-  } else {
-    benefitsDataFlag.value = 'nodata';
-  }
-};
-
-const goGrowthDetails = () => {
-  uni.navigateTo({ url: '/pages/member-equity/growthDetails' });
-};
-
-const currentStyle = computed(() => {
-  if (currentBenefitsData.value) {
-    const { fontColor, bgColor } = currentBenefitsData.value.style;
-    return {
-      fontColor,
-      bgColor,
-    };
-  }
-  return {
-    fontColor: '#333',
-    bgColor: '#FFF',
-  };
+  transColor.value = hexToRgba(initBasicsData.mainColor, 0.2);
+  getGrowthCount();
+  queryGrowthHistoryList();
 });
 </script>
 
@@ -175,11 +131,10 @@ const currentStyle = computed(() => {
     .content {
       min-height: calc(100% - 113rpx);
       padding: 30rpx 30rpx 0;
-      .top {
+      .content-top {
         width: 100%;
         height: 234rpx;
-        // background: url('/static/quality/integar-bg.png') var(--color) center
-        //   center / 100% 100% no-repeat;
+
         box-shadow: 0 16rpx 30rpx 0 var(--transColor);
         border-radius: 20rpx;
         color: #fff;

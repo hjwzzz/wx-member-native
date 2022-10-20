@@ -3,9 +3,7 @@
     <view class="header">
       <view class="header-left">
         <text class="title">{{ title || '质保单' }}</text>
-        <view class="number" style="color:{{mainColor}}">
-          ({{ policyList.totalRecord || 0 }})
-        </view>
+        <view class="number"> ({{ policyList.totalRecord || 0 }}) </view>
       </view>
       <view class="right">
         <text class="more">更多</text>
@@ -53,8 +51,6 @@ import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 
 import NoneData from './NoneData.vue';
-
-// const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
 
 interface Props {
@@ -126,7 +122,7 @@ watch(
         margin-left: 4rpx;
         font-size: 28rpx;
         font-weight: 800;
-        color: #ff547b;
+        color: var(--main-color);
       }
     }
 

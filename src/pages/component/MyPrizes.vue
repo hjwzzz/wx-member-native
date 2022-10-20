@@ -26,11 +26,7 @@
               {{ notGetCnt > 99 ? '99+' : notGetCnt }}
             </view>
           </view>
-          <view
-            class="icon iconfont"
-            :class="prize.img"
-            :style="{ color: mainColor }"
-          ></view>
+          <view class="icon iconfont icon-color" :class="prize.img"></view>
         </view>
         <view class="content-footer">{{ prize.name }}</view>
       </view>
@@ -40,7 +36,7 @@
 
 <script setup lang="ts">
 import { staticUrl } from '@/utils/config';
-import { useBasicsData } from '@/store/basicsData';
+
 import { computed } from 'vue';
 
 const imageUrl = `${staticUrl}img/circle.png`;
@@ -55,8 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const texcCnt = computed(() => props.item.param.texcCnt);
 const notGetCnt = computed(() => props.item.param.notGetCnt);
-const initBasicsData = useBasicsData();
-const mainColor = initBasicsData.mainColor;
+
 const prizeList = [
   {
     id: Math.random(),
@@ -147,7 +142,9 @@ const prizeList = [
         width: 48rpx;
         height: 48rpx;
         text-align: center;
-
+        .icon-color {
+          color: var(--main-color);
+        }
         .circel {
           position: relative;
           width: 48rpx;
