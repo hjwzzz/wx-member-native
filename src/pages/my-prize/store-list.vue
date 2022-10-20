@@ -4,15 +4,15 @@
       <view class="search-bar-bg">
         <uni-search-bar
           class="search-bar"
+          v-model="keyward"
           :focus="true"
+          @input="searchChange"
           radius="100"
-          placeholder="搜索"
+          placeholder="搜一搜门店"
           bgColor="#F5F5F5"
           cancelButton="none"
         />
-        <view class="sure-btn" :style="`color:${initBasicsData.mainColor};`"
-          >搜索</view
-        >
+        <view class="sure-btn" @click="updateNearStorePost">搜索</view>
       </view>
 
       <view v-if="list.length > 0">
@@ -21,36 +21,23 @@
             class="list-item"
             v-for="(item, index) in list"
             :key="index"
-            @click="onChecked(item)"
+            @click="selected = item"
           >
             <view class="top">
-              <view
-                class="left"
-                style="
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                "
-              >
+              <view class="left toE">
                 {{ item.storeName }}
               </view>
               <view class="right">
                 <text v-if="item.range">
-                  <text
-                    :style="{ color: mainColor }"
-                    v-if="item.range * 1000 >= 1000"
-                    >{{ item.range }}km</text
-                  >
-                  <text :style="{ color: mainColor }" v-else
-                    >{{ item.range * 1000 }}m</text
-                  >
+                  <text v-if="item.range >= 1">{{ item.range }}km</text>
+                  <text v-else>{{ item.range * 1000 }}m</text>
                 </text>
               </view>
             </view>
             <view class="item-three">
               <view class="left">
                 <image
-                  :src="`${imageUrl}/prize/store/address.png`"
+                  :src="`${staticUrl}/prize/store/address.png`"
                   mode=""
                 ></image>
                 <text style="font-size: 24rpx" class="address">
@@ -62,26 +49,22 @@
               </view>
               <view class="right">
                 <view
-                  :class="[
-                    'radio_box',
-                    item.distId === idword ? 'radio_box_none' : '',
-                  ]"
-                  :style="{
-                    backgroundColor: item.distId === idword ? mainColor : '',
-                  }"
+                  :class="['radio_box', { radio_box_none: isActive(item) }]"
                 >
-                  <!--  top="-4" -->
-                  <u-icon
-                    style="font-size: 24rpx"
+                  <uni-icons
+                    type="checkmarkempty"
                     color="#ffffff"
-                    v-if="item.distId === idword"
-                    name="checkbox-mark"
-                  ></u-icon>
+                    v-if="isActive(item)"
+                    size="12"
+                  ></uni-icons>
                 </view>
               </view>
             </view>
             <view class="item-four">
-              <image :src="`${imageUrl}/prize/store/phone.png`" mode=""></image>
+              <image
+                :src="`${staticUrl}/prize/store/phone.png`"
+                mode=""
+              ></image>
               <text style="font-size: 24rpx" class="address">
                 {{ item.tel || '--' }}
               </text>
@@ -89,35 +72,34 @@
           </view>
         </view>
         <view class="button">
-          <button :style="{ backgroundColor: mainColor }" @click="toprize">
-            确认
-          </button>
+          <button class="btn" @click="confimStore">确认</button>
         </view>
+      </view>
+      <view class="empty-view" v-else>
+        <NoneData icon="shop" text="暂未门店信息"></NoneData>
       </view>
     </view>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
+import NoneData from '@/pages/component/NoneData.vue';
 import { updateNearStore } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
-import { useBasicsData } from '@/store/basicsData';
-const initBasicsData = useBasicsData();
-const imageUrl = staticUrl;
-
-const idword = '';
 
 const props = defineProps<{
   id: string;
   name: string;
   relatedId: string;
 }>();
-const local = reactive({
+
+const local = ref({
   lat: 0,
   lng: 0,
 });
+// 店铺信息
 interface storeType {
   storeName: string;
   range: number;
@@ -129,50 +111,42 @@ interface storeType {
   tel: string;
 }
 const list = ref<storeType[]>([]);
+const selected = ref<storeType>();
+const isActive = (i: storeType) => i.distId === selected.value?.distId;
 
-function onChecked(item) {
-  console.log(item);
+// 搜索
+const keyward = ref('');
+const searchChange = (e: any) => {
+  keyward.value = e;
+  updateNearStorePost();
+};
 
-  // this.storeName = item.storeName;
-  // this.idword = item.distId;
-  // this.selected = item;
-  // store.setStore('guid', {});
-  // // 导购选中的值
-  // this.nameLIst = {};
-}
-
+// 刷新列表
 const updateNearStorePost = async () => {
-  // 判断是否有坐标 显示距离
-  // this.locationObj = uni.getStorageSync('locationObj');
-  // 判断是否有坐标 显示距离
-
-  function logValut() {
-    const { lng, lat } = local;
+  function logValut({ lng, lat }: any) {
     return [lng, lat].filter(Boolean)
       .join(',');
   }
-  const body = {
+  const { code, data } = await updateNearStore({
     distId: '',
-    storeName: '',
-    coordCur: logValut(),
+    storeName: keyward.value,
+    coordCur: logValut(local.value),
     relatedId: props.relatedId,
-  };
-  const { code, data } = await updateNearStore(body);
+  });
   if (code === 0) list.value = data;
-  console.log(list.value);
-  console.log(data);
 };
-const location = () => {
+
+onLoad(() => {
   uni.getLocation({
     type: 'wgs84',
-    success: res => {
-      local.lat = res.latitude;
-      local.lng = res.longitude;
-      uni.setStorageSync('location', res);
+    success: ({ latitude: lat, longitude: lng }) => {
+      local.value = { lat, lng };
+      uni.setStorageSync('location', local.value);
       updateNearStorePost();
     },
     fail: data => {
-      console.log('fail', data);
+      local.value = uni.getStorageSync('location');
+      console.warn('fail', data);
       updateNearStorePost();
       uni.showModal({
         title: '提示',
@@ -181,15 +155,24 @@ const location = () => {
       });
     },
   });
-};
-onLoad(() => {
-  location();
 });
 
-const toprize = () => [];
+const confimStore = () => {
+  if (!selected.value) {
+    uni.showToast({ title: '请选择门店!', icon: 'none' });
+    return;
+  }
+  uni.$emit('chooseStore', selected.value);
+  uni.navigateBack();
+};
 </script>
 
 <style scoped lang="scss">
+.toE {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 .search-bar-bg {
   background-color: #fff;
   display: flex;
@@ -198,6 +181,7 @@ const toprize = () => [];
     flex: 1;
   }
   .sure-btn {
+    color: var(--main-color);
     margin-left: 10rpx;
     width: 80rpx;
     font-size: 28rpx;
@@ -210,13 +194,15 @@ const toprize = () => [];
   border-radius: 50%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
+
   &.active {
     background-color: #ff547b;
   }
 }
 .radio_box_none {
-  border: none;
+  background-color: var(--main-color);
+  border: 1px solid var(--main-color);
 }
 .button {
   position: fixed;
@@ -232,8 +218,8 @@ const toprize = () => [];
   padding-top: 10rpx;
   padding-bottom: calc(10rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
-  button {
-    background-color: #ff547b;
+  .btn {
+    background-color: var(--main-color);
     border-radius: 40rpx;
     height: 80rpx;
     line-height: 80rpx;
@@ -242,35 +228,11 @@ const toprize = () => [];
   }
 }
 
-.foolt {
-  margin-bottom: 60rpx;
-}
-
 .storesList {
   background-color: #f5f5f5;
-  /* height: 91vh; */
-  // min-height: calc(100vh - 200rpx - constant(safe-area-inset-bottom));
-  // min-height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
-
   :deep(.u-action) {
     color: #ff6f90;
   }
-
-  .serch {
-    position: fixed;
-    width: 100%;
-    padding: 0 30rpx;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    z-index: 999;
-    height: 100rpx;
-    line-height: 100rpx;
-    margin-bottom: 200rpx;
-    :deep(.uicon-search) {
-      color: #b7b8c4 !important;
-    }
-  }
-
   .item {
     padding: 0 30rpx;
 
@@ -289,7 +251,7 @@ const toprize = () => [];
           font-size: 20rpx;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
-          color: #ff6a8c;
+          color: var(--main-color);
           background-color: #ffffff;
           margin-left: 10rpx;
         }
@@ -328,30 +290,11 @@ const toprize = () => [];
       }
     }
   }
-
-  .stop {
-    height: 100vh;
-    background-color: #f2f2f2;
-    text-align: center;
-    .stop-img {
-      min-height: calc(100vh - 100rpx - constant(safe-area-inset-bottom));
-      min-height: calc(100vh - 100rpx - env(safe-area-inset-bottom));
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    image {
-      width: 320rpx;
-      height: 320rpx;
-    }
-
-    .stopText {
-      font-size: 14px;
-      font-family: PingFangSC-Regular, PingFang SC;
-      font-weight: 400;
-      color: #9697a2;
-    }
-  }
+}
+.empty-view {
+  height: calc(100vh - 300rpx);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
