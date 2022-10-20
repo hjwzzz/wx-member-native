@@ -26,26 +26,6 @@
       }
     },
     {
-      "path": "pages/my-prize/index",
-      "style": {
-        "navigationBarTitleText": "我的奖品"
-      }
-    },
-    {
-      "path": "pages/my-prize/prize-detail",
-      "style": {
-        "navigationBarTitleText": "我的奖品",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/my-prize/store-list",
-      "style": {
-        "navigationBarTitleText": "选择门店",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
       "path": "pages/member-equity/index",
       "style": {
         "navigationBarTitleText": "会员权益"
@@ -108,6 +88,26 @@
           "path": "coupon-center/index",
           "style": {
             "navigationBarTitleText": "优惠券"
+          }
+        },
+        {
+          "path": "my-prize/index",
+          "style": {
+            "navigationBarTitleText": "我的奖品"
+          }
+        },
+        {
+          "path": "my-prize/prize-detail",
+          "style": {
+            "navigationBarTitleText": "我的奖品",
+            "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "my-prize/store-list",
+          "style": {
+            "navigationBarTitleText": "选择门店",
+            "enablePullDownRefresh": false
           }
         }
       ]
