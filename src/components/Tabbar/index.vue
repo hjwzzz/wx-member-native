@@ -74,13 +74,6 @@ const setSelected = (index: number, item: any) => {
     return;
   }
   Router.go(item.miniUrl);
-  // const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
-  // if (switchTabUrl.includes(item.miniUrl)) {
-  //   uni.switchTab({ url: item.miniUrl });
-  // } else {
-  //   uni.navigateTo({ url: item.miniUrl });
-  // }
-  // emits('change', index, item);
 };
 
 onMounted(() => {

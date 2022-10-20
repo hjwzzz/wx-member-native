@@ -38,12 +38,6 @@
       }
     },
     {
-      "path": "pages/integral/index",
-      "style": {
-        "navigationBarTitleText": "我的积分"
-      }
-    },
-    {
       "path": "pages/address/address-list",
       "style": {
         "navigationBarTitleText": "收货地址"
