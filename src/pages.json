@@ -46,7 +46,7 @@
     {
       "path": "pages/address/add",
       "style": {
-        "navigationBarTitleText": "添加地址"
+        "navigationBarTitleText": "添加收货地址"
       }
     }
   ],

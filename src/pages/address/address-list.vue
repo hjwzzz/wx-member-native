@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import { deleteAddress, getAdressList, updateAddress } from '@/api/address';
-import { onLoad } from '@dcloudio/uni-app';
+import { onShow } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import CustomPage from '@/components/CustomPage/index.vue';
@@ -87,7 +87,7 @@ const getData = (flag = false) => {
       }
     });
 };
-onLoad(() => {
+onShow(() => {
   getData();
 });
 const handleSelectedAddress = (e: any) => {
@@ -95,9 +95,11 @@ const handleSelectedAddress = (e: any) => {
   uni.$emit('chooseAddress', e);
   uni.navigateBack();
 };
-const goToUpdatePage = (e: any) => [e];
-const handleSelectedGuid = () => {
-  uni.navigateTo({ url: 'add' });
+
+// 编辑地址;
+const handleSelectedGuid = () => uni.navigateTo({ url: 'add' });
+const goToUpdatePage = (e: any) => {
+  uni.navigateTo({ url: `add?id=${e.id}&item=${JSON.stringify(e)}` });
 };
 const deleAdress = async (id: string) => {
   const { cancel } = await uni.showModal({ content: '确定要删除该地址吗？' });
