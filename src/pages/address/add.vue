@@ -119,14 +119,16 @@ const showMap = () => {
     },
   });
 };
+
 const handleSelectedGuid = () => {
   const phoneReg =
     /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
-  const rules: [string, (e: string) => boolean, string][] = [
+  const rules: [keyof typeof params, (e: string) => boolean, string][] = [
     ['receiver', (e: string) => e.length > 2, '请输入收货人姓名'],
     ['phone', (e: string) => phoneReg.test(e), '请输入正确手机号'],
     ['address', (e: string) => e.length > 2, '请输入详细地址'],
   ];
+
   rules.some(([k, v, s]) => {
     if (!v(params.value[k])) {
       uni.showModal({
