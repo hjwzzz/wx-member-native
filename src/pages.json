@@ -36,13 +36,8 @@
       "style": {
         "navigationBarTitleText": "我的成长值"
       }
-    },
-    {
-      "path": "pages/integral/index",
-      "style": {
-        "navigationBarTitleText": "我的积分"
-      }
     }
+    
   ],
   "tabBar": {
     "custom": true,
@@ -108,6 +103,12 @@
           "style": {
             "navigationBarTitleText": "选择门店",
             "enablePullDownRefresh": false
+          }
+        },
+        {
+          "path": "integral/index",
+          "style": {
+            "navigationBarTitleText": "我的积分"
           }
         }
       ]
