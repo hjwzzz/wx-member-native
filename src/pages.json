@@ -42,6 +42,18 @@
       "style": {
         "navigationBarTitleText": "我的积分"
       }
+    },
+    {
+      "path": "pages/address/address-list",
+      "style": {
+        "navigationBarTitleText": "收货地址"
+      }
+    },
+    {
+      "path": "pages/address/add",
+      "style": {
+        "navigationBarTitleText": "添加地址"
+      }
     }
   ],
   "tabBar": {
@@ -64,23 +76,6 @@
     "backgroundColor": "#F5F5F5"
   },
   "subPackages": [
-    {
-      "root": "points-mall-pages",
-      "pages": [
-        {
-          "path": "address/address-list",
-          "style": {
-            "navigationBarTitleText": "收货地址"
-          }
-        },
-        {
-          "path": "address/add",
-          "style": {
-            "navigationBarTitleText": "添加地址"
-          }
-        }
-      ]
-    },
     {
       "root": "my-assets-pages",
       "pages": [
