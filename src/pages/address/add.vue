@@ -35,7 +35,13 @@
             <view class="left">所在地区</view>
             <view class="right">
               <view class="right-text">
-                <view> </view>
+                <picker
+                  mode="region"
+                  @change="(e:any)=>params.index = e.detail.value"
+                  :value="params.index"
+                >
+                  <view class="uni-input">{{ params.index?.join(' / ') }}</view>
+                </picker>
               </view>
               <span @click="showMap" style="color: #9697a2; white-space: nowrap"
                 ><u-icon name="map" size="28" color="#9697a2"></u-icon
@@ -83,10 +89,39 @@
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import CustomPage from '@/components/CustomPage/index.vue';
+import { addAddress, updateAddress } from '@/api/address';
+import { onLoad } from '@dcloudio/uni-app';
 const initBasicsData = useBasicsData();
 
 const mall = ref(false);
-const params = ref({
+const props = defineProps({ id: { type: String } });
+
+onLoad(e => {
+  if (e.item) {
+    uni.setNavigationBarTitle({ title: '修改收货地址' });
+    const {
+      id,
+      city,
+      phone,
+      address,
+      receiver,
+      province,
+      district,
+      isDefault,
+    } = JSON.parse(e.item);
+    params.value = {
+      id,
+      index: [province, city, district],
+      phone,
+      address,
+      receiver,
+      isDefault: isDefault === 'true',
+    };
+  }
+});
+const params = ref<{
+  [key: string]: any;
+}>({
   receiver: '',
   phone: '',
   address: '',
@@ -111,15 +146,15 @@ const showMap = () => {
 };
 
 const handleSelectedGuid = () => {
+  // 校验数据
   const phoneReg =
     /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
-  const rules: [keyof typeof params, (e: string) => boolean, string][] = [
-    ['receiver', (e: string) => e.length > 2, '请输入收货人姓名'],
+  const rules: [string, (e: string) => boolean, string][] = [
+    ['receiver', (e: string) => e.length > 1, '请输入收货人姓名'],
     ['phone', (e: string) => phoneReg.test(e), '请输入正确手机号'],
     ['address', (e: string) => e.length > 2, '请输入详细地址'],
   ];
-
-  rules.some(([k, v, s]) => {
+  const haveEmpty = rules.some(([k, v, s]) => {
     if (!v(params.value[k])) {
       uni.showModal({
         content: s,
@@ -128,15 +163,28 @@ const handleSelectedGuid = () => {
       return true;
     }
   });
-  // for (const key:any in rules) {
-  //   const { str, v } = rules[key];
-  //   if (!v(params.value[key])) {
-  //     uni.showModal({
-  //         content: str,
-  //         showCancel: false,
-  //       });
-  // }
-  console.log(params.value);
+  if (haveEmpty) return;
+  let url = addAddress;
+  // 修改地址时，带上ID
+  if (props.id) {
+    params.value.id = props.id;
+    url = updateAddress;
+  }
+  const {
+    index: [province, city, district],
+    ...d
+  } = params.value;
+
+  url({ province, city, district, ...d, mid: initBasicsData.useMid })
+    .then(({ msg, code }) => {
+      if (msg === '成功' || code === 0) {
+        uni.showToast({
+          title: props.id ? '修改成功' : '保存成功',
+          duration: 3000,
+        });
+        setTimeout(uni.navigateBack, 500);
+      }
+    });
 };
 </script>
 
