@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
+import Router from '@/utils/router';
 
 const initBasicsData = useBasicsData();
 interface Props {
@@ -72,13 +73,7 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
-  const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
-  if (switchTabUrl.includes(item.miniUrl)) {
-    uni.switchTab({ url: item.miniUrl });
-  } else {
-    uni.navigateTo({ url: item.miniUrl });
-  }
-  // emits('change', index, item);
+  Router.go(item.miniUrl);
 };
 
 onMounted(() => {
