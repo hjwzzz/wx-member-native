@@ -47,7 +47,7 @@
         <view
           class="boot-equity"
           v-if="initBasicsData.checkLogin"
-          @click="handleFixedSysUrl('benefits')"
+          @click="handleFixedSysUrl()"
         >
           <view class="left">
             <view class="icon">
@@ -266,20 +266,12 @@ const handleFixedSysUrl = () => {
 </script>
 
 <style lang="scss" scoped>
-page {
-  width: 100%;
-  height: 100%;
-}
-
 .user-center {
   width: 100%;
   height: 100%;
-  padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
+  // padding-bottom: constant(safe-area-inset-bottom);
+  // padding-bottom: env(safe-area-inset-bottom);
   overflow: scroll;
-}
-
-.user-center {
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
 }
 
 .user {
@@ -439,9 +431,11 @@ page {
   position: relative;
   z-index: 999;
   // width: 750rpx;
-  padding: 30rpx;
+  // padding: 30rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
   padding-top: 35rpx;
-  margin-top: -15rpx;
+  margin-top: -5rpx;
   background: #f5f5f5;
   box-shadow: 0px -10rpx 20rpx -10rpx rgba(0, 0, 0, 0.1);
   border-radius: 16rpx 16rpx 0px 0px;
