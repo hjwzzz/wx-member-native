@@ -104,6 +104,12 @@
             "navigationBarTitleText": "选择门店",
             "enablePullDownRefresh": false
           }
+        },
+        {
+          "path": "integral/index",
+          "style": {
+            "navigationBarTitleText": "我的积分"
+          }
         }
       ]
     }
