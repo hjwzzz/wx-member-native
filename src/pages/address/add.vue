@@ -8,9 +8,9 @@
             <view class="text">
               <input
                 :focus="true"
-                type="text"
                 maxlength="20"
                 placeholder="请输入收货人姓名"
+                type="text"
                 v-model.trim="params.receiver"
               />
             </view>
@@ -35,17 +35,7 @@
             <view class="left">所在地区</view>
             <view class="right">
               <view class="right-text">
-                <view>
-                  <picker
-                    mode="region"
-                    @change="(e:any)=>params.index = e.detail.value"
-                    :value="params.index"
-                  >
-                    <view class="uni-input">{{
-                      params.index?.join(' / ')
-                    }}</view>
-                  </picker>
-                </view>
+                <view> </view>
               </view>
               <span @click="showMap" style="color: #9697a2; white-space: nowrap"
                 ><u-icon name="map" size="28" color="#9697a2"></u-icon
