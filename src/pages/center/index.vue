@@ -154,7 +154,6 @@ import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 
-import CustomPage from '@/components/CustomPage/index.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';

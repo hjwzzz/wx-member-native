@@ -19,10 +19,7 @@
         <image class="grid-serve-item-img" :src="serve.imgUrl" alt="" />
         <view class="grid-serve-item-wrapper">
           <view class="grid-serve-item-wrapper-name">{{ serve.name }}</view>
-          <view
-            class="grid-serve-item-wrapper-btn"
-            :style="{ color: initBasicsData.mainColor }"
-          >
+          <view class="grid-serve-item-wrapper-btn">
             {{
               !serve.acctId ? '免费' : parseInt(serve.value) + serve.acctName
             }}
@@ -165,8 +162,7 @@ watch(
 
         &-btn {
           font-size: 24rpx;
-
-          /* color: #FF547B; */
+          color: var(--main-color);
         }
 
         .right-arrow {

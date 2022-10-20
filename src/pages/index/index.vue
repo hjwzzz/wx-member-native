@@ -26,7 +26,6 @@
           <view class="bulletin" v-if="items.kind === 'NOTICE'">
             <view class="bulletin-box">
               <text
-                :style="{ color: mainColor }"
                 class="iconfont icon-gonggao icon-text"
               >
               </text>
@@ -118,7 +117,6 @@ import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
 import { wxmemberIndex, getIndexAdBannerList } from '@/api/index';
 import { useBasicsData } from '@/store/basicsData';
-import CustomPage from '@/components/CustomPage/index.vue';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -275,6 +273,7 @@ const topBgImageUrl = computed(() => {
   .iconfont {
     margin-right: 10px;
     font-size: 16px;
+    color: var(--main-color);
   }
 
   .ad-banner-list {
