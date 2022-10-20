@@ -1,5 +1,5 @@
 <template>
-  <CustomPage :bottom="true">
+  <CustomPage bottom>
     <view class="user-center">
       <view class="user">
         <view class="login-info">
@@ -34,7 +34,11 @@
           <!--  -->
           <view class="login-list">
             <block v-for="(item, index) in loginList" :key="index">
-              <view class="login-item" v-if="item.showed">
+              <view
+                class="login-item"
+                v-if="item.showed"
+                @click="handleQuickUrl(item)"
+              >
                 <view class="item-num">{{
                   item.accountValue !== ' ' ? item.accountValue : 0
                 }}</view>
@@ -262,6 +266,20 @@ const getGoldPriceByPage = async () => {
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
+};
+
+// 暂时设置配置---地址访问不了
+//  point  /pages/center/integral/index  积分
+//  balance  /pages/center/thebalance/index 我的余额
+//  warranty  /pages/center/quality/index  质保单
+//  sign    /signInGift/giftPage/index  去签到
+//  coupon   /pages/center/ticket/index   优惠券
+const handleQuickUrl = (item: any) => {
+  const temporary: any = { point: '/my-assets-pages/integral/index?id=zhiwen' };
+  if (temporary[item.code]) {
+    uni.navigateTo({ url: temporary[item.code] });
+    return;
+  }
 };
 </script>
 

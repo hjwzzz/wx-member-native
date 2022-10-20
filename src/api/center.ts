@@ -28,3 +28,17 @@ export const queryMemberGrowthHistoryPage = async (data: unknown) => {
   const res = await request(url, data);
   return res;
 };
+
+// 我的积分列表
+export const queryPointList = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/memAcctPointFront/usr/queryPointList`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 我的积分明细
+export const queryPointDetailPage = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/memAcctPointFront/usr/queryPointDetailPage`;
+  const res = await request(url, data);
+  return res;
+};

@@ -38,12 +38,12 @@ onHide(() => {
   console.log('App Hide');
 });
 
-const dddd = ref('22222222');
-setTimeout(() => {
-  dddd.value = '开始的换届大会';
-}, 5000);
+// const dddd = ref('22222222');
+// setTimeout(() => {
+//   dddd.value = '开始的换届大会';
+// }, 5000);
 
-provide('test', dddd);
+// provide('test', dddd);
 </script>
 <style lang="scss">
 page {

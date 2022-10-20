@@ -1,5 +1,5 @@
 <template>
-  <CustomPage :bottom="true">
+  <CustomPage bottom>
     <view class="tab-page">
       <!-- 首页轮播图 -->
       <view
