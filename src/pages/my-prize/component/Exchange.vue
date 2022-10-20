@@ -34,7 +34,7 @@
       />
     </view>
     <view
-      v-if="exchangeCode === 2 && !address.phone"
+      v-if="exchangeCode === 2 && !address?.phone"
       @click="goAdress"
       class="custom-cell"
     >
@@ -43,7 +43,7 @@
     </view>
 
     <view
-      v-if="exchangeCode === 2 && address.phone"
+      v-if="exchangeCode === 2 && address?.phone"
       class="adressInfo"
       @click="goAdress"
     >
@@ -98,7 +98,7 @@ const adressGroup = computed(() => {
 });
 const goAdress = () => {
   uni.$once('chooseAddress', e => address.value = e);
-  uni.navigateTo({ url: '/points-mall-pages/address/address-list' });
+  uni.navigateTo({ url: '/points-mall-pages/address/address-list?flag=true' });
 };
 
 // 选择店铺

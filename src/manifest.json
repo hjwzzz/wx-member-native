@@ -52,10 +52,10 @@
   "mp-weixin": {
     "appid": "wxd850ff0cc3cc960c",
     "setting": {
-      "ignoreDevUnusedFiles" : false,
+      "ignoreDevUnusedFiles": false,
       "urlCheck": false
     },
-    "requiredPrivateInfos": ["getLocation"],
+    "requiredPrivateInfos": ["getLocation", "chooseLocation"],
     "usingComponents": true,
     "permission": {
       "scope.userLocation": {

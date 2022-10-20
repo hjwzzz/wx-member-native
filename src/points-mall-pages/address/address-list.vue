@@ -13,12 +13,11 @@
           </view>
           <!--  -->
           <view style="word-wrap: break-word">
-            {{ item.province }} {{ item.city }} {{ item.district }}
-            {{ item.address }}
+            {{ item.province + item.city + item.district + item.address }}
           </view>
         </view>
         <view class="addr-bottom">
-          <view @click="updateAddress(item, item.isDefault)">
+          <view @click="changeDefaultAddress(item, item.isDefault)">
             <text
               :class="[
                 'iconfont margin-text',
@@ -29,7 +28,7 @@
             </text>
             {{ item.isDefault ? '默认地址' : '设为默认' }}
           </view>
-          <view class="edit-del" style="font-size: 24rpx">
+          <view class="edit-del">
             <view style="margin-right: 48rpx" @click="goToUpdatePage(item)">
               <text class="iconfont icon-bianjiedit icon-text"></text>编辑
             </view>
@@ -63,16 +62,16 @@
 </template>
 
 <script setup lang="ts">
-import { getAdressList } from '@/api/address';
+import { deleteAddress, getAdressList, updateAddress } from '@/api/address';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import CustomPage from '@/components/CustomPage/index.vue';
 import { staticUrl } from '@/utils/config';
+
+const props = defineProps({ flag: { type: Boolean, default: false } });
 const adressList = ref<any[]>([]);
 const store = useBasicsData();
-console.log(store.useMid);
-
 const getData = (flag = false) => {
   getAdressList({ mid: store.useMid || 'C880523C-623F-BAC9-D951-07FCC9E9A9E4' })
     .then(res => {
@@ -81,10 +80,10 @@ const getData = (flag = false) => {
       if (flag) {
         setTimeout(() => {
           uni.showToast({
-            title: '设置成功',
-            duration: 3000,
+            title: '设置成功!',
+            icon: 'none',
           });
-        }, 500);
+        }, 100);
       }
     });
 };
@@ -92,14 +91,31 @@ onLoad(() => {
   getData();
 });
 const handleSelectedAddress = (e: any) => {
-  console.log(e);
+  if (!props.flag) return;
   uni.$emit('chooseAddress', e);
   uni.navigateBack();
 };
 const goToUpdatePage = (e: any) => [e];
-const handleSelectedGuid = (e: any) => [e];
-const deleAdress = (e: any) => [e];
-const updateAddress = (e: any, d: any) => [e, d];
+const handleSelectedGuid = () => {
+  uni.navigateTo({ url: 'add' });
+};
+const deleAdress = async (id: string) => {
+  const { cancel } = await uni.showModal({ content: '确定要删除该地址吗？' });
+  if (cancel) return;
+  const { msg } = await deleteAddress(id);
+  if (msg !== '成功') return;
+  uni.showToast({
+    title: '删除成功!',
+    icon: 'none',
+  });
+  getData();
+};
+// 修改默认地址
+const changeDefaultAddress = async (e: any, d: string) => {
+  e.isDefault = d === 'true' ? 'false' : 'true';
+  const { msg } = await updateAddress(e);
+  msg === '成功' && getData(true);
+};
 </script>
 
 <style scoped lang="scss">
@@ -229,6 +245,7 @@ const updateAddress = (e: any, d: any) => [e, d];
       color: #9697a2;
       font-weight: 400;
       .edit-del {
+        font-size: 24rpx;
         display: flex;
         align-items: center;
       }
