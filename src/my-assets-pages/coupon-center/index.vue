@@ -1,27 +1,38 @@
 <template>
-<swiper class="advert-list">
-    <swiper-item v-for="item in advertList" :key="item.imgUrl" class="advert-list-item">
-      <image mode="aspectFill" :src="item.imgUrl"></image>
-    </swiper-item>
-  </swiper>
+  <CustomPage>
+    <swiper class="advert-list">
+      <swiper-item
+        v-for="item in advertList"
+        :key="item.imgUrl"
+        class="advert-list-item"
+      >
+        <image mode="aspectFill" :src="item.imgUrl"></image>
+      </swiper-item>
+    </swiper>
 
-  <view class="coupon-list">
-    <coupon-item :item="item" v-for="item in receiveCenterList" :key="item.couponId">
-    </coupon-item>
-  </view>
-
-  <page-footer></page-footer>
-
+    <view class="coupon-list">
+      <coupon-item
+        :item="item"
+        v-for="item in receiveCenterList"
+        :key="item.couponId"
+      >
+      </coupon-item>
+    </view>
+  </CustomPage>
 </template>
-<script lang='ts' setup>
+
+<script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue';
-import type { AdvertList, QueryReceiveCenterListForm, ReceiveCenterList } from './index.type';
+import type {
+  AdvertList,
+  QueryReceiveCenterListForm,
+  ReceiveCenterList,
+} from './index.type';
 import {
   queryAdvertFrontRequest,
   queryReceiveCenterListFrontRequest,
 } from '@/api/coupon-center';
-import CouponItem from '@/components/CouponItem/index.vue';
-import PageFooter from '@/components/PageFooter/index.vue';
+import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 
 const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
@@ -44,7 +55,7 @@ const queryAdvertFront = async () => {
 };
 const queryReceiveCenterListFront = async () => {
   const queryReceiveCenterListFrontRequestRes =
-        await queryReceiveCenterListFrontRequest(queryReceiveCenterListForm);
+    await queryReceiveCenterListFrontRequest(queryReceiveCenterListForm);
 
   if (!queryReceiveCenterListFrontRequestRes?.data) {
     return;
@@ -59,7 +70,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 page {
   padding: 30rpx;
 }

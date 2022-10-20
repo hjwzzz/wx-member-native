@@ -20,12 +20,6 @@
       }
     },
     {
-      "path": "pages/center/coupon-center/index",
-      "style": {
-        "navigationBarTitleText": "优惠券"
-      }
-    },
-    {
       "path": "pages/login/index",
       "style": {
         "navigationBarTitleText": "登录"
@@ -69,7 +63,7 @@
         "navigationBarTitleText": "我的积分"
       }
     }
-    
+
   ],
   "tabBar": {
     "custom": true,
@@ -97,6 +91,17 @@
           "path": "address/address-list",
           "style": {
             "navigationBarTitleText": "收货地址"
+          }
+        }
+      ]
+    },
+    {
+      "root": "my-assets-pages",
+      "pages": [
+        {
+          "path": "coupon-center/index",
+          "style": {
+            "navigationBarTitleText": "优惠券"
           }
         }
       ]
