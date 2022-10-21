@@ -110,6 +110,12 @@
           "style": {
             "navigationBarTitleText": "我的积分"
           }
+        },
+        {
+          "path": "integral/use-ril-record",
+          "style": {
+            "navigationBarTitleText": "我的积分"
+          }
         }
       ]
     }
