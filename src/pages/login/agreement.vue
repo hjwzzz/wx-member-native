@@ -1,29 +1,22 @@
+<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <template>
-  <view class="post">
-    <text class="content"> </text>
-    <view class="footer"> 技术支持：金千枝数智云 </view>
-  </view>
+  <CustomPage>
+    <view class="post">
+      <view v-html="content"></view>
+    </view>
+  </CustomPage>
 </template>
 
 <script setup lang="ts">
-import { getMemberEula } from '@/api/login';
 import { onLoad } from '@dcloudio/uni-app';
+import { ref } from 'vue';
+import CustomPage from '@/components/CustomPage/index.vue';
 
-let protocol;
-let eulas;
-onLoad(async () => {
-  const { code, data } = await getMemberEula('');
-
-  if (code === 0) {
-    protocol = Object.assign({}, data);
-    eulas = data.eulas;
-    console.log(protocol, eulas);
-
-    // A隐私协议
-    // uni.setStorageSync('protocolA', this.eulas[0]['content']);
-    // // B 注册协议
-    // uni.setStorageSync('protocolB', this.eulas[1]['content']);
-  }
+const content = ref('');
+onLoad(async e => {
+  const { content: c, title } = JSON.parse(e.eula || '');
+  content.value = c;
+  uni.setNavigationBarTitle({ title });
 });
 </script>
 
@@ -31,13 +24,5 @@ onLoad(async () => {
 .post {
   margin: 0 15px;
   padding: 15px 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.footer {
-  margin: 0 40rpx;
-  text-align: center;
 }
 </style>

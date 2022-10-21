@@ -277,15 +277,17 @@ const handleFixedSysUrl = () => {
 //  warranty  /pages/center/quality/index  质保单
 //  sign    /signInGift/giftPage/index  去签到
 //  coupon   /pages/center/ticket/index   优惠券
+const temporary: any = {
+  point: '/my-assets-pages/integral/index',
+  my_prize: '/my-assets-pages/my-prize/index',
+};
 const handleQuickUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index' };
   if (temporary[item.code]) {
     uni.navigateTo({ url: temporary[item.code] });
     return;
   }
 };
 const handleEntryUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index' };
   if (temporary[item.code]) {
     uni.navigateTo({ url: temporary[item.code] });
     return;
