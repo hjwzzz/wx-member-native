@@ -32,3 +32,30 @@ export const queryAllLevelRights = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// 完善资料
+export const completeInfo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/completeInfo`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 查询个人资料设置
+export const queryPrivateFieldSetting = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryPrivateFieldSetting`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 获取会员个人资料
+export const getMemberInfo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/getMemberInfo`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 职业下拉选择查询(根据分类)
+export const queryProfessionAsCate = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryProfessionAsCate`;
+  const res = await request(url, data);
+  return res;
+};
