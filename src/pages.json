@@ -26,6 +26,12 @@
       }
     },
     {
+      "path": "pages/login/agreement",
+      "style": {
+        "navigationBarTitleText": "用户协议"
+      }
+    },
+    {
       "path": "pages/member-equity/index",
       "style": {
         "navigationBarTitleText": "会员权益"

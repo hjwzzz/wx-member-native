@@ -138,7 +138,7 @@ const determine = (item: prizeType) => {
   console.log('确认领取');
 };
 const showDetail = (item: prizeType) => {
-  uni.navigateTo({ url: `/pages/my-prize/prize-detail?name=${item.status.name}&id=${item.id}` });
+  uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}` });
 };
 const changeTab = (e: any) => {
   current.value = e?.currentIndex ?? e;
