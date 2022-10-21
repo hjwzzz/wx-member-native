@@ -78,7 +78,7 @@
         </view>
       </view>
 
-      <view class="submit" @click="handleSelectedGuid">
+      <view class="submit" @click="editAddress">
         <view class="btn">保存</view>
       </view>
     </view>
@@ -145,7 +145,7 @@ const showMap = () => {
   });
 };
 
-const handleSelectedGuid = () => {
+const editAddress = () => {
   // 校验数据
   const phoneReg =
     /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
@@ -201,42 +201,6 @@ const handleSelectedGuid = () => {
   flex-direction: column;
   justify-content: space-between;
 
-  .adress-list {
-    padding: 30rpx;
-    .list-item {
-      display: flex;
-      flex-direction: column;
-      background: #ffffff;
-      border-radius: 16rpx;
-      margin-bottom: 30rpx;
-      .top {
-        display: flex;
-        flex-direction: column;
-        padding: 30rpx;
-        border-bottom: 1px solid #ebedf0;
-        .person-info {
-          display: flex;
-          justify-content: space-between;
-          color: #323338;
-          font-size: 28rpx;
-          margin-bottom: 18rpx;
-        }
-      }
-      .bottom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20rpx 30rpx;
-        color: #9697a2;
-        font-weight: 400;
-        .edit-del {
-          display: flex;
-          align-items: center;
-        }
-      }
-    }
-  }
-
   .enter-adress {
     margin-top: 30rpx;
     // min-height: calc(100vh - 250rpx - constant(safe-area-inset-bottom));
@@ -261,27 +225,6 @@ const handleSelectedGuid = () => {
           color: #323338;
           line-height: 40rpx;
           margin-right: 50rpx;
-        }
-      }
-      .verify {
-        display: flex;
-        padding: 30rpx;
-        .title {
-          width: 84rpx;
-          height: 40rpx;
-          font-size: 28rpx;
-          font-weight: 400;
-          color: #323338;
-          line-height: 40rpx;
-          margin-right: 50rpx;
-        }
-        .tip {
-          width: 140rpx;
-          height: 40rpx;
-          font-size: 28rpx;
-          font-weight: 400;
-          color: #ff547b;
-          line-height: 40rpx;
         }
       }
     }
@@ -361,32 +304,6 @@ const handleSelectedGuid = () => {
             padding-top: 5rpx;
           }
         }
-      }
-    }
-  }
-
-  .no-adress {
-    background: #f5f5f5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    .address {
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      .imgStyle {
-        width: 320rpx;
-        height: 320rpx;
-      }
-      .adress-text {
-        margin-top: 40rpx;
-        font-weight: 400;
-        color: #9697a2;
-        font-size: 28rpx;
       }
     }
   }

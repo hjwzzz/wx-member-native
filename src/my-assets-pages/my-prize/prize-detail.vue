@@ -9,7 +9,11 @@
           ]"
       >
         <view class="left">
-          <image class="img" :src="`${imageUrl}prize/dailingqu.png`" mode="" />
+          <image
+            class="img"
+            :src="`${staticUrl}prize/${remindObj[statusName as keyof typeof remindObj]}.png`"
+            mode=""
+          />
         </view>
         <view class="right">
           <view class="title">{{ statusName }}</view>
@@ -21,21 +25,23 @@
         </view>
       </view>
       <!-- 核销码 -->
-      <!-- <view class="Qrode">
-      <view class="verification"> 核销码：{{ detail.vcode }} </view>
-      <view class="erweima">
-        <tkiQrcode val="2222"></tkiQrcode>
-        <canvas canvas-id="myQrcode" style="width: 300rpx" />
+      <view
+        class="Qrode"
+        v-if="statusName === '待领取' && detail.recvManner.code === '1'"
+      >
+        <view class="verification"> 核销码：{{ detail.vcode }} </view>
+        <view class="erweima">
+          <canvas canvas-id="myQrcode" style="width: 300rpx" />
+        </view>
+        <view class="owneweima">
+          领取时，请向工作人员出示二维码 此码一次有效，请勿泄露
+        </view>
+        <view class="guoqi"> 有效期至：{{ detail.cutExpireTime }} </view>
       </view>
-      <view class="owneweima">
-        领取时，请向工作人员出示二维码 此码一次有效，请勿泄露
-      </view>
-      <view class="guoqi"> 有效期至：{{ detail.cutExpireTime }} </view>
-    </view> -->
       <!-- 领取成功状态 -->
       <view class="Qrode" v-if="statusName === '已领取'">
         <view class="erweima">
-          <image :src="`${imageUrl}prize/lingquchenggong.png`" mode="" />
+          <image :src="`${staticUrl}prize/lingquchenggong.png`" mode="" />
         </view>
         <view class="successful"> 奖品领取成功 </view>
         <view class="guoqi"> 领取时间：{{ detail.recvTime }} </view>
@@ -96,9 +102,8 @@
       <view
         class="information"
         v-if="
-          detail.distName !== null ||
-          detail.disCity !== null ||
-          detail.disAddress !== null
+          statusName !== '待兑换' &&
+          (detail.distName || detail.disCity || detail.disAddress)
         "
       >
         <view class="title"> 兑换信息 </view>
@@ -134,39 +139,23 @@
       <view
         class="foohead"
         v-if="
-          detail.receiver !== null ||
-          detail.phone !== null ||
-          detail.bizTime !== null
+          statusName !== '待兑换' &&
+          (detail.receiver || detail.phone || detail.bizTime)
         "
       >
-        <view class="a1">
-          <view class="left" style="width: 130rpx"> 领取人 </view>
-          <view class="right" style="width: 470rpx">
-            {{ detail.receiver || '--' }}
-          </view>
-        </view>
-        <view class="a1">
-          <view class="left" style="width: 130rpx"> 手机号 </view>
+        <view class="a1" v-for="{ k, v } in manInfoRow" :key="k">
+          <view class="left"> k </view>
           <view class="right">
-            {{ detail.phone || '--' }}
-          </view>
-        </view>
-        <view class="a1">
-          <view class="left" style="width: 130rpx"> 兑换时间 </view>
-          <view class="right">
-            {{ detail.bizTime || '--' }}
-          </view>
-        </view>
-        <view class="a1">
-          <view class="left" style="width: 130rpx"> 流水号 </view>
-          <view class="right">
-            {{ detail.recvBillNo || '--' }}
+            {{ detail[v as keyof prizeType] || '--' }}
           </view>
         </view>
       </view>
       <!-- 发货信息 -->
       <view
-        v-if="['已领取', '待领取', '已发货'].includes(statusName)"
+        v-if="
+          ['已领取', '待领取', '已发货'].includes(statusName) &&
+          detail.recvManner.code === '2'
+        "
         class="foohead"
         style="border-radius: 12rpx"
       >
@@ -192,22 +181,17 @@
       </view>
 
       <view
-        v-if="true || statusName === '待领取' || statusName === '已发货'"
+        v-if="statusName === '待领取' || statusName === '已发货'"
         class="button"
       >
-        <button
-          :style="{ backgroundColor: basicsData.mainColor }"
-          type="button"
-          @click="getPrize"
-        >
-          确认领取
-        </button>
+        <button class="btn" type="button" @click="getPrize">确认领取</button>
       </view>
     </view>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
+import qrCode from '@/utils/qrcode.js';
 import { queryDetail, queryStatus, updateReceiveSend } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, toRef } from 'vue';
@@ -215,7 +199,6 @@ import Goods from './component/Goods.vue';
 import { useBasicsData } from '@/store/basicsData';
 import Exchange from './component/Exchange.vue';
 import { staticUrl } from '@/utils/config';
-const imageUrl = staticUrl;
 
 const basicsData = useBasicsData();
 const props = defineProps<{
@@ -258,6 +241,24 @@ interface prizeType {
   express: string;
   shipTime: string;
 }
+const manInfoRow = [
+  {
+    k: '领取人',
+    v: 'receiver',
+  },
+  {
+    k: '手机号',
+    v: 'phone',
+  },
+  {
+    k: '兑换时间',
+    v: 'bizTime',
+  },
+  {
+    k: '流水号',
+    v: 'recvBillNo',
+  },
+];
 // 提示标语
 const remindObj = {
   '1': {
@@ -266,6 +267,7 @@ const remindObj = {
     已发货: '请到指定门店领取',
     已领取: '您已领取奖品',
     备货中: '商家备货完成后即可到店领取',
+    已失效: '您的奖品已超过领取时间',
   },
   '2': {
     // 邮寄状态
@@ -273,7 +275,14 @@ const remindObj = {
     已发货: '请到指定门店领取',
     已领取: '您已确认收货并领取奖品',
     备货中: '商家备货完成后将发货',
+    已失效: '您的奖品已超过兑换时间',
   },
+  // 图标
+  待领取: 'dailingqu',
+  已发货: 'dailingqu',
+  已领取: 'yilingqu',
+  备货中: 'beihuozhong',
+  已失效: 'yishixiao',
 };
 const detail = ref<prizeType>({} as prizeType);
 const statusName = toRef(props, 'name');
@@ -284,14 +293,21 @@ const createdtatus = async () => {
   if (code === 0) {
     data.name ??= data.prizeName;
     detail.value = data;
+    statusName.value = data.status.name;
+    if (
+      statusName.value === '待领取' &&
+      data.recvManner.code === 1 &&
+      data.vcode
+    ) {
+      qrCode.draw(
+        `mport qrCode from '@/utils/qrcode.js';
+import { queryDetail, queryStatus, updateRece ';`,
+        'myQrcode',
+        150,
+        150
+      );
+    }
   }
-
-  // drawQrcode({
-  //   width: 155,
-  //   height: 155,
-  //   canvasId: 'myQrcode',
-  //   text: res.data.vcode,
-  // });
 };
 const getPrize = async () => {
   const { cancel } = await uni.showModal({
@@ -402,7 +418,7 @@ onLoad(() => {
 // 领取信息
 .Qrode {
   margin-top: 30rpx;
-  height: 442rpx;
+  // height: 442rpx;
   background-color: #ffffff;
   border-radius: 16rpx;
   padding: 50rpx;
@@ -413,6 +429,13 @@ onLoad(() => {
     font-family: PingFang-SC-Heavy, PingFang-SC;
     font-weight: 800;
     color: #414141;
+  }
+  .owneweima {
+    font-size: 24rpx;
+    margin: 20rpx 120rpx 20rpx;
+    width: 360rpx;
+    height: 80rpx;
+    color: #b7b8c4;
   }
 
   .erweima {
@@ -460,11 +483,12 @@ onLoad(() => {
     font-size: 28rpx;
 
     .left {
-      /* width: 150rpx;*/
+      width: 130rpx;
       color: #b0b0b8;
     }
 
     .right {
+      width: 470rpx;
       margin-left: 20rpx;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -491,7 +515,8 @@ onLoad(() => {
   padding-top: 10rpx;
   padding-bottom: calc(10rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
-  button {
+  .btn {
+    background-color: var(--main-color);
     height: 80rpx;
     line-height: 80rpx;
     width: 100%;
