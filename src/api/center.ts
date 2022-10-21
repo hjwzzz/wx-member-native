@@ -42,3 +42,16 @@ export const queryPointDetailPage = async (data: unknown) => {
   const res = await request(url, data);
   return res;
 };
+
+// 我的储值列表
+export const queryDepList = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/memAcctDepFront/usr/queryDepList`;
+  const res = await request(url, data);
+  return res;
+};
+// 我的储值明细
+export const queryDepDetailPage = async (data: unknown) => {
+  const url = `${baseUrl}/emp-base/memAcctDepFront/usr/queryDepDetailPage`;
+  const res = await request(url, data);
+  return res;
+};

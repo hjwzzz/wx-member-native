@@ -163,7 +163,7 @@ const loadingTop = ref(true);
 const current = ref(0); // 0表示 全部页面， 1 表示 收入页面 ， 2 表示支出页面
 const timeValue = ref('');
 const opKind = ref('');
-const show = ref(false);
+// const show = ref(false);
 const status = ref('loadmore');
 // const iconType = ref('circle');
 // const iconColor = ref('#FF547B');
@@ -204,6 +204,7 @@ onLoad((options: any) => {
 
 onMounted(() => {
   // get_time();
+  timeValue.value = current_time();
   queryPointDetailPagFun();
 });
 
@@ -250,7 +251,7 @@ const current_time = () => {
   const date = new Date();
   const year = date.getFullYear();
   const month = add_zero(date.getMonth() + 1);
-  timeValue.value = `${year}-${month}`;
+
   return `${year}-${month}`;
 };
 const add_zero = (temp: string | number) => {
@@ -313,9 +314,9 @@ const incomeFun = (opKind: any) => {
   return '';
 };
 
-const picker = () => {
-  show.value = true;
-};
+// const picker = () => {
+//   show.value = true;
+// };
 
 // // 日期确认返回值
 // const confirm = res => {
@@ -394,12 +395,6 @@ const getPassYearFormatDate = () => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  .iconto {
-    position: absolute;
-    right: 24rpx;
-    top: 40rpx;
-    color: #c0c0c0;
-  }
 
   .top-title {
     padding-top: 40rpx;

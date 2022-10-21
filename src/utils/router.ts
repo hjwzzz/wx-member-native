@@ -22,7 +22,7 @@ const pageCode: any = {
   wm_center: '/pages/center/index', // 个人中心
   wm_index: '/pages/index/index', //  首页
   sign: '', // 签到
-  balance: '', // 我的余额
+  balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '', // 我的优惠券
   nearby_store: '', // 附近门店
 };
