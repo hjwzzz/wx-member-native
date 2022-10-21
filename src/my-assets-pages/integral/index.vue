@@ -10,7 +10,7 @@
         >
           <view class="left">
             <view class="img">
-              <image :src="item.imgUrl" mode=""></image>
+              <image class=".image" :src="item.imgUrl" mode=""></image>
             </view>
             <view class="jifei">
               <view class="userjf"> 我的{{ item.name }} </view>
@@ -22,7 +22,11 @@
         </view>
       </view>
       <view class="imagewu" v-else>
-        <image :src="staticUrl + 'img/noIntegral.png'" mode=""></image>
+        <image
+          class=".image"
+          :src="staticUrl + 'img/noIntegral.png'"
+          mode=""
+        ></image>
         <view class="wujilu"> 暂无积分记录 </view>
       </view>
     </view>
@@ -93,7 +97,7 @@ const queryPointListFun = async () => {
     .left {
       display: flex;
       align-items: center;
-      .img image {
+      .img .image {
         width: 88rpx;
         height: 88rpx;
       }
@@ -142,7 +146,7 @@ const queryPointListFun = async () => {
     height: calc(100vh - 240rpx);
 
     /* margin-bottom: ; */
-    image {
+    .image {
       width: 320rpx;
       height: 320rpx;
     }

@@ -122,7 +122,27 @@
           "style": {
             "navigationBarTitleText": "我的积分"
           }
+        },
+        {
+          "path": "thebalance/index",
+          "style": {
+            "navigationBarTitleText": "我的余额"
+          }
+        },
+        {
+          "path": "thebalance/use-balance",
+          "style": {
+            "navigationBarTitleText": "我的余额"
+          }
+        },
+        {
+          "path": "thebalance/detail_record",
+          "style": {
+            "navigationBarTitleText": "记录明细"
+          }
         }
+        
+        
       ]
     }
   ]
