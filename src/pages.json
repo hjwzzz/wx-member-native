@@ -54,6 +54,12 @@
       "style": {
         "navigationBarTitleText": "添加收货地址"
       }
+    },
+    {
+      "path": "pages/center/user-info/index",
+      "style": {
+        "navigationBarTitleText": "个人资料"
+      }
     }
   ],
   "tabBar": {

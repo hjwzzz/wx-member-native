@@ -12,6 +12,3 @@ export const wxMiniAuthRequest = (data: login.WxMiniAuthRequestParams) => reques
   `${baseUrl}/emp-base/member/login/Front/wxMiniAuth`,
   data
 );
-
-// 获取用户协议
-export const getMemberEula = async (data: any) => request(`${baseUrl}/emp-base/member/login/Front/getMemberEula`, data);

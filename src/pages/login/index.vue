@@ -12,10 +12,18 @@
     >
       <view class="protocol">
         <text>登录代表阅读并同意</text>
-        <text class="eula-name" v-if="protocol.regAgreementShowed">
-          《用户协议》
+        <text
+          class="eula-name"
+          @click="agreement(1)"
+          v-if="protocol.regAgreementShowed"
+        >
+          《注册协议》
         </text>
-        <text class="eula-name" v-if="protocol.privacyAgreementShowed">
+        <text
+          class="eula-name"
+          @click="agreement(0)"
+          v-if="protocol.privacyAgreementShowed"
+        >
           《隐私协议》
         </text>
       </view>
@@ -105,13 +113,12 @@ const getLogo = async () => {
 
 const getMemberEula = async () => {
   const getMemberEulaRequestRes = await getMemberEulaRequest();
-
   if (!getMemberEulaRequestRes.data) {
     return;
   }
-
   Object.assign(protocol, getMemberEulaRequestRes.data);
 };
+const agreement = (i: number) => uni.navigateTo({ url: `agreement?eula=${JSON.stringify(protocol.eulas[i])}` });
 
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
   if (errMsg === 'getPhoneNumber:fail user deny') {
