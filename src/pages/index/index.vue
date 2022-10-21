@@ -72,6 +72,7 @@
                   class="item-shop"
                   v-for="(item, index) in navs"
                   :key="index"
+                  @click="handleEntryUrl(item)"
                 >
                   <view class="item-header">
                     <image :src="item.icoUrl" mode=""></image>
@@ -227,6 +228,14 @@ const topBgImageUrl = computed(() => {
   }
   return 'linear-gradient(121deg, #fff0eb 0%, #dce2fb 100%)';
 });
+
+const handleEntryUrl = (item: any) => {
+  const temporary: any = { point: '/my-assets-pages/integral/index' };
+  if (temporary[item.code]) {
+    uni.navigateTo({ url: temporary[item.code] });
+    return;
+  }
+};
 </script>
 
 <style lang="scss" scoped>

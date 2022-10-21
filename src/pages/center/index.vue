@@ -76,8 +76,11 @@
               v-if="item.param.showType"
             >
               <block v-for="(entry, index) in item.param.linkList" :key="index">
-                <!-- @click="handleEntryUrl(entry)" -->
-                <view class="list-item" v-if="entry.showed">
+                <view
+                  class="list-item"
+                  @click="handleEntryUrl(entry)"
+                  v-if="entry.showed"
+                >
                   <view class="item-icon">
                     <image :src="entry.icoUrl" mode="aspectFit" />
                   </view>
@@ -275,7 +278,14 @@ const handleFixedSysUrl = () => {
 //  sign    /signInGift/giftPage/index  去签到
 //  coupon   /pages/center/ticket/index   优惠券
 const handleQuickUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index?id=zhiwen' };
+  const temporary: any = { point: '/my-assets-pages/integral/index' };
+  if (temporary[item.code]) {
+    uni.navigateTo({ url: temporary[item.code] });
+    return;
+  }
+};
+const handleEntryUrl = (item: any) => {
+  const temporary: any = { point: '/my-assets-pages/integral/index' };
   if (temporary[item.code]) {
     uni.navigateTo({ url: temporary[item.code] });
     return;

@@ -22,15 +22,27 @@
               {{ totalObj.clearTip || '' }}
             </view>
           </view>
-          <view class="rqi-cell-item" @click="picker">
-            <view class="rqi-cell-item-left">
-              {{ totalObj.name + '明细' }}</view
-            >
-            <view class="rqi-cell-item-right"
-              >{{ timeValue }}
-              <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
+
+          <picker
+            mode="date"
+            fields="month"
+            :value="timeValue"
+            :start="getPassYearFormatDate()"
+            :end="current_time()"
+            @change="changeData"
+          >
+            <view class="rqi-cell-item">
+              <view class="rqi-cell-item-left">
+                {{ totalObj.name + '明细' }}
+              </view>
+              <view class="rqi-cell-item-right">
+                <text>
+                  {{ timeValue }}
+                </text>
+                <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
+              </view>
             </view>
-          </view>
+          </picker>
 
           <view class="allList">
             <view class="tabs-list">
@@ -55,22 +67,9 @@
               >
                 支出
               </view>
-              <!-- <u-tabs
-                class="u-tabs"
-                :list="list"
-                height="100"
-                :is-scroll="false"
-                :inactive-color="'#aaabb5'"
-                :active-color="mainColor || '#323338'"
-                bar-width="74"
-                :current="current"
-                @change="change"
-                :bar-style="{ background: mainColor || '#FF547B' }"
-              >
-              </u-tabs> -->
             </view>
             <!-- 全部页面 -->
-            <view class="boxList" v-if="current === 0">
+            <view class="boxList">
               <view class="title">
                 <view class="tit">
                   <view class="item">
@@ -78,12 +77,12 @@
                       {{ totalData.time }}
                     </view>
                     <view class="right">
-                      <view class="r1">
+                      <view class="r1" v-if="current === 0 || current === 1">
                         收入：<text class="yuan">{{
                           totalData.totalInOfMonth || 0
                         }}</text>
                       </view>
-                      <view class="r2">
+                      <view class="r2" v-if="current === 0 || current === 2">
                         支出：<text class="yuan">{{
                           setTotalOutOfMonth(totalData.totalOutOfMonth) || 0
                         }}</text>
@@ -95,7 +94,6 @@
                   <view
                     class="item"
                     v-for="(item, index) in dataList"
-                    @click="detail"
                     :key="index"
                   >
                     <view class="top">
@@ -104,7 +102,6 @@
                           getText(item.remark) || ''
                         }}</text>
                       </view>
-                      <!--     color: #f33030; -->
                       <view
                         class="bott"
                         :style="{
@@ -119,109 +116,6 @@
                       <view class="left left-time">
                         {{ item.createTime }}
                       </view>
-                      <!-- <view class="right"> {{ totalObj.name }} </view> -->
-                    </view>
-                  </view>
-                </view>
-                <view class="imagewu" v-else>
-                  <image
-                    :src="staticUrl + 'img/noIntegral.png'"
-                    mode=""
-                  ></image>
-                  <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
-                </view>
-              </view>
-            </view>
-
-            <view class="boxList" v-if="current === 1">
-              <view class="title">
-                <view class="tit">
-                  <view class="item">
-                    <view class="left">
-                      {{ totalData.time }}
-                    </view>
-                    <view class="right">
-                      <view class="r1">
-                        收入：<text class="yuan">{{
-                          totalData.totalInOfMonth || 0
-                        }}</text>
-                      </view>
-                    </view>
-                  </view>
-                </view>
-                <view class="jifei" v-if="dataList.length">
-                  <view
-                    class="item"
-                    v-for="(item, index) in dataList"
-                    @click="detail"
-                    :key="index"
-                  >
-                    <view class="top">
-                      <view class="left">
-                        <text v-if="item.remark">{{
-                          getText(item.remark) || ''
-                        }}</text>
-                      </view>
-                      <view class="bott">
-                        {{ incomeFun(item.opKind) }}{{ item.realPoint }}
-                      </view>
-                    </view>
-                    <view class="bottom">
-                      <view class="left left-time">
-                        {{ item.createTime }}
-                      </view>
-                      <!-- <view class="right"> {{ totalObj.name }} </view> -->
-                    </view>
-                  </view>
-                </view>
-                <view class="imagewu" v-else>
-                  <image
-                    :src="staticUrl + 'img/noIntegral.png'"
-                    mode=""
-                  ></image>
-                  <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
-                </view>
-              </view>
-            </view>
-
-            <view class="boxList" v-if="current === 2">
-              <view class="title">
-                <view class="tit">
-                  <view class="item">
-                    <view class="left">
-                      {{ totalData.time }}
-                    </view>
-                    <view class="right">
-                      <view class="r2">
-                        支出：<text class="yuan">{{
-                          setTotalOutOfMonth(totalData.totalOutOfMonth) || 0
-                        }}</text>
-                      </view>
-                    </view>
-                  </view>
-                </view>
-                <view class="jifei" v-if="dataList.length">
-                  <!--   @click="detail" -->
-                  <view
-                    class="item"
-                    v-for="(item, index) in dataList"
-                    :key="index"
-                  >
-                    <view class="top">
-                      <view class="left">
-                        <text v-if="item.remark">{{
-                          getText(item.remark) || ''
-                        }}</text>
-                      </view>
-                      <view class="bottwo">
-                        {{ incomeFun(item.opKind) }}{{ item.realPoint }}
-                      </view>
-                    </view>
-                    <view class="bottom">
-                      <view class="left left-time">
-                        {{ item.createTime }}
-                      </view>
-                      <!-- <view class="right"> {{ totalObj.name }} </view> -->
                     </view>
                   </view>
                 </view>
@@ -238,16 +132,6 @@
         </view>
       </scroll-view>
 
-      <!-- <u-picker
-        mode="time"
-        @cancel="cancel"
-        @confirm="confirm"
-        v-model="show"
-        :params="params"
-        :safe-area-inset-bottom="true"
-        :start-year="getPassYearFormatDate()"
-        :end-year="current_time()"
-      ></u-picker> -->
       <!-- 加载更多 -->
       <!-- <u-loadmore
         v-show="totalPage > 1"
@@ -267,38 +151,38 @@
 
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
-import { queryPointDetailPage, queryPointList } from '@/api/center';
+import { queryPointDetailPage } from '@/api/center';
 import { staticUrl } from '@/utils/config';
 import { onMounted, ref, Ref } from 'vue';
 const indexBackgroundImage = `url(${staticUrl}quality/integar-bg.png) #ff547b  center center / 100% 100% no-repeat;`;
 
 const loadingTop = ref(true);
-const _freshing = ref(false);
-const triggered = ref(true);
-const time = ref(1); // 1 表示有数据 2表示无数据
+// const _freshing = ref(false);
+// const triggered = ref(true);
+// const time = ref(1); // 1 表示有数据 2表示无数据
 const current = ref(0); // 0表示 全部页面， 1 表示 收入页面 ， 2 表示支出页面
 const timeValue = ref('');
 const opKind = ref('');
 const show = ref(false);
 const status = ref('loadmore');
-const iconType = ref('circle');
-const iconColor = ref('#FF547B');
-const fontSize = ref('24');
+// const iconType = ref('circle');
+// const iconColor = ref('#FF547B');
+// const fontSize = ref('24');
 const page = ref(1);
 const totalPage = ref(0);
 // 日期
-const params = {
-  year: true,
-  month: true,
-  day: false,
-};
+// const params = {
+//   year: true,
+//   month: true,
+//   day: false,
+// };
 // tabs页面参数
-const list = [{ name: '全部' }, { name: '收入' }, { name: '支出' }];
-const loadText = {
-  loadmore: '轻轻上拉',
-  loading: '加载中...',
-  nomore: '已经到底了',
-};
+// const list = [{ name: '全部' }, { name: '收入' }, { name: '支出' }];
+// const loadText = {
+//   loadmore: '轻轻上拉',
+//   loading: '加载中...',
+//   nomore: '已经到底了',
+// };
 //
 const totalObj: Ref<any> = ref({
   clearTip: '',
@@ -319,7 +203,7 @@ onLoad((options: any) => {
 });
 
 onMounted(() => {
-  get_time();
+  // get_time();
   queryPointDetailPagFun();
 });
 
@@ -355,17 +239,19 @@ const setTotalOutOfMonth = (num: any) => {
 //   }, 2000);
 // };
 
-const get_time = () => {
+// const get_time = () => {
+//   const date = new Date();
+//   const year = date.getFullYear();
+//   const month = add_zero(date.getMonth() + 1);
+//   timeValue.value = `${year}-${month}`;
+//   return `${year}-${month}`;
+// };
+const current_time = () => {
   const date = new Date();
   const year = date.getFullYear();
   const month = add_zero(date.getMonth() + 1);
   timeValue.value = `${year}-${month}`;
   return `${year}-${month}`;
-};
-const current_time = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  return year;
 };
 const add_zero = (temp: string | number) => {
   if (temp < 10) return `0${temp}`;
@@ -389,7 +275,7 @@ const queryPointDetailPagFun = async (setMIn?: any) => {
     curPage: page.value,
     startTime: timeValue.value,
     opKind: opKind.value,
-    pageSize: 50,
+    pageSize: 5000,
   };
   const res: any = await queryPointDetailPage(body);
   const { detailList, totalData: totalList } = res?.data;
@@ -431,13 +317,20 @@ const picker = () => {
   show.value = true;
 };
 
+// // 日期确认返回值
+// const confirm = res => {
+//   dataList.value = [];
+//   timeValue.value = `${res.year}-${res.month}`;
+//   queryPointDetailPagFun();
+//   // compareMonth(current_time(), timeValue.value);
+//   // this.getPassYearFormatDate();
+// };
+
 // 日期确认返回值
-const confirm = res => {
+const changeData = (event: any) => {
   dataList.value = [];
-  timeValue.value = `${res.year}-${res.month}`;
+  timeValue.value = event.detail.value;
   queryPointDetailPagFun();
-  // compareMonth(current_time(), timeValue.value);
-  // this.getPassYearFormatDate();
 };
 
 // 切换页面
@@ -484,7 +377,7 @@ const getPassYearFormatDate = () => {
   if (month >= 1 && month <= 9) {
     month = `0${month}`;
   }
-  const currentdate = year;
+  const currentdate = `${year}-${month}`;
   return currentdate;
 };
 </script>
