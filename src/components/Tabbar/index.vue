@@ -73,7 +73,7 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
-  Router.go(item.miniUrl);
+  Router.goCodePage(item.code);
 };
 
 onMounted(() => {

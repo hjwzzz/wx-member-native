@@ -160,7 +160,7 @@ import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
 import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-
+import Router from '@/utils/router';
 import Tabbar from '@/components/Tabbar/index.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -271,25 +271,11 @@ const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
 };
 
-// 暂时设置配置---地址访问不了
-//  point  /pages/center/integral/index  积分
-//  balance  /pages/center/thebalance/index 我的余额
-//  warranty  /pages/center/quality/index  质保单
-//  sign    /signInGift/giftPage/index  去签到
-//  coupon   /pages/center/ticket/index   优惠券
 const handleQuickUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index' };
-  if (temporary[item.code]) {
-    uni.navigateTo({ url: temporary[item.code] });
-    return;
-  }
+  Router.goCodePage(item.code);
 };
 const handleEntryUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index' };
-  if (temporary[item.code]) {
-    uni.navigateTo({ url: temporary[item.code] });
-    return;
-  }
+  Router.goCodePage(item.code);
 };
 </script>
 

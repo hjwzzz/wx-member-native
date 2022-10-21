@@ -119,6 +119,7 @@ import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
+import Router from '@/utils/router';
 
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -230,11 +231,7 @@ const topBgImageUrl = computed(() => {
 });
 
 const handleEntryUrl = (item: any) => {
-  const temporary: any = { point: '/my-assets-pages/integral/index' };
-  if (temporary[item.code]) {
-    uni.navigateTo({ url: temporary[item.code] });
-    return;
-  }
+  Router.goCodePage(item.code);
 };
 </script>
 
