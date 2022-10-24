@@ -1,7 +1,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
-const configRouterAuth = ['my-assets-pages/integral/index'];
+const configRouterAuth = ['my-assets-pages/integral/index', 'my_prize'];
 // 配置switchTab切换页面
 const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
 
@@ -13,7 +13,7 @@ const pageCode: any = {
   point_mall_index: '', // 首页(积分)
   reg: '', // 注册登录
   invite_courteous: '', // 邀请有礼
-  my_prize: '', // 	  我的奖品
+  my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
   reservation: '', // 预约服务
   warranty_list: '', // 质保单列表
   point: '/my-assets-pages/integral/index', // 我的积分
@@ -25,6 +25,7 @@ const pageCode: any = {
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '', // 我的优惠券
   nearby_store: '', // 附近门店
+  storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
 };
 
 // 路由控制
@@ -56,7 +57,7 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string) {
+  static goCodePage(code: string, paramsString: string) {
     const url = pageCode[code];
     if (!url) {
       return;
@@ -65,7 +66,7 @@ class Router {
       uni.switchTab({ url });
       return;
     }
-    uni.navigateTo({ url });
+    uni.navigateTo({ url: url + paramsString });
   }
 }
 export default Router;

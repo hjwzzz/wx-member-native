@@ -4,8 +4,8 @@
       <view class="wrapper-header">
         <view
           class="header"
-          v-for="(item, index) in header"
-          :key="index"
+          v-for="item in header"
+          :key="item.code"
           @click="handleUpdate(item)"
         >
           <view class="left"> {{ item.name }} </view>
@@ -24,11 +24,11 @@
         </view>
       </view>
       <view class="wrapper-info">
-        <template v-for="(item, index) in setList">
+        <template v-for="item in setList" :key="item.code.code">
           <!--				纪念日-->
           <view
             class="info"
-            :key="index"
+            :key="item.code.code"
             @click="updateInfo(item)"
             v-if="item.code.code == 'PRIVATE_FIELD_MDAY' && userInfo.annday"
           >
@@ -52,7 +52,7 @@
           <view
             class="info"
             @click="updateInfo(item)"
-            :key="index"
+            :key="item.code.code"
             v-if="item.code.code !== 'PRIVATE_FIELD_MDAY'"
           >
             <view class="left">
@@ -64,7 +64,7 @@
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
                     class="selecte-redio"
-                    v-for="(radio, index) in items"
+                    v-for="radio in items"
                     :key="radio.name"
                     style="transform: scale(0.7)"
                   >
@@ -108,11 +108,10 @@
                   @change="bindPickerChangeGender"
                   :value="genderIndex"
                   :range="gender"
-                  v-if="item.update === 'Y'"
+                  :disabled="item.update === 'N'"
                 >
                   <view class="uni-input">{{ gender[genderIndex] }}</view>
                 </picker>
-                <view class="uni-input" v-else>{{ gender[genderIndex] }}</view>
               </view>
               <view
                 class="right text"
@@ -125,10 +124,7 @@
                 class="right text"
                 v-if="item.code.code == 'PRIVATE_FIELD_LOCATION'"
               >
-                {{ userInfo.province ? userInfo.province + '/' : ''
-                }}{{ userInfo.city ? userInfo.city + '/' : ''
-                }}{{ userInfo.district ? userInfo.district + '/' : ''
-                }}{{ userInfo.address || '' }}
+                {{ userInfo.fullAddress }}
               </view>
               <view
                 class="right text"
@@ -140,63 +136,33 @@
                 class="right text"
                 v-if="item.code.code == 'PRIVATE_FIELD_PROFESSION'"
               >
-                <!-- #ifdef MP -->
-                <!-- <picker mode="multiSelector" @columnchange="columnChangePro" :range="cityListPro"
-									:value="cityIndexPro" @change="bindCityChangePro" v-if="item.update == 'Y'">
-								<view>
-									{{profession || '未设置'}}
-								</view>
-							</picker>
-							<view v-else>
-								{{profession || '未设置'}}
-							</view> -->
                 <view>{{ profession || '未设置' }} </view>
-                <!-- #endif -->
-                <!-- #ifdef H5 -->
-                <view v-if="item.update == 'Y'">
-                  {{ profession || '未设置' }}
-                </view>
-                <view v-else>
-                  {{ profession || '未设置' }}
-                </view>
-                <!-- #endif -->
               </view>
               <view
                 class="right text"
                 v-if="item.code.code == 'PRIVATE_FIELD_EDUCATION'"
               >
                 <picker
-                  @change="bindPickerChange"
+                  @change="(e:any)=>updateUserIno({education:  parseInt(e.target.value) *10 })"
                   :value="edcIndex"
                   :range="educations"
-                  v-if="item.update === 'Y'"
+                  :disabled="item.update === 'N'"
                 >
                   <view class="uni-input">{{
                     educations[edcIndex] || '未设置'
                   }}</view>
                 </picker>
-                <view class="uni-input" v-else>
-                  {{ educations[edcIndex] || '未设置' }}
-                </view>
               </view>
               <view
                 class="text des-text"
                 v-if="item.code.code == 'PRIVATE_FIELD_BIRTH'"
               >
-                <text v-if="userInfo.birthKind == 'S'">{{
-                  userInfo.birthSolar || ''
-                }}</text>
-                <text v-else-if="userInfo.birthKind == 'U'">{{
+                <!-- 农历、公历切换显示 -->
+                <text v-if="['S', 'U'].includes(userInfo.birthKind)">{{
                   userInfo.birthSolar || ''
                 }}</text>
                 <text v-else>{{ userInfo.birthLunar || '' }}</text>
               </view>
-              <!--						<view-->
-              <!--							class="right text"-->
-              <!--							v-if="item.code.code == 'PRIVATE_FIELD_MDAY' && userInfo.annday"-->
-              <!--						>-->
-              <!--							{{ userInfo.annday || "" }}-->
-              <!--						</view>-->
               <uni-icons
                 type="arrowright"
                 size="14"
@@ -218,6 +184,18 @@
         >
         </uni-calendar>
       </view>
+      <uni-popup ref="popup" :maskClick="popup?.close?.()" type="dialog">
+        <uni-popup-dialog
+          mode="input"
+          :value="111"
+          title="修改用户姓名"
+          placeholder="请输入用户名"
+          is-mask-click
+          confirmText="确认"
+          @close="popup.close()"
+          @confirm="(e:string ) => updateUserIno({ name: e })"
+        ></uni-popup-dialog>
+      </uni-popup>
       <u-select
         v-model="show"
         mode="mutil-column-auto"
@@ -237,6 +215,7 @@ import {
   getMemberInfo,
   queryPrivateFieldSetting,
   queryProfessionAsCate,
+  updateMemberInfo,
 } from '@/api/server';
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
@@ -276,14 +255,16 @@ const proCached = ref([]);
 const selecteList: any[] = [];
 const userInfo = ref<any>({});
 const profession = ref();
-const initDate = formatTime(new Date())
-  .substring(0, 10);
+const initDate = ref(formatTime(new Date())
+  .substring(0, 10));
 const cityIndexPro = ref([0, 0]);
 const current = ref();
 const show = ref(false);
 const phoneSet = ref({});
 const defaultValue = '111';
 const handleUpdate = (e: any) => [e];
+
+const popup = ref();
 const updateInfo = ({
   code: { code },
   update,
@@ -347,7 +328,8 @@ const updateInfo = ({
       break;
     }
     case 'PRIVATE_FIELD_NAME': {
-      router.goCodePage('names');
+      popup.value.open();
+      // router.goCodePage('names');
       break;
     }
 
@@ -358,41 +340,48 @@ const updateInfo = ({
   // selectedItem[code]();
 };
 const calendar = ref();
+const isBirthDay = ref(false);
 const handleOpen = (item: { name: any }) => {
   const { name } = item;
   const mark = 'mday';
   const birthSolar = userInfo.value.birthSolar;
   const annday = userInfo.value.annday;
-  //   if (name == mark) {
-  //     initDate = annday;
-  //     anchor = "A";
-  //   } else {
-  //     initDate = birthSolar;
-  //     anchor = "B";
-  //   }
-  console.log(calendar.value);
-
+  isBirthDay.value = name !== mark;
+  if (name === mark) {
+    initDate.value = annday;
+  } else {
+    initDate.value = birthSolar;
+  }
   calendar.value.open();
+};
+const updateUserIno = async (item: any) => {
+  const { code } = await updateMemberInfo(item);
+  if (code === 0) {
+    Object.assign(userInfo.value, item);
+    '更新成功';
+  }
 };
 const confirmDate = (e: any) => {
   const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
-  if (anchor === 'A') {
-    userInfo.value.annday = e.fulldate;
+  if (!isBirthDay.value) {
     updateUserIno({ annday: e.fulldate });
-  } else if (anchor === 'B') {
-    userInfo.value.birthSolar = e.fulldate;
+  } else {
     userInfo.value.birthLunar = nl;
-    const kind = items[current.value].value;
-    userInfo.value.birthKind = kind;
     updateUserIno({
-      birthKind: kind,
+      birthKind: items[current.value].value,
       birthSolar: e.fulldate,
     });
   }
 };
-const radioChange = (e: any) => [e];
-const bindPickerChangeGender = (e: any) => [e];
-const bindPickerChange = (e: any) => [e];
+const radioChange = (e: any) => {
+  userInfo.value.birthKind = e.detail.value;
+  current.value = items.findIndex(i => i.value === e.detail.value);
+};
+const bindPickerChangeGender = (e: any) => {
+  genderIndex.value = e.detail.value;
+  updateUserIno({ sex: ['M', 'F', 'U'][genderIndex.value] });
+};
+
 const confirm = (e: any) => [e];
 const handleLogout = (e: any) => [e];
 onLoad(() => {
@@ -404,12 +393,10 @@ const querySetting = async () => {
   if (code === 0 && data) {
     const list = data;
     const mark = 'PRIVATE_FIELD_PHONE';
+    // 分离出电话号码栏
     setList.value = list.filter((i: { code?: any }) => {
-      if (i.code.code === mark) {
-        phoneSet.value = i;
-        return false;
-      }
-      return true;
+      if (i.code.code !== mark) return true;
+      phoneSet.value = i;
     });
   }
 };
@@ -423,11 +410,17 @@ const queryPro = async () => {
 
   queryUserInfo();
 };
+
 const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
+    // 拼接完整地址
+    const { province, city, district, address } = data;
+    data.fullAddress =
+      [province, city, district, address].filter(Boolean)
+        .join('/') ?? '';
+
     userInfo.value = data;
-    console.log({ ...userInfo.value });
 
     // 计算农历生日
     if (data.birthSolar) {
@@ -448,8 +441,7 @@ const queryUserInfo = async () => {
       sex,
       birthKind,
     } = data;
-
-    const list = [
+    header.value = [
       {
         name: '个人头像',
         value: avatarUrl || 'https://static.jqzplat.com/img/person.png',
@@ -466,11 +458,13 @@ const queryUserInfo = async () => {
         code: 'phone',
       },
     ];
-    header.value = list;
-    const formatDateType = (i: string) => ({ S: 0, L: 1, U: null }[i] || null);
+
+    // 日期类型（公历/农历）
+    const formatDateType = (i: string) => ({ S: 0, L: 1, U: null }[i] ?? null);
     current.value = formatDateType(birthKind);
-    // const formatGenderType = (i: string) => ({ M: '男', F: '女', U: '未知' }[i] || );
-    const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] || 2);
+
+    // 性别
+    const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] ?? 2);
     genderIndex.value = formatGenderIndex(sex);
     proCached.value.some((i: any, idx) => {
       i?.professionList?.some((j: any, jIdx: number) => {
@@ -481,7 +475,6 @@ const queryUserInfo = async () => {
       });
     });
     // this.cityListPro[1].splice(0, this.cityListPro[1].length);
-
     // if (this.cityJsonPro && this.cityIndexPro[0]) {
     //   this.cityJsonPro[this.cityIndexPro[0]].map(item => {
     //     this.cityListPro[1].push(item);
@@ -627,5 +620,8 @@ const queryUserInfo = async () => {
     font-weight: 400;
     color: #ffffff;
   }
+}
+:deep(.uni-button-color) {
+  color: var(--main-color);
 }
 </style>

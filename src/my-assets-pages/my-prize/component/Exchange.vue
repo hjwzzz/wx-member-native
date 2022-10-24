@@ -128,9 +128,12 @@ const goAdress = () => {
 // 选择店铺
 const storeInfo = ref<any>({});
 const goStore = () => {
-  const { prizeId, distName, relatedId } = props.item;
   uni.$once('chooseStore', e => storeInfo.value = e);
-  uni.navigateTo({ url: `store-list?id=${prizeId}&name=${distName}&relatedId=${relatedId}` });
+  uni.navigateTo({
+    url: `store-list?id=${storeInfo.value.distId ?? ''}&relatedId=${
+      props.item.relatedId
+    }`,
+  });
 };
 
 // 确认兑换
