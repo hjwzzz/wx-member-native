@@ -27,6 +27,9 @@
               <view class="left toE">
                 {{ item.storeName }}
               </view>
+              <view class="left-info" v-if="item.gsResult.code == 'Y'"
+                >归属</view
+              >
               <view class="right">
                 <text v-if="item.range">
                   <text v-if="item.range >= 1">{{ item.range }}km</text>
@@ -91,14 +94,10 @@ import { staticUrl } from '@/utils/config';
 
 const props = defineProps<{
   id: string;
-  name: string;
+  // name: string;
   relatedId: string;
 }>();
 
-const local = ref({
-  lat: 0,
-  lng: 0,
-});
 // 店铺信息
 interface storeType {
   storeName: string;
@@ -109,32 +108,13 @@ interface storeType {
   address: string;
   distId: string;
   tel: string;
+  gsResult: {
+    code: string;
+  };
 }
 const list = ref<storeType[]>([]);
 const selected = ref<storeType>();
 const isActive = (i: storeType) => i.distId === selected.value?.distId;
-
-// 搜索
-const keyward = ref('');
-const searchChange = (e: any) => {
-  keyward.value = e;
-  updateNearStorePost();
-};
-
-// 刷新列表
-const updateNearStorePost = async () => {
-  function logValut({ lng, lat }: any) {
-    return [lng, lat].filter(Boolean)
-      .join(',');
-  }
-  const { code, data } = await updateNearStore({
-    distId: '',
-    storeName: keyward.value,
-    coordCur: logValut(local.value),
-    relatedId: props.relatedId,
-  });
-  if (code === 0) list.value = data;
-};
 
 onLoad(() => {
   uni.getLocation({
@@ -156,6 +136,37 @@ onLoad(() => {
     },
   });
 });
+
+const local = ref({
+  lat: 0,
+  lng: 0,
+});
+
+// 刷新列表
+const updateNearStorePost = async () => {
+  function logValut({ lng, lat }: any) {
+    return [lng, lat].filter(Boolean)
+      .join(',');
+  }
+  const { code, data } = await updateNearStore({
+    distId: '',
+    storeName: keyward.value,
+    coordCur: logValut(local.value),
+    relatedId: props.relatedId,
+  });
+  if (code === 0) {
+    list.value = data;
+    if (!selected.value?.distId && props.id) {
+      selected.value = data.find((i: storeType) => i.distId === props.id) ?? {};
+    }
+  }
+};
+// 搜索
+const keyward = ref('');
+const searchChange = (e: any) => {
+  keyward.value = e;
+  updateNearStorePost();
+};
 
 const confimStore = () => {
   if (!selected.value) {

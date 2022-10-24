@@ -45,6 +45,12 @@ export const queryPrivateFieldSetting = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// 修改会员个人资料
+export const updateMemberInfo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberInfo`;
+  const res = await request(url, data);
+  return res;
+};
 
 // 获取会员个人资料
 export const getMemberInfo = async (data: any) => {
