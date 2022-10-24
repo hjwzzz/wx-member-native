@@ -136,7 +136,7 @@
           }
         },
         {
-          "path": "thebalance/detail_record",
+          "path": "thebalance/detail-record",
           "style": {
             "navigationBarTitleText": "记录明细"
           }

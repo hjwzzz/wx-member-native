@@ -371,7 +371,7 @@ const change = (index: any) => {
 // 跳转到 明细记录页面
 const detail = (item: any) => {
   uni.setStorageSync('balanceRecord', item);
-  uni.navigateTo({ url: '/my-assets-pages/thebalance/detail_record' });
+  uni.navigateTo({ url: '/my-assets-pages/thebalance/detail-record' });
 };
 
 // 分页加载更多

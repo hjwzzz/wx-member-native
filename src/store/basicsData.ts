@@ -19,6 +19,11 @@ export const useBasicsData = defineStore(
     const setBottomNavList = (item: any[]) => {
       bottomNavList.value = item || [];
     };
+    //  浮窗导航
+    const levitationNavList: Ref<any[]> = ref([]);
+    const setLevitationNavList = (item: any[]) => {
+      levitationNavList.value = item || [];
+    };
 
     const useMid = ref('');
     const setUseMid = (login: string) => {
@@ -34,10 +39,12 @@ export const useBasicsData = defineStore(
       colorTheme,
       checkLogin,
       bottomNavList,
+      levitationNavList,
       setUseMid,
       setMainColor,
       setColorTheme,
       setBottomNavList,
+      setLevitationNavList,
     };
   },
   { persist: { enabled: true } }

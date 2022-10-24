@@ -107,7 +107,7 @@
       </view>
     </view>
   </CustomPage>
-  <Tabbar> </Tabbar>
+  <Tabbar code="wm_index"> </Tabbar>
 </template>
 
 <script setup lang="ts">
@@ -206,8 +206,7 @@ const getGoldPriceByPage = async () => {
         result.push(item);
       }
     });
-
-    todayGoldPriceShowed.value = todayGoldPrice;
+    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed;
     goldPrice.value = result;
     // console.log('goldPrice', result);
   }
