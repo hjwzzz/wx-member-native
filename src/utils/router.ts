@@ -52,7 +52,7 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string, paramsString: string) {
+  static goCodePage(code: string, paramsString = '') {
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {
