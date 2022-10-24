@@ -150,7 +150,7 @@
       </view>
     </view>
   </CustomPage>
-  <Tabbar> </Tabbar>
+  <Tabbar code="wm_center"> </Tabbar>
 </template>
 
 <script setup lang="ts">

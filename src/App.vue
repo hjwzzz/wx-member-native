@@ -13,7 +13,9 @@ const initData = async () => {
     getWmmeberNavRequest(),
   ]);
   if (getWmmeberNavRequestRes.data) {
-    initBasicsData.setBottomNavList(getWmmeberNavRequestRes.data.bottomNavList);
+    const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
+    initBasicsData.setBottomNavList(bottomNavList);
+    initBasicsData.setLevitationNavList(levitationNavList?.reverse());
   }
   if (getWmColorThemeRes.data) {
     initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
