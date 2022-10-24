@@ -1,7 +1,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
-const configRouterAuth = ['my-assets-pages/integral/index'];
+const configRouterAuth = ['point'];
 // 配置switchTab切换页面
 const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
 
@@ -25,22 +25,17 @@ const pageCode: any = {
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '', // 我的优惠券
   nearby_store: '', // 附近门店
+  login: '/pages/login/index',
 };
 
 // 路由控制
 class Router {
   static go(url: string): void {
-    const initBasicsData = useBasicsData();
     if (switchTabUrl.includes(url)) {
       uni.switchTab({ url });
       return;
     }
-    // 如果没有登录，需要登录的页面-就去登录
-    if (!initBasicsData.checkLogin && configRouterAuth.includes(url)) {
-      this.goLogin();
-    } else {
-      uni.navigateTo({ url });
-    }
+    uni.navigateTo({ url });
   }
   // 去登录关闭所有页面
   static goLogin() {
@@ -48,15 +43,16 @@ class Router {
       .pop();
     const route = page ? page.route.split('?')[0] : '';
     Storage.setPages(`/${route}`);
-    uni.reLaunch({ url: '/pages/login/index' });
+    uni.reLaunch({ url: pageCode.login });
   }
   // 从登录返回之前保存的页面
   static fromLoginBack() {
-    const url = Storage.getPages() || '/pages/index/index';
+    const url = Storage.getPages() || pageCode.wm_index;
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
   static goCodePage(code: string) {
+    const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {
       return;
@@ -64,6 +60,10 @@ class Router {
     if (switchTabUrl.includes(url)) {
       uni.switchTab({ url });
       return;
+    }
+    // 如果没有登录，需要登录的页面-就去登录
+    if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
+      return this.goLogin();
     }
     uni.navigateTo({ url });
   }
