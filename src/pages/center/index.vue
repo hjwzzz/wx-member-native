@@ -101,7 +101,6 @@
           >
             <swiper
               style="height: 180rpx"
-              class="banner"
               :indicator-dots="bannerList.length > 1"
               indicator-color
               indicator-active-color="#FF547B"
@@ -110,6 +109,7 @@
               <block v-for="(entry, index) in bannerList" :key="index">
                 <swiper-item>
                   <image
+                    @click.stop="bannerListClick(entry)"
                     class="image"
                     style="height: 180rpx"
                     :src="entry.image || entry.imgUrl"
@@ -239,10 +239,15 @@ const getBannerData = async () => {
         title: '',
         h5Url: item.h5Url,
         miniUrl: item.miniUrl,
+        url: item.url,
       });
     });
     bannerList.value = result;
   }
+};
+const bannerListClick = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  Router.goCodePage(url.code || url.systemUrl);
 };
 
 // 获取今日金价
@@ -570,10 +575,10 @@ const handleEntryUrl = (item: any) => {
 
 .grid-ad {
   width: 690rpx;
-  height: 180rpx;
+  // height: 180rpx;
   margin: 30rpx 0rpx;
   overflow: hidden;
-  line-height: 180rpx;
+  // line-height: 180rpx;
   border-radius: 16rpx;
 
   .image {

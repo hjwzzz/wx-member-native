@@ -5,7 +5,7 @@
       <view
         class="banner-show-background"
         :style="{
-          marginBottom: dataList.bannerList?.length > 0 ? '54rpx' : '30rpx',
+          marginBottom: bannerList?.length > 0 ? '54rpx' : '30rpx',
         }"
       >
         <view
@@ -14,6 +14,26 @@
             background: topBgImageUrl,
           }"
         >
+        </view>
+        <view class="banner">
+          <swiper
+            style="height: 300rpx"
+            :indicator-dots="bannerList.length > 1"
+            indicator-color
+            indicator-active-color="#FF547B"
+            autoplay
+          >
+            <block v-for="(item, index) in bannerList" :key="index">
+              <swiper-item @click.stop="bannerIndexFun(item)">
+                <image
+                  class=""
+                  style="height: 300rpx"
+                  :src="item.imgUrl"
+                  mode="aspectFill"
+                ></image>
+              </swiper-item>
+            </block>
+          </swiper>
         </view>
       </view>
 
@@ -46,6 +66,7 @@
               <block v-for="(item, index) in adBannerList" :key="index">
                 <swiper-item>
                   <image
+                    @click="bannerIndexFun(item)"
                     class=""
                     style="height: 180rpx"
                     :src="item.image"
@@ -108,18 +129,55 @@
     </view>
   </CustomPage>
   <Tabbar code="wm_index"> </Tabbar>
+
+  <view class="home-mask" v-if="maskPopup && floatAdsPopup.length > 0">
+    <view class="home-alert">
+      <view class="alert-img">
+        <view class="alert-box">
+          <swiper
+            :style="{ height: '680rpx' }"
+            class=""
+            :indicator-dots="floatAdsPopup.length > 1"
+            indicator-color
+            indicator-active-color="#FF547B"
+          >
+            <swiper-item v-for="(item, index) in floatAdsPopup" :key="index">
+              <image
+                @click="bannerIndexFun(item)"
+                :src="item.image"
+                mode="aspectFill"
+              ></image>
+            </swiper-item>
+          </swiper>
+        </view>
+      </view>
+      <view class="alert-icon" @click.stop="maskPopup = false">
+        <image
+          class="image"
+          :src="staticUrl + 'img/home-close.png'"
+          mode="aspectFill"
+        ></image>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
-import { wxmemberIndex, getIndexAdBannerList } from '@/api/index';
+import {
+  wxmemberIndex,
+  getIndexAdBannerList,
+  queryPopup,
+  getWmAlertAdBannerList,
+} from '@/api/index';
 import { useBasicsData } from '@/store/basicsData';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
 import Router from '@/utils/router';
+import { staticUrl } from '@/utils/config';
 
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -128,6 +186,8 @@ onMounted(() => {
   getPageDate();
   getAdBannerList();
   getGoldPriceByPage();
+  queryPopupFun();
+  getWmAlertAdBannerListFun();
 });
 
 const bannerList: Ref<any> = ref([]);
@@ -153,6 +213,11 @@ const getPageDate = async () => {
   });
 
   getPanelList();
+};
+
+const bannerIndexFun = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  Router.goCodePage(url.code || url.systemUrl);
 };
 // QUICK_NAV
 const getPanelList = () => {
@@ -184,7 +249,7 @@ const getAdBannerList = async () => {
         title: item.title,
         url: item.url,
       })) || [];
-    // console.log('list', adBannerList.value);
+    // console.log('listadBannerLitadBannerList', adBannerList.value);
     adBannerList.value = list;
   }
 };
@@ -206,7 +271,7 @@ const getGoldPriceByPage = async () => {
         result.push(item);
       }
     });
-    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed;
+    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
     goldPrice.value = result;
     // console.log('goldPrice', result);
   }
@@ -232,6 +297,37 @@ const topBgImageUrl = computed(() => {
 const handleEntryUrl = (item: any) => {
   Router.goCodePage(item.code);
 };
+
+// 设置广告弹窗
+// frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出
+// isOpen: 是否开启弹窗 Y:开启 N:关闭
+const floatAdsPopup: Ref<any> = ref([]);
+const maskPopup = ref(false);
+const queryPopupFun = async () => {
+  let popupTime = uni.getStorageSync('popupTime');
+  if (popupTime === '' || popupTime === null) {
+    const num = Math.floor(Math.random() * 10000 + 1);
+    popupTime = `${new Date()
+      .getTime()}-${num}`;
+    uni.setStorageSync('popupTime', popupTime);
+  }
+  const res = await queryPopup(popupTime);
+  const { isOpen, isShowed } = res.data;
+  maskPopup.value = false;
+  if (isOpen === 'Y' && isShowed !== 'Y') {
+    maskPopup.value = true;
+  }
+};
+// 弹窗广告图
+const getWmAlertAdBannerListFun = async () => {
+  const res = await getWmAlertAdBannerList('');
+  const floatAds = res?.data.splice(0, 3) || [];
+  floatAdsPopup.value = floatAds.map((item: any) => ({
+    image: item.imgUrl,
+    title: item.name,
+    url: item.url,
+  }));
+};
 </script>
 
 <style lang="scss" scoped>
@@ -256,7 +352,7 @@ const handleEntryUrl = (item: any) => {
     width: 690rpx;
     height: 300rpx;
     border-radius: 16rpx;
-
+    overflow: hidden;
     image {
       width: 100%;
       border-radius: 10rpx;
@@ -282,8 +378,9 @@ const handleEntryUrl = (item: any) => {
     width: 100%;
     height: 180rpx;
     margin-bottom: 30rpx;
-    background-color: #323338;
+    // background-color: #323338;
     border-radius: 16rpx;
+    overflow: hidden;
 
     image {
       width: 100%;
@@ -380,5 +477,49 @@ const handleEntryUrl = (item: any) => {
 .bulletin-text {
   font-size: 24rpx;
   color: #323338;
+}
+
+.home-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  .home-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .alert-img {
+    width: 560rpx;
+    height: 680rpx;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .alert-box {
+    flex: 1;
+  }
+  .alert-icon {
+    width: 80rpx;
+    height: 80rpx;
+    margin-top: 40rpx;
+  }
+  .alert-icon .image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
 }
 </style>
