@@ -1,7 +1,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
-const configRouterAuth = ['point', 'my_prize'];
+const configRouterAuth = ['point', 'my_prize', 'userInfo'];
 // 配置switchTab切换页面
 const switchTabUrl = [
   '/pages/index/index',
@@ -31,6 +31,7 @@ const pageCode: any = {
   nearby_store: '/pages/nearby-store/index', // 附近门店
   storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
   login: '/pages/login/index',
+  userInfo: '/pages/center/user-info/index', // 个人资料
   updateGuide: '/pages/center/user-info/guid-list', // 导购选择
 };
 
@@ -58,7 +59,6 @@ class Router {
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams = '') {
-    console.log(code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {
