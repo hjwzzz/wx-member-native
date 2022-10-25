@@ -14,7 +14,7 @@ const pageCode: any = {
   reg: '', // 注册登录
   invite_courteous: '', // 邀请有礼
   my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
-  reservation: '', // 预约服务
+  reservation: '/reservation-service-pages/reservation-service/index', // 预约服务
   warranty_list: '', // 质保单列表
   point: '/my-assets-pages/integral/index', // 我的积分
   get_coupon: '/my-assets-pages/coupon-center/index', // 领券中心

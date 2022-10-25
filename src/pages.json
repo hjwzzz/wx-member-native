@@ -89,6 +89,23 @@
   },
   "subPackages": [
     {
+      "root": "reservation-service-pages",
+      "pages": [
+        {
+          "path": "reservation-service/index",
+          "style": {
+            "navigationBarTitleText": "预约服务"
+          }
+        },
+        {
+          "path": "reservation-service/store-pattern",
+          "style": {
+            "navigationBarTitleText": "预约服务"
+          }
+        }
+      ]
+    },
+    {
       "root": "my-assets-pages",
       "pages": [
         {

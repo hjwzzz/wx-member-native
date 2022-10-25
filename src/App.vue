@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
-import { provide, ref } from 'vue';
+// import { provide, ref } from 'vue';
 import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
 
