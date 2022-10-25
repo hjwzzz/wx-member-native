@@ -4,7 +4,10 @@
       <view class="user">
         <view class="login-info">
           <view class="user-info">
-            <view class="info-left">
+            <view
+              class="info-left"
+              @click="handleQuickUrl({ code: 'userInfo' })"
+            >
               <view class="info-img">
                 <image
                   v-if="initBasicsData.checkLogin"
@@ -21,7 +24,7 @@
               <view v-if="initBasicsData.checkLogin" class="use-info">
                 <text>{{ userInfo.nickName || '' }}</text>
               </view>
-              <view v-else class="info-btn" @click="login">请先登录</view>
+              <view v-else class="info-btn">请先登录</view>
             </view>
             <view class="info-right">
               <image
