@@ -1,9 +1,9 @@
 <template>
-  <CustomPage bottom>
+  <CustomPage>
     <view class="reservation-service">
       <SearchServe :data="data" />
     </view>
-    <view v-if="!Object.keys(data).length" class="footer">
+    <view v-if="!Object.keys(data).length" class="reservation-service-footer">
       <view class="btn" @click="seeMyAppointment">查看我的预约</view>
     </view>
   </CustomPage>
@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
-import { computed, ref, Ref } from 'vue';
+import { ref, Ref } from 'vue';
 import SearchServe from '../component/SearchServe.vue';
 
 const data: Ref<any> = ref({});
@@ -20,7 +20,7 @@ onLoad((opting: any) => {
   data.value = opting;
 });
 
-const isShowBtn = computed(() => Object.keys(data.value).length === 0);
+// const isShowBtn = computed(() => Object.keys(data.value).length === 0);
 
 const seeMyAppointment = () => {
   uni.navigateTo({ url: '/reservationService/myAppointment/index' });
@@ -28,11 +28,11 @@ const seeMyAppointment = () => {
 </script>
 
 <style lang="scss" scoped>
-.isbtn {
-  padding-bottom: calc(94rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(94rpx + env(safe-area-inset-bottom));
-}
-.footer {
+// .isbtn {
+//   padding-bottom: calc(94rpx + constant(safe-area-inset-bottom));
+//   padding-bottom: calc(94rpx + env(safe-area-inset-bottom));
+// }
+.reservation-service-footer {
   background: #fff;
   width: 100vw;
   position: fixed;
@@ -56,7 +56,5 @@ const seeMyAppointment = () => {
     color: white;
     background: var(--main-color);
   }
-}
-.reservation-service {
 }
 </style>
