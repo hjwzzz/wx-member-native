@@ -60,6 +60,12 @@
       "style": {
         "navigationBarTitleText": "个人资料"
       }
+    },
+    {
+      "path": "pages/center/user-info/guid-list",
+      "style": {
+        "navigationBarTitleText": "导购"
+      }
     }
   ],
   "tabBar": {
@@ -141,8 +147,6 @@
             "navigationBarTitleText": "记录明细"
           }
         }
-        
-        
       ]
     }
   ]

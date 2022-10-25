@@ -27,6 +27,7 @@ const pageCode: any = {
   nearby_store: '', // 附近门店
   storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
   login: '/pages/login/index',
+  updateGuide: '/pages/center/user-info/guid-list', // 导购选择
 };
 
 // 路由控制
@@ -52,7 +53,7 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string, paramsString = '') {
+  static goCodePage(code: string, urlQueryParams = '') {
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {
@@ -67,7 +68,7 @@ class Router {
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
       return this.goLogin();
     }
-    uni.navigateTo({ url: url + paramsString });
+    uni.navigateTo({ url: url + urlQueryParams });
   }
 }
 export default Router;

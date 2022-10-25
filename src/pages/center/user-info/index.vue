@@ -136,7 +136,15 @@
                 class="right text"
                 v-if="item.code.code == 'PRIVATE_FIELD_PROFESSION'"
               >
-                <view>{{ profession || '未设置' }} </view>
+                <picker
+                  mode="multiSelector"
+                  :range="showProfession"
+                  range-key="name"
+                  @change="professionChange"
+                  @columnchange="(e: any) => professionsIdx[e.detail.column] = e.detail.value"
+                >
+                  <view>{{ userInfo.proName || '未设置' }} </view>
+                </picker>
               </view>
               <view
                 class="right text"
@@ -187,15 +195,17 @@
       <uni-popup ref="popup" :maskClick="popup?.close?.()" type="dialog">
         <uni-popup-dialog
           mode="input"
-          :value="111"
-          title="修改用户姓名"
-          placeholder="请输入用户名"
+          :value="dialogValue"
+          :title="dialogTitle"
+          placeholder="请输入"
           is-mask-click
           confirmText="确认"
+          :before-close="true"
           @close="popup.close()"
-          @confirm="(e:string ) => updateUserIno({ name: e })"
+          @confirm="dialogConfirm"
         ></uni-popup-dialog>
       </uni-popup>
+
       <u-select
         v-model="show"
         mode="mutil-column-auto"
@@ -220,7 +230,7 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime } from '@/utils/util';
@@ -251,13 +261,10 @@ const educations = [
   '博士',
   '其他',
 ];
-const proCached = ref([]);
+
 const selecteList: any[] = [];
 const userInfo = ref<any>({});
-const profession = ref();
-const initDate = ref(formatTime(new Date())
-  .substring(0, 10));
-const cityIndexPro = ref([0, 0]);
+
 const current = ref();
 const show = ref(false);
 const phoneSet = ref({});
@@ -265,6 +272,9 @@ const defaultValue = '111';
 const handleUpdate = (e: any) => [e];
 
 const popup = ref();
+const dialogTitle = ref('');
+const dialogValue = ref('');
+const dialogKey = ref('');
 const updateInfo = ({
   code: { code },
   update,
@@ -272,36 +282,44 @@ const updateInfo = ({
   code: { code: string };
   update: string;
 }) => {
-  // 页面离开时存储归属门店，联动专属导购
-  if (code === 'PRIVATE_FIELD_BELONG_STORE') {
-    uni.setStorage({
-      key: 'belongDistName',
-      data: userInfo.value.belongDistName,
-    });
-  }
   if (update !== 'Y') return;
-  const { belongDistId } = userInfo.value;
-  if (code === 'PRIVATE_FIELD_PROFESSION') {
-    show.value = true;
-  }
-  if (code === 'PRIVATE_FIELD_BELONG_SELLER' && !belongDistId) {
-    uni.showModal({
-      content: '请先选门店',
-      showCancel: false,
-    });
-    return;
-  }
   switch (code) {
     case 'PRIVATE_FIELD_BELONG_STORE': {
-      try {
-        router.goCodePage('storeInfo');
-      } catch (err) {
-        console.log(err);
-      }
+      // 选择门店时，更新归属门店
+      uni.$once('chooseStore', e => {
+        updateUserIno({
+          belongDistId: e.distId,
+          belongDistName: e.storeName,
+          // 切换门店时候，清空导购信息
+          ...userInfo.value.belongDistId !== e.distId && {
+            belongUid: null,
+            belongUser: null,
+          },
+        });
+      });
+      router.goCodePage(
+        'storeInfo',
+        `?belong=true&id=${userInfo.value.belongDistId}`
+      );
       break;
     }
     case 'PRIVATE_FIELD_BELONG_SELLER': {
-      router.goCodePage('updateGuide');
+      // 更新导购
+      uni.$once('updateGuide', e => {
+        if (!e.uid) return;
+        updateUserIno({
+          belongUid: e.uid,
+          belongUser: e.name,
+        });
+      });
+      if (userInfo.value.belongDistId) {
+        router.goCodePage('updateGuide', `?id=${userInfo.value.belongDistId}`);
+        return;
+      }
+      uni.showModal({
+        content: '请先选门店',
+        showCancel: false,
+      });
       break;
     }
     case 'PRIVATE_FIELD_LOCATION': {
@@ -324,12 +342,18 @@ const updateInfo = ({
       break;
     }
     case 'PRIVATE_FIELD_EMAIL': {
-      router.goCodePage('email');
+      dialogTitle.value = '修改邮箱';
+      dialogKey.value = 'email';
+      dialogValue.value = userInfo.value.email;
+      popup.value.open();
+      // router.goCodePage('email');
       break;
     }
     case 'PRIVATE_FIELD_NAME': {
+      dialogKey.value = 'name';
+      dialogTitle.value = '修改姓名';
+      dialogValue.value = userInfo.value.name;
       popup.value.open();
-      // router.goCodePage('names');
       break;
     }
 
@@ -339,8 +363,30 @@ const updateInfo = ({
 
   // selectedItem[code]();
 };
+// 弹框修改姓名、邮箱等信息
+const dialogConfirm = (e: string) => {
+  let str = '';
+  const reg =
+    /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+  if (dialogKey.value === 'name' && e.length < 1) {
+    str = '请输入姓名';
+  } else if (dialogKey.value === 'email' && !reg.test(e)) {
+    str = '请输入合法邮箱';
+  } else {
+    updateUserIno({ [dialogKey.value]: e });
+    popup.value.close();
+    return;
+  }
+  uni.showToast({
+    icon: 'none',
+    title: str,
+  });
+};
+// 日期修改（日历选择器）
 const calendar = ref();
 const isBirthDay = ref(false);
+const initDate = ref(formatTime(new Date())
+  .substring(0, 10));
 const handleOpen = (item: { name: any }) => {
   const { name } = item;
   const mark = 'mday';
@@ -354,11 +400,11 @@ const handleOpen = (item: { name: any }) => {
   }
   calendar.value.open();
 };
-const updateUserIno = async (item: any) => {
+const updateUserIno = async (item: any, refresh = false) => {
   const { code } = await updateMemberInfo(item);
   if (code === 0) {
     Object.assign(userInfo.value, item);
-    '更新成功';
+    refresh && querySetting();
   }
 };
 const confirmDate = (e: any) => {
@@ -400,15 +446,31 @@ const querySetting = async () => {
     });
   }
 };
+
+// 用户职业
+const professions = ref<any[]>([]);
+const professionsIdx = ref([0, 0]);
+const showProfession = computed(() => {
+  const one: any = professions.value[professionsIdx.value[0]];
+  return [professions.value ?? [], one?.professionList ?? []];
+});
 const queryPro = async () => {
   const parmas = '';
   const { code, data } = await queryProfessionAsCate(parmas);
   if (code === 0 && data?.length) {
-    proCached.value = data;
-    console.log(data);
+    professions.value = data;
   }
-
   queryUserInfo();
+};
+const professionChange = (e: any) => {
+  const [one, two] = e.detail.value;
+  const item =
+    professions.value[one].professionList?.[two] ?? professions.value[one];
+
+  updateUserIno({
+    proName: item.name,
+    proId: item.id,
+  });
 };
 
 const queryUserInfo = async () => {
@@ -428,19 +490,7 @@ const queryUserInfo = async () => {
       const r = Lunar.toLunar(a, b, c);
       data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
     }
-    const {
-      phone,
-      avatarUrl,
-      nickName,
-      // belongDistId,
-      // belongUid,
-      // belongUser,
-      // belongDistName,
-      // education,
-      proId,
-      sex,
-      birthKind,
-    } = data;
+    const { phone, avatarUrl, nickName, proId, sex, birthKind } = data;
     header.value = [
       {
         name: '个人头像',
@@ -466,25 +516,12 @@ const queryUserInfo = async () => {
     // 性别
     const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] ?? 2);
     genderIndex.value = formatGenderIndex(sex);
-    proCached.value.some((i: any, idx) => {
-      i?.professionList?.some((j: any, jIdx: number) => {
-        if (j.id === proId) {
-          cityIndexPro.value = [idx, jIdx];
-          return true;
-        }
-      });
-    });
-    // this.cityListPro[1].splice(0, this.cityListPro[1].length);
-    // if (this.cityJsonPro && this.cityIndexPro[0]) {
-    //   this.cityJsonPro[this.cityIndexPro[0]].map(item => {
-    //     this.cityListPro[1].push(item);
-    //   });
-    // }
-
-    // if (this.cityListPro[1] && this.cityIndexPro[1]) {
-    //   this.profession = this.cityListPro[1][this.cityIndexPro[1]][0];
-    // }
-    !profession.value && (profession.value = data.proName);
+    professions.value.some((i: any, idx) => i?.professionList?.some((j: any, jIdx: number) => {
+      if (j.id === proId) {
+        professionsIdx.value = [idx, jIdx];
+        return true;
+      }
+    }));
   }
 };
 </script>
@@ -606,7 +643,7 @@ const queryUserInfo = async () => {
   }
 
   .logout {
-    display: 'none';
+    display: none;
     width: 690rpx;
     height: 88rpx;
     line-height: 88rpx;

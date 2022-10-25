@@ -27,7 +27,9 @@
               <view class="left toE">
                 {{ item.storeName }}
               </view>
-              <view class="left-info" v-if="item.gsResult.code == 'Y'"
+              <view
+                class="left-info"
+                v-if="props.belong && item.gsResult.code == 'Y'"
                 >归属</view
               >
               <view class="right">
@@ -95,9 +97,12 @@ import { staticUrl } from '@/utils/config';
 const props = defineProps<{
   id: string;
   // name: string;
+  belong: boolean; // 修改归属门店
   relatedId: string;
 }>();
-
+if (props.belong) {
+  uni.setNavigationBarTitle({ title: '归属门店' });
+}
 // 店铺信息
 interface storeType {
   storeName: string;
@@ -257,8 +262,22 @@ const confimStore = () => {
       .top {
         display: flex;
         justify-content: space-between;
-
+        .left-info {
+          margin-left: 10rpx;
+          flex-shrink: 0;
+          height: 40rpx;
+          width: 60rpx;
+          background-color: var(--main-color);
+          border-radius: 4rpx;
+          font-size: 24rpx;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+        }
         .right {
+          flex: 1;
+          text-align: right;
           font-size: 20rpx;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
