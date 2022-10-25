@@ -15,111 +15,109 @@
         <view class="sure-btn" @click="updateNearStorePost">搜索</view>
       </view>
 
-      <view v-if="list.length > 0">
-        <view class="item item-page">
-          <view
-            class="list-item"
-            v-for="(item, index) in list"
-            :key="index"
-            @click="selected = item"
-          >
-            <view class="top">
-              <view class="left toE">
-                {{ item.storeName }}
-              </view>
-              <view
-                class="left-info"
-                v-if="props.belong && item.gsResult.code == 'Y'"
-                >归属</view
-              >
-              <view class="right">
-                <text v-if="item.range">
-                  <text v-if="item.range >= 1">{{ item.range }}km</text>
-                  <text v-else>{{ item.range * 1000 }}m</text>
-                </text>
-              </view>
-            </view>
-            <view class="item-three">
-              <view class="left">
-                <image
-                  :src="`${staticUrl}/prize/store/address.png`"
-                  mode=""
-                ></image>
-                <text style="font-size: 24rpx" class="address">
-                  {{
-                    item.province + item.city + item.district + item.address ||
-                    '--'
-                  }}
-                </text>
-              </view>
-              <view class="right">
-                <view
-                  :class="['radio_box', { radio_box_none: isActive(item) }]"
-                >
-                  <uni-icons
-                    type="checkmarkempty"
-                    color="#ffffff"
-                    v-if="isActive(item)"
-                    size="12"
-                  ></uni-icons>
+      <view v-if="list.length > 0" class="themap">
+        <view v-for="(item, index) in list" :key="index" class="t1">
+          <view class="t1-box" @click="goDetail(item)">
+            <image
+              class="image left"
+              :src="
+                item.url || `${staticUrl}img/store/store-avatar-default.png`
+              "
+              mode="aspectFit"
+            />
+            <view class="right">
+              <view class="t2">
+                <view class="t2-box">
+                  <view
+                    class="flagship"
+                    :style="{
+                      maxWidth:
+                        item.gsResult.code === 'Y'
+                          ? 'calc(100% - 100rpx)'
+                          : 'calc(100% - 28rpx)',
+                    }"
+                  >
+                    {{ item.storeName || '--' }}
+                  </view>
+                  <view v-if="item.gsResult.code === 'Y'" class="attribution">
+                    <text style="font-size: 20rpx">
+                      {{ item.gsResult.name }}
+                    </text>
+                  </view>
                 </view>
+                <uni-icons
+                  class="icon"
+                  type="arrowright"
+                  size="14"
+                  color="#B7B8C4"
+                />
               </view>
-            </view>
-            <view class="item-four">
-              <image
-                :src="`${staticUrl}/prize/store/phone.png`"
-                mode=""
-              ></image>
-              <text style="font-size: 24rpx" class="address">
-                {{ item.tel || '--' }}
-              </text>
+              <view class="t3">
+                <text style="font-size: 24rpx" class="address">
+                  {{ item.fullAddress || '--' }}
+                </text>
+              </view>
+              <view class="distance">
+                <image
+                  :src="`${staticUrl}img/store/address.png`"
+                  mode="aspectFit"
+                />
+                <text>
+                  {{ item.rangeInfo }}
+                </text>
+              </view>
             </view>
           </view>
-        </view>
-        <view class="button">
-          <button class="btn" @click="confimStore">确认</button>
+          <view class="t5">
+            <view class="item1" @click="thephone(item)"> 电话 </view>
+            <view
+              class="item"
+              style="color: #ff547b"
+              bindtap="phoneLogin"
+              @click="openLocation(item)"
+            >
+              <text> 地图 </text>
+            </view>
+          </view>
         </view>
       </view>
       <view class="empty-view" v-else>
         <NoneData icon="shop" text="暂未门店信息"></NoneData>
       </view>
     </view>
+    <Tabbar code="nearby_store"> </Tabbar>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
+import Tabbar from '@/components/Tabbar/index.vue';
 import NoneData from '@/pages/component/NoneData.vue';
-import { updateNearStore } from '@/api/my-prize';
+import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
+import { updateNearStore } from '@/api/my-prize';
 
-const props = defineProps<{
-  id: string;
-  // name: string;
-  belong: boolean; // 修改归属门店
-  relatedId: string;
-}>();
-if (props.belong) {
-  uni.setNavigationBarTitle({ title: '归属门店' });
-}
 // 店铺信息
 interface storeType {
+  url: string;
+  opsId: string;
   storeName: string;
   range: number;
+  rangeInfo: string;
   province: string;
   city: string;
   district: string;
   address: string;
   distId: string;
   tel: string;
+  coord: string;
+  fullAddress: string;
   gsResult: {
     code: string;
+    name: string;
   };
 }
 const list = ref<storeType[]>([]);
-const selected = ref<storeType>();
-const isActive = (i: storeType) => i.distId === selected.value?.distId;
 
 onLoad(() => {
   uni.getLocation({
@@ -129,9 +127,8 @@ onLoad(() => {
       uni.setStorageSync('location', local.value);
       updateNearStorePost();
     },
-    fail: data => {
+    fail: () => {
       local.value = uni.getStorageSync('location');
-      console.warn('fail', data);
       updateNearStorePost();
       uni.showModal({
         title: '提示',
@@ -147,23 +144,33 @@ const local = ref({
   lng: 0,
 });
 
+const coordCur = computed(() => {
+  const { lng, lat } = local.value;
+  return [lng, lat].filter(Boolean)
+    .join(',');
+});
 // 刷新列表
 const updateNearStorePost = async () => {
-  function logValut({ lng, lat }: any) {
-    return [lng, lat].filter(Boolean)
-      .join(',');
-  }
   const { code, data } = await updateNearStore({
     distId: '',
     storeName: keyward.value,
-    coordCur: logValut(local.value),
-    relatedId: props.relatedId,
+    coordCur: coordCur.value,
   });
   if (code === 0) {
+    data.forEach((i: storeType) => {
+      const { province, city, district, address, range } = i;
+      // 详细地址
+      i.fullAddress = [province + city + district + address]
+        .filter(Boolean)
+        .join('');
+
+      // 距离
+      i.rangeInfo = `${range * 1000}m`;
+      if (range >= 1) i.rangeInfo = `${range}km`;
+      if (!range) i.rangeInfo = '未知';
+    });
+
     list.value = data;
-    if (!selected.value?.distId && props.id) {
-      selected.value = data.find((i: storeType) => i.distId === props.id) ?? {};
-    }
   }
 };
 // 搜索
@@ -173,13 +180,18 @@ const searchChange = (e: any) => {
   updateNearStorePost();
 };
 
-const confimStore = () => {
-  if (!selected.value) {
-    uni.showToast({ title: '请选择门店!', icon: 'none' });
-    return;
-  }
-  uni.$emit('chooseStore', selected.value);
-  uni.navigateBack();
+const thephone = (item: any) => uni.makePhoneCall({ phoneNumber: item.tel });
+const openLocation = (item: storeType) => {
+  const [lng, lat] = item.coord?.split?.(',') ?? [];
+  uni.openLocation({
+    latitude: Number(lat),
+    longitude: Number(lng),
+    name: item.storeName,
+    address: item.fullAddress,
+  });
+};
+const goDetail = (e: storeType) => {
+  uni.navigateTo({ url: `detail?distId=${e.distId}&opsId=${e.opsId}&coordCur=${coordCur.value}` });
 };
 </script>
 
@@ -249,74 +261,115 @@ const confimStore = () => {
   :deep(.u-action) {
     color: #ff6f90;
   }
-  .item {
-    padding: 0 30rpx;
+  .themap {
+    min-height: calc(100vh - 330rpx - constant(safe-area-inset-bottom));
+    min-height: calc(100vh - 330rpx - env(safe-area-inset-bottom));
+    padding-left: 30rpx;
+    padding-right: 30rpx;
+    padding-top: 30rpx;
+    background-color: #f5f5f5;
 
-    .list-item {
-      padding: 30rpx;
-      /* height: 192rpx; */
+    .t1 {
+      overflow: hidden;
       background-color: #ffffff;
       border-radius: 16rpx;
-      margin-top: 30rpx;
-
-      .top {
+      margin-bottom: 30rpx;
+      &-box {
+        padding: 30rpx;
         display: flex;
-        justify-content: space-between;
-        .left-info {
-          margin-left: 10rpx;
-          flex-shrink: 0;
-          height: 40rpx;
-          width: 60rpx;
-          background-color: var(--main-color);
-          border-radius: 4rpx;
-          font-size: 24rpx;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
+        .left {
+          width: 160rpx;
+          height: 160rpx;
+          border-radius: 8px;
+          margin-right: 20rpx;
         }
         .right {
           flex: 1;
-          text-align: right;
-          font-size: 20rpx;
-          font-family: PingFangSC-Regular, PingFang SC;
-          font-weight: 400;
-          color: var(--main-color);
-          background-color: #ffffff;
-          margin-left: 10rpx;
+          max-width: calc(100% - 180rpx);
+          .t2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 50rpx;
+            line-height: 28rpx;
+            &-box {
+              width: calc(100% - 20rpx);
+              display: flex;
+            }
+            .flagship {
+              font-size: 28rpx;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              color: #323338;
+              max-width: calc(100% - 100rpx);
+            }
+            .attribution {
+              margin-left: 8rpx;
+              padding: 2rpx 6rpx 2rpx 6rpx;
+              background: #ff547b;
+              border-radius: 4rpx;
+              color: #ffffff;
+              font-size: 20rpx;
+              white-space: nowrap;
+            }
+            .icon {
+              display: flex;
+              align-items: center;
+            }
+          }
+          .t3 {
+            font-size: 24rpx;
+            display: flex;
+            align-items: center;
+            margin: 12rpx 0;
+
+            .address {
+              color: #bbbcc3;
+              font-size: 24rpx;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 2;
+              word-break: break-all;
+            }
+          }
+          .distance {
+            font-size: 24rpx;
+            color: #9697a2;
+            display: flex;
+            align-items: center;
+            image {
+              width: 22rpx;
+              height: 28rpx;
+              margin-right: 10rpx;
+              flex-shrink: 0;
+            }
+          }
         }
       }
+    }
 
-      .item-three {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 12rpx;
+    .t5 {
+      /*margin-top: 20rpx;*/
+      border-top: 1px solid #f0f1f4;
+      height: 88rpx;
+      line-height: 88rpx;
+      display: flex;
+      text-align: center;
 
-        image {
-          width: 16rpx;
-          height: 18rpx;
-          margin-right: 16rpx;
-        }
-
-        .address {
-          font-size: 20rpx;
-          color: #bbbcc3;
-        }
+      .item1 {
+        border-right: 1px solid #f0f1f4;
       }
 
-      .item-four {
-        margin-top: 12rpx;
+      .item {
+        color: var(--main-color);
+      }
 
-        image {
-          width: 16rpx;
-          height: 18rpx;
-          margin-right: 16rpx;
-        }
-
-        .address {
-          font-size: 20rpx;
-          color: #bbbcc3;
-        }
+      .item,
+      .item1 {
+        width: 50%;
       }
     }
   }
