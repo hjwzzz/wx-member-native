@@ -60,6 +60,24 @@
       "style": {
         "navigationBarTitleText": "个人资料"
       }
+    },
+    {
+      "path": "pages/center/user-info/guid-list",
+      "style": {
+        "navigationBarTitleText": "导购"
+      }
+    },
+    {
+      "path": "pages/nearby-store/index",
+      "style": {
+        "navigationBarTitleText": "附近门店"
+      }
+    },
+    {
+      "path": "pages/nearby-store/detail",
+      "style": {
+        "navigationBarTitleText": "门店详情"
+      }
     }
   ],
   "tabBar": {
@@ -72,6 +90,10 @@
       {
         "pagePath": "pages/center/index",
         "text": "个人中心"
+      },
+      {
+        "pagePath": "pages/nearby-store/index",
+        "text": "附近门店"
       }
     ]
   },

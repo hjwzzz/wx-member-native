@@ -30,7 +30,7 @@
     "description": "引入 pinia"
   },
   "mainColor": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,template,html",
     "prefix": "jmainColor",
     "body": ["initBasicsData.mainColor"],
     "description": "主题色"

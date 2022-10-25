@@ -65,3 +65,10 @@ export const queryProfessionAsCate = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+
+// 根据分销商ID获取对应导购列表
+export const getSalerByDistId = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/getSalerByDistId`;
+  const res = await request(url, data);
+  return res;
+};
