@@ -1,26 +1,36 @@
 <template>
   <CustomPage>
-    <view class="content">
+    <view class="content-view">
       <view class="top">
         <image
           class="img"
           mode="aspectFill"
           :src="
             (detail.storeDetailsImageUrl && detail.storeDetailsImageUrl[0]) ||
-            ''
+            `${staticUrl}img/store/store-detail-default.png`
           "
         />
-        <!-- '@/static/store-detail-default.png' -->
+
         <view class="top-box">
-          <view v-if="getAddress" class="navigation" @click="ditu">
-            <!-- <image class="navi-img" src="@/static/navitation.png" /> -->
+          <view
+            v-if="detail.fullAddress"
+            class="navigation"
+            @click="openLocation"
+          >
+            <image
+              class="navi-img"
+              :src="`${staticUrl}img/store/navitation.png`"
+            />
             导航
           </view>
           <view class="top-box-main">
             <image
               class="main-store-img"
               mode="aspectFill"
-              :src="detail.storeHeadImageUrl || defaultStoreImg"
+              :src="
+                detail.storeHeadImageUrl ||
+                `${staticUrl}img/store/store-avatar-default.png`
+              "
             />
             <view class="top-box-name">
               {{ detail.storeName }}
@@ -28,20 +38,18 @@
           </view>
           <view class="distance">
             <text>
-              <text v-if="detail.range">
-                <text v-if="detail.range * 1000 >= 1000">
-                  {{ detail.range }}km
-                </text>
-                <text v-else> {{ detail.range * 1000 }}m </text>
-              </text>
-              <text v-else> 0m </text>
+              {{ detail.rangeInfo }}
             </text>
           </view>
         </view>
       </view>
       <view class="main">
         <view v-if="detail.tel" class="tel item" @click="thephone">
-          <!-- <image class="left-img" mode="aspectFill" src="@/static/tel.png" /> -->
+          <image
+            class="left-img"
+            mode="aspectFill"
+            :src="`${staticUrl}img/store/tel.png`"
+          />
           <text class="content">
             {{ detail.tel }}
           </text>
@@ -52,14 +60,18 @@
             color="#B7B8C4"
           />
         </view>
-        <view v-if="getAddress" class="address item" @click="ditu">
-          <!-- <image
+        <view
+          v-if="detail.fullAddress"
+          class="address item"
+          @click="openLocation"
+        >
+          <image
             class="left-img"
             mode="aspectFill"
-            src="@/static/address1.png"
-          /> -->
+            :src="`${staticUrl}img/store/address1.png`"
+          />
           <text class="content">
-            {{ getAddress }}
+            {{ detail.fullAddress }}
           </text>
           <uni-icons
             class="icon-right"
@@ -69,52 +81,39 @@
           />
         </view>
 
-        <!--				<view class="business-hours item" v-if="detail.businessTimeRange && detail.businessTimeRange.length">-->
         <view
-          v-if="
-            (detail.timeList && detail.timeList.length) ||
-            (detail.businessTimeRange && detail.businessTimeRange.length)
-          "
+          v-if="detail.timeList?.length || detail.businessTimeRange?.length"
           class="business-hours item"
         >
-          <!-- <image
+          <image
             class="left-img"
             mode="aspectFill"
-            src="@/static/calendar.png"
-          /> -->
+            :src="`${staticUrl}img/store/calendar.png`"
+          />
           <text class="content">
-            <text v-if="detail.businessTimeRange">
-              {{ detail.businessTimeRange }}
+            <text>
+              {{ detail.businessTimeRange || '' }}
             </text>
             <text
-              v-if="
-                detail.timeList &&
-                detail.timeList.length &&
-                detail.businessTimeRange &&
-                detail.businessTimeRange.length
-              "
+              v-if="detail.timeList?.length && detail.businessTimeRange?.length"
             >
               ，
             </text>
-            {{ detail.timeList ? detail.timeList.join('，') : '' }}
+            {{ detail.timeList?.join?.('，') ?? '' }}
           </text>
         </view>
 
         <view class="store-info item">
           <view class="info-title">
-            <!-- <image
+            <image
               class="left-img"
               mode="aspectFill"
-              src="@/static/store.png"
-            /> -->
+              :src="`${staticUrl}img/store/store.png`"
+            />
             <text class="title"> 门店介绍 </text>
           </view>
           <template
-            v-if="
-              detail.description ||
-              (detail.storeDetailsImageUrl &&
-                detail.storeDetailsImageUrl.length > 1)
-            "
+            v-if="detail.description || detail.storeDetailsImageUrl?.length > 1"
           >
             <view class="content">
               {{ detail.description || '' }}
@@ -129,11 +128,11 @@
             />
           </template>
           <view v-else class="noData">
-            <!-- <image
+            <image
               class="noData-img"
               mode="aspectFit"
-              src="@/static/Noprize.png"
-            /> -->
+              :src="`${staticUrl}/img/empty/prize.png`"
+            />
             <view class="text"> 暂无相关信息 </view>
           </view>
         </view>
@@ -144,6 +143,7 @@
 
 <script setup lang="ts">
 import { queryStoreDetails } from '@/api/my-prize';
+import { staticUrl } from '@/utils/config';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 
@@ -152,14 +152,34 @@ const detail = ref<any>({});
 onLoad((e: any) => {
   getData(e);
 });
+
 const getData = async (params: any) => {
-  const res = await queryStoreDetails(params);
-  detail.value = res.data;
+  const { data } = await queryStoreDetails(params);
+
+  const { province, city, district, address, range } = data;
+  data.fullAddress = [province + city + district + address]
+    .filter(Boolean)
+    .join('');
+  // 距离
+  data.rangeInfo = `${range * 1000}m`;
+  if (range >= 1) data.rangeInfo = `${range}km`;
+  if (!range) data.rangeInfo = '';
+  detail.value = data;
+};
+const thephone = (item: any) => uni.makePhoneCall({ phoneNumber: item.tel });
+const openLocation = (item: any) => {
+  const [lng, lat] = item.coord?.split?.(',') ?? [];
+  uni.openLocation({
+    latitude: Number(lat),
+    longitude: Number(lng),
+    name: item.storeName,
+    address: item.fullAddress,
+  });
 };
 </script>
 
 <style scoped lang="scss">
-.content {
+.content-view {
   height: calc(100% - 92rpx);
   .top {
     width: 100%;
@@ -228,9 +248,6 @@ const getData = async (params: any) => {
         text {
           color: #fff;
         }
-        /*position: absolute;*/
-        /*right: 0;*/
-        /*bottom: 0;*/
       }
     }
   }
@@ -241,6 +258,7 @@ const getData = async (params: any) => {
     position: relative;
     top: -116rpx;
     .item {
+      box-sizing: border-box;
       width: 100%;
       padding: 30rpx;
       display: flex;
