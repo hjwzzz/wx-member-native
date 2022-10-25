@@ -10,6 +10,20 @@
         @search="handleSearch"
         @custom="handleSearch"
       /> -->
+
+      <uni-search-bar
+        @confirm="handleSearch"
+        v-model="searchValue"
+        @input="handleInput"
+        @cancel="handleSearch"
+        @clear="handleClear"
+        cancelButton="always"
+        placeholder="搜一搜预约服务"
+        cancelText="搜索"
+        radius="20"
+        :focus="true"
+      >
+      </uni-search-bar>
     </view>
 
     <view class="wrapper">
@@ -62,44 +76,29 @@
                 </view>
                 <view class="tip">
                   <image
-                    v-if="item.boolBookServ.code === 'Y'"
                     class="img"
                     type="image"
                     mode="aspectFill"
-                    :src="staticUrl + 'reservation-service/time.png'"
-                  />
-                  <image
-                    v-else
-                    class="img"
-                    type="image"
-                    mode="aspectFill"
-                    :src="staticUrl + 'reservation-service/tip.png'"
+                    :src="codeImage(item)"
                   />
                   {{ item.tips }}
-                  <!--<u-icon
-											v-if="item.boolBookServ.code === 'Y'"
-											:label="item.tips" color="#B7B8C4" labelColor="#B7B8C4"
-											size="34" labelSize="24" name="clock"
-									></u-icon>
-									<u-icon
-											v-else
-											:label="item.tips" color="#B7B8C4" labelColor="#B7B8C4"
-											size="34" labelSize="24" name="info-circle"
-									></u-icon>-->
                 </view>
               </view>
             </view>
-            <!-- <u-loadmore :status="moreStatus" color="#D8D9E0" margin-top="20" /> -->
+            <!-- <uni-load-more status="moreStatus" color="#D8D9E0"></uni-load-more> -->
           </view>
         </template>
         <view v-else class="no-data">
-          <image
-            class="image"
-            mode="aspectFit"
-            :src="staticUrl + 'img/Noprize.png'"
-          />
-          <view class="view">暂无数据</view>
+          <view class="view">
+            <image
+              class="image"
+              mode="aspectFit"
+              :src="staticUrl + 'img/Noprize.png'"
+            />
+            <view class="view">暂无数据</view>
+          </view>
         </view>
+        <ScrollViewFooter> </ScrollViewFooter>
       </scroll-view>
     </view>
   </view>
@@ -107,16 +106,23 @@
 
 <script setup lang="ts">
 // import { onLoad } from '@dcloudio/uni-app';
-import { computed, onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
+import { debounce } from '@/utils/util';
+import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import { queryServicePage } from '@/api/reservation-service';
 import { staticUrl } from '@/utils/config';
-//   staticUrl reservation-service  staticUrl+'reservation-service/tip.png'
+const codeImage = (item: any) => {
+  if (item.boolBookServ.code === 'Y') {
+    return `${staticUrl}reservation-service/time.png`;
+  }
+  return `${staticUrl}reservation-service/tip.png`;
+};
 
 const searchValue = ref('');
-const more = ref('more');
-const moreStatus = ref('loadmore');
+// const more = ref('more');
+const moreStatus = ref('more');
 const curPage = ref(1);
-const pageSize = ref(30);
+const pageSize = ref(20);
 const serveProList: Ref<any> = ref([]);
 const data: Ref<any> = ref({});
 
@@ -134,10 +140,11 @@ const handleSearch = () => {
 };
 
 const goStore = () => {
-  uni.navigateTo({ url: '/reservationService/reservationService/storePattern' });
+  uni.navigateTo({ url: '/reservation-service-pages/reservation-service/store-pattern' });
 };
 const loadMore = () => {
-  if (moreStatus.value === 'noMore') return;
+  // console.log('loadMoreloadMoreloadMoreloadMore');
+  if (moreStatus.value === 'no-more') return;
   moreStatus.value = 'loading';
   curPage.value++;
   Object.keys(data.value).length
@@ -164,28 +171,47 @@ const queryServeProList = async (name = '', distId = '') => {
     serveProList.value.push(...records);
   }
   moreStatus.value =
-    totalRecord === serveProList.value.length ? 'noMore' : 'loadmore';
+    totalRecord === serveProList.value.length ? 'no-more' : 'more';
+};
+//  debounce
+const handleInput = debounce(() => {
+  handleSearch();
+});
+const handleClear = (i: any) => {
+  console.log('handleClear', i);
 };
 </script>
 
 <style lang="scss" scoped>
 .search-serve {
-  height: 100%;
+  // height: 100%;
+  padding-top: 140rpx;
   .search-bar {
+    position: fixed;
+    top: 0rpx;
+    left: 0rpx;
+    right: 0rpx;
+    z-index: 99;
     height: 104rpx;
     background-color: #fff;
     padding: 16rpx 30rpx;
   }
   & > .wrapper {
-    height: calc(100% - 104rpx);
+    // padding-bottom: calc(94rpx + constant(safe-area-inset-bottom));
+    // padding-bottom: calc(94rpx + env(safe-area-inset-bottom));
+    // height: calc(100vh - 185rpx - constant(safe-area-inset-bottom));
+    // height: calc(100vh - 185rpx - env(safe-area-inset-bottom));
+
     width: 100vw;
     background: #f5f5f5;
     /*overflow-y: auto;*/
     .scroll-view {
-      box-sizing: border-box;
-      height: 100%;
+      // box-sizing: border-box;
+      // height: 100%;
+      height: calc(100vh - 250rpx - constant(safe-area-inset-bottom));
+      height: calc(100vh - 250rpx - env(safe-area-inset-bottom));
       .scroll-box {
-        min-height: calc(100% - 112rpx);
+        padding-bottom: 50rpx;
       }
       .wrapper-header {
         font-size: 28rpx;
@@ -278,15 +304,17 @@ const queryServeProList = async (name = '', distId = '') => {
         }
       }
       .no-data {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
         padding-top: 100rpx;
+        height: calc(100vh - 460rpx - constant(safe-area-inset-bottom));
+        height: calc(100vh - 460rpx - env(safe-area-inset-bottom));
         .image {
           width: 300rpx;
           height: 300rpx;
         }
         .view {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
           width: 100vw;
           text-align: center;
           color: #b7b8c4;

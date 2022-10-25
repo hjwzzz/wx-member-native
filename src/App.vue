@@ -53,6 +53,10 @@ page {
   background: #f5f5f5;
 }
 
+.uni-searchbar__cancel {
+  color: var(--main-color) !important;
+}
+
 @font-face {
   font-family: 'iconfont'; /* Project id 2631660 */
   src: url('//at.alicdn.com/t/font_2631660_wse1qki9nw.woff2?t=1637726230788')
