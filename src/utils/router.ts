@@ -3,7 +3,11 @@ import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
 const configRouterAuth = ['point', 'my_prize'];
 // 配置switchTab切换页面
-const switchTabUrl = ['/pages/index/index', '/pages/center/index'];
+const switchTabUrl = [
+  '/pages/index/index',
+  '/pages/center/index',
+  '/pages/nearby-store/index',
+];
 
 // 配置page的code代码
 const pageCode: any = {
@@ -24,7 +28,7 @@ const pageCode: any = {
   sign: '', // 签到
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '', // 我的优惠券
-  nearby_store: '', // 附近门店
+  nearby_store: '/pages/nearby-store/index', // 附近门店
   storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
   login: '/pages/login/index',
   updateGuide: '/pages/center/user-info/guid-list', // 导购选择
@@ -54,11 +58,13 @@ class Router {
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams = '') {
+    console.log(code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {
       return;
     }
+
     if (switchTabUrl.includes(url)) {
       uni.switchTab({ url });
       return;
