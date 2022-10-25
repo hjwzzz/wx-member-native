@@ -179,6 +179,12 @@
           "style": {
             "navigationBarTitleText": "记录明细"
           }
+        },
+        {
+          "path": "quality/index",
+          "style": {
+            "navigationBarTitleText": "质保单"
+          }
         }
       ]
     },

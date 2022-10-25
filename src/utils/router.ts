@@ -12,6 +12,7 @@ const switchTabUrl = [
 // 配置page的code代码
 const pageCode: any = {
   warranty_details: '', // 质保单详情
+  warranty: '/my-assets-pages/quality/index', // 质保单
   point_mall_order: '', // 订单(积分)
   point_mall_commodity: '', // 商品(积分)
   point_mall_index: '', // 首页(积分)
