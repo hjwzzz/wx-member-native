@@ -112,6 +112,7 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
+  floatNavShow.value = false;
   Router.goCodePage(item.code);
 };
 

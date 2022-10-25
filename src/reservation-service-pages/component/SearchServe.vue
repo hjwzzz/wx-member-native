@@ -10,13 +10,12 @@
         @search="handleSearch"
         @custom="handleSearch"
       /> -->
-
+      <!--  @clear="handleClear" -->
       <uni-search-bar
         @confirm="handleSearch"
         v-model="searchValue"
         @input="handleInput"
         @cancel="handleSearch"
-        @clear="handleClear"
         cancelButton="always"
         placeholder="搜一搜预约服务"
         cancelText="搜索"
@@ -111,6 +110,7 @@ import { debounce } from '@/utils/util';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import { queryServicePage } from '@/api/reservation-service';
 import { staticUrl } from '@/utils/config';
+
 const codeImage = (item: any) => {
   if (item.boolBookServ.code === 'Y') {
     return `${staticUrl}reservation-service/time.png`;
@@ -122,7 +122,7 @@ const searchValue = ref('');
 // const more = ref('more');
 const moreStatus = ref('more');
 const curPage = ref(1);
-const pageSize = ref(20);
+const pageSize = ref(50);
 const serveProList: Ref<any> = ref([]);
 const data: Ref<any> = ref({});
 
@@ -177,9 +177,9 @@ const queryServeProList = async (name = '', distId = '') => {
 const handleInput = debounce(() => {
   handleSearch();
 });
-const handleClear = (i: any) => {
-  console.log('handleClear', i);
-};
+// const handleClear = (i: any) => {
+//   console.log('handleClear', i);
+// };
 </script>
 
 <style lang="scss" scoped>
