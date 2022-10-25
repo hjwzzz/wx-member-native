@@ -68,13 +68,23 @@ const getMemberRecommend = async () => {
     srvProList.value = servPage.data?.records || [];
   }
 };
-
+// srvProshowNum有值再去请求
 watch(
   () => props.srvProshowNum,
   () => {
     getMemberRecommend();
   },
   { immediate: true }
+);
+
+// 登录请求
+watch(
+  () => initBasicsData.checkLogin,
+  (bool: boolean) => {
+    if (bool) {
+      getMemberRecommend();
+    }
+  }
 );
 </script>
 

@@ -144,6 +144,7 @@
           <MyQuality
             v-else-if="item.kind === entryType.WA"
             :title="item.param.title"
+            :item="item"
             :policyListNum="policyListNum"
           />
         </block>
