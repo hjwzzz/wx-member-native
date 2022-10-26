@@ -21,6 +21,12 @@ const formatNumber = (n: number) => {
   const s = n.toString();
   return s[1] ? s : `0${s}`;
 };
+export const mergeFullAddress = (i: any): string => {
+  const { province, city, district, address } = i;
+  // 详细地址
+  return [province + city + district + address].filter(Boolean)
+    .join('');
+};
 
 // 防抖
 export const debounce = (fn: (...args: any) => any, wait = 600) => {

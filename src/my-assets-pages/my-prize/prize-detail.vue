@@ -1,27 +1,18 @@
 <template>
   <CustomPage bottom>
     <view class="toreceive">
-      <!-- 状态 -->
-      <view
-        class="receive"
-        v-if="remindObj[detail.recvManner?.code]?.[
-            statusName as keyof typeof remindObj[1]
-          ]"
-      >
+      <!-- 订单状态 ：待领取、已发货、已领取、备货中、已失效 时候显示-->
+      <view class="receive" v-if="detail.remindContent">
         <view class="left">
           <image
             class="img"
-            :src="`${staticUrl}prize/${remindObj[statusName as keyof typeof remindObj]}.png`"
+            :src="`${staticUrl}prize/${statusCode}.png`"
             mode=""
           />
         </view>
         <view class="right">
           <view class="title">{{ statusName }}</view>
-          <view class="text">{{
-            remindObj[detail.recvManner.code][
-              statusName as keyof typeof remindObj[1]
-            ]
-          }}</view>
+          <view class="text">{{ detail.remindContent }}</view>
         </view>
       </view>
       <!-- 核销码 -->
@@ -47,49 +38,36 @@
         <view class="guoqi"> 领取时间：{{ detail.recvTime }} </view>
       </view>
       <!-- 收件人信息 -->
-      <!-- <view
-      v-if="
-        detail.receiver !== null ||
-        detail.phone !== null ||
-        detail.province !== null ||
-        detail.city !== null
-      "
-      class="youji"
-    >
-      <view class="left">
-        <image src="../../../../static/shouhuo.png" mode="" />
-      </view>
-      <view class="right rights">
-        <view class="title nameTitle">
-          <text
-            style="
-              margin-right: 10px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            "
-          >
-            {{ detail.receiver || '--' }} </text
-          ><text style="margin-right: 30rpx">
-            {{ detail.phone }}
-          </text>
+      <view
+        v-if="detail.receiver || detail.phone || detail.fullAddress"
+        class="youji"
+      >
+        <view class="left">
+          <image :src="`${staticUrl}prize/shouhuo.png`" mode="" />
         </view>
-        <view class="text addr-show" style="margin-right: 30rpx">
-          <text>
-            {{ detail.province || '--' }}
-          </text>
-          <text>
-            {{ detail.city || '--' }}
-          </text>
-          <text>
-            {{ detail.district || '--' }}
-          </text>
-          <text>
-            {{ detail.address || '--' }}
-          </text>
+        <view class="right rights">
+          <view class="title nameTitle">
+            <text
+              style="
+                margin-right: 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              "
+            >
+              {{ detail.receiver || '--' }}
+            </text>
+            <text style="margin-right: 30rpx">
+              {{ detail.phone }}
+            </text>
+          </view>
+          <view class="text addr-show" style="margin-right: 30rpx">
+            <text>
+              {{ detail.fullAddress || '--' }}
+            </text>
+          </view>
         </view>
       </view>
-    </view> -->
 
       <Goods :item="detail" :status="false">
         <view class="addTime">
@@ -199,6 +177,7 @@ import Goods from './component/Goods.vue';
 import { useBasicsData } from '@/store/basicsData';
 import Exchange from './component/Exchange.vue';
 import { staticUrl } from '@/utils/config';
+import { mergeFullAddress } from '@/utils/util';
 
 const basicsData = useBasicsData();
 const props = defineProps<{
@@ -243,6 +222,9 @@ interface prizeType {
   expNo: string;
   express: string;
   shipTime: string;
+  // 自定义
+  remindContent: string; // 订单状态对应的提示语
+  fullAddress: string; // 完整地址
 }
 const manInfoRow = [
   {
@@ -262,53 +244,42 @@ const manInfoRow = [
     v: 'recvBillNo',
   },
 ];
-// 提示标语
-const remindObj = {
-  '1': {
-    // 到店状态
-    待领取: '请到指定门店领取',
-    已发货: '请到指定门店领取',
-    已领取: '您已领取奖品',
-    备货中: '商家备货完成后即可到店领取',
-    已失效: '您的奖品已超过领取时间',
-  },
-  '2': {
-    // 邮寄状态
-    待领取: '商家已发货，请收到货后再确认收货',
-    已发货: '请到指定门店领取',
-    已领取: '您已确认收货并领取奖品',
-    备货中: '商家备货完成后将发货',
-    已失效: '您的奖品已超过兑换时间',
-  },
-  // 图标
-  待领取: 'dailingqu',
-  已发货: 'dailingqu',
-  已领取: 'yilingqu',
-  备货中: 'beihuozhong',
-  已失效: 'yishixiao',
-};
+
 const detail = ref<prizeType>({} as prizeType);
 const statusName = toRef(props, 'name');
+const statusCode = ref('');
 
 const createdtatus = async () => {
-  const { data, code } = await queryDetail(props.id || '80D98B4D-FF73-D8D4-FE07-07FCC9EBB251');
+  const { data, code } = await queryDetail(props.id);
   data.param = JSON.parse(data.param);
   if (code === 0) {
     data.name ??= data.prizeName;
-    detail.value = data;
     statusName.value = data.status.name;
+    statusCode.value = data.status.code;
+
+    // 提示标语
+    const orderStatusRemindObj: any = {
+      UNCLAIMED: ['请到指定门店领取', '商家已发货，请收到货后再确认收货'], // 待领取
+      SHIPPED: ['请到指定门店领取', '请到指定门店领取'], // 已发货
+      FINISHED: ['您已领取奖品', '您已确认收货并领取奖品'], // 已领取
+      CHOICE: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
+      INVALID: ['您的奖品已超过领取时间', '您的奖品已超过兑换时间'], // 已失效
+    };
+    const remindArr = orderStatusRemindObj[statusCode.value];
+    if (remindArr) {
+      data.remindContent = remindArr[data.recvManner.code - 1];
+    }
+    // 完整地址
+    data.fullAddress = mergeFullAddress(data);
+    detail.value = data;
+
+    // 二维码;
     if (
       statusName.value === '待领取' &&
       data.recvManner.code === 1 &&
       data.vcode
     ) {
-      qrCode.draw(
-        `mport qrCode from '@/utils/qrcode.js';
-import { queryDetail, queryStatus, updateRece ';`,
-        'myQrcode',
-        150,
-        150
-      );
+      qrCode.draw(data.vcode, 150, 150);
     }
   }
 };

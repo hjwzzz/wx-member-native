@@ -144,6 +144,7 @@
 <script setup lang="ts">
 import { queryStoreDetails } from '@/api/my-prize';
 import { staticUrl } from '@/utils/config';
+import { mergeFullAddress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 
@@ -155,12 +156,9 @@ onLoad((e: any) => {
 
 const getData = async (params: any) => {
   const { data } = await queryStoreDetails(params);
-
-  const { province, city, district, address, range } = data;
-  data.fullAddress = [province + city + district + address]
-    .filter(Boolean)
-    .join('');
+  data.fullAddress = mergeFullAddress(data);
   // 距离
+  const { range } = data;
   data.rangeInfo = `${range * 1000}m`;
   if (range >= 1) data.rangeInfo = `${range}km`;
   if (!range) data.rangeInfo = '';
