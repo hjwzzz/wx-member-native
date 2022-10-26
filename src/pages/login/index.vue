@@ -59,12 +59,18 @@
 </template>
 <script lang="ts" setup>
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
-import { getLogoRequest, getMemberEulaRequest } from '@/api/server';
+import {
+  getLogoRequest,
+  getMemberEulaRequest,
+  queryRegistRequiredSetting,
+  completeInfo,
+} from '@/api/server';
 import type { login } from '@/typings/api';
 import Storage from '@/utils/storage';
 import { onMounted, reactive, ref } from 'vue';
 import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
+import { onLoad } from '@dcloudio/uni-app';
 
 const initBasicsData = useBasicsData();
 
@@ -107,15 +113,16 @@ const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);
   uni.navigateTo({ url: `agreement?eula=${JSON.stringify(agreementDetail)}` });
 };
-
+let waitPhoneAuth = false;
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
-  if (errMsg === 'getPhoneNumber:fail user deny') {
+  if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
+  waitPhoneAuth = true;
   const jsCode = await getWxLoginCode();
   const { avatarUrl, nickName, sex } = userInfo.value;
   if (jsCode && encryptedData && iv) {
-    wxMiniAuth({
+    await wxMiniAuth({
       iv,
       sex: (['F', 'M'] as const)[sex] ?? 'U',
       jsCode,
@@ -124,6 +131,7 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any
       encryptedData,
     });
   }
+  waitPhoneAuth = false;
 };
 
 const getWxLoginCode = () => new Promise<string>((resolve, reject) => {
@@ -148,10 +156,10 @@ const showWxMiniAuthModal = async () => {
 
   waitWxMiniAuth = true;
   try {
-    const { userInfo, errMsg }: any = await uni.getUserProfile({ desc: '微信授权登录' }); // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    const { userInfo: u, errMsg }: any = await uni.getUserProfile({ desc: '微信授权登录' }); // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
     waitWxMiniAuth = false;
     if (errMsg === 'getUserProfile:ok') {
-      userInfo.value = userInfo;
+      userInfo.value = u;
       PopupRef.value.open();
     }
   } catch (error) {
@@ -169,117 +177,69 @@ const hideWxMiniAuthModal = () => {
 
 const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   const { data, code, msg } = await wxMiniAuthRequest(params);
-  if (code !== 0) {
+  if (code !== 0 || !data.token) {
     uni.showModal({
-      content: msg,
+      content: msg || '登录失败',
       showCancel: false,
     });
+    return;
   }
 
-  //   .then(res => {
-  //   this.updateJscode();
-  //   if (res.code === 0 && res.data.token) {
-  //     const info = res.data;
-  //     const list = Object.keys(info);
-  //     list.map(item => {
-  //       if (info[item]) {
-  //         // uni.setStorageSync(item, info[item]);
-  //         if (item === 'token') {
-  //           uni.setStorageSync(
-  //             item + uni.getStorageSync('jqzAppid'),
-  //             info[item]
-  //           );
-  //         } else if (item === 'mid') {
-  //           uni.setStorageSync(
-  //             item + uni.getStorageSync('jqzAppid'),
-  //             info[item]
-  //           );
-  //         } else if (item === 'epid') {
-  //           uni.setStorageSync(
-  //             item + uni.getStorageSync('jqzAppid'),
-  //             info[item]
-  //           );
-  //         } else {
-  //           uni.setStorageSync(item, info[item]);
-  //         }
-  //       }
-  //     });
-  //     const { mid } = info;
+  const list = Object.keys(data);
+  list.map(item => {
+    if (data[item]) {
+      // uni.setStorageSync(item, data[item]);
+      if (item === 'token') {
+        Storage.setToken(data[item]);
+      } else if (item === 'mid') {
+        initBasicsData.setUseMid(data[item]);
+      } else if (item === 'epid') {
+        Storage.setEpid(data[item]);
+      } else {
+        uni.setStorageSync(item, data[item]);
+      }
+    }
+  });
+  if (data.mid) {
+    back();
+  } else {
+    const { data: { list, openRegist } } = await queryRegistRequiredSetting('');
+    if (openRegist === 'Y') {
+      if (list.length) {
+        uni.redirectTo({ url: '/pages/login/finish-info/index' });
+      } else {
+        // 不用填写
+        const { phone, wmid } = data;
+        const { code, data: d } = await completeInfo({
+          activeDistId: '',
+          activeUid: '',
+          address: '',
+          annday: '',
+          birthKind: 'U',
+          birthLunar: '',
+          birthSolar: '',
+          inviteCode: '',
+          nickName: '',
+          phone: phone || uni.getStorageSync('phone'),
+          sex: params.sex,
+          wmid: wmid || uni.getStorageSync('wmid'),
+          name: '',
+          relateKind: uni.getStorageSync('c') || undefined,
+          relateNumber: uni.getStorageSync('num') || undefined,
+          inviteMid: uni.getStorageSync('inviteMid') || undefined,
+        });
 
-  //     this.backInfo = info;
-
-  //     if (mid) {
-  //       // const url = pages.tabbar + `?url=${pages.center}`;
-  //       const url = uni.getStorageSync('pages')
-  //         ? uni.getStorageSync('pages')
-  //         : `${pages.tabbar}?url=${pages.center}`;
-  //       router.redirect(url);
-  //     } else {
-  //       const params = '';
-  //       queryRegistRequiredSetting(params).then(res => {
-  //         setTimeout(() => {
-  //           this.downAuth = false;
-  //         }, 1000);
-  //         const { list, openRegist } = res.data;
-  //         if (openRegist === 'Y') {
-  //           if (list.length) {
-  //             router.redirect('/pages/login/finish-info/index');
-  //           } else {
-  //             // 不用填写
-  //             const { phone, wmid, sex } = this.backInfo;
-
-  //             completeInfo({
-  //               activeDistId: '',
-  //               activeUid: '',
-  //               address: '',
-  //               annday: '',
-  //               birthKind: 'U',
-  //               birthLunar: '',
-  //               birthSolar: '',
-  //               inviteCode: '',
-  //               nickName: '',
-  //               phone: phone || uni.getStorageSync('phone'),
-  //               sex: sex === 1 ? 'M' : sex === 0 ? 'F' : 'U',
-  //               wmid: wmid || uni.getStorageSync('wmid'),
-  //               name: '',
-  //               relateKind: uni.getStorageSync('c') || undefined,
-  //               relateNumber: uni.getStorageSync('num') || undefined,
-  //               inviteMid: uni.getStorageSync('inviteMid') || undefined,
-  //             }).then(res => {
-  //               if (res.code === 0) {
-  //                 res?.data &&
-  //                   uni.setStorageSync(
-  //                     `mid${uni.getStorageSync('jqzAppid')}`,
-  //                     res.data
-  //                   );
-  //                 this.$store.state.firstSign = true;
-  //                 removeActDataAndJumpPage(pages);
-  //               }
-  //             });
-  //           }
-  //         } else {
-  //           uni.showModal({
-  //             content: '账号不存在',
-  //             showCancel: false,
-  //             success: res => {
-  //               if (res.confirm) {
-  //                 this.updateJscode();
-  //                 setTimeout(() => {
-  //                   this.downAuth = false;
-  //                 }, 1000);
-  //               }
-  //             },
-  //           });
-  //         }
-  //       });
-  //     }
-  //   } else {
-  //     setTimeout(() => {
-  //       this.downAuth = false;
-  //     }, 1000);
-  //     this.updateJscode();
-  //   }
-  // });
+        if (code === 0 && d) {
+          initBasicsData.setUseMid(d);
+        }
+      }
+    } else {
+      await uni.showModal({
+        content: '账号不存在',
+        showCancel: false,
+      });
+    }
+  }
 };
 
 const back = () => {
@@ -290,6 +250,12 @@ const back = () => {
     uni.redirectTo({ url: '/pages/tabbar/index' });
   }
 };
+onLoad(opstion => {
+  // 邀请信息
+  opstion?.c && uni.setStorageSync('c', opstion?.c);
+  opstion?.num && uni.setStorageSync('num', opstion?.num);
+  opstion?.inviteMid && uni.setStorageSync('inviteMid', opstion?.inviteMid);
+});
 onMounted(() => {
   getLogo();
   getMemberEula();

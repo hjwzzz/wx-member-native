@@ -1,0 +1,686 @@
+<template>
+  <CustomPage>
+    <view class="info">
+      <view v-for="(info, index) in showList" :key="index" class="list">
+        <view
+          v-if="info.code.code !== hardCode && info.show == 'Y'"
+          :key="index"
+          class="list-item"
+          @click="handle(index)"
+        >
+          <!-- 生日 农历 阴历    -->
+          <view class="selected-item">
+            <view class="left">
+              <view v-show="info.required == 'Y'" class="left-icon"> * </view>
+              <view class="left-text">
+                {{ info.code.name }}
+              </view>
+              <!--						生日-->
+              <view v-show="info.code.code == BIRTH_DAY" class="radio">
+                <radio-group class="selecte-redio" @change="radioChange">
+                  <label
+                    v-for="(item, index) in items"
+                    :key="item.value"
+                    class="selecte-redio"
+                    style="transform: scale(0.7)"
+                  >
+                    <view>
+                      <radio
+                        :value="item.value"
+                        :checked="index === current"
+                        :color="initBasicsData.mainColor"
+                      />
+                    </view>
+                    <view>{{ item.name }}</view>
+                  </label>
+                </radio-group>
+              </view>
+              <!--						婚姻-->
+              <view v-show="info.code.code === maritalCode" class="radio">
+                <radio-group class="selecte-redio" @change="maritalChange">
+                  <label
+                    v-for="item in maritalStatusList"
+                    :key="item.value"
+                    class="selecte-redio"
+                    style="transform: scale(0.7)"
+                  >
+                    <view>
+                      <radio
+                        :value="item.value"
+                        :checked="item.value === maritalValue"
+                        :color="initBasicsData.mainColor"
+                      />
+                    </view>
+                    <view>{{ item.name }}</view>
+                  </label>
+                </radio-group>
+              </view>
+            </view>
+            <view class="right">
+              <view v-show="info.code.code == BIRTH_DAY" class="date-format">
+                <view class="wrapper">
+                  <text v-if="memberInfo.birthKind === 'S'">
+                    {{ birthSolar || memberInfo.birthSolar || '' }}
+                  </text>
+                  <text v-else-if="memberInfo.birthKind === 'L'">
+                    {{ birthLunar || memberInfo.birthLunar || '' }}
+                  </text>
+                  <text v-else-if="memberInfo.birthKind === 'U'">
+                    {{ birthSolar || memberInfo.birthSolar || '' }}
+                  </text>
+                  <text v-else>
+                    {{ birthSolar || memberInfo.birthSolar || '' }}
+                  </text>
+                </view>
+              </view>
+              <view
+                v-show="info.code.code === MDAY && memberInfo.annday"
+                class="guid"
+              >
+                <text>{{ showAnnday || memberInfo.annday }}</text>
+              </view>
+              <view
+                v-show="
+                  info.code.code === 'REGIST_REQUIRED_SELLER' &&
+                  memberInfo.belongUser
+                "
+                class="guid"
+              >
+                <text>{{ memberInfo.belongUser }}</text>
+              </view>
+              <view
+                v-show="
+                  info.code.code === 'REGIST_REQUIRED_ADDRESS' &&
+                  memberInfoAddressDet
+                "
+                class="guid"
+              >
+                <!-- <text>{{memberInfo.address}}</text> -->
+                <text class="letter">
+                  {{ memberInfoAddress }}/{{ memberInfoAddressDet }}
+                </text>
+              </view>
+              <!-- 性别 -->
+              <view v-show="info.code.code === GENDER" class="guid">
+                <picker
+                  @change="bindPickerChangeGender"
+                  :value="showSex"
+                  range-key="label"
+                  :range="selecteList"
+                  :disabled="info.update === 'N'"
+                >
+                  <view class="uni-input">{{
+                    selecteList[showSex].label
+                  }}</view>
+                </picker>
+              </view>
+              <view
+                v-show="
+                  info.code.code === 'REGIST_REQUIRED_AREA' && memberInfoAddress
+                "
+                class="guid"
+              >
+                <text>{{ memberInfoAddress }}</text>
+              </view>
+              <uni-icons type="arrowright" size="14" />
+            </view>
+          </view>
+          <view
+            v-show="info.code.code == shop"
+            v-if="
+              selectedShop.tel ||
+              selectedShop.storeName ||
+              selectedShop.range ||
+              selectedShop.fullAddress
+            "
+            class="item-shop"
+          >
+            <view class="shop-name">
+              <view class="name-left">
+                {{ selectedShop.storeName || '' }}
+              </view>
+              <view class="name-right">
+                <text v-show="selectedShop.range">
+                  {{ selectedShop.range }} km
+                </text>
+              </view>
+            </view>
+            <view v-if="selectedShop.fullAddress" class="shop-address">
+              <view class="address-icon">
+                <image
+                  src="../../../static/img/address.png"
+                  mode="scaleToFill"
+                />
+              </view>
+              <view class="address-text">
+                {{ selectedShop.fullAddress }}
+              </view>
+            </view>
+            <view v-if="selectedShop.tel" class="shop-phone">
+              <view class="phone-icon">
+                <image src="../../../static/img/phone.png" mode="scaleToFill" />
+              </view>
+              <view class="phone-code">
+                {{ selectedShop.tel }}
+              </view>
+            </view>
+          </view>
+        </view>
+        <view v-else-if="info.show == 'Y'" class="inpu-item">
+          <view class="input-left">
+            <text v-show="info.required == 'Y'" class="input-icon"> * </text>
+            <text class="input-name">
+              {{ info.code.name }}
+            </text>
+          </view>
+          <view class="input-right">
+            <input
+              v-model="memberInfo.name"
+              type="text"
+              maxlength="20"
+              :placeholder="'请输入' + info.code.name"
+            />
+          </view>
+        </view>
+      </view>
+
+      <uni-calendar
+        :date="initDate"
+        ref="calendar"
+        :lunar="true"
+        :insert="false"
+        @confirm="confirmDate"
+      >
+      </uni-calendar>
+
+      <view class="next" @click="handleStep"> 下一步 </view>
+    </view>
+  </CustomPage>
+</template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { useBasicsData } from '@/store/basicsData';
+import { onLoad } from '@dcloudio/uni-app';
+import { queryRegistRequiredSettingNew } from '@/api/server';
+import { queryNearStore } from '@/api/reservation-service';
+import router from '@/utils/router';
+import { formatTime, mergeFullAddress } from '@/utils/util';
+const initBasicsData = useBasicsData();
+
+const list = ref<any>([]);
+const items = [
+  {
+    value: 'S',
+    name: '阳历',
+  },
+  {
+    value: 'L',
+    name: '农历',
+  },
+];
+const maritalStatusList = [
+  {
+    value: 'Y',
+    name: '已婚',
+  },
+  {
+    value: 'N',
+    name: '未婚',
+  },
+];
+const selecteList = [
+  {
+    label: '男',
+    value: 'M',
+  },
+  {
+    label: '女',
+    value: 'F',
+  },
+];
+const hardCode = 'REGIST_REQUIRED_NAME';
+const shop = 'REGIST_REQUIRED_STORE';
+const saler = 'REGIST_REQUIRED_SELLER';
+const MDAY = 'REGIST_REQUIRED_MDAY';
+const BIRTH_DAY = 'REGIST_REQUIRED_BIRTH';
+const GENDER = 'REGIST_REQUIRED_GENDER';
+const maritalCode = 'REGIST_MARITAL_STATUS';
+const current = ref(0);
+const maritalValue = ref('Y');
+const memberInfo = ref<any>({});
+const selectedShop = ref<any>({});
+const birthSolar = ref(0);
+const birthLunar = ref(0);
+const memberInfoAddressDet = ref(0);
+const memberInfoAddress = ref(0);
+const showAnnday = ref('');
+const showSex = ref(0);
+
+const activeData = ref<any>({});
+const isActivity = ref(false);
+
+onLoad(() => {
+  const channel = uni.getStorageSync('c');
+  const num = uni.getStorageSync('num');
+  const inviteMid = uni.getStorageSync('inviteMid');
+  if (channel && num) {
+    isActivity.value = true;
+    queryWriteInfo({
+      channel,
+      num,
+      inviteMid,
+    });
+  } else {
+    isActivity.value = false;
+    queryWriteInfo({});
+    // queryMemeberInfo();
+  }
+});
+// 获取附近门店
+const queryNearShop = async (distId: any) => {
+  const lo = uni.getStorageSync('longitude');
+  const la = uni.getStorageSync('latitude');
+  const parmas = {
+    coordCur: lo && la ? `${lo},${la}` : '',
+    storeName: '',
+    distId,
+  };
+  const res = await queryNearStore(parmas);
+  if (!res.code && res.data?.length) {
+    selectedShop.value = res.data[0];
+  } else {
+    selectedShop.value.distId = undefined;
+  }
+};
+const queryWriteInfo = async (p = {}) => {
+  const { code, data } = await queryRegistRequiredSettingNew(p);
+  if (code === 0 && data) {
+    const {
+      list: l,
+
+      canModifySaler,
+      canModifyDist,
+      uid: belongUid,
+      uname: belongUser,
+      distId,
+      distName: storeName,
+    } = data;
+    const index = l.findIndex((item: any) => item.code.code === MDAY);
+    l.splice(index, 0, {
+      show: 'Y',
+      required: 'N',
+      code: {
+        code: maritalCode,
+        name: '婚姻',
+      },
+    });
+
+    list.value = l;
+    Object.assign(activeData, {
+      canModifySaler,
+      canModifyDist,
+      belongUid,
+      belongUser,
+      distId,
+      storeName,
+    });
+
+    memberInfo.value.belongUid = belongUid;
+    memberInfo.value.belongUser = belongUser;
+    selectedShop.value.storeName = storeName;
+    selectedShop.value.distId = distId;
+
+    if (isActivity.value) {
+      distId && queryNearShop(distId);
+    }
+  }
+};
+
+const handle = (index: number) => {
+  const item = list.value[index];
+  if (isActivity.value) {
+    if (item.code.code === shop && !activeData.value.canModifyDist) {
+      return;
+    }
+    if (item.code.code === saler && !activeData.value.canModifySaler) {
+      return;
+    }
+  }
+  switch (item.code.code) {
+    case 'REGIST_REQUIRED_STORE': {
+      // 选择门店时，更新归属门店
+      uni.$once('chooseStore', e => {
+        e.fullAddress = mergeFullAddress(e);
+        selectedShop.value = e;
+        // Object.assign(memberInfo.value, {
+        //   belongDistId: e.distId,
+        //   belongDistName: e.storeName,
+        //   // 切换门店时候，清空导购信息
+        //   ...memberInfo.value.belongDistId !== e.distId && {
+        //     belongUid: null,
+        //     belongUser: null,
+        //   },
+        // });
+      });
+      router.goCodePage(
+        'storeInfo',
+        `?belong=true&id=${memberInfo.value.belongDistId}`
+      );
+      break;
+    }
+    case 'REGIST_REQUIRED_SELLER': {
+      // 更新导购
+      uni.$once('updateGuide', e => {
+        if (!e.uid) return;
+        Object.assign(memberInfo.value, {
+          belongUid: e.uid,
+          belongUser: e.name,
+        });
+      });
+      if (selectedShop.value.distId) {
+        router.goCodePage('updateGuide', `?id=${selectedShop.value.distId}`);
+        return;
+      }
+      uni.showModal({
+        content: '请先选门店',
+        showCancel: false,
+      });
+      break;
+    }
+    case BIRTH_DAY: {
+      handleOpen({ name: 'birth' });
+      break;
+    }
+    case MDAY: {
+      handleOpen({ name: 'mday' });
+      break;
+    }
+    case 'REGIST_REQUIRED_ADDRESS': {
+      router.goCodePage('finishAddress');
+      break;
+    }
+    case GENDER: {
+      break;
+    }
+    case 'REGIST_REQUIRED_AREA': {
+      // store.setStore('mark', 'area');
+      // const url = pages.address;
+      // router.go(url);
+      break;
+    }
+    default:
+      break;
+  }
+};
+const showList = computed(() => list.value.filter((item: any) => !(maritalValue.value === 'N' && item.code.code === MDAY)));
+const radioChange = (e: any) => {
+  memberInfo.value.birthKind = e.detail.value;
+  current.value = items.findIndex(i => i.value === e.detail.value);
+};
+const maritalChange = (e: any) => {
+  maritalValue.value = e.detail.value;
+  if (e.detail.value === 'N') {
+    memberInfo.value.annday = '';
+    showAnnday.value = '';
+  }
+};
+const handleStep = () => {
+  const params = {
+    activeDistId: selectedShop.value.distId,
+
+    province: '',
+    city: '',
+    district: '',
+    address: '',
+
+    inviteCode: '',
+    nickName: '',
+    phone: '',
+    wmid: '',
+    relateKind: uni.getStorageSync('c') || undefined,
+    relateNumber: uni.getStorageSync('num') || undefined,
+    inviteMid: uni.getStorageSync('inviteMid') || undefined,
+    ...memberInfo.value,
+    birthLunar: '',
+  };
+  console.log(params);
+};
+
+// 日期修改（日历选择器）
+const calendar = ref();
+const isBirthDay = ref(false);
+const initDate = ref(formatTime(new Date())
+  .substring(0, 10));
+const handleOpen = (item: { name: any }) => {
+  const { name } = item;
+  const mark = 'mday';
+  const birthSolar = memberInfo.value.birthSolar;
+  const annday = memberInfo.value.annday;
+  isBirthDay.value = name !== mark;
+  if (name === mark) {
+    initDate.value = annday;
+  } else {
+    initDate.value = birthSolar;
+  }
+  calendar.value.open();
+};
+
+const bindPickerChangeGender = (e: any) => {
+  showSex.value = e.detail.value;
+  memberInfo.value.sex = selecteList[showSex.value].value;
+};
+
+const confirmDate = (e: any) => {
+  const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
+  if (!isBirthDay.value) {
+    memberInfo.value.annday = e.fulldate;
+    showAnnday.value = e.fulldate;
+  } else {
+    memberInfo.value.birthLunar = nl;
+    memberInfo.value.birthKind = items[current.value].value;
+    memberInfo.value.birthSolar = e.fulldate;
+  }
+};
+</script>
+
+<style scoped lang="scss">
+.info {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 30rpx;
+  background: #f5f5f5;
+
+  .list {
+    background: #ffffff;
+
+    .list-item {
+      .selected-item {
+        display: flex;
+        justify-content: space-between;
+        height: 100rpx;
+        padding: 30rpx;
+        box-sizing: border-box;
+        .left {
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+
+          .left-icon {
+            font-size: 28rpx;
+            font-weight: 400;
+            color: #fa5252;
+            margin-right: 6rpx;
+          }
+
+          .left-text {
+            font-size: 28rpx;
+            font-weight: 400;
+            color: #323233;
+          }
+
+          .selecte-redio {
+            display: flex;
+          }
+        }
+
+        .right {
+          display: flex;
+          height: 18rpx;
+          color: #b7b8c4;
+          // #ifdef H5
+          justify-content: center;
+          align-items: center;
+          // #endif
+          .letter {
+            width: 500rpx;
+            text-align: right;
+            display: inline-block;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+
+          .format {
+            margin-right: 10rpx;
+          }
+
+          .guid {
+            width: 500rpx;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            height: 40rpx;
+            text-align: right;
+            // #ifdef H5
+            margin-right: 8px;
+            transform: translateY(5px);
+            // #endif
+          }
+          // #ifdef H5
+          /deep/.uni-icons {
+            transform: translateY(6px);
+          }
+          // #endif
+        }
+      }
+
+      .item-shop {
+        border-top: solid 1rpx #ebedf0;
+        padding: 30rpx;
+
+        .shop-name {
+          display: flex;
+          justify-content: space-between;
+
+          .name-left {
+            font-size: 28rpx;
+            font-weight: 400;
+            color: #323338;
+          }
+
+          .name-right {
+            font-size: 20rpx;
+            font-weight: 400;
+            color: #9697a2;
+          }
+        }
+
+        .shop-address {
+          display: flex;
+
+          .address-icon {
+            display: inline-block;
+            width: 16rpx;
+            height: 19rpx;
+            margin-right: 10rpx;
+
+            image {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .address-text {
+            flex: 1;
+            font-size: 24rpx;
+            font-weight: 400;
+            color: #9697a2;
+            line-height: 34rpx;
+          }
+        }
+
+        .shop-phone {
+          display: flex;
+
+          .phone-icon {
+            display: inline-block;
+            width: 17rpx;
+            height: 19rpx;
+            margin-right: 10rpx;
+
+            image {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .phone-code {
+            height: 34rpx;
+            font-size: 24rpx;
+            font-weight: 400;
+            color: #9697a2;
+            line-height: 34rpx;
+          }
+        }
+      }
+    }
+
+    .inpu-item {
+      display: flex;
+      width: 100%;
+      height: 100rpx;
+      padding: 30rpx;
+      box-sizing: border-box;
+      .input-icon {
+        font-size: 28rpx;
+        font-weight: 400;
+        color: #fa5252;
+        margin-right: 6rpx;
+      }
+
+      .input-name {
+        font-size: 28rpx;
+        font-weight: 400;
+        color: #323338;
+      }
+
+      .input-left {
+        width: 20%;
+        overflow: hidden;
+      }
+
+      .input-right {
+        width: 80%;
+        text-align: right;
+      }
+    }
+  }
+
+  .next {
+    width: 690rpx;
+    height: 88rpx;
+    line-height: 88rpx;
+    background: var(--main-color);
+    border-radius: 44rpx;
+    text-align: center;
+    margin: 0 auto;
+
+    font-size: 32rpx;
+    font-weight: 400;
+    color: #ffffff;
+
+    margin-top: 60rpx;
+  }
+}
+</style>
