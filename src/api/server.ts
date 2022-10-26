@@ -72,3 +72,10 @@ export const getSalerByDistId = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+
+// 更新头像昵称信息
+export const updateMemberBaseInfo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberBaseInfo`;
+  const res = await request(url, data);
+  return res;
+};

@@ -192,7 +192,7 @@
 
 <script setup lang="ts">
 import qrCode from '@/utils/qrcode.js';
-import { queryDetail, queryStatus, updateReceiveSend } from '@/api/my-prize';
+import { queryDetail, updateReceiveSend } from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, toRef } from 'vue';
 import Goods from './component/Goods.vue';
@@ -218,7 +218,10 @@ interface prizeType {
   tommorry: boolean;
   // 获取途径
   relatedKind: { name: string };
-  // 领取方式 1到店 2邮寄
+
+  /**
+   * 领取方式 1到店 2邮寄
+   */
   recvManner: { code: '1' | '2' };
   param: { allowGet: string };
   status: { name: string; code: string };
@@ -310,7 +313,7 @@ import { queryDetail, queryStatus, updateRece ';`,
   }
 };
 const getPrize = async () => {
-  const { cancel } = await uni.showModal({
+  const { cancel }: any = await uni.showModal({
     content: '确认已领取该奖品',
     confirmColor: basicsData.mainColor,
   });
