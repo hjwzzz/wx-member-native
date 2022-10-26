@@ -1,6 +1,7 @@
 // / <reference path="./../../typings/index.d.ts" />
 
 import Storage from '@/utils/storage';
+import Router from '@/utils/router';
 import { debounce } from '@/utils/util';
 import { baseUrl } from '@/utils/config';
 // import { BaseRequestRes } from './request.type';
@@ -111,7 +112,7 @@ const request = async (
         });
         setTimeout(function () {
           uni.hideLoading();
-          uni.navigateTo({ url: '/no-wifi/index' });
+          uni.navigateTo({ url: '/my-assets-pages/no-wifi/index' });
           return;
         }, 5000);
       }
@@ -161,7 +162,7 @@ const request = async (
       setTimeout(() => {
         uni.showToast({
           icon: 'none',
-          title: '系统开小差了~~',
+          title: '系统开小差了!',
           duration: 3000,
         });
       }, 500);
@@ -169,17 +170,14 @@ const request = async (
     }
     // 服务过期处理
     if (res.data.code === 610) {
-      uni.redirectTo({ url: '/no-wifi/disabled-serve' });
+      uni.redirectTo({ url: '/my-assets-pages/no-wifi/invalid-serve' });
       return Promise.resolve(res.data);
     }
 
     // 没有登录
     if (res.data.code === 401) {
       Storage.setMid('');
-      // 保存当前的页面，然后登录在跳转
-      const historyPages: string | any[] | null = getCurrentPages();
-      Storage.setPages(historyPages[historyPages.length - 1].$page.fullPath);
-      //  router.go(pages.login);  这里去登录
+      Router.goLogin();
       return Promise.reject(res.data);
     }
     // 请求错误

@@ -191,7 +191,32 @@
           "style": {
             "navigationBarTitleText": "质保单"
           }
+        },
+        {
+          "path": "no-wifi/index",
+          "style": {
+            "navigationBarTitleText": "网络异常"
+          }
+        },
+        {
+          "path": "no-wifi/invalid-serve",
+          "style": {
+            "navigationBarTitleText": "服务过期"
+          }
+        },
+        {
+          "path": "no-wifi/no-page",
+          "style": {
+            "navigationBarTitleText": "尚未开通"
+          }
+        },
+        {
+          "path": "notice/index",
+          "style": {
+            "navigationBarTitleText": "公告"
+          }
         }
+        
       ]
     },
     {

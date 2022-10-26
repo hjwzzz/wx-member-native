@@ -1,43 +1,31 @@
 <template>
   <CustomPage>
     <view class="quality-box" v-if="dataList.length > 0">
-      <view>
-        <view v-if="dataList.length > 0">
-          <view
-            class="quality-cell"
-            v-for="(item, index) in dataList"
-            :key="item.id"
-            @click="goDetail(index, item)"
-          >
-            <view class="quality-title">
-              <view class="quality-left flex">
-                <text class="iconfont icon-style icon-dan"> </text>
-                <text class="title-type">{{ item.number || '' }}</text>
-              </view>
-              <view class="quality-left flex">
-                <text class="detail-text">详情</text>
-                <uni-icons
-                  type="arrowright"
-                  size="14"
-                  color="#B7B8C4"
-                ></uni-icons>
-              </view>
-            </view>
-            <view class="quality-content">
-              <view class="content-text">
-                <text class="shop-title">门店：</text>
-                <text class="shop-name">{{ item.storeName || '' }}</text>
-              </view>
-              <view class="content-text">
-                <text class="shop-title">日期：</text>
-                <text class="shop-name">{{ item.bizTime || '' }}</text>
-              </view>
-            </view>
+      <view
+        class="quality-cell"
+        v-for="(item, index) in dataList"
+        :key="item.id"
+        @click="goDetail(index, item)"
+      >
+        <view class="quality-title">
+          <view class="quality-left flex">
+            <text class="iconfont icon-style icon-dan"> </text>
+            <text class="title-type">{{ item.number || '' }}</text>
+          </view>
+          <view class="quality-left flex">
+            <text class="detail-text">详情</text>
+            <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
           </view>
         </view>
-        <view class="imagewu" v-else>
-          <image :src="staticUrl + 'img/noneStatus.png'" mode=""></image>
-          <view class="wujilu"> 暂无相关信息 </view>
+        <view class="quality-content">
+          <view class="content-text">
+            <text class="shop-title">门店：</text>
+            <text class="shop-name">{{ item.storeName || '' }}</text>
+          </view>
+          <view class="content-text">
+            <text class="shop-title">日期：</text>
+            <text class="shop-name">{{ item.bizTime || '' }}</text>
+          </view>
         </view>
       </view>
       <!-- 加载更多 -->
@@ -51,23 +39,18 @@
         margin-top="30"
         color="#D8D9E0"
       /> -->
-
-      <!-- 弹窗 -->
-      <!-- <u-modal
-        v-model="showModal"
-        :show-title="false"
-        confirm-text="关闭"
-        confirm-color="#FF547B"
-        :confirm-style="{ color: '#FF547B' }"
-      >
-        <view class="slot-content">
-          <image class="modal-img" src="../../../static/jinggao.png"></image>
-          <view class="modal-text">抱歉</view>
-          <view class="modal-text text-expire">商家该质保单已过期</view>
-        </view>
-      </u-modal> -->
     </view>
-
+    <view class="imagewu" v-else>
+      <view class="view-image">
+        <image
+          class="tip-image"
+          :src="staticUrl + 'img/noneStatus.png'"
+          mode=""
+        ></image>
+      </view>
+      <view class="wujilu"> 暂无质保单 </view>
+    </view>
+    <!-- 弹窗 -->
     <uni-popup ref="popupModalRef" :mask-click="false">
       <view class="slot-content">
         <view class="slot-content-iamge">
@@ -245,46 +228,48 @@ const getWarrantyList = async () => {
       }
     }
   }
-
-  .imagewu {
-    text-align: center;
-    padding-top: 200rpx;
-
-    /* margin-bottom: ; */
-    image {
-      width: 320rpx;
-      height: 320rpx;
-    }
-
-    .wujilu {
-      font-size: 28rpx;
-      color: #9697a2;
-      margin: 40rpx 0 148rpx 0;
-    }
-  }
 }
-.empty-container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0rpx 0 12vh;
-  .no-date {
+
+.imagewu {
+  text-align: center;
+  padding-top: 200rpx;
+  .view-image {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 160rpx);
-    image {
-      width: 320rpx;
-      height: 320rpx;
-    }
-    .wujilu {
-      font-size: 28rpx;
-      color: #9697a2;
-      margin: 40rpx 0 148rpx 0;
-    }
+  }
+  .tip-image {
+    height: 320rpx;
+    width: 320rpx;
+  }
+
+  .wujilu {
+    font-size: 28rpx;
+    color: #9697a2;
+    margin: 40rpx 0 148rpx 0;
   }
 }
+// .empty-container {
+//   display: flex;
+//   width: 100%;
+//   height: 100vh;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   padding: 0rpx 0 12vh;
+//   .no-date {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     min-height: calc(100vh - 160rpx);
+//     image {
+//       width: 320rpx;
+//       height: 320rpx;
+//     }
+//     .wujilu {
+//       font-size: 28rpx;
+//       color: #9697a2;
+//       margin: 40rpx 0 148rpx 0;
+//     }
+//   }
+// }
 </style>

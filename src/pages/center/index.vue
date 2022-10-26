@@ -1,160 +1,152 @@
 <template>
   <CustomPage bottom>
-    <view class="user-center">
-      <view class="user">
-        <view class="login-info">
-          <view class="user-info">
-            <view
-              class="info-left"
-              @click="handleQuickUrl({ code: 'userInfo' })"
-            >
-              <view class="info-img">
-                <image
-                  v-if="initBasicsData.checkLogin"
-                  :src="userInfo.avatarUrl"
-                  mode="scaleToFill"
-                />
-                <image
-                  v-else
-                  class="avatar"
-                  :src="imageUrl + 'img/person.png'"
-                  mode="scaleToFill"
-                />
-              </view>
-              <view v-if="initBasicsData.checkLogin" class="use-info">
-                <text>{{ userInfo.nickName || '' }}</text>
-              </view>
-              <view v-else class="info-btn">请先登录</view>
-            </view>
-            <view
-              class="info-right"
-              @click="handleQuickUrl({ code: 'installCenter' })"
-            >
+    <view class="user">
+      <view class="login-info">
+        <view class="user-info">
+          <view class="info-left">
+            <view class="info-img">
               <image
-                class="setting"
-                :src="imageUrl + 'img/setInfo.png'"
+                v-if="initBasicsData.checkLogin"
+                :src="userInfo.avatarUrl"
+                mode="scaleToFill"
+              />
+              <image
+                v-else
+                class="avatar"
+                :src="imageUrl + 'img/person.png'"
                 mode="scaleToFill"
               />
             </view>
+            <view v-if="initBasicsData.checkLogin" class="use-info">
+              <text>{{ userInfo.nickName || '' }}</text>
+            </view>
+            <view v-else class="info-btn">请先登录</view>
           </view>
-          <!--  -->
-          <view class="login-list">
-            <block v-for="(item, index) in loginList" :key="index">
+          <view class="info-right">
+            <image
+              class="setting"
+              :src="imageUrl + 'img/setInfo.png'"
+              mode="scaleToFill"
+            />
+          </view>
+        </view>
+        <!--  -->
+        <view class="login-list">
+          <block v-for="(item, index) in loginList" :key="index">
+            <view
+              class="login-item"
+              v-if="item.showed"
+              @click="handleQuickUrl(item)"
+            >
+              <view class="item-num">{{
+                item.accountValue !== ' ' ? item.accountValue : 0
+              }}</view>
+              <view class="item-name">{{ item.title }}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+      <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
+      <view
+        class="boot-equity"
+        v-if="initBasicsData.checkLogin"
+        @click="handleFixedSysUrl()"
+      >
+        <view class="left">
+          <view class="icon">
+            <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
+          </view>
+          <view class="text">{{ userInfo.curLevelName || '' }}</view>
+        </view>
+        <view class="boot-equity-right">
+          <text class="text">查看权益</text>
+          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        </view>
+      </view>
+    </view>
+    <view class="reveal-grid">
+      <block v-for="(item, index) in panelList" :key="index">
+        <view class="grid-list" v-if="item.kind === entryType.EN">
+          <!-- GONGGE  LIST -->
+          <view
+            :class="
+              item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
+            "
+            v-if="item.param.showType"
+          >
+            <block v-for="(entry, index) in item.param.linkList" :key="index">
               <view
-                class="login-item"
-                v-if="item.showed"
-                @click="handleQuickUrl(item)"
+                class="list-item"
+                @click="handleQuickUrl(entry)"
+                v-if="entry.showed"
               >
-                <view class="item-num">{{
-                  item.accountValue !== ' ' ? item.accountValue : 0
-                }}</view>
-                <view class="item-name">{{ item.title }}</view>
+                <view class="item-icon">
+                  <image :src="entry.icoUrl" mode="aspectFit" />
+                </view>
+                <view class="item-name">{{ entry.title }}</view>
+                <uni-icons
+                  v-if="item.param.showType == 'LIST'"
+                  type="arrowright"
+                  size="14"
+                  color="#B7B8C4"
+                />
               </view>
             </block>
           </view>
         </view>
-        <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
         <view
-          class="boot-equity"
-          v-if="initBasicsData.checkLogin"
-          @click="handleFixedSysUrl()"
+          class="grid-ad"
+          v-else-if="item.kind === entryType.BA && bannerList.length > 0"
         >
-          <view class="left">
-            <view class="icon">
-              <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
-            </view>
-            <view class="text">{{ userInfo.curLevelName || '' }}</view>
-          </view>
-          <view class="boot-equity-right">
-            <text class="text">查看权益</text>
-            <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-          </view>
-        </view>
-      </view>
-      <view class="reveal-grid">
-        <block v-for="(item, index) in panelList" :key="index">
-          <view class="grid-list" v-if="item.kind === entryType.EN">
-            <!-- GONGGE  LIST -->
-            <view
-              :class="
-                item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
-              "
-              v-if="item.param.showType"
-            >
-              <block v-for="(entry, index) in item.param.linkList" :key="index">
-                <view
-                  class="list-item"
-                  @click="handleEntryUrl(entry)"
-                  v-if="entry.showed"
-                >
-                  <view class="item-icon">
-                    <image :src="entry.icoUrl" mode="aspectFit" />
-                  </view>
-                  <view class="item-name">{{ entry.title }}</view>
-                  <uni-icons
-                    v-if="item.param.showType == 'LIST'"
-                    type="arrowright"
-                    size="14"
-                    color="#B7B8C4"
-                  />
-                </view>
-              </block>
-            </view>
-          </view>
-          <view
-            class="grid-ad"
-            v-else-if="item.kind === entryType.BA && bannerList.length > 0"
+          <swiper
+            style="height: 180rpx"
+            :indicator-dots="bannerList.length > 1"
+            indicator-color
+            indicator-active-color="#FF547B"
+            autoplay
           >
-            <swiper
-              style="height: 180rpx"
-              :indicator-dots="bannerList.length > 1"
-              indicator-color
-              indicator-active-color="#FF547B"
-              autoplay
-            >
-              <block v-for="(entry, index) in bannerList" :key="index">
-                <swiper-item>
-                  <image
-                    @click.stop="bannerListClick(entry)"
-                    class="image"
-                    style="height: 180rpx"
-                    :src="entry.image || entry.imgUrl"
-                    mode="aspectFill"
-                  ></image>
-                </swiper-item>
-              </block>
-            </swiper>
-          </view>
-          <!-- 今日金价 -->
-          <TodayGoldPrice
-            v-else-if="item.kind === entryType.GO"
-            :showed="todayGoldPriceShowed"
-            :goldPrice="goldPrice"
-            :title="item.param.title"
-          />
-          <!-- 积分商品推荐 -->
-          <ContentMall v-else-if="item.kind === entryType.RE" />
-          <!-- 我的奖品 -->
-          <MyPrizes
-            v-else-if="item.kind === entryType.MY"
-            :item="item"
-            :title="item.param.title"
-          />
-          <!-- 预约服务 -->
-          <MyService
-            v-else-if="item.kind === entryType.RES"
-            :title="item.param.title"
-            :srvProshowNum="srvProshowNum"
-          />
-          <!-- 质保单 -->
-          <MyQuality
-            v-else-if="item.kind === entryType.WA"
-            :title="item.param.title"
-            :item="item"
-            :policyListNum="policyListNum"
-          />
-        </block>
-      </view>
+            <block v-for="(entry, index) in bannerList" :key="index">
+              <swiper-item>
+                <image
+                  @click.stop="bannerListClick(entry)"
+                  class="image"
+                  style="height: 180rpx"
+                  :src="entry.image || entry.imgUrl"
+                  mode="aspectFill"
+                ></image>
+              </swiper-item>
+            </block>
+          </swiper>
+        </view>
+        <!-- 今日金价 -->
+        <TodayGoldPrice
+          v-else-if="item.kind === entryType.GO"
+          :showed="todayGoldPriceShowed"
+          :goldPrice="goldPrice"
+          :title="item.param.title"
+        />
+        <!-- 积分商品推荐 -->
+        <ContentMall v-else-if="item.kind === entryType.RE" />
+        <!-- 我的奖品 -->
+        <MyPrizes
+          v-else-if="item.kind === entryType.MY"
+          :item="item"
+          :title="item.param.title"
+        />
+        <!-- 预约服务 -->
+        <MyService
+          v-else-if="item.kind === entryType.RES"
+          :title="item.param.title"
+          :srvProshowNum="srvProshowNum"
+        />
+        <!-- 质保单 -->
+        <MyQuality
+          v-else-if="item.kind === entryType.WA"
+          :title="item.param.title"
+          :item="item"
+          :policyListNum="policyListNum"
+        />
+      </block>
     </view>
   </CustomPage>
   <Tabbar code="wm_center"> </Tabbar>
@@ -286,20 +278,12 @@ const handleFixedSysUrl = () => {
 const handleQuickUrl = (item: any) => {
   Router.goCodePage(item.code);
 };
-const handleEntryUrl = (item: any) => {
-  Router.goCodePage(item.code);
-};
+// const handleEntryUrl = (item: any) => {
+//   Router.goCodePage(item.code);
+// };
 </script>
 
 <style lang="scss" scoped>
-.user-center {
-  width: 100%;
-  height: 100%;
-  // padding-bottom: constant(safe-area-inset-bottom);
-  // padding-bottom: env(safe-area-inset-bottom);
-  overflow: scroll;
-}
-
 .user {
   width: 100%;
   height: 400rpx;
