@@ -78,6 +78,12 @@
       "style": {
         "navigationBarTitleText": "门店详情"
       }
+    },
+    {
+      "path": "pages/center/account-set",
+      "style": {
+        "navigationBarTitleText": "账户设置"
+      }
     }
   ],
   "tabBar": {

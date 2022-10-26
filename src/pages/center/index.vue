@@ -26,7 +26,10 @@
               </view>
               <view v-else class="info-btn">请先登录</view>
             </view>
-            <view class="info-right">
+            <view
+              class="info-right"
+              @click="handleQuickUrl({ code: 'installCenter' })"
+            >
               <image
                 class="setting"
                 :src="imageUrl + 'img/setInfo.png'"

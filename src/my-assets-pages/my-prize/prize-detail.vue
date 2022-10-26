@@ -218,7 +218,10 @@ interface prizeType {
   tommorry: boolean;
   // 获取途径
   relatedKind: { name: string };
-  // 领取方式 1到店 2邮寄
+
+  /**
+   * 领取方式 1到店 2邮寄
+   */
   recvManner: { code: '1' | '2' };
   param: { allowGet: string };
   status: { name: string; code: string };
