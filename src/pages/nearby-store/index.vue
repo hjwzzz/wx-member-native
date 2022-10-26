@@ -96,6 +96,7 @@ import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
 import { updateNearStore } from '@/api/my-prize';
+import { mergeFullAddress } from '@/utils/util';
 
 // 店铺信息
 interface storeType {
@@ -158,13 +159,10 @@ const updateNearStorePost = async () => {
   });
   if (code === 0) {
     data.forEach((i: storeType) => {
-      const { province, city, district, address, range } = i;
       // 详细地址
-      i.fullAddress = [province + city + district + address]
-        .filter(Boolean)
-        .join('');
-
+      i.fullAddress = mergeFullAddress(i);
       // 距离
+      const { range } = i;
       i.rangeInfo = `${range * 1000}m`;
       if (range >= 1) i.rangeInfo = `${range}km`;
       if (!range) i.rangeInfo = '未知';

@@ -233,7 +233,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
-import { formatTime } from '@/utils/util';
+import { formatTime, mergeFullAddress } from '@/utils/util';
 const initBasicsData = useBasicsData();
 
 const header = ref();
@@ -477,10 +477,7 @@ const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
     // 拼接完整地址
-    const { province, city, district, address } = data;
-    data.fullAddress =
-      [province, city, district, address].filter(Boolean)
-        .join('/') ?? '';
+    data.fullAddress = mergeFullAddress(data);
 
     userInfo.value = data;
 

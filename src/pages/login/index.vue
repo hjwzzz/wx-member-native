@@ -5,7 +5,7 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <view class="btn wx-auth" @click="showWxMiniAuthModal"> 微信授权登录 </view>
-    <view class="btn no-login"> 暂不登录 </view>
+    <view class="btn no-login" @click="back"> 暂不登录 </view>
     <view
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
@@ -14,14 +14,14 @@
         <text>登录代表阅读并同意</text>
         <text
           class="eula-name"
-          @click="agreement(1)"
+          @click="agreement('PRIV')"
           v-if="protocol.regAgreementShowed"
         >
           《注册协议》
         </text>
         <text
           class="eula-name"
-          @click="agreement(0)"
+          @click="agreement('REG')"
           v-if="protocol.privacyAgreementShowed"
         >
           《隐私协议》
@@ -78,59 +78,51 @@ const protocol = reactive<Protocol>({});
  */
 const jsCodeLogin = async () => {
   const jsCode = await getWxLoginCode();
+  if (!jsCode) return;
 
-  if (!jsCode) {
-    return;
-  }
-
-  const jsCodeLoginRequestRes = await jsCodeLoginRequest(jsCode);
-
-  if (jsCodeLoginRequestRes.code !== 0) {
-    return;
-  }
-
-  const { token, mid } = jsCodeLoginRequestRes.data;
+  const { code, data: { token = '', mid = '' } = {} } =
+    await jsCodeLoginRequest(jsCode);
+  if (code !== 0) return;
 
   Storage.setToken(token);
   initBasicsData.setUseMid(mid);
 
   uni.showToast({ title: '登录成功！' });
-
   setTimeout(() => {
     uni.navigateBack();
   }, 1000);
 };
 
 const getLogo = async () => {
-  const getLogoRequestRes = await getLogoRequest();
-
-  if (getLogoRequestRes.code !== 0) {
-    return;
+  const { code, data = '' } = await getLogoRequest();
+  if (code === 0) {
+    logo.value = data;
   }
-
-  logo.value = getLogoRequestRes.data ?? '';
 };
 
 const getMemberEula = async () => {
-  const getMemberEulaRequestRes = await getMemberEulaRequest();
-  if (!getMemberEulaRequestRes.data) {
-    return;
-  }
-  Object.assign(protocol, getMemberEulaRequestRes.data);
+  const { data } = await getMemberEulaRequest();
+  data && Object.assign(protocol, data);
 };
-const agreement = (i: number) => uni.navigateTo({ url: `agreement?eula=${JSON.stringify(protocol.eulas[i])}` });
+const agreement = (i: string) => {
+  const agreementDetail = protocol.eulas.find(k => k.kind === i);
+  uni.navigateTo({ url: `agreement?eula=${JSON.stringify(agreementDetail)}` });
+};
 
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
   if (errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
   const jsCode = await getWxLoginCode();
-
+  const { avatarUrl, nickName, sex } = userInfo.value;
   if (jsCode && encryptedData && iv) {
     wxMiniAuth({
-      jsCode,
-      encryptedData,
       iv,
+      sex: (['F', 'M'] as const)[sex] ?? 'U',
+      jsCode,
+      nickName,
+      avatarUrl,
+      encryptedData,
     });
   }
 };
@@ -151,8 +143,26 @@ const getWxLoginCode = () => new Promise<string>((resolve, reject) => {
   });
 });
 
-const showWxMiniAuthModal = () => {
-  PopupRef.value.open();
+const userInfo = ref();
+let waitWxMiniAuth = false;
+const showWxMiniAuthModal = async () => {
+  if (waitWxMiniAuth) return;
+
+  waitWxMiniAuth = true;
+  try {
+    const { userInfo, errMsg }: any = await uni.getUserProfile({ desc: '微信授权登录' }); // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+    waitWxMiniAuth = false;
+    if (errMsg === 'getUserProfile:ok') {
+      userInfo.value = userInfo;
+      PopupRef.value.open();
+    }
+  } catch (error) {
+    waitWxMiniAuth = false;
+    uni.showModal({
+      content: '需要授权用户信息才能使用',
+      showCancel: false,
+    });
+  }
 };
 
 const hideWxMiniAuthModal = () => {
@@ -160,13 +170,10 @@ const hideWxMiniAuthModal = () => {
 };
 
 const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
-  // const { avatarUrl, nickName, sex } = this.userInfo;
-  // const jsCode = uni.getStorageSync('code');
-  const wxMiniAuthRequestRes = await wxMiniAuthRequest(params);
-
-  if (wxMiniAuthRequestRes.code !== 0) {
-    const wxMiniAuthRequestErrorModalRes = uni.showModal({
-      content: wxMiniAuthRequestRes.msg,
+  const { data, code, msg } = await wxMiniAuthRequest(params);
+  if (code !== 0) {
+    uni.showModal({
+      content: msg,
       showCancel: false,
     });
   }
@@ -277,6 +284,14 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   // });
 };
 
+const back = () => {
+  const pages = getCurrentPages();
+  if (pages.length > 1) {
+    uni.navigateBack();
+  } else {
+    uni.redirectTo({ url: '/pages/tabbar/index' });
+  }
+};
 onMounted(() => {
   getLogo();
   getMemberEula();
