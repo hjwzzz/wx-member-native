@@ -1,6 +1,6 @@
 <template>
   <CustomPage>
-    <swiper class="advert-list">
+    <swiper class="advert-list" v-if="advertList.length">
       <swiper-item
         v-for="item in advertList"
         :key="item.imgUrl"
@@ -10,13 +10,17 @@
       </swiper-item>
     </swiper>
 
-    <view class="coupon-list">
-      <coupon-item
+    <view class="coupon-list" v-if="receiveCenterList.length">
+      <CouponItem
         :item="item"
         v-for="item in receiveCenterList"
         :key="item.couponId"
       >
-      </coupon-item>
+      </CouponItem>
+    </view>
+    <view class="preferential" v-else>
+      <image :src="staticUrl + 'img/Salesperson.png'" mode=""></image>
+      <view class="text"> 暂无优惠券信息 </view>
     </view>
   </CustomPage>
 </template>
@@ -33,6 +37,7 @@ import {
   queryReceiveCenterListFrontRequest,
 } from '@/api/coupon-center';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
+import { staticUrl } from '@/utils/config';
 
 const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
@@ -71,8 +76,29 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-page {
+// page {
+//   padding: 30rpx;
+// }
+
+.coupon-list {
   padding: 30rpx;
+}
+.preferential {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  image {
+    width: 320rpx;
+    height: 320rpx;
+  }
+
+  .text {
+    text-align: center;
+    font-size: 28rpx;
+    color: #9697a2;
+  }
 }
 
 .advert-list {

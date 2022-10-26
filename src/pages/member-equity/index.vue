@@ -139,6 +139,7 @@ import { computed, onMounted, ref, Ref } from 'vue';
 import { queryAllLevelRights } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
+import { richImage } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 const mainColor = computed(() => initBasicsData.mainColor);
@@ -163,17 +164,17 @@ const onChangeSwp = (e: any) => {
   currentBenefitsData.value = levelList.value[e.detail.current];
 };
 
-// 处理富文本图片
-const richImage = (item: any) => {
-  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  let content = item.replace(reg, '<img style="max-width: 100%;" src="$1" />');
-  const regP = /<p.*?>/g;
-  content = item.replace(
-    regP,
-    '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
-  );
-  return content;
-};
+// // 处理富文本图片
+// const richImage = (item: any) => {
+//   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+//   let content = item.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+//   const regP = /<p.*?>/g;
+//   content = item.replace(
+//     regP,
+//     '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
+//   );
+//   return content;
+// };
 
 const getAllBenefits = async () => {
   // 获取会员权益数据

@@ -170,7 +170,7 @@ export interface CouponConversionVo {
    * - discount_coupon: 折扣券
    * - full_reduction_coupon: 满减券
    */
-  code?:
+  code:
     | 'labor_cost_discount_coupon'
     | 'labor_cost_deduction_coupon'
     | 'random_money_coupon'
