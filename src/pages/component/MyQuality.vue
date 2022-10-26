@@ -1,5 +1,5 @@
 <template>
-  <view class="grid-policy-act">
+  <view class="grid-policy-act" @click="toDetail">
     <view class="header">
       <view class="header-left">
         <text class="title">{{ title || '质保单' }}</text>
@@ -49,7 +49,7 @@ import { reactive, watch } from 'vue';
 import { queryPolicyList } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-
+import Router from '@/utils/router';
 import NoneData from './NoneData.vue';
 const initBasicsData = useBasicsData();
 
@@ -65,6 +65,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const policyList: any = reactive({ totalRecord: 0, records: [] });
+
+const toDetail = () => {
+  //  uni.navigateTo({ url });
+  Router.goCodePage('warranty');
+};
 
 const getPolicyList = async () => {
   if (initBasicsData.checkLogin) {
@@ -82,13 +87,22 @@ const getPolicyList = async () => {
     }
   }
 };
-
+// policyListNum 有值再去请求
 watch(
   () => props.policyListNum,
   () => {
     getPolicyList();
   },
   { immediate: true }
+);
+// 登录请求
+watch(
+  () => initBasicsData.checkLogin,
+  (bool: boolean) => {
+    if (bool) {
+      getPolicyList();
+    }
+  }
 );
 </script>
 
