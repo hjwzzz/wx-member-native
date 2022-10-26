@@ -209,6 +209,12 @@
           "style": {
             "navigationBarTitleText": "尚未开通"
           }
+        },
+        {
+          "path": "notice/index",
+          "style": {
+            "navigationBarTitleText": "公告"
+          }
         }
         
       ]

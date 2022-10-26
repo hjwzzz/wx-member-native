@@ -41,8 +41,12 @@
         v-for="(items, index) in dataList.wmMainRspVo?.panelList"
         :key="index"
       >
-        <!-- 提示 -->
-        <view class="bulletin" v-if="items.kind === 'NOTICE'">
+        <!-- 提示 @click="goMoreNotice( item.param, item.updateTime)"   -->
+        <view
+          class="bulletin"
+          v-if="items.kind === 'NOTICE'"
+          @click="goMoreNotice(items.param, items.updateTime)"
+        >
           <view class="bulletin-box">
             <text class="iconfont icon-gonggao icon-text"> </text>
             <text class="bulletin-text">{{ items.param.title }}</text>
@@ -325,6 +329,13 @@ const getWmAlertAdBannerListFun = async () => {
     title: item.name,
     url: item.url,
   }));
+};
+
+// 更多
+const goMoreNotice = (item: any, noticTime: any) => {
+  uni.setStorageSync('notic', item);
+  uni.setStorageSync('noticTime', noticTime);
+  uni.navigateTo({ url: '/my-assets-pages/notice/index' });
 };
 </script>
 
