@@ -80,10 +80,9 @@ const jsCodeLogin = async () => {
   const jsCode = await getWxLoginCode();
   if (!jsCode) return;
 
-  const { code, data: { token = '', mid = '' } = {} } =
-    await jsCodeLoginRequest(jsCode);
+  const { code, data } = await jsCodeLoginRequest(jsCode);
   if (code !== 0) return;
-
+  const { token = '', mid = '' } = data;
   Storage.setToken(token);
   initBasicsData.setUseMid(mid);
 
@@ -134,7 +133,6 @@ const getWxLoginCode = () => new Promise<string>((resolve, reject) => {
         resolve(res.code);
         return;
       }
-
       reject(`登录失败！${res.errMsg}`);
     },
     fail: err => {
