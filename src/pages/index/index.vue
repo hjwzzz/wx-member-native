@@ -41,7 +41,7 @@
         v-for="(items, index) in dataList.wmMainRspVo?.panelList"
         :key="index"
       >
-        <!-- 提示 @click="goMoreNotice( item.param, item.updateTime)"   -->
+        <!-- 提示    -->
         <view
           class="bulletin"
           v-if="items.kind === 'NOTICE'"
@@ -180,6 +180,7 @@ import ContentMall from '../component/ContentMall.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
 import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
+import { richImage } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -279,14 +280,14 @@ const getGoldPriceByPage = async () => {
   }
 };
 
-const richImage = (item: string) => {
-  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  const content = item.replace(
-    reg,
-    '<img style="max-width: 100%;" src="$1" />'
-  );
-  return content;
-};
+// const richImage = (item: string) => {
+//   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+//   const content = item.replace(
+//     reg,
+//     '<img style="max-width: 100%;" src="$1" />'
+//   );
+//   return content;
+// };
 
 const topBgImageUrl = computed(() => {
   const imageUrl = dataList.value.wmMainRspVo?.param?.topBgImageUrl;

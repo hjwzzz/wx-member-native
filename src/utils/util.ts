@@ -40,3 +40,15 @@ export const debounce = (fn: (...args: any) => any, wait = 600) => {
     }, wait);
   };
 };
+
+// 处理富文本图片
+export const richImage = (item: any) => {
+  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+  let content = item.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+  const regP = /<p.*?>/g;
+  content = item.replace(
+    regP,
+    '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
+  );
+  return content;
+};
