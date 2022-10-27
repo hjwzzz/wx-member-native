@@ -58,6 +58,12 @@ export const getMemberInfo = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// 查询注册管理设置
+export const queryRegistRequiredSetting = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSetting`;
+  const res = await request(url, data);
+  return res;
+};
 
 // 职业下拉选择查询(根据分类)
 export const queryProfessionAsCate = async (data: any) => {
@@ -69,6 +75,12 @@ export const queryProfessionAsCate = async (data: any) => {
 // 根据分销商ID获取对应导购列表
 export const getSalerByDistId = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/member/info/Front/getSalerByDistId`;
+  const res = await request(url, data);
+  return res;
+};
+// 查询注册管理设置(新)
+export const queryRegistRequiredSettingNew = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSettingNew`;
   const res = await request(url, data);
   return res;
 };

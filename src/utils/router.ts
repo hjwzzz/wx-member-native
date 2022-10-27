@@ -36,6 +36,7 @@ const pageCode: any = {
   updateGuide: '/pages/center/user-info/guid-list', // 导购选择
   installCenter: '/pages/center/account-set', // 账户设置
   addressList: '/pages/address/address-list', // 收货地址
+  finishAddress: '/pages/login/finish-address', // 完善信息地址
 };
 
 // 路由控制

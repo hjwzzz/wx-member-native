@@ -84,6 +84,18 @@
       "style": {
         "navigationBarTitleText": "账户设置"
       }
+    },
+    {
+      "path": "pages/login/finish-info",
+      "style": {
+        "navigationBarTitleText": "完善资料"
+      }
+    },
+    {
+      "path": "pages/login/finish-address",
+      "style": {
+        "navigationBarTitleText": "完善资料"
+      }
     }
   ],
   "tabBar": {
@@ -222,7 +234,6 @@
             "navigationBarTitleText": "公告"
           }
         }
-        
       ]
     },
     {
