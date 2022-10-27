@@ -5,25 +5,17 @@
         showStatus ? 'coupon-top-valid' : 'coupon-top-no'
       }`"
     >
-      <view class="name">{{ item.name }}</view>
+      <view class="name" :style="{ color: showMainColor }">
+        {{ item.name || item.couponName }}
+      </view>
       <view class="handle" v-if="showStatus">
-        <view class="receive"> 领取 </view>
+        <slot name="btn" :color="handleColor" :background="receiveColor">
+        </slot>
       </view>
       <view v-else>
         <view class="right-image">
           <view class="trans">
-            <image
-              v-if="item.surplus === 0"
-              :src="staticUrl + 'img/overNumber.png'"
-              class="image"
-              mode=""
-            ></image>
-            <image
-              v-else-if="item.restrictStatus === 1"
-              :src="staticUrl + 'img/geted.png'"
-              class="image"
-              mode=""
-            ></image>
+            <slot name="image" class="image"></slot>
           </view>
         </view>
       </view>
@@ -60,9 +52,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type { CouponItem } from './index.type';
-import { staticUrl } from '@/utils/config';
+
 const props = defineProps<{
   item: CouponItem;
+  showStatus?: any;
+  showStatusText?: any;
 }>();
 
 const couponListItemTopBackgroundImage = computed(() => `url("${props.item.style?.watermarkImgUrl}"), linear-gradient(270deg, ${props.item.style?.topBgColorBottom} 1%, ${props.item.style?.topBgColorTop} 99% 100%, #f5f5f5)`);
@@ -72,7 +66,7 @@ const handleColor = computed(() => props.item.style?.topBgColorTop);
 const receiveColor = computed(() => props.item.style?.mainColor || '#ffffff');
 
 const showMainColor = computed(() => {
-  if (props.item.surplus === 0 || props.item.restrictStatus === 1) {
+  if (!props.showStatus) {
     return '#ffffff';
   }
   return props.item.style?.mainColor;
@@ -115,8 +109,7 @@ const showCondition = computed(() => {
   return '';
 });
 
-const showStatus = computed(() => props.item.surplus && !props.item.restrictStatus);
-
+const showStatus = computed(() => props.showStatus);
 const prodCode = computed(() => props.item.prodCode?.code || '');
 </script>
 
@@ -158,11 +151,11 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
         position: absolute;
         right: -4rpx;
         top: 0rpx;
-        .image {
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }
+        // .image {
+        //   width: 100%;
+        //   height: 100%;
+        //   overflow: hidden;
+        // }
       }
     }
 
@@ -192,7 +185,7 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
     }
 
     .name {
-      z-index: 999;
+      // z-index: 999;
       align-self: start;
       font-size: 28rpx;
       font-weight: 500;
@@ -210,11 +203,12 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
         border-radius: 28rpx;
         color: v-bind('handleColor');
         background: v-bind('receiveColor');
+        font-size: 28rpx;
       }
     }
 
     .stock {
-      z-index: 999;
+      // z-index: 999;
       align-self: end;
       height: 80rpx;
       line-height: 80rpx;

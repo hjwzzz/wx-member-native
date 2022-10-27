@@ -137,6 +137,12 @@
           }
         },
         {
+          "path": "my-coupon/index",
+          "style": {
+            "navigationBarTitleText": "我的优惠券"
+          }
+        },
+        {
           "path": "my-prize/index",
           "style": {
             "navigationBarTitleText": "我的奖品"

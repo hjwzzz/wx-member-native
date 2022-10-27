@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onLaunch, onShow, onHide } from '@dcloudio/uni-app';
+import { onLaunch } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
@@ -33,12 +33,12 @@ onLaunch(() => {
   // Storage.setMainColor(getWmColorThemeRes.data.mainColor);
   // console.log('App Launch');
 });
-onShow(() => {
-  console.log('App Show');
-});
-onHide(() => {
-  console.log('App Hide');
-});
+// onShow(() => {
+//   console.log('App Show');
+// });
+// onHide(() => {
+//   console.log('App Hide');
+// });
 
 // const dddd = ref('22222222');
 // setTimeout(() => {

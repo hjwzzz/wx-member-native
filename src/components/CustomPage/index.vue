@@ -6,7 +6,7 @@
     <view :class="props.bottom ? 'custom-page-box2' : 'custom-page-box1'">
       <slot></slot>
     </view>
-    <PageFooter :bottom="props.bottom"> </PageFooter>
+    <PageFooter :bottom="props.bottom" v-if="!hide"> </PageFooter>
   </view>
 </template>
 
@@ -17,9 +17,11 @@ import { computed } from 'vue';
 interface Props {
   bottom?: boolean;
   backgroundColor?: string;
+  hide?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   bottom: false,
+  hide: false,
   backgroundColor: '#f5f5f5',
 });
 
