@@ -219,7 +219,7 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
           birthLunar: '',
           birthSolar: '',
           inviteCode: '',
-          nickName: '',
+          nickName: params.nickName ?? '',
           phone: phone || uni.getStorageSync('phone'),
           sex: params.sex,
           wmid: wmid || uni.getStorageSync('wmid'),
@@ -230,7 +230,12 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
         });
 
         if (code === 0 && d) {
+          uni.removeStorageSync('c');
+          uni.removeStorageSync('num');
+          uni.removeStorageSync('pages');
+          uni.removeStorageSync('inviteMid');
           initBasicsData.setUseMid(d);
+          uni.navigateBack();
         }
       }
     } else {

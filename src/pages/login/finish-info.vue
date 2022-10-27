@@ -59,17 +59,11 @@
             <view class="right">
               <view v-show="info.code.code == BIRTH_DAY" class="date-format">
                 <view class="wrapper">
-                  <text v-if="memberInfo.birthKind === 'S'">
-                    {{ birthSolar || memberInfo.birthSolar || '' }}
-                  </text>
-                  <text v-else-if="memberInfo.birthKind === 'L'">
-                    {{ birthLunar || memberInfo.birthLunar || '' }}
-                  </text>
-                  <text v-else-if="memberInfo.birthKind === 'U'">
-                    {{ birthSolar || memberInfo.birthSolar || '' }}
+                  <text v-if="memberInfo.birthKind === 'L'">
+                    {{ memberInfo.birthLunar || '' }}
                   </text>
                   <text v-else>
-                    {{ birthSolar || memberInfo.birthSolar || '' }}
+                    {{ memberInfo.birthSolar || '' }}
                   </text>
                 </view>
               </view>
@@ -91,13 +85,12 @@
               <view
                 v-show="
                   info.code.code === 'REGIST_REQUIRED_ADDRESS' &&
-                  memberInfoAddressDet
+                  memberInfo.address
                 "
                 class="guid"
               >
-                <!-- <text>{{memberInfo.address}}</text> -->
                 <text class="letter">
-                  {{ memberInfoAddress }}/{{ memberInfoAddressDet }}
+                  {{ memberInfoAddressDet }}/{{ memberInfo.address }}
                 </text>
               </view>
               <!-- 性别 -->
@@ -116,11 +109,12 @@
               </view>
               <view
                 v-show="
-                  info.code.code === 'REGIST_REQUIRED_AREA' && memberInfoAddress
+                  info.code.code === 'REGIST_REQUIRED_AREA' &&
+                  memberInfoAddressDet
                 "
                 class="guid"
               >
-                <text>{{ memberInfoAddress }}</text>
+                <text>{{ memberInfoAddressDet }}</text>
               </view>
               <uni-icons type="arrowright" size="14" />
             </view>
@@ -202,7 +196,11 @@
 import { computed, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
-import { queryRegistRequiredSettingNew } from '@/api/server';
+import {
+  completeInfo,
+  getMemberInfo,
+  queryRegistRequiredSettingNew,
+} from '@/api/server';
 import { queryNearStore } from '@/api/reservation-service';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
@@ -250,10 +248,11 @@ const current = ref(0);
 const maritalValue = ref('Y');
 const memberInfo = ref<any>({});
 const selectedShop = ref<any>({});
-const birthSolar = ref(0);
-const birthLunar = ref(0);
-const memberInfoAddressDet = ref(0);
-const memberInfoAddress = ref(0);
+const memberInfoAddressDet = computed(() => {
+  const { province = '', city = '', district = '' } = memberInfo.value;
+  return [province, city, district].filter(Boolean)
+    .join('/');
+});
 const showAnnday = ref('');
 const showSex = ref(0);
 
@@ -264,6 +263,7 @@ onLoad(() => {
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
+  queryMemeberInfo();
   if (channel && num) {
     isActivity.value = true;
     queryWriteInfo({
@@ -274,9 +274,12 @@ onLoad(() => {
   } else {
     isActivity.value = false;
     queryWriteInfo({});
-    // queryMemeberInfo();
   }
 });
+const queryMemeberInfo = async () => {
+  const { data } = await getMemberInfo('');
+  data && (memberInfo.value = data);
+};
 // 获取附近门店
 const queryNearShop = async (distId: any) => {
   const lo = uni.getStorageSync('longitude');
@@ -353,15 +356,6 @@ const handle = (index: number) => {
       uni.$once('chooseStore', e => {
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
-        // Object.assign(memberInfo.value, {
-        //   belongDistId: e.distId,
-        //   belongDistName: e.storeName,
-        //   // 切换门店时候，清空导购信息
-        //   ...memberInfo.value.belongDistId !== e.distId && {
-        //     belongUid: null,
-        //     belongUser: null,
-        //   },
-        // });
       });
       router.goCodePage(
         'storeInfo',
@@ -397,16 +391,22 @@ const handle = (index: number) => {
       break;
     }
     case 'REGIST_REQUIRED_ADDRESS': {
-      router.goCodePage('finishAddress');
+      uni.$once('chooseAddress', (e: any) => Object.assign(memberInfo.value, e));
+      const { address, province, city, district } = memberInfo.value;
+      router.goCodePage(
+        'finishAddress',
+        `?address=${address || ''}&area=${province},${city},${district}`
+      );
       break;
     }
     case GENDER: {
       break;
     }
     case 'REGIST_REQUIRED_AREA': {
-      // store.setStore('mark', 'area');
-      // const url = pages.address;
-      // router.go(url);
+      uni.$once('chooseAddress', e => {
+        selectedShop.value = e;
+      });
+      router.goCodePage('finishAddress');
       break;
     }
     default:
@@ -425,26 +425,141 @@ const maritalChange = (e: any) => {
     showAnnday.value = '';
   }
 };
-const handleStep = () => {
+const handleStep = async () => {
+  const {
+    name,
+    phone,
+    nickName,
+    province,
+    city,
+    district,
+    address,
+    annday,
+    belongUid: activeUid,
+    birthKind,
+    birthSolar,
+    sex,
+  } = memberInfo.value;
   const params = {
+    name,
+    nickName,
     activeDistId: selectedShop.value.distId,
-
-    province: '',
-    city: '',
-    district: '',
-    address: '',
-
-    inviteCode: '',
-    nickName: '',
-    phone: '',
-    wmid: '',
+    activeUid,
+    province,
+    city,
+    district,
+    address,
+    inviteCode: name, // 验证码，已废弃
+    annday,
+    sex,
+    phone: phone || uni.getStorageSync('phone'),
+    wmid: uni.getStorageSync('wmid') || '',
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
     inviteMid: uni.getStorageSync('inviteMid') || undefined,
-    ...memberInfo.value,
+    birthKind: birthKind || 'S',
     birthLunar: '',
+    birthSolar,
   };
-  console.log(params);
+
+  const verifyData = list.value.some((i: any) => {
+    if (i.required !== 'Y') return;
+    switch (i.code.code) {
+      case 'REGIST_REQUIRED_STORE': {
+        if (!params.activeDistId) {
+          uni.showModal({
+            content: '请选择门店',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_SELLER': {
+        if (!params.activeUid) {
+          uni.showModal({
+            content: '请选择导购',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_BIRTH': {
+        if (!params.birthSolar) {
+          uni.showModal({
+            content: '请选择生日',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_GENDER': {
+        if (!['Y', 'U'].includes(params.sex)) {
+          uni.showModal({
+            content: '请选择性别',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_MDAY': {
+        if (!params.annday) {
+          uni.showModal({
+            content: '请选择纪念日',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_ADDRESS': {
+        if (!params.address && !params.province) {
+          uni.showModal({
+            content: '请选择纪念日',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_INVITE_CODE': {
+        if (!params.inviteCode) {
+          uni.showModal({
+            content: '请输入验证码',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case 'REGIST_REQUIRED_NAME': {
+        if (!params.name) {
+          uni.showModal({
+            content: '请输入姓名',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
+  if (verifyData) return;
+  const { code, data } = await completeInfo(params);
+  if (code === 0) {
+    data && initBasicsData.setUseMid(data.mid);
+    uni.navigateBack();
+    uni.removeStorageSync('c');
+    uni.removeStorageSync('num');
+    uni.removeStorageSync('pages');
+    uni.removeStorageSync('inviteMid');
+  }
 };
 
 // 日期修改（日历选择器）

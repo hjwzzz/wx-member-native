@@ -4,7 +4,7 @@
       <view class="content">
         <view class="header">
           <view class="left">地址</view>
-          <view class="right" @click="openSelected">
+          <view class="right">
             <view class="right-text">
               <picker mode="region" @change="bindPickerChange" :value="index">
                 <view class="uni-input">{{ index.join('/') }}</view>
@@ -18,7 +18,6 @@
             <view class="title">详细地址</view>
             <textarea
               class="address-detail"
-              @blur="bindTextAreaBlur"
               focus="true"
               maxlength="50"
               disable-default-padding="true"
@@ -38,14 +37,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onLoad } from '@dcloudio/uni-app';
+import { ref, unref } from 'vue';
 
-const index = ref([]);
-const detail = ref(0);
-const openSelected = () => [];
-const bindTextAreaBlur = () => [];
-const bindPickerChange = () => [];
-const handleSaveAddress = () => [];
+onLoad((e: any) => {
+  if (e.address) {
+    detail.value = e.address;
+    index.value = e.area.split(',');
+  }
+});
+const index = ref(['广东省', '深圳市', '罗湖区']);
+const detail = ref('');
+const bindPickerChange = (e: any) => index.value = e.target.value;
+const handleSaveAddress = () => {
+  const [province, city, district] = index.value;
+  uni.$emit('chooseAddress', {
+    address: unref(detail),
+    province,
+    city,
+    district,
+  });
+  uni.navigateBack();
+};
 </script>
 
 <style scoped lang="scss">
