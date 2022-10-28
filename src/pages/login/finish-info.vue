@@ -142,7 +142,7 @@
             <view v-if="selectedShop.fullAddress" class="shop-address">
               <view class="address-icon">
                 <image
-                  src="../../../static/img/address.png"
+                  :src="`${staticUrl}/prize/store/address.png`"
                   mode="scaleToFill"
                 />
               </view>
@@ -152,7 +152,10 @@
             </view>
             <view v-if="selectedShop.tel" class="shop-phone">
               <view class="phone-icon">
-                <image src="../../../static/img/phone.png" mode="scaleToFill" />
+                <image
+                  :src="`${staticUrl}/prize/store/phone.png`"
+                  mode="scaleToFill"
+                />
               </view>
               <view class="phone-code">
                 {{ selectedShop.tel }}
@@ -206,6 +209,7 @@ import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
+import { staticUrl } from '@/utils/config';
 
 const list = ref<any>([]);
 const items = [
@@ -644,10 +648,7 @@ const confirmDate = (e: any) => {
           display: flex;
           height: 18rpx;
           color: #b7b8c4;
-          // #ifdef H5
-          justify-content: center;
-          align-items: center;
-          // #endif
+
           .letter {
             width: 500rpx;
             text-align: right;
@@ -668,16 +669,7 @@ const confirmDate = (e: any) => {
             text-overflow: ellipsis;
             height: 40rpx;
             text-align: right;
-            // #ifdef H5
-            margin-right: 8px;
-            transform: translateY(5px);
-            // #endif
           }
-          // #ifdef H5
-          /deep/.uni-icons {
-            transform: translateY(6px);
-          }
-          // #endif
         }
       }
 

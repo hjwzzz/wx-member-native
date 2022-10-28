@@ -97,13 +97,16 @@ const getData = async (curPage = 1) => {
     curPage,
     pageSize: 10,
     status: items[current.value].key,
-    // status: ['TEXC'],
   };
   const {
     code,
     data: { records },
   } = await queryFront(params);
   if (code !== 0) return;
+  // if()
+  // records.forEach(e => {
+
+  // })
   page.value = curPage;
   if (curPage > 1) {
     list.value.push(...records);
