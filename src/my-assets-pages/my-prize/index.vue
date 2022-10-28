@@ -114,7 +114,6 @@ const getData = async (curPage = 1) => {
       item.tommorry = sortTime > 0;
     });
   }
-  console.log(records);
 
   page.value = curPage;
   if (curPage > 1) {

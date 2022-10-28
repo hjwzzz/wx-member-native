@@ -119,8 +119,6 @@ onLoad(() => {
 const address = ref<any>({});
 const adressGroup = computed(() => {
   const { province, city, district, address: adr } = address.value;
-  console.log(province + city + district + adr);
-
   return province + city + district + adr;
 });
 const goAdress = () => {
@@ -292,11 +290,6 @@ const navBack = () => uni.navigateBack({ delta: 1 });
   }
 }
 
-/* 模态框 */
-.container {
-  :deep(.uni-popup .uni-popup__wrapper) {
-  }
-}
 .model {
   padding: 0 !important;
   border-radius: 16rpx;

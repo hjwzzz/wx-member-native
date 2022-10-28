@@ -129,7 +129,7 @@ onLoad(() => {
       uni.setStorageSync('location', local.value);
       updateNearStorePost();
     },
-    fail: data => {
+    fail: () => {
       local.value = uni.getStorageSync('location');
 
       updateNearStorePost();
@@ -156,7 +156,7 @@ const updateNearStorePost = async () => {
   const { code, data } = await updateNearStore({
     distId: '',
     storeName: keyward.value,
-    // coordCur: logValut(local.value),
+    coordCur: logValut(local.value) || '',
     relatedId: props.relatedId,
   });
   if (code === 0) {

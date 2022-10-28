@@ -207,9 +207,9 @@ import {
 import { queryNearStore } from '@/api/reservation-service';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
-import Router from '@/utils/router';
-const initBasicsData = useBasicsData();
 import { staticUrl } from '@/utils/config';
+
+const initBasicsData = useBasicsData();
 
 const list = ref<any>([]);
 const items = [
@@ -559,7 +559,7 @@ const handleStep = async () => {
   const { code, data } = await completeInfo(params);
   if (code === 0) {
     data && initBasicsData.setUseMid(data.mid);
-    Router.fromLoginBack();
+    router.fromLoginBack();
     uni.removeStorageSync('c');
     uni.removeStorageSync('num');
     uni.removeStorageSync('pages');

@@ -102,7 +102,7 @@ const goToUpdatePage = (e: any) => {
   uni.navigateTo({ url: `add?id=${e.id}&item=${JSON.stringify(e)}` });
 };
 const deleAdress = async (id: string) => {
-  const { cancel } = await uni.showModal({ content: '确定要删除该地址吗？' });
+  const { cancel }: any = await uni.showModal({ content: '确定要删除该地址吗？' });
   if (cancel) return;
   const { msg } = await deleteAddress(id);
   if (msg !== '成功') return;
