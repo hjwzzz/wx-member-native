@@ -6,7 +6,9 @@
         <view class="left">
           <image
             class="img"
-            :src="`${staticUrl}prize/${statusCode}.png`"
+            :src="`${staticUrl}prize/${
+              detail.status?.code ?? detail.status
+            }.png`"
             mode=""
           />
         </view>
@@ -18,11 +20,11 @@
       <!-- 核销码 -->
       <view
         class="Qrode"
-        v-if="statusName === '待领取' && detail.recvManner.code === '1'"
+        v-if="statusName === '待领取' && detail.recvManner?.code === '1'"
       >
         <view class="verification"> 核销码：{{ detail.vcode }} </view>
         <view class="erweima">
-          <canvas canvas-id="myQrcode" style="width: 300rpx" />
+          <canvas canvas-id="myQrcode" style="width: 150px; height: 150px" />
         </view>
         <view class="owneweima">
           领取时，请向工作人员出示二维码 此码一次有效，请勿泄露
@@ -39,7 +41,10 @@
       </view>
       <!-- 收件人信息 -->
       <view
-        v-if="detail.receiver || detail.phone || detail.fullAddress"
+        v-if="
+          detail.recvManner?.code === '2' &&
+          (detail.receiver || detail.phone || detail.fullAddress)
+        "
         class="youji"
       >
         <view class="left">
@@ -47,14 +52,7 @@
         </view>
         <view class="right rights">
           <view class="title nameTitle">
-            <text
-              style="
-                margin-right: 10px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              "
-            >
+            <text style="margin-right: 10px">
               {{ detail.receiver || '--' }}
             </text>
             <text style="margin-right: 30rpx">
@@ -79,10 +77,7 @@
       <!-- 门店信息 -->
       <view
         class="information"
-        v-if="
-          statusName !== '待兑换' &&
-          (detail.distName || detail.disCity || detail.disAddress)
-        "
+        v-if="statusName !== '待兑换' && detail.fulldisAddress"
       >
         <view class="title"> 兑换信息 </view>
         <view class="address">
@@ -96,12 +91,7 @@
             <view class="left"> 门店地址 </view>
             <view class="right dist-name1" style="text-align: justify">
               <text>
-                {{
-                  detail.disProvince +
-                    detail.disCity +
-                    detail.disDistrict +
-                    detail.disAddress || '--'
-                }}
+                {{ detail.fulldisAddress || '--' }}
               </text>
             </view>
           </view>
@@ -122,7 +112,7 @@
         "
       >
         <view class="a1" v-for="{ k, v } in manInfoRow" :key="k">
-          <view class="left"> k </view>
+          <view class="left"> {{ k }} </view>
           <view class="right">
             {{ detail[v as keyof prizeType] || '--' }}
           </view>
@@ -132,7 +122,7 @@
       <view
         v-if="
           ['已领取', '待领取', '已发货'].includes(statusName) &&
-          detail.recvManner.code === '2'
+          detail.recvManner?.code === '2'
         "
         class="foohead"
         style="border-radius: 12rpx"
@@ -170,7 +160,13 @@
 
 <script setup lang="ts">
 import qrCode from '@/utils/qrcode.js';
-import { queryDetail, updateReceiveSend } from '@/api/my-prize';
+import {
+  queryDetail,
+  querySend,
+  queryStatus,
+  updateReceiveSend,
+  updateToStore,
+} from '@/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, toRef } from 'vue';
 import Goods from './component/Goods.vue';
@@ -183,6 +179,7 @@ const basicsData = useBasicsData();
 const props = defineProps<{
   name: string;
   id: string;
+  getWay: string;
 }>();
 interface prizeType {
   // 奖品信息
@@ -224,7 +221,8 @@ interface prizeType {
   shipTime: string;
   // 自定义
   remindContent: string; // 订单状态对应的提示语
-  fullAddress: string; // 完整地址
+  fullAddress: string; // 完整收货人地址
+  fulldisAddress: string; // 完整公司地址
 }
 const manInfoRow = [
   {
@@ -247,15 +245,23 @@ const manInfoRow = [
 
 const detail = ref<prizeType>({} as prizeType);
 const statusName = toRef(props, 'name');
-const statusCode = ref('');
+const recvMannerCode = toRef(props, 'getWay');
 
 const createdtatus = async () => {
-  const { data, code } = await queryDetail(props.id);
+  let detailRequest = querySend;
+  if (recvMannerCode.value === '1') {
+    detailRequest = queryStatus;
+  }
+  if (statusName.value === '待兑换') {
+    detailRequest = queryDetail;
+  }
+  const { data, code } = await detailRequest(props.id);
   data.param = JSON.parse(data.param);
   if (code === 0) {
     data.name ??= data.prizeName;
-    statusName.value = data.status.name;
-    statusCode.value = data.status.code;
+
+    // statusName.value = data.status.name;
+    // statusCode.value = data.status.code;
 
     // 提示标语
     const orderStatusRemindObj: any = {
@@ -263,45 +269,53 @@ const createdtatus = async () => {
       SHIPPED: ['请到指定门店领取', '请到指定门店领取'], // 已发货
       FINISHED: ['您已领取奖品', '您已确认收货并领取奖品'], // 已领取
       CHOICE: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
+      DELIVERED: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
       INVALID: ['您的奖品已超过领取时间', '您的奖品已超过兑换时间'], // 已失效
     };
-    const remindArr = orderStatusRemindObj[statusCode.value];
+    const remindArr = orderStatusRemindObj[data.status?.code ?? data.status];
     if (remindArr) {
-      data.remindContent = remindArr[data.recvManner.code - 1];
+      data.remindContent = remindArr[parseInt(recvMannerCode.value) - 1];
     }
+
     // 完整地址
     data.fullAddress = mergeFullAddress(data);
+    data.fulldisAddress = mergeFullAddress(data, 'dis');
+
     detail.value = data;
 
     // 二维码;
     if (
       statusName.value === '待领取' &&
-      data.recvManner.code === 1 &&
+      recvMannerCode.value === '1' &&
       data.vcode
     ) {
-      qrCode.draw(data.vcode, 150, 150);
+      qrCode.draw(data.vcode, 'myQrcode', 150, 150);
     }
   }
 };
 const getPrize = async () => {
   const { cancel }: any = await uni.showModal({
     content: '确认已领取该奖品',
+
     confirmColor: basicsData.mainColor,
   });
   if (cancel) return;
-  uni.showToast({
-    title: '领取成功',
-    icon: 'success',
-  });
-  const { code } = await updateReceiveSend({
+  const { recvManner } = detail.value;
+  let updateRequest = updateReceiveSend; // 2邮寄
+  if (recvManner?.code === '1') {
+    updateRequest = updateToStore; // 1到店
+  }
+  const { code } = await updateRequest({
     id: props.id,
     remark: '',
     status: 'FINISHED',
   });
-  if (code === 0) {
-    uni.$emit('changeTab', 2);
-    uni.navigateBack({ delta: 1 });
-  }
+  uni.showToast({
+    title: code === 0 ? '领取成功' : '奖品已被领取',
+    icon: 'success',
+  });
+  uni.$emit('changeTab', 2);
+  uni.navigateBack({ delta: 1 });
 };
 onLoad(() => {
   createdtatus();
@@ -316,6 +330,7 @@ onLoad(() => {
 }
 // top 状态栏目
 .receive {
+  margin-top: 30rpx;
   padding-left: 30rpx;
   height: 180rpx;
   background-color: #ffffff;
@@ -349,7 +364,7 @@ onLoad(() => {
   font-size: 12px;
   font-weight: 400;
   color: #b7b8c4;
-  margin-top: 30rpx;
+  margin-top: 3 0rpx;
 }
 // 兑换信息
 .information {
@@ -385,6 +400,11 @@ onLoad(() => {
         // width: 470rpx;
         width: calc(100vw - 300rpx);
       }
+      .dist-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 }
@@ -398,6 +418,9 @@ onLoad(() => {
   padding: 50rpx;
   text-align: center;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   .verification {
     font-size: 32rpx;
     font-family: PingFang-SC-Heavy, PingFang-SC;
@@ -414,8 +437,8 @@ onLoad(() => {
 
   .erweima {
     /* height: 310rpx; */
-    width: 310rpx;
-    margin: 30rpx 0rpx 10rpx 150rpx;
+    // width: 310rpx;
+    margin: 30rpx auto 10rpx auto;
 
     image {
       width: 106rpx;
@@ -496,6 +519,42 @@ onLoad(() => {
     width: 100%;
     border-radius: 40rpx;
     color: #ffffff;
+  }
+}
+
+.youji {
+  margin-top: 30rpx;
+  // min-height: 260rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 40rpx 40rpx 34rpx;
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  .left {
+    image {
+      width: 52rpx;
+      height: 58rpx;
+    }
+  }
+  .rights {
+    width: calc(100vw - 200rpx);
+    // background-color: red;
+  }
+  .right {
+    margin-left: 34rpx;
+    // width: 100%;
+
+    .title {
+      margin-bottom: 12rpx;
+    }
+    .nameTitle {
+      margin-right: 30rpx;
+      display: flex;
+    }
+    .text {
+      color: #b0b0b8;
+    }
   }
 }
 </style>

@@ -21,8 +21,20 @@ const formatNumber = (n: number) => {
   const s = n.toString();
   return s[1] ? s : `0${s}`;
 };
-export const mergeFullAddress = (i: any): string => {
-  const { province, city, district, address } = i;
+
+/**
+ * 对象中提取地址信息，合并出完整信息
+ * @param i  对象
+ * @param prefix 前缀(选填) 如dist = distProvince
+ * @returns string 完整地址
+ */
+export const mergeFullAddress = (i: any, prefix = ''): string => {
+  const {
+    [prefix ? `${prefix}Province` : 'province']: province,
+    [prefix ? `${prefix}City` : 'city']: city,
+    [prefix ? `${prefix}District` : 'district']: district,
+    [prefix ? `${prefix}Address` : 'address']: address,
+  } = i;
   // 详细地址
   return [province + city + district + address].filter(Boolean)
     .join('');

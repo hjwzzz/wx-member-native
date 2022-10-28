@@ -131,7 +131,7 @@ onLoad(() => {
     },
     fail: data => {
       local.value = uni.getStorageSync('location');
-      console.warn('fail', data);
+
       updateNearStorePost();
       uni.showModal({
         title: '提示',
@@ -156,7 +156,7 @@ const updateNearStorePost = async () => {
   const { code, data } = await updateNearStore({
     distId: '',
     storeName: keyward.value,
-    coordCur: logValut(local.value),
+    // coordCur: logValut(local.value),
     relatedId: props.relatedId,
   });
   if (code === 0) {

@@ -1,5 +1,6 @@
 /* eslint-disable   */
- 
+// author https://github.com/hehaibao/php-qrcode/blob/master/wxapp-qrcode/utils/qrcode.js
+
   // alignment pattern
   const adelta = [
     0,
@@ -1844,7 +1845,6 @@
     },
 
     draw(string, canvas, cavW, cavH, ecc) {
-      console.log(1111);
       ecclevel = ecc || ecclevel;
       canvas = canvas || _canvas;
       if (!canvas) {
@@ -1853,23 +1853,22 @@
       }
 
       let size = Math.min(cavW, cavH);
-
+      console.log(width);
       const frame = this.getFrame(string),
-        ctx = wx.createContext(),
-        px = Math.round(size / (width + 8));
-      console.log(frame);
-      const roundedSize = px * (width + 8),
-        offset = Math.floor((size - roundedSize) / 2);
+      ctx = wx.createContext(),
+      px = Math.round(size / (width )); 
+      const roundedSize = px * (width ),
+      offset = Math.floor((size - roundedSize) / 2);
       size = roundedSize;
       ctx.clearRect(0, 0, cavW, cavW);
       // ctx.setFillStyle('#ffffff');
-      // ctx.rect(0, 0, size, size);
+      // ctx.rect(0, 0, size, size); 
       ctx.setFillStyle('#000000');
       // ctx.setLineWidth(1);
       for (let i = 0; i < width; i++) {
         for (let j = 0; j < width; j++) {
           if (frame[j * width + i]) {
-            ctx.rect(px * (4 + i) + offset, px * (4 + j) + offset, px, px);
+            ctx.rect(px *  i + offset, px *   j + offset, px, px);
           }
         }
       }

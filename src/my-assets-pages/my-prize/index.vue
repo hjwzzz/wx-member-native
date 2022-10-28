@@ -21,7 +21,7 @@
                 (item.status.name == '待领取' ||
                   item.status.name == '已发货') &&
                 ['1', '2'].includes(item.recvManner.code) &&
-                item.param.allowGet === 'Y'
+                JSON.parse(item.param)?.allowGet === 'Y'
               "
               class="b1 button"
               :style="{ backgroundColor: basicsData.mainColor }"
@@ -40,6 +40,9 @@
           </view>
         </goods>
       </view>
+      <view class="bottom-empty" v-if="list.length === 0">
+        <NoneData text="暂无奖品信息" icon="prize"> </NoneData>
+      </view>
     </view>
   </CustomPage>
 </template>
@@ -48,8 +51,9 @@
 import { reactive, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad, onUnload } from '@dcloudio/uni-app';
-import { queryFront } from '@/api/my-prize';
+import { queryFront, updateReceiveSend, updateToStore } from '@/api/my-prize';
 import goods from './component/Goods.vue';
+import NoneData from '@/pages/component/NoneData.vue';
 
 const basicsData = useBasicsData();
 const items = reactive([
@@ -83,7 +87,7 @@ interface prizeType {
   tommorry: boolean;
   relatedKind: { name: string };
   recvManner: { code: string };
-  param: { allowGet: string };
+  param: string;
   status: { name: string; code: string };
 }
 
@@ -125,7 +129,7 @@ const dateLableString = (item: prizeType) => {
     status: { code },
   } = item;
   if (code === 'TEXC') {
-    if (!tommorry) return '尚未开放兑换日期';
+    if (tommorry) return '尚未开放兑换日期';
     return `兑换有效期：${cutValidTime}至${cutExpireTime}`;
   }
   if (current.value === 1 && recvManner.code !== '2') {
@@ -133,12 +137,31 @@ const dateLableString = (item: prizeType) => {
   }
   return '';
 };
-const determine = (item: prizeType) => {
-  console.log(item);
-  console.log('确认领取');
+const determine = async (item: prizeType) => {
+  const { cancel }: any = await uni.showModal({
+    content: '确认已领取该奖品',
+
+    confirmColor: basicsData.mainColor,
+  });
+  if (cancel) return;
+  const {
+    recvManner: { code: c },
+    id,
+  } = item;
+  const updateRequest = c === '1' ? updateToStore : updateReceiveSend; // 1到店 2邮寄
+  const { code } = await updateRequest({
+    id,
+    remark: '',
+    status: 'FINISHED',
+  });
+  uni.showToast({
+    title: code === 0 ? '领取成功' : '奖品已被领取',
+    icon: 'success',
+  });
+  changeTab(2);
 };
 const showDetail = (item: prizeType) => {
-  uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}` });
+  uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}&getWay=${item.recvManner.code}` });
 };
 const changeTab = (e: any) => {
   current.value = e?.currentIndex ?? e;
@@ -149,15 +172,23 @@ const changeTab = (e: any) => {
 
 <style lang="scss" scoped>
 :deep(.segmented-control) {
+  height: 100rpx !important;
   background-color: white;
+  .segmented-control__text {
+    color: #9697a2 !important;
+  }
+  .segmented-control__item--text {
+    font-weight: 500;
+    color: var(--main-color) !important;
+  }
 }
 
 .content {
   padding: 0 30rpx;
 }
 .bottom {
-  margin-top: 25rpx;
-  margin-bottom: 15rpx;
+  margin-top: 20rpx;
+  // margin-bottom: 15rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -174,7 +205,16 @@ const changeTab = (e: any) => {
     background: #f7f8fa !important;
     color: #d8d9e0 !important;
   }
-
+  .b1 {
+    margin-right: 15rpx;
+    background: var(--main-color);
+    border-radius: 16px;
+    border: 1px solid #ebedf0;
+    color: white;
+    border: 1rpx var(--main-color) solid;
+    font-size: 24rpx;
+    padding: 12rpx 24rpx;
+  }
   .b2 {
     padding: 12rpx 24rpx;
     background: #ffffff;
@@ -182,5 +222,11 @@ const changeTab = (e: any) => {
     border: 1px solid #ebedf0;
     font-size: 28rpx;
   }
+}
+.bottom-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 65vh;
 }
 </style>

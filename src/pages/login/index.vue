@@ -71,6 +71,7 @@ import { onMounted, reactive, ref } from 'vue';
 import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
+import Router from '@/utils/router';
 
 const initBasicsData = useBasicsData();
 
@@ -94,7 +95,7 @@ const jsCodeLogin = async () => {
 
   uni.showToast({ title: '登录成功！' });
   setTimeout(() => {
-    uni.navigateBack();
+    back();
   }, 1000);
 };
 
@@ -201,7 +202,7 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
     }
   });
   if (data.mid) {
-    back();
+    Router.fromLoginBack();
   } else {
     const { data: { list, openRegist } } = await queryRegistRequiredSetting('');
     if (openRegist === 'Y') {
@@ -235,7 +236,7 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
           uni.removeStorageSync('pages');
           uni.removeStorageSync('inviteMid');
           initBasicsData.setUseMid(d);
-          uni.navigateBack();
+          back();
         }
       }
     } else {
@@ -247,14 +248,8 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   }
 };
 
-const back = () => {
-  const pages = getCurrentPages();
-  if (pages.length > 1) {
-    uni.navigateBack();
-  } else {
-    uni.redirectTo({ url: '/pages/tabbar/index' });
-  }
-};
+const back = () => Router.fromLoginBack();
+
 onLoad(opstion => {
   // 邀请信息
   opstion?.c && uni.setStorageSync('c', opstion?.c);

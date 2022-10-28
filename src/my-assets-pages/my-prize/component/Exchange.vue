@@ -23,6 +23,7 @@
         <view class="cell-label">领取人</view>
         <input
           class="cell-body-input"
+          maxlength="20"
           v-model="form.name"
           placeholder="请输入名字"
         />
@@ -118,10 +119,12 @@ onLoad(() => {
 const address = ref<any>({});
 const adressGroup = computed(() => {
   const { province, city, district, address: adr } = address.value;
+  console.log(province + city + district + adr);
+
   return province + city + district + adr;
 });
 const goAdress = () => {
-  uni.$once('chooseAddress', e => address.value = e);
+  uni.$once('chooseAddress', (e: any) => address.value = e);
   uni.navigateTo({ url: '/pages/address/address-list?flag=true' });
 };
 
@@ -140,19 +143,45 @@ const goStore = () => {
 const popup = ref();
 const getPrize = async () => {
   let str = '';
-  let recverPhone = form.phone;
-  let recver = form.name;
+  const params: any = {
+    id: props.item.id,
+    recver: form.name,
+    recverPhone: form.phone,
+    quantity: props.item.quantity,
+    prizeId: props.item.prizeId,
+    recvManner: exchangeCode.value,
+    recvStoreId: storeInfo.value.distId,
+  };
   if (!exchangeCode.value) {
     str = '请选择领取方式';
-  } else if (!storeInfo.value.storeName) {
+  } else if (!params.recvStoreId) {
     str = '请选择领取门店';
   } else if (exchangeCode.value === 1) {
-    !form.name && (str = '请输入领取人');
-    !form.phone && (str = '请输入手机号');
+    const phoneReg =
+      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    !phoneReg.test(params.recverPhone) && (str = '请输入手机号');
+    !params.recver && (str = '请输入领取人');
   } else if (exchangeCode.value === 2) {
-    !address.value.phone && (str = '请填写收货地址');
-    recverPhone = address.value.phone;
-    recver = address.value.receiver;
+    if (!address.value.phone) {
+      str = '请填写收货地址';
+    } else {
+      const {
+        province,
+        city,
+        district,
+        address: adr,
+        receiver: recver,
+        phone: recverPhone,
+      } = address.value;
+      Object.assign(params, {
+        province,
+        city,
+        district,
+        address: adr,
+        recver,
+        recverPhone,
+      });
+    }
   }
   if (str) {
     uni.showToast({
@@ -161,25 +190,11 @@ const getPrize = async () => {
     });
     return;
   }
-  const body = {
-    id: props.item.id,
-    recver,
-    recverPhone,
-    quantity: props.item.quantity,
-    prizeId: props.item.prizeId,
-    recvManner: exchangeCode.value,
-    recvStoreId: storeInfo.value.distId,
-    address: address.value.address,
-    province: address.value.province,
-    city: address.value.city,
-    district: address.value.district,
-  };
-  console.log(body);
-
-  // const { code } = await updatePrizeStatus(body);
-  // if (code === 0) {
-  popup.value.open('center');
-  // }
+  const { code } = await updatePrizeStatus(params);
+  if (code === 0) {
+    uni.$emit('changeTab', 1);
+    popup.value.open('center');
+  }
 };
 const navBack = () => uni.navigateBack({ delta: 1 });
 </script>
@@ -214,6 +229,9 @@ const navBack = () => uni.navigateBack({ delta: 1 });
     color: #323338;
   }
   .cell-body-input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: #9697a2;
     flex: 1;
   }
