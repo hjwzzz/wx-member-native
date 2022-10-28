@@ -10,3 +10,30 @@ export const queryReceiveCenterListFrontRequest = async (data: couponCenter.Quer
   `${baseUrl}/emp-base/center/queryReceiveCenterListFront`,
   data
 );
+
+// 优惠券--领取优惠券
+export const getCouponsFront = async (data: any) => {
+  const url = `${baseUrl}/emp-base/center/usr/getCouponsFront`;
+  const res = await request(url, data);
+  return res;
+};
+// 获取转赠优惠券
+export const getUserCoupon = async (data: any) => {
+  const url = `${baseUrl}/emp-base/memCoupon/usr/getCouponFront`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 我的优惠券列表
+export const queryMyCouponList = async (data: any) => {
+  const url = `${baseUrl}/emp-base/memCoupon/usr/queryMyCouponListFront`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 获取LOGO
+export const getLogo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/member/login/Front/getLogo`;
+  const res = await request(url, data);
+  return res;
+};

@@ -1879,6 +1879,5 @@
       });
     },
 };
-  
+
 export default  api
- 

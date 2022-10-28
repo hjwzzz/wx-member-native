@@ -249,6 +249,7 @@ export interface QueryReceiveCenterListFrontRequestResDataItem {
 
   /** 优惠券名字 */
   name?: string;
+  couponName?: string;
 
   /** 运营体系ID */
   opsId?: string;

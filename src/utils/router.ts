@@ -28,7 +28,7 @@ const pageCode: any = {
   wm_index: '/pages/index/index', //  首页
   sign: '', // 签到
   balance: '/my-assets-pages/thebalance/index', // 我的余额
-  coupon: '', // 我的优惠券
+  coupon: '/my-assets-pages/my-coupon/index', // 我的优惠券
   nearby_store: '/pages/nearby-store/index', // 附近门店
   storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
   login: '/pages/login/index',

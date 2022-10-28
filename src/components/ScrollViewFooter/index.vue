@@ -1,7 +1,14 @@
 <template>
-  <view class="page-footer"> 技术支持：金千枝数字云 </view>
+  <view class="page-footer" :class="props.bottom ? 'show-bottom' : ''">
+    技术支持：金千枝数字云
+  </view>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+interface Props {
+  bottom?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), { bottom: false });
+</script>
 <style lang="scss" scoped>
 .page-footer {
   width: 100%;
@@ -9,5 +16,10 @@
   font-size: 24rpx;
   color: #d8d9e0;
   text-align: center;
+}
+
+.show-bottom {
+  padding-bottom: calc(40rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 </style>
