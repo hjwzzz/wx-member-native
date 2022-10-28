@@ -9,12 +9,14 @@
             :showStatus="ticketData.couponStatus === 'EFFECTIVE'"
           >
             <template #btn>
-              <view @click.stop="">
+              <view
+                @click.stop=""
+                v-if="
+                  ticketData.couponStatus === 'EFFECTIVE' &&
+                  ticketData.present.code === 'Y'
+                "
+              >
                 <button
-                  v-if="
-                    ticketData.couponStatus === 'EFFECTIVE' &&
-                    ticketData.present.code === 'Y'
-                  "
                   class="share-btn"
                   :style="{
                     color: ticketData.style.topBgColorTop,
@@ -24,8 +26,8 @@
                   :data-couponMemberId="ticketData.couponMemberId"
                   :data-donateId="initBasicsData.useMid"
                   :data-couponName="ticketData.couponName"
-                  :data-prodCode="ticketData.prodCode.code"
-                  :data-discount="ticketData.paramVo.discount"
+                  :data-prodCode="ticketData.prodCode?.code"
+                  :data-discount="ticketData.paramVo?.discount"
                   :data-randomAmount="
                     ticketData.memberCouponParam?.randomAmount
                   "
@@ -150,10 +152,13 @@ import qrCode from '@/utils/qrcode.js';
 import BrCode128 from '@/utils/barcode.js';
 import { staticUrl } from '@/utils/config';
 // eslint-disable-next-line no-duplicate-imports
+// onLoad(() => {
+//   uni.hideShareMenu();
+// });
+// 分享或者转赠优惠券
+onShareAppMessage((res: any) => onShareCoupon(res));
 
 const initBasicsData = useBasicsData();
-
-// ref vcode
 const vcode = ref('');
 const couponId = ref('');
 const couponName = ref('');
@@ -161,7 +166,6 @@ const couponStatus = ref('');
 const ticketData: Ref<any> = ref({});
 
 onLoad((options: any) => {
-  uni.hideShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
   couponId.value = options.id;
   couponName.value = options.name;
   couponStatus.value = options.status;
@@ -169,7 +173,7 @@ onLoad((options: any) => {
 
 const shopNames = computed(() => ticketData.value.shopNames || []);
 // 分享或者转赠优惠券
-onShareAppMessage((res: any) => onShareCoupon(res));
+
 onMounted(() => {
   createdtatus();
 });

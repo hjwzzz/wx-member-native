@@ -74,6 +74,7 @@ export const onShareCoupon = (res: any) => {
     const val = `prodCode=${prodcode}&discount=${discount}&randomAmount=${randomamount}&mIDdataaset${donateid}`;
     sUrl = `${sUrl}?couponMemberId=${couponmemberid}&donateId=${donateid}&couponName=${couponname}&${val}`;
   }
+
   return {
     title: '好友送您一张优惠券',
     path: sUrl,
