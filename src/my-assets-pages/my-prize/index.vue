@@ -31,9 +31,9 @@
             </view>
             <!-- 详情按钮 -->
             <view
-              :class="[{ disabledBg: current === 1 && item.tommorry }, 'b2']"
+              :class="[{ disabledBg: current === 0 && item.tommorry }, 'b2']"
               :style="`color:${basicsData.mainColor}`"
-              @click="showDetail(item)"
+              @click="current === 0 && item.tommorry ? '' : showDetail(item)"
             >
               {{ current === 0 ? '兑换' : '查看' }}
             </view>
@@ -104,8 +104,18 @@ const getData = async (curPage = 1) => {
   } = await queryFront(params);
   if (code !== 0) return;
   if (items[current.value].key.includes('TEXC')) {
-    // records.forEach(e => {});
+    const newDate = new Date();
+    records.forEach((item: any) => {
+      const sortTime =
+        new Date(item.validTime.replace(/-/g, '/'))
+          .getTime() -
+        new Date(newDate)
+          .getTime();
+      item.tommorry = sortTime > 0;
+    });
   }
+  console.log(records);
+
   page.value = curPage;
   if (curPage > 1) {
     list.value.push(...records);
