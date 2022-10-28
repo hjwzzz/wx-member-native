@@ -10,7 +10,11 @@
                 :src="accountInfo.avatarUrl"
                 mode="aspectFit"
               />
-              <image v-else src="../static/img/person.png" mode="scaleToFill" />
+              <image
+                v-else
+                :src="`${staticUrl}/img/person.png`"
+                mode="scaleToFill"
+              />
             </view>
             <view class="nickName">
               {{ accountInfo.nickName }}
@@ -53,6 +57,7 @@ import { getMemberInfo, updateMemberBaseInfo } from '@/api/server';
 import Router from '@/utils/router';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
+import { staticUrl } from '@/utils/config';
 const initBasicsData = useBasicsData();
 const accountInfo = ref<any>({});
 const gotoPage = (code: string) => Router.goCodePage(code);
