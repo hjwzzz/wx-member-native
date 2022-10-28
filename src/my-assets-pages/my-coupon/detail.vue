@@ -152,9 +152,9 @@ import qrCode from '@/utils/qrcode.js';
 import BrCode128 from '@/utils/barcode.js';
 import { staticUrl } from '@/utils/config';
 // eslint-disable-next-line no-duplicate-imports
-// onLoad(() => {
-//   uni.hideShareMenu();
-// });
+onLoad(() => {
+  uni.hideShareMenu();
+});
 // 分享或者转赠优惠券
 onShareAppMessage((res: any) => onShareCoupon(res));
 
