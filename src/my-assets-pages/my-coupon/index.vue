@@ -14,20 +14,30 @@
           :item="item"
           :key="index"
           :showStatus="item.couponStatus === 'EFFECTIVE'"
+          @event="onCouponDetail(item)"
         >
           <template #btn>
-            <button
-              v-if="
-                item.couponStatus === 'EFFECTIVE' && item.present.code === 'Y'
-              "
-              class="share-btn"
-              :style="{
-                color: item.style.topBgColorTop,
-                background: item.style.mainColor,
-              }"
-            >
-              转赠
-            </button>
+            <view @click.stop="">
+              <button
+                v-if="
+                  item.couponStatus === 'EFFECTIVE' && item.present.code === 'Y'
+                "
+                class="share-btn"
+                :style="{
+                  color: item.style.topBgColorTop,
+                  background: item.style.mainColor,
+                }"
+                open-type="share"
+                :data-couponMemberId="item.couponMemberId"
+                :data-donateId="initBasicsData.useMid"
+                :data-couponName="item.couponName"
+                :data-prodCode="item.prodCode.code"
+                :data-discount="item.paramVo.discount"
+                :data-randomAmount="item.memberCouponParam?.randomAmount"
+              >
+                转赠
+              </button>
+            </view>
           </template>
           <template #image>
             <image
@@ -43,7 +53,28 @@
               mode=""
             ></image>
           </template>
+          <template #bottom-left>
+            <text> 等后端处理 </text>
+          </template>
+          <template #bottom-rigth>
+            <view class="arrow-right">
+              <text> 详情 </text>
+              <uni-icons type="arrowright" size="14" color="#B7B8C4" />
+            </view>
+          </template>
         </CouponItem>
+        <!-- couponListData  loadingTop && !loadingTop-->
+        <view v-if="couponListData.length == 0" class="preferential">
+          <view>
+            <view style="flex: 1" />
+            <image
+              class="image"
+              :src="staticUrl + 'img/Salesperson.png'"
+              mode=""
+            />
+            <view class="text"> 暂无优惠券 </view>
+          </view>
+        </view>
       </view>
       <ScrollViewFooter bottom> </ScrollViewFooter>
     </scroll-view>
@@ -51,6 +82,7 @@
 </template>
 
 <script lang="ts" setup>
+import { onShareAppMessage, onLoad } from '@dcloudio/uni-app';
 import { onMounted, ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/index.vue';
@@ -58,11 +90,13 @@ import { queryMyCouponList } from '@/api/coupon-center';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import { staticUrl } from '@/utils/config';
-// import { staticUrl } from '@/utils/config';
+import { onShareCoupon } from '@/utils/util';
 // import Storage from '@/utils/storage';
-// import { useBasicsData } from '@/store/basicsData';
-
+onLoad(() => {
+  uni.hideShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
+});
 const initBasicsData = useBasicsData();
+// uni.hideShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
 const tabList = [
   { name: '待使用', status: 'EFFECTIVE' },
   { name: '已使用', status: 'USED' },
@@ -77,12 +111,13 @@ const changeTabs = ({ item }: any) => {
 onMounted(() => {
   getCouponList();
 });
+// 分享或者转赠优惠券
+onShareAppMessage((res: any) => onShareCoupon(res));
 
 const status = ref('');
 const page = ref(1);
 const pageSize = ref(20);
 const couponStatus = ref('EFFECTIVE');
-
 const couponListData: Ref<any> = ref([]);
 
 // 我的优惠券列表
@@ -135,6 +170,11 @@ const getCouponList = async () => {
   // this.loading = false;
   // this.loadingTop = false;
 };
+
+const onCouponDetail = (item: any) => {
+  uni.setStorageSync('ticketInfo', item);
+  uni.navigateTo({ url: '/my-assets-pages/my-coupon/detail' });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -142,7 +182,7 @@ const getCouponList = async () => {
   min-height: calc(100vh - 334rpx - constant(safe-area-inset-bottom));
   min-height: calc(100vh - 334rpx - env(safe-area-inset-bottom));
   padding-top: 125rpx;
-  padding-bottom: 100rpx;
+  padding-bottom: 60rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;
   .status-image {
@@ -161,6 +201,29 @@ const getCouponList = async () => {
 
     &::after {
       border: none;
+    }
+  }
+  .arrow-right {
+    display: flex;
+    align-items: center;
+    color: #b7b8c4;
+  }
+
+  .preferential {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding-top: 20vh;
+    text-align: center;
+    .image {
+      width: 320rpx;
+      height: 320rpx;
+    }
+
+    .text {
+      font-size: 28rpx;
+      color: #9697a2;
     }
   }
 }

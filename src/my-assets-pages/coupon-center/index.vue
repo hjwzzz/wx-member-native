@@ -43,6 +43,15 @@
             mode=""
           ></image>
         </template>
+
+        <template #bottom-left>
+          <text>
+            {{ item.couponValidTime }}
+          </text>
+        </template>
+        <template #bottom-rigth>
+          <text> 已领取 {{ item.percentage }} </text>
+        </template>
       </CouponItem>
     </view>
     <view class="preferential" v-else>

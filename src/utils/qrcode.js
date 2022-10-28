@@ -1844,7 +1844,7 @@
     },
 
     draw(string, canvas, cavW, cavH, ecc) {
-      console.log(1111);
+      // console.log(1111);
       ecclevel = ecc || ecclevel;
       canvas = canvas || _canvas;
       if (!canvas) {
@@ -1857,7 +1857,7 @@
       const frame = this.getFrame(string),
         ctx = wx.createContext(),
         px = Math.round(size / (width + 8));
-      console.log(frame);
+      // console.log(frame);
       const roundedSize = px * (width + 8),
         offset = Math.floor((size - roundedSize) / 2);
       size = roundedSize;

@@ -1,5 +1,5 @@
 <template>
-  <view class="coupon-list-item">
+  <view class="coupon-list-item" @click="emits('event')">
     <view
       :class="`coupon-list-item-top ${item.style?.watermarkPosition} ${
         showStatus ? 'coupon-top-valid' : 'coupon-top-no'
@@ -15,7 +15,7 @@
       <view v-else>
         <view class="right-image">
           <view class="trans">
-            <slot name="image" class="image"></slot>
+            <slot name="image"></slot>
           </view>
         </view>
       </view>
@@ -44,8 +44,8 @@
       class="coupon-list-item-bottom"
       :class="`${showStatus ? 'coupon-bottom-valid' : 'coupon-bottom-no'}`"
     >
-      <view>{{ item.couponValidTime }}</view>
-      <view>已领取 {{ item.percentage }}</view>
+      <view> <slot name="bottom-left"></slot></view>
+      <view> <slot name="bottom-rigth"></slot></view>
     </view>
   </view>
 </template>
@@ -58,6 +58,8 @@ const props = defineProps<{
   showStatus?: any;
   showStatusText?: any;
 }>();
+
+const emits = defineEmits(['event']);
 
 const couponListItemTopBackgroundImage = computed(() => `url("${props.item.style?.watermarkImgUrl}"), linear-gradient(270deg, ${props.item.style?.topBgColorBottom} 1%, ${props.item.style?.topBgColorTop} 99% 100%, #f5f5f5)`);
 
@@ -99,7 +101,8 @@ const condition2 = [
 
 const showCondition = computed(() => {
   const code = props.item.prodCode?.code || '';
-  const { threshold, laborChargesType: labor } = props.item.paramVo;
+  const labor = props.item.paramVo?.laborChargesType || '';
+  const threshold = props.item.paramVo?.threshold || '';
   if (condition1.includes(code)) {
     return threshold ? `满${threshold}可用` : '满任意金额可用';
   } else if (condition2.includes(code)) {

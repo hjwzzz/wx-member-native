@@ -117,7 +117,7 @@
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
+    "navigationBarTitleText": "微会员",
     "navigationBarBackgroundColor": "#FFF",
     "backgroundColor": "#F5F5F5"
   },
@@ -152,6 +152,24 @@
           "path": "my-coupon/index",
           "style": {
             "navigationBarTitleText": "我的优惠券"
+          }
+        },
+        {
+          "path": "my-coupon/detail",
+          "style": {
+            "navigationBarTitleText": "优惠券详情"
+          }
+        },
+        {
+          "path": "my-coupon/receive",
+          "style": {
+            "navigationBarTitleText": "优惠券"
+          }
+        },
+        {
+          "path": "my-coupon/detail-store",
+          "style": {
+            "navigationBarTitleText": "门店详情"
           }
         },
         {
@@ -247,5 +265,13 @@
         }
       ]
     }
-  ]
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": ["my-assets-pages"]
+    }
+  }
+
+
 }
