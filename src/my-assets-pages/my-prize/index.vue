@@ -178,7 +178,7 @@ const showDetail = (item: prizeType) => {
   uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}&getWay=${item.recvManner.code}` });
 };
 const changeTab = (e: any) => {
-  current.value = e?.currentIndex ?? e;
+  current.value = parseInt(e?.currentIndex ?? e);
   list.value = [];
   getData();
 };
