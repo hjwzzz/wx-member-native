@@ -122,10 +122,13 @@ const getData = async (curPage = 1) => {
   }
   list.value = records;
 };
-onLoad(() => {
+onLoad((e: any) => {
+  uni.$on('changeTab', changeTab);
+  if (e.tab) {
+    changeTab(e.tab);
+  }
   getData();
   // 奖品详情修改后，切换tab栏
-  uni.$on('changeTab', changeTab);
 });
 onUnload(() => {
   uni.$off('changeTab');

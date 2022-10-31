@@ -18,6 +18,7 @@
   },
   "plugins": ["vue", "@typescript-eslint"],
   "rules": {
+    "vue/no-v-text-v-html-on-component": "off", //小程序 v-html会转成 <rich-text> 所以关闭限制
     "no-extra-parens": "off",
     "@typescript-eslint/no-extra-parens": ["error"], // 禁止冗余的括号
     "no-console": "error", // 不允许打印console.log
