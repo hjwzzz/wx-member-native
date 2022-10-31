@@ -21,29 +21,14 @@
       </view>
 
       <view class="price-box" v-if="goldPriceDatas && goldPriceDatas.param">
-        <u-tabs
-          class="u-tabs"
-          :list="list"
-          height="100"
-          :is-scroll="false"
-          inactive-color="#aaabb5"
-          :active-color="initBasicsData.mainColor"
-          bar-width="118"
+        <uni-segmented-control
           :current="current"
-          @change="change"
-          sticky
-        >
-        </u-tabs>
-        <view class="tab-hd">
-          <view class="item mC" @click="onChangeTab('jr')" v-if="!current">
-            <text></text>
-          </view>
-          <view
-            class="item mc"
-            @click="onChangeTab('hs')"
-            v-if="current === 1"
-          ></view>
-        </view>
+          :values="showTabs"
+          @clickItem="(e: any) => current = e.currentIndex"
+          styleType="text"
+          :activeColor="initBasicsData.mainColor"
+        ></uni-segmented-control>
+
         <view
           class="tab-bd"
           v-if="
@@ -80,12 +65,14 @@
               class="empty empty-page"
               v-if="!goldPriceDatas.brandPrice.length"
             >
-              <u-image
+              <image
                 width="250rpx"
                 height="250rpx"
+                class="emptyIcon"
                 mode="aspectFill"
-                src="/static/themoney.png"
-              ></u-image>
+                :src="`${staticUrl}/img/themoney.png`"
+              ></image>
+
               <view class="stopText">暂无金价信息</view>
             </view>
           </view>
@@ -118,12 +105,13 @@
               class="empty empty-page"
               v-if="!goldPriceDatas.brandOldPrice.length"
             >
-              <u-image
+              <image
                 width="250rpx"
                 height="250rpx"
+                class="emptyIcon"
                 mode="aspectFill"
-                src="/static/themoney.png"
-              ></u-image>
+                :src="`${staticUrl}/img/themoney.png`"
+              ></image>
               <view class="stopText">暂无金价信息</view>
             </view>
           </view>
@@ -138,16 +126,12 @@
           goldPriceDatas.param.remarkShowed === 'Y'
         "
       >
-        <!-- <rich-text :nodes="goldPriceDatas.param.remark"></rich-text> -->
         <view
           v-if="goldPriceDatas.param.remark"
           v-html="richImage(goldPriceDatas.param.remark)"
         ></view>
         <view class="content" v-else>
           <view class="empty-wrapper">
-            <!-- <view class="content-empty">
-							<image src="../../../static/noneStatus.png" mode=""></image>
-						</view> -->
             <view class="empty"> 暂无数据 </view>
           </view>
         </view>
@@ -157,35 +141,119 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-const initBasicsData = useBasicsData();
+import { queryShareSett } from '@/api';
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
+import {
+  getGoldPriceAdBannerList,
+  queryDefShowGoldPrice,
+  queryGoldPriceByDist,
+} from '@/api/gold-price';
+import router from '@/utils/router';
+import { staticUrl } from '@/utils/config';
 
+const initBasicsData = useBasicsData();
+onLoad((e: any) => {
+  isShare();
+  getBannerList();
+  getGoldPrice(e.distId);
+});
 const bannerList = ref([]);
-const list = ref([]);
+const list = ref<any[]>([]);
 const goldPriceDatas = ref<any>({});
 const current = ref(0);
+
 // tabActive: "jr", // jr 今日金价， hs 回收金价
-const bannerClick = () => [];
-const onChooseStore = () => [];
-const change = () => [];
-const onChangeTab = (e: any) => [e];
-const richImage = (e: any) => [e];
+const bannerClick = (index: number) => {
+  const { miniUrl } = bannerList.value[index];
+  if (miniUrl) {
+    uni.navigateTo({ url: miniUrl });
+  }
+};
+const onChooseStore = () => {
+  uni.$once('chooseStore', e => getGoldPrice(e.distId));
+  router.goCodePage('storeInfo');
+};
+
+const richImage = (e: any) => {
+  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+  const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+  return content;
+};
+let shareObj: any = {};
+const defaultObj: any = {};
+const showTabs = computed(() => list.value.map(i => i.name));
+const isShare = async () => {
+  const res = await queryShareSett({ pageName: 'WM_TODAY_GOLD_PRICE' });
+  const { miniProgramName, miniAvatarUrl } = res.data;
+  shareObj = res.data;
+  defaultObj.name = miniProgramName;
+  defaultObj.url = miniAvatarUrl;
+
+  let hideShareItems: any = [];
+  if (res.data.shareChumEnabled.code === 'N') {
+    hideShareItems = ['shareAppMessage', 'shareTimeline'];
+  } else if (res.data.shareChumCircleEnabled.code === 'N') {
+    hideShareItems = ['shareTimeline'];
+  }
+  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
+  uni.hideShareMenu({ hideShareItems });
+};
+const getBannerList = async () => {
+  const res = await getGoldPriceAdBannerList('');
+  bannerList.value = res.data;
+};
+
+const getGoldPrice = async (id = '') => {
+  const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
+  const { code, data } = await url(id);
+
+  if (code === 0) {
+    list.value = [];
+    goldPriceDatas.value = data;
+    if (data.param.todayGoldPriceShowed === 'Y') {
+      list.value.push({ name: '今日金价' });
+    }
+    if (data.param.recoveryGoldPriceShowed === 'Y') {
+      list.value.push({ name: '回收金价' });
+    }
+  }
+};
+onShareAppMessage(() => {
+  {
+    return {
+      title: `${
+        shareObj.shareChumTitle || defaultObj.miniProgramName || ''
+      }金千枝今日金价`,
+      // path: "pages/center/gold-price/index",
+      path: 'pages/center/gold-price/index',
+      desc: `${
+        shareObj.shareChumDescribe || defaultObj.miniProgramName || ''
+      }金千枝今日金价`,
+      imageUrl: shareObj.shareChumImage,
+    };
+  }
+});
 </script>
 
 <style scoped lang="scss">
+:deep(.segmented-control) {
+  height: 100rpx !important;
+  background-color: white;
+  .segmented-control__text {
+    color: #9697a2 !important;
+  }
+  .segmented-control__item--text {
+    font-weight: 500;
+    color: var(--main-color) !important;
+  }
+}
 .mC {
   color: var(--main-color);
 }
 .banner {
   position: unset;
-  /deep/.u-indicator-item-dot-active {
-    background-color: #ff547b !important;
-  }
-  /deep/.u-indicator-item-dot {
-    width: 17rpx !important;
-    height: 17rpx !important;
-  }
 }
 .ttt {
   width: calc(100vw - 350rpx);
@@ -232,9 +300,7 @@ const richImage = (e: any) => [e];
 
   margin: 30rpx 0;
   border-radius: 16rpx;
-  /deep/.u-tabs {
-    border-radius: 16px;
-  }
+
   .tab-hd {
     margin-top: -68rpx;
     display: flex;
@@ -318,5 +384,9 @@ const richImage = (e: any) => [e];
       color: #9697a2;
     }
   }
+}
+.emptyIcon {
+  width: 250rpx;
+  height: 250rpx;
 }
 </style>

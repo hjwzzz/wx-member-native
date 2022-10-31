@@ -40,6 +40,7 @@ const pageCode: any = {
   updatePhone: '/pages/center/user-info/update-phone', // 修改手机号
   cert: '/pages/center/user-info/cert', // 修改证件
   location: '/pages/center/user-info/address', // 修改地址
+  goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
 };
 
 // 路由控制

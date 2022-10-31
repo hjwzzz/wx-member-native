@@ -269,6 +269,12 @@
           "style": {
             "navigationBarTitleText": "公告"
           }
+        },
+        {
+          "path": "gold-price/index",
+          "style": {
+            "navigationBarTitleText": "今日金价"
+          }
         }
       ]
     },
