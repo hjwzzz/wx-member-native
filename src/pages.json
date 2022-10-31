@@ -74,6 +74,18 @@
       }
     },
     {
+      "path": "pages/center/user-info/cert",
+      "style": {
+        "navigationBarTitleText": "证件号"
+      }
+    },
+    {
+      "path": "pages/center/user-info/address",
+      "style": {
+        "navigationBarTitleText": "修改地址"
+      }
+    },
+    {
       "path": "pages/nearby-store/index",
       "style": {
         "navigationBarTitleText": "附近门店"

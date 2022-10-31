@@ -83,6 +83,13 @@ export const queryRegistRequiredSetting = async (data: any) => {
   return res;
 };
 
+// 公共枚举查询类
+export const query = async (data: any) => {
+  const url = `${baseUrl}/emp-base/common/select/query`;
+  const res = await request(url, data);
+  return res;
+};
+
 // 职业下拉选择查询(根据分类)
 export const queryProfessionAsCate = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryProfessionAsCate`;

@@ -36,7 +36,7 @@ export const mergeFullAddress = (i: any, prefix = ''): string => {
     [prefix ? `${prefix}Address` : 'address']: address,
   } = i;
   // 详细地址
-  return [province + city + district + address].filter(Boolean)
+  return [province, city, district, address].filter(Boolean)
     .join('');
 };
 

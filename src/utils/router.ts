@@ -38,6 +38,8 @@ const pageCode: any = {
   addressList: '/pages/address/address-list', // 收货地址
   finishAddress: '/pages/login/finish-address', // 完善信息地址
   updatePhone: '/pages/center/user-info/update-phone', // 修改手机号
+  cert: '/pages/center/user-info/cert', // 修改证件
+  location: '/pages/center/user-info/address', // 修改地址
 };
 
 // 路由控制
