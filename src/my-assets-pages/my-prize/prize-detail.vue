@@ -43,7 +43,8 @@
       <view
         v-if="
           detail.recvManner?.code === '2' &&
-          (detail.receiver || detail.phone || detail.fullAddress)
+          (detail.receiver || detail.phone || detail.fullAddress) &&
+          statusName !== '已失效'
         "
         class="youji"
       >
@@ -247,7 +248,7 @@ const detail = ref<prizeType>({} as prizeType);
 const statusName = toRef(props, 'name');
 const recvMannerCode = toRef(props, 'getWay');
 
-const createdtatus = async () => {
+const getData = async () => {
   let detailRequest = querySend;
   if (recvMannerCode.value === '1') {
     detailRequest = queryStatus;
@@ -262,7 +263,7 @@ const createdtatus = async () => {
 
     // statusName.value = data.status.name;
     // statusCode.value = data.status.code;
-
+    data.status = 'INVALID';
     // 提示标语
     const orderStatusRemindObj: any = {
       UNCLAIMED: ['请到指定门店领取', '商家已发货，请收到货后再确认收货'], // 待领取
@@ -318,7 +319,7 @@ const getPrize = async () => {
   uni.navigateBack({ delta: 1 });
 };
 onLoad(() => {
-  createdtatus();
+  getData();
 });
 </script>
 
