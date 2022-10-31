@@ -63,6 +63,7 @@ class Router {
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams = '') {
+    console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
     if (!url) {

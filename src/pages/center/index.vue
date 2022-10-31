@@ -6,6 +6,7 @@
           <view class="info-left" @click="handleQuickUrl({ code: 'userInfo' })">
             <view class="info-img">
               <image
+                class="image"
                 v-if="initBasicsData.checkLogin"
                 :src="userInfo.avatarUrl"
                 mode="scaleToFill"
@@ -57,7 +58,11 @@
       >
         <view class="left">
           <view class="icon">
-            <image :src="staticUrl + 'img/level.png'" mode="aspectFit" />
+            <image
+              class="image"
+              :src="staticUrl + 'img/level.png'"
+              mode="aspectFit"
+            />
           </view>
           <view class="text">{{ userInfo.curLevelName || '' }}</view>
         </view>
@@ -84,7 +89,7 @@
                 v-if="entry.showed"
               >
                 <view class="item-icon">
-                  <image :src="entry.icoUrl" mode="aspectFit" />
+                  <image class="image" :src="entry.icoUrl" mode="aspectFit" />
                 </view>
                 <view class="item-name">{{ entry.title }}</view>
                 <uni-icons
@@ -135,6 +140,7 @@
           v-else-if="item.kind === entryType.MY"
           :item="item"
           :title="item.param.title"
+          @handle="handleMyPrizes"
         />
         <!-- 预约服务 -->
         <MyService
@@ -277,13 +283,12 @@ const getGoldPriceByPage = async () => {
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
 };
-
+const handleMyPrizes = (index: number) => {
+  Router.goCodePage('my_prize', `?tab=${index}`);
+};
 const handleQuickUrl = (item: any) => {
   Router.goCodePage(item.code);
 };
-// const handleEntryUrl = (item: any) => {
-//   Router.goCodePage(item.code);
-// };
 </script>
 
 <style lang="scss" scoped>
@@ -315,7 +320,7 @@ const handleQuickUrl = (item: any) => {
         border: 4rpx solid #fff;
         border-radius: 70rpx;
 
-        image {
+        .image {
           width: 100rpx;
           height: 100rpx;
         }
@@ -408,7 +413,7 @@ const handleQuickUrl = (item: any) => {
       height: 32rpx;
       overflow: hidden;
 
-      image {
+      .image {
         width: 100%;
         height: 100%;
       }
@@ -481,7 +486,7 @@ const handleQuickUrl = (item: any) => {
         background: #fff;
         border-radius: 12rpx;
 
-        image {
+        .image {
           width: 100%;
           height: 100%;
         }
@@ -546,7 +551,7 @@ const handleQuickUrl = (item: any) => {
         overflow: hidden;
         border-radius: 22rpx;
 
-        image {
+        .image {
           width: 100%;
           height: 100%;
         }

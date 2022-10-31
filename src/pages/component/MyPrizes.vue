@@ -1,6 +1,6 @@
 <template>
   <view class="grid-prize">
-    <view class="header">
+    <view class="header" @click="emits('handle', 0)">
       <view class="left">
         <text class="title">{{ props.title }}</text>
       </view>
@@ -15,6 +15,7 @@
         class="content-item"
         v-for="(prize, index) in prizeList"
         :key="index"
+        @click="emits('handle', index)"
       >
         <view class="content-header">
           <view class="circel">
@@ -48,6 +49,8 @@ const props = withDefaults(defineProps<Props>(), {
   title: '我的奖品',
   item: () => ({}),
 });
+
+const emits = defineEmits(['handle']);
 
 const texcCnt = computed(() => props.item.param.texcCnt);
 const notGetCnt = computed(() => props.item.param.notGetCnt);
