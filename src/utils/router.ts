@@ -37,6 +37,7 @@ const pageCode: any = {
   installCenter: '/pages/center/account-set', // 账户设置
   addressList: '/pages/address/address-list', // 收货地址
   finishAddress: '/pages/login/finish-address', // 完善信息地址
+  updatePhone: '/pages/center/user-info/update-phone', // 修改手机号
 };
 
 // 路由控制

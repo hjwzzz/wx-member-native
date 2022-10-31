@@ -151,7 +151,7 @@
                 v-if="item.code.code == 'PRIVATE_FIELD_EDUCATION'"
               >
                 <picker
-                  @change="(e:any)=>updateUserIno({education:  parseInt(e.target.value) *10 })"
+                  @change="(e:any)=>updateUserIno({education:e.target.value})"
                   :value="edcIndex"
                   :range="educations"
                   :disabled="item.update === 'N'"
@@ -206,16 +206,8 @@
         ></uni-popup-dialog>
       </uni-popup>
 
-      <u-select
-        v-model="show"
-        mode="mutil-column-auto"
-        :z-index="10"
-        :list="selecteList"
-        @confirm="confirm"
-        :default-value="defaultValue"
-      />
       <!-- 产品要求这里的退出登陆 迁移到设置 先藏好， -->
-      <view class="logout" @click="handleLogout">退出登录</view>
+      <!-- <view class="logout" @click="handleLogout">退出登录</view> -->
     </view>
   </CustomPage>
 </template>
@@ -262,14 +254,22 @@ const educations = [
   '其他',
 ];
 
-const selecteList: any[] = [];
+onLoad(() => {
+  querySetting();
+  queryPro();
+});
+
 const userInfo = ref<any>({});
 
 const current = ref();
-const show = ref(false);
-const phoneSet = ref({});
-const defaultValue = '111';
-const handleUpdate = (e: any) => [e];
+const phoneSet = ref<any>({});
+const handleUpdate = (item: any) => {
+  const mark = phoneSet.value.update === 'Y';
+  if (item.code === 'phone' && mark) {
+    const { value } = item;
+    router.goCodePage('updatePhone', `?phone=${value}`);
+  }
+};
 
 const popup = ref();
 const dialogTitle = ref('');
@@ -428,12 +428,6 @@ const bindPickerChangeGender = (e: any) => {
   updateUserIno({ sex: ['M', 'F', 'U'][genderIndex.value] });
 };
 
-const confirm = (e: any) => [e];
-const handleLogout = (e: any) => [e];
-onLoad(() => {
-  querySetting();
-  queryPro();
-});
 const querySetting = async () => {
   const { code, data } = await queryPrivateFieldSetting('');
   if (code === 0 && data) {

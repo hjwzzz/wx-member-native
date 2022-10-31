@@ -2,7 +2,7 @@
   <view class="card">
     <view class="top">
       <view class="left">
-        <image :src="props.item.url" mode="" />
+        <image class="good-img" :src="props.item.url" mode="" />
         <view class="center">
           <view class=""> {{ props.item.prizeName }} </view>
           <view class="amount"> x{{ props.item.quantity }} </view>
@@ -50,7 +50,7 @@ const props = defineProps<propsType>();
   .left {
     display: flex;
 
-    image {
+    .good-img {
       width: 160rpx;
       height: 160rpx;
       border-radius: 16rpx;

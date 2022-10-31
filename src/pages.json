@@ -68,6 +68,12 @@
       }
     },
     {
+      "path": "pages/center/user-info/update-phone",
+      "style": {
+        "navigationBarTitleText": "修改手机号"
+      }
+    },
+    {
       "path": "pages/nearby-store/index",
       "style": {
         "navigationBarTitleText": "附近门店"
@@ -272,6 +278,4 @@
       "packages": ["my-assets-pages"]
     }
   }
-
-
 }
