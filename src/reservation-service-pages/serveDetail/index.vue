@@ -294,9 +294,8 @@ const queryStoreList = async () => {
   storeList.value = res.data;
 };
 
-const goEvaluate = (val: string) => {
-  const str = val === 'have' ? 'have' : '';
-  uni.navigateTo({ url: `/reservationService/serveDetail/serveEvaluate?id=${detail.value.id}&isHaveImg=${str}` });
+const goEvaluate = (val = 'all') => {
+  uni.navigateTo({ url: `/reservation-service-pages/serveDetail/serveEvaluate?id=${detail.value.id}&isHaveImg=${val}` });
 };
 const handleChangeTag = (data: string) => {
   tagActive.value = data;
@@ -346,7 +345,7 @@ const appointment = async () => {
   const str = Object.entries(obj)
     .reduce((p, [a, b]) => `${p}${a}=${b}&`, '');
 
-  uni.navigateTo({ url: `/reservationService/appointmentAppointment/index?${str}` });
+  uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/index?${str}` });
 };
 </script>
 
@@ -529,7 +528,7 @@ const appointment = async () => {
               &.isActive {
                 background-color: var(--main-color);
                 border-color: var(--main-color);
-                color: '#fff';
+                color: #fff;
               }
             }
           }

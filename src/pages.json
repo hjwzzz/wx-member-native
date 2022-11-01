@@ -160,6 +160,12 @@
           "style": {
             "navigationBarTitleText": "服务详情"
           }
+        },
+        {
+          "path": "serveDetail/serveEvaluate",
+          "style": {
+            "navigationBarTitleText": "服务评价"
+          }
         }
       ]
     },
