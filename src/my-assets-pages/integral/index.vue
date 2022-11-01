@@ -23,7 +23,7 @@
       </view>
       <view class="imagewu" v-else>
         <image
-          class=".image"
+          class="image"
           :src="staticUrl + 'img/noIntegral.png'"
           mode=""
         ></image>
@@ -76,13 +76,8 @@ const queryPointListFun = async () => {
 
 <style lang="scss" scoped>
 .integral {
-  // padding: 30rpx;
   padding-top: 30rpx;
   background-color: #f5f5f5;
-  // .integral-item {
-  //   min-height: calc(100vh - 150rpx - constant(safe-area-inset-bottom));
-  //   min-height: calc(100vh - 150rpx - env(safe-area-inset-bottom));
-  // }
   .item {
     width: calc(100vw - (60rpx));
     margin-left: 30rpx;
@@ -121,22 +116,6 @@ const queryPointListFun = async () => {
           color: var(--main-color);
         }
       }
-    }
-    .right {
-      width: 128rpx;
-      height: 60rpx;
-      // line-height: 60rpx;
-      // text-align: center;
-      background: #ffffff;
-      border-radius: 30rpx;
-      border: 2rpx solid #ff547b;
-      font-size: 28rpx;
-      color: #ff547b;
-    }
-    .right-detail {
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
   }
   .imagewu {

@@ -28,6 +28,9 @@ onShow(() => {
         webViewUrl.value = `${h5Url}/#/pointsMallGages/paySuccess/index${param}&payState=${1}&page=${page}&id=${id}`;
       }
     },
+    fail: () => {
+      console.log('...');
+    },
   });
 });
 </script>

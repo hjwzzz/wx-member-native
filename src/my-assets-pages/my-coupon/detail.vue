@@ -1,142 +1,128 @@
 <template>
   <CustomPage>
     <view class="detail">
-      <view>
-        <!-- ticketData -->
-        <view class="coupon-box">
-          <CouponItem
-            :item="ticketData"
-            :showStatus="ticketData.couponStatus === 'EFFECTIVE'"
-          >
-            <template #btn>
-              <view
-                @click.stop=""
-                v-if="
-                  ticketData.couponStatus === 'EFFECTIVE' &&
-                  ticketData.present.code === 'Y'
-                "
+      <view class="coupon-box">
+        <CouponItem
+          :item="ticketData"
+          :showStatus="ticketData.couponStatus === 'EFFECTIVE'"
+        >
+          <template #btn>
+            <view
+              @click.stop=""
+              v-if="
+                ticketData.couponStatus === 'EFFECTIVE' &&
+                ticketData.present.code === 'Y'
+              "
+            >
+              <button
+                class="share-btn"
+                :style="{
+                  color: ticketData.style.topBgColorTop,
+                  background: ticketData.style.mainColor,
+                }"
+                open-type="share"
+                :data-couponMemberId="ticketData.couponMemberId"
+                :data-donateId="initBasicsData.useMid"
+                :data-couponName="ticketData.couponName"
+                :data-prodCode="ticketData.prodCode?.code"
+                :data-discount="ticketData.paramVo?.discount"
+                :data-randomAmount="ticketData.memberCouponParam?.randomAmount"
               >
-                <button
-                  class="share-btn"
-                  :style="{
-                    color: ticketData.style.topBgColorTop,
-                    background: ticketData.style.mainColor,
-                  }"
-                  open-type="share"
-                  :data-couponMemberId="ticketData.couponMemberId"
-                  :data-donateId="initBasicsData.useMid"
-                  :data-couponName="ticketData.couponName"
-                  :data-prodCode="ticketData.prodCode?.code"
-                  :data-discount="ticketData.paramVo?.discount"
-                  :data-randomAmount="
-                    ticketData.memberCouponParam?.randomAmount
-                  "
-                >
-                  转赠
-                </button>
-              </view>
-            </template>
-            <template #image>
-              <image
-                v-if="ticketData.couponStatus === 'EXPIRED'"
-                :src="staticUrl + 'img/overTime.png'"
-                class="status-image"
-                mode=""
-              ></image>
-              <image
-                v-else-if="ticketData.couponStatus === 'USED'"
-                :src="staticUrl + 'img/over.png'"
-                class="status-image"
-                mode=""
-              ></image>
-            </template>
-            <template #bottom-left>
-              <text> 等后端处理 </text>
-            </template>
-          </CouponItem>
-        </view>
-        <view class="hasMask">
-          <view
-            class="code-qr"
-            v-if="
-              ticketData.couponStatus === 'USED' ||
-              ticketData.couponStatus === 'EFFECTIVE'
-            "
-          >
-            <view class="code-top">
-              <view class="code-text">核销码：{{ vcode }}</view>
-              <view style="height: 150rpx">
-                <canvas class="bar_code" canvas-id="Brcode">
-                  <cover-image
-                    v-if="ticketData.couponStatus === 'USED'"
-                    style="height: 150rpx"
-                    src="https://static.jqzplat.com/img/a9bef644-dada-4c19-88d5-59ac6c045bee.png"
-                  ></cover-image>
-                </canvas>
-              </view>
+                转赠
+              </button>
             </view>
-            <view class="code-bottom">
-              <canvas
-                :style="{ width: '300rpx', height: '300rpx' }"
-                canvas-id="myGiftQrcode"
-              >
+          </template>
+          <template #image>
+            <image
+              v-if="ticketData.couponStatus === 'EXPIRED'"
+              :src="staticUrl + 'img/overTime.png'"
+              class="status-image"
+              mode=""
+            ></image>
+            <image
+              v-else-if="ticketData.couponStatus === 'USED'"
+              :src="staticUrl + 'img/over.png'"
+              class="status-image"
+              mode=""
+            ></image>
+          </template>
+          <template #bottom-left>
+            <text> 等后端处理 </text>
+          </template>
+        </CouponItem>
+      </view>
+      <view class="hasMask">
+        <view
+          class="code-qr"
+          v-if="
+            ticketData.couponStatus === 'USED' ||
+            ticketData.couponStatus === 'EFFECTIVE'
+          "
+        >
+          <view class="code-top">
+            <view class="code-text">核销码：{{ vcode }}</view>
+            <view style="height: 150rpx">
+              <canvas class="bar_code" canvas-id="Brcode">
                 <cover-image
                   v-if="ticketData.couponStatus === 'USED'"
-                  src="https://static.jqzplat.com/img/c4d7cc39-c91f-486e-aff4-8f64c147aace.png"
+                  style="height: 150rpx"
+                  src="https://static.jqzplat.com/img/a9bef644-dada-4c19-88d5-59ac6c045bee.png"
                 ></cover-image>
               </canvas>
-              <view class="code2-text"> 请展示二维码使用优惠券 </view>
             </view>
           </view>
-        </view>
-
-        <view class="descBox">
-          <view class="title">
-            <text class="letter">使用说明</text>
-          </view>
-          <view class="content" v-if="ticketData.description">
-            <!-- <rich-text :nodes="ticketData.description" ></rich-text> -->
-            <view v-html="richImage(ticketData.description)"></view>
-          </view>
-        </view>
-        <view class="shop">
-          <view class="title">
-            <text class="letter">适用门店</text>
-            <view
-              v-if="shopNames.length > 10"
-              @click="moreDetail(shopNames)"
-              class="more-text"
+          <view class="code-bottom">
+            <canvas
+              :style="{ width: '300rpx', height: '300rpx' }"
+              canvas-id="myGiftQrcode"
             >
-              更多<uni-icons type="arrowright" size="14" color="#B7B8C4">
-              </uni-icons>
-            </view>
-          </view>
-          <!-- <view class="content" v-if="ticketData.distributor === 'ALL'">
-				适用所有门店
-			</view> -->
-          <view class="content" v-if="shopNames.length <= 10">
-            <view v-for="(item, i) in shopNames" :key="i">
-              {{ item }}
-            </view>
-            <!-- {{ticketData.shopNames.toString()}} -->
-          </view>
-          <view class="content" v-if="shopNames.length > 10">
-            <view v-for="(item, i) in shopNames.slice(0, 10)" :key="i">
-              {{ item }}
-            </view>
-          </view>
-          <view
-            class="content"
-            style="text-align: center"
-            v-if="!shopNames.length"
-          >
-            暂无数据
+              <cover-image
+                v-if="ticketData.couponStatus === 'USED'"
+                src="https://static.jqzplat.com/img/c4d7cc39-c91f-486e-aff4-8f64c147aace.png"
+              ></cover-image>
+            </canvas>
+            <view class="code2-text"> 请展示二维码使用优惠券 </view>
           </view>
         </view>
       </view>
-
-      <!-- 转赠复制弹窗 -->
-      <!-- <copy-modal :visible="copyVisible" @cancel="onCancelCopy"></copy-modal> -->
+      <view class="descBox">
+        <view class="title">
+          <text class="letter">使用说明</text>
+        </view>
+        <view class="content" v-if="ticketData.description">
+          <view v-html="richImage(ticketData.description)"></view>
+        </view>
+      </view>
+      <view class="shop">
+        <view class="title">
+          <text class="letter">适用门店</text>
+          <view
+            v-if="shopNames.length > 10"
+            @click="moreDetail(shopNames)"
+            class="more-text"
+          >
+            更多<uni-icons type="arrowright" size="14" color="#B7B8C4">
+            </uni-icons>
+          </view>
+        </view>
+        <view class="content" v-if="shopNames.length <= 10">
+          <view v-for="(item, i) in shopNames" :key="i">
+            {{ item }}
+          </view>
+        </view>
+        <view class="content" v-if="shopNames.length > 10">
+          <view v-for="(item, i) in shopNames.slice(0, 10)" :key="i">
+            {{ item }}
+          </view>
+        </view>
+        <view
+          class="content"
+          style="text-align: center"
+          v-if="!shopNames.length"
+        >
+          暂无数据
+        </view>
+      </view>
     </view>
   </CustomPage>
 </template>
@@ -153,7 +139,7 @@ import BrCode128 from '@/utils/barcode.js';
 import { staticUrl } from '@/utils/config';
 // eslint-disable-next-line no-duplicate-imports
 onLoad(() => {
-  uni.hideShareMenu();
+  uni.hideShareMenu({ hideShareItems: ['shareAppMessage', 'shareTimeline'] });
 });
 // 分享或者转赠优惠券
 onShareAppMessage((res: any) => onShareCoupon(res));

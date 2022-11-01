@@ -4,11 +4,10 @@
       :tabList="tabList"
       v-model:current="currentIndex"
       @change="changeTabs"
-    >
-    </Tabs>
+      fixed
+    />
     <scroll-view style="height: 100vh" scroll-y>
       <view class="coupon-list">
-        <!-- INEFFEC:待使用 EFFECTIVE:未使用 USING:使用中 USED:已使用 GIFTED:已赠送 INVALID:已失效 EXPIRED:已过期 -->
         <CouponItem
           v-for="(item, index) in couponListData"
           :item="item"
@@ -76,7 +75,7 @@
           </view>
         </view>
       </view>
-      <ScrollViewFooter bottom> </ScrollViewFooter>
+      <ScrollViewFooter bottom />
     </scroll-view>
   </CustomPage>
 </template>
@@ -93,10 +92,9 @@ import { staticUrl } from '@/utils/config';
 import { onShareCoupon } from '@/utils/util';
 // import Storage from '@/utils/storage';
 onLoad(() => {
-  uni.hideShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
+  uni.hideShareMenu({ hideShareItems: ['shareAppMessage', 'shareTimeline'] });
 });
 const initBasicsData = useBasicsData();
-// uni.hideShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
 const tabList = [
   { name: '待使用', status: 'EFFECTIVE' },
   { name: '已使用', status: 'USED' },
@@ -116,10 +114,11 @@ onShareAppMessage((res: any) => onShareCoupon(res));
 
 const status = ref('');
 const page = ref(1);
-const pageSize = ref(20);
+const pageSize = ref(10000);
 const couponStatus = ref('EFFECTIVE');
 const couponListData: Ref<any> = ref([]);
 
+//  INEFFEC:待使用 EFFECTIVE:未使用 USING:使用中 USED:已使用 GIFTED:已赠送 INVALID:已失效 EXPIRED:已过期
 // 我的优惠券列表
 const getCouponList = async () => {
   if (!initBasicsData.checkLogin) {
@@ -153,7 +152,7 @@ const getCouponList = async () => {
     }
   }
 
-  console.log('res', res);
+  // console.log('res', res);
   // if (res.code === 0) {
   //   if (this.page === 1) this.listData = [];
   //   const resData = res.data;
