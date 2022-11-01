@@ -3,7 +3,7 @@
     <view class="top">
       <uni-segmented-control
         :current="current"
-        :values="showItems"
+        :values="items.map(i => i.name)"
         @clickItem="changeTab"
         styleType="text"
         :activeColor="basicsData.mainColor"
@@ -17,12 +17,7 @@
             </view>
             <!-- 确认领取按钮 -->
             <view
-              v-if="
-                (item.status.name == '待领取' ||
-                  item.status.name == '已发货') &&
-                ['1', '2'].includes(item.recvManner.code) &&
-                JSON.parse(item.param)?.allowGet === 'Y'
-              "
+              v-if="showSureButton(item)"
               class="b1 button"
               :style="{ backgroundColor: basicsData.mainColor }"
               @click="determine(item)"
@@ -74,7 +69,6 @@ const items = reactive([
     name: '已失效',
   },
 ]);
-const showItems = items.map(i => i.name);
 const current = ref(0);
 const page = ref(0);
 interface prizeType {
@@ -133,6 +127,18 @@ onLoad((e: any) => {
 onUnload(() => {
   uni.$off('changeTab');
 });
+const showSureButton = (item: any) => {
+  const {
+    status: { name } = { name: '' }, // 奖品状态
+    recvManner: { code } = { code: '' }, // 领取方式 邮寄、到店
+    param,
+  } = item;
+  return (
+    ['待领取', '已发货'].includes(name) &&
+    ['1', '2'].includes(code) &&
+    JSON.parse(param)?.allowGet === 'Y'
+  );
+};
 // 截至日期显示内容
 const dateLableString = (item: prizeType) => {
   const {
