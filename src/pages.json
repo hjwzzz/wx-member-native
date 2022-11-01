@@ -154,6 +154,12 @@
           "style": {
             "navigationBarTitleText": "预约服务"
           }
+        },
+        {
+          "path": "serveDetail/index",
+          "style": {
+            "navigationBarTitleText": "服务详情"
+          }
         }
       ]
     },
