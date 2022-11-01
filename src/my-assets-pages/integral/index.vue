@@ -1,33 +1,22 @@
 <template>
   <CustomPage>
     <view class="integral">
-      <view class="integral-item" v-if="dataList.length">
-        <view
-          class="item"
-          v-for="(item, index) in dataList"
-          @click="userintegral(item)"
-          :key="index"
-        >
-          <view class="left">
-            <view class="img">
-              <image class=".image" :src="item.imgUrl" mode=""></image>
-            </view>
-            <view class="jifei">
-              <view class="userjf"> 我的{{ item.name }} </view>
-              <view class="shuliang">
-                {{ item.value }}
-              </view>
-            </view>
+      <view
+        class="integral-item"
+        v-for="(item, index) in dataList"
+        @click="userintegral(item)"
+        :key="index"
+      >
+        <image class="integral-item-image" :src="item.imgUrl" mode=""></image>
+        <view class="integral-item-info">
+          <view class="integral-item-name"> 我的{{ item.name }} </view>
+          <view class="integral-item-price">
+            {{ item.value }}
           </view>
         </view>
       </view>
-      <view class="imagewu" v-else>
-        <image
-          class="image"
-          :src="staticUrl + 'img/noIntegral.png'"
-          mode=""
-        ></image>
-        <view class="wujilu"> 暂无积分记录 </view>
+      <view class="none-data" v-if="!dataList.length">
+        <NoneData icon="noIntegral" text="暂无积分记录" />
       </view>
     </view>
   </CustomPage>
@@ -38,7 +27,7 @@ import { queryPointList } from '@/api/center';
 import { onLoad } from '@dcloudio/uni-app';
 import { onMounted, ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-import { staticUrl } from '@/utils/config';
+import NoneData from '@/pages/component/NoneData.vue';
 const initBasicsData = useBasicsData();
 const dataList: Ref<any> = ref([]);
 const selectId = ref('');
@@ -77,64 +66,45 @@ const queryPointListFun = async () => {
 <style lang="scss" scoped>
 .integral {
   padding-top: 30rpx;
+  padding-left: 30rpx;
   background-color: #f5f5f5;
-  .item {
-    width: calc(100vw - (60rpx));
-    margin-left: 30rpx;
+  .integral-item {
+    width: calc(100vw - 118rpx);
     height: 170rpx;
-    background-color: #ffffff;
+    background-color: white;
     border-radius: 16rpx;
     padding: 30rpx 30rpx 20rpx;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 30rpx;
-    .left {
-      display: flex;
-      align-items: center;
-      .img .image {
-        width: 88rpx;
-        height: 88rpx;
-      }
-      .jifei {
-        margin-left: 30rpx;
-        .userjf {
-          margin-top: -12rpx;
-          font-size: 28rpx;
-          color: #9697a2;
-          width: calc(100vw - 400rpx);
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          word-break: break-all;
-        }
-        .shuliang {
-          margin-top: 6rpx;
-          font-size: 48rpx;
-          font-family: PingFang-SC-Heavy, PingFang-SC;
-          font-weight: 800;
-          color: var(--main-color);
-        }
-      }
+    .integral-item-image {
+      width: 88rpx;
+      height: 88rpx;
     }
-  }
-  .imagewu {
-    text-align: center;
-    margin-top: 80rpx;
-    // min-height: 1000rpx;
-    height: calc(100vh - 240rpx);
-
-    /* margin-bottom: ; */
-    .image {
-      width: 320rpx;
-      height: 320rpx;
+    .integral-item-info {
+      margin-left: 30rpx;
     }
-
-    .wujilu {
+    .integral-item-name {
+      margin-top: -12rpx;
       font-size: 28rpx;
       color: #9697a2;
-      margin: 40rpx 0 148rpx 0;
+      width: calc(100vw - 250rpx);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
+    .integral-item-price {
+      margin-top: 6rpx;
+      font-size: 48rpx;
+      font-family: PingFang-SC-Heavy, PingFang-SC;
+      font-weight: 800;
+      color: var(--main-color);
+    }
+  }
+
+  .none-data {
+    margin-top: 20vh;
   }
 }
 </style>
