@@ -3,7 +3,7 @@
     <view class="top">
       <uni-segmented-control
         :current="current"
-        :values="showItems"
+        :values="items.map(i => i.name)"
         @clickItem="changeTab"
         styleType="text"
         :activeColor="basicsData.mainColor"
@@ -69,7 +69,6 @@ const items = reactive([
     name: '已失效',
   },
 ]);
-const showItems = items.map(i => i.name);
 const current = ref(0);
 const page = ref(0);
 interface prizeType {
