@@ -20,6 +20,13 @@ export const queryGoldPriceByPage = async (data: any) => {
   return await request(url, data);
 };
 
+// 根据订单id获取提交支付订单信息
+export const getPayOrder = async (data: any) => {
+  const url = `${baseUrl}/points-mall/orderFront/usr/getPayOrder`;
+  const res = await request(url, data);
+  return res;
+};
+
 // 获取质保单列表
 export const queryPolicyList = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;

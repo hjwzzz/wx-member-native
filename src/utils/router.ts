@@ -1,7 +1,15 @@
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
-const configRouterAuth = ['point', 'my_prize', 'userInfo'];
+const configRouterAuth = [
+  'point',
+  'my_prize',
+  'userInfo',
+  'point_mall',
+  'point_mall_order',
+  'point_mall_commodity',
+  'point_mall_index',
+];
 // 配置switchTab切换页面
 const switchTabUrl = [
   '/pages/index/index',
@@ -13,9 +21,10 @@ const switchTabUrl = [
 const pageCode: any = {
   warranty_details: '', // 质保单详情
   warranty: '/my-assets-pages/quality/index', // 质保单
-  point_mall_order: '', // 订单(积分)
-  point_mall_commodity: '', // 商品(积分)
-  point_mall_index: '', // 首页(积分)
+  point_mall: '/my-assets-pages/point-mall/index', // 积分商城
+  point_mall_order: '/my-assets-pages/point-mall/index', // 订单(积分)
+  point_mall_commodity: '/my-assets-pages/point-mall/index', // 商品(积分)
+  point_mall_index: '/my-assets-pages/point-mall/index', // 首页(积分)
   reg: '', // 注册登录
   invite_courteous: '', // 邀请有礼
   my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
@@ -69,7 +78,7 @@ class Router {
     if (!url) {
       return;
     }
-
+    console.log('url', url + urlQueryParams);
     if (switchTabUrl.includes(url)) {
       uni.switchTab({ url });
       return;

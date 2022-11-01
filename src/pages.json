@@ -251,6 +251,18 @@
           "style": {
             "navigationBarTitleText": "公告"
           }
+        },
+        {
+          "path": "point-mall/index",
+          "style": {
+            "navigationBarTitleText": "积分商城"
+          }
+        },
+        {
+          "path": "point-mall/pay",
+          "style": {
+            "navigationBarTitleText": "正在支付"
+          }
         }
       ]
     },
