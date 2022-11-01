@@ -53,7 +53,11 @@
             class="info"
             @click="updateInfo(item)"
             :key="item.code.code"
-            v-if="item.code.code !== 'PRIVATE_FIELD_MDAY'"
+            v-if="
+              !['PRIVATE_FIELD_MDAY', 'PRIVATE_FIELD_SEX'].includes(
+                item.code.code
+              )
+            "
           >
             <view class="left">
               {{ item.code.name }}
@@ -151,13 +155,14 @@
                 v-if="item.code.code == 'PRIVATE_FIELD_EDUCATION'"
               >
                 <picker
-                  @change="(e:any)=>updateUserIno({education:  parseInt(e.target.value) *10 })"
+                  @change="updateEdu"
                   :value="edcIndex"
                   :range="educations"
+                  range-key="code"
                   :disabled="item.update === 'N'"
                 >
                   <view class="uni-input">{{
-                    educations[edcIndex] || '未设置'
+                    educations[edcIndex]?.code || '未设置'
                   }}</view>
                 </picker>
               </view>
@@ -180,6 +185,32 @@
               </uni-icons>
             </view>
           </view>
+          <picker
+            @change="bindPickerChangeGender"
+            :value="genderIndex"
+            :range="gender"
+            :disabled="item.update === 'N'"
+            key="PRIVATE_FIELD_SEX"
+            v-else-if="item.code.code === 'PRIVATE_FIELD_SEX'"
+          >
+            <view class="info bB1">
+              <view class="left">
+                {{ item.code.name }}
+              </view>
+              <view class="text-info">
+                <view class="right text">
+                  <view class="uni-input">{{ gender[genderIndex] }}</view>
+                </view>
+                <uni-icons
+                  type="arrowright"
+                  size="14"
+                  color="#B7B8C4"
+                  v-if="item.update === 'Y'"
+                >
+                </uni-icons>
+              </view>
+            </view>
+          </picker>
         </template>
       </view>
       <view class="rili">
@@ -206,16 +237,8 @@
         ></uni-popup-dialog>
       </uni-popup>
 
-      <u-select
-        v-model="show"
-        mode="mutil-column-auto"
-        :z-index="10"
-        :list="selecteList"
-        @confirm="confirm"
-        :default-value="defaultValue"
-      />
       <!-- 产品要求这里的退出登陆 迁移到设置 先藏好， -->
-      <view class="logout" @click="handleLogout">退出登录</view>
+      <!-- <view class="logout" @click="handleLogout">退出登录</view> -->
     </view>
   </CustomPage>
 </template>
@@ -229,7 +252,7 @@ import {
 } from '@/api/server';
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
-import { onLoad } from '@dcloudio/uni-app';
+import { onShow } from '@dcloudio/uni-app';
 import { computed, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
@@ -250,26 +273,58 @@ const items = [
 ];
 const genderIndex = ref(2);
 const gender = ['男', '女', '未知'];
-const edcIndex = 1;
+const edcIndex = ref(0);
 const educations = [
-  '小学',
-  '初中',
-  '高中',
-  '专科',
-  '本科',
-  '硕士',
-  '博士',
-  '其他',
+  {
+    code: '小学',
+    value: 10,
+  },
+  {
+    code: '初中',
+    value: 20,
+  },
+  {
+    code: '高中',
+    value: 30,
+  },
+  {
+    code: '专科',
+    value: 40,
+  },
+  {
+    code: '本科',
+    value: 50,
+  },
+  {
+    code: '硕士',
+    value: 60,
+  },
+  {
+    code: '博士',
+    value: 70,
+  },
+  {
+    code: '其他',
+    value: 0,
+  },
 ];
 
-const selecteList: any[] = [];
+onShow(() => {
+  querySetting();
+  queryPro();
+});
+
 const userInfo = ref<any>({});
 
 const current = ref();
-const show = ref(false);
-const phoneSet = ref({});
-const defaultValue = '111';
-const handleUpdate = (e: any) => [e];
+const phoneSet = ref<any>({});
+const handleUpdate = (item: any) => {
+  const mark = phoneSet.value.update === 'Y';
+  if (item.code === 'phone' && mark) {
+    const { value } = item;
+    router.goCodePage('updatePhone', `?phone=${value}`);
+  }
+};
 
 const popup = ref();
 const dialogTitle = ref('');
@@ -400,6 +455,11 @@ const handleOpen = (item: { name: any }) => {
   }
   calendar.value.open();
 };
+const updateEdu = (e: any) => {
+  edcIndex.value = e.detail.value;
+  const { value } = educations[e.detail.value];
+  updateUserIno({ education: value });
+};
 const updateUserIno = async (item: any, refresh = false) => {
   const { code } = await updateMemberInfo(item);
   if (code === 0) {
@@ -428,12 +488,6 @@ const bindPickerChangeGender = (e: any) => {
   updateUserIno({ sex: ['M', 'F', 'U'][genderIndex.value] });
 };
 
-const confirm = (e: any) => [e];
-const handleLogout = (e: any) => [e];
-onLoad(() => {
-  querySetting();
-  queryPro();
-});
 const querySetting = async () => {
   const { code, data } = await queryPrivateFieldSetting('');
   if (code === 0 && data) {
@@ -480,14 +534,15 @@ const queryUserInfo = async () => {
     data.fullAddress = mergeFullAddress(data);
 
     userInfo.value = data;
-
     // 计算农历生日
     if (data.birthSolar) {
       const [a, b, c] = data.birthSolar ? data.birthSolar.split('-') : [];
       const r = Lunar.toLunar(a, b, c);
       data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
     }
-    const { phone, avatarUrl, nickName, proId, sex, birthKind } = data;
+    const { phone, avatarUrl, nickName, proId, sex, birthKind, education } =
+      data;
+    edcIndex.value = educations.findIndex(i => i.value === education);
     header.value = [
       {
         name: '个人头像',
@@ -610,7 +665,9 @@ const queryUserInfo = async () => {
     .info:last-child {
       border-bottom: none;
     }
-
+    .bB1 {
+      border-bottom: solid 1rpx #ebedf0 !important;
+    }
     .text-info {
       display: flex;
       align-items: center;

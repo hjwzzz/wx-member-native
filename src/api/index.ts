@@ -34,3 +34,9 @@ export const getWmAlertAdBannerList = async (data: unknown) => {
 //   const res = await request(url, data);
 //   return res;
 // };
+// 根据页面名字code获取对应配置信息
+export const queryShareSett = async (data: any) => {
+  const url = `${baseUrl}/emp-base/shareFront/queryShareSett`;
+  const res = await request(url, data);
+  return res;
+};

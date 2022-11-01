@@ -32,7 +32,7 @@ const pageCode: any = {
   warranty_list: '', // 质保单列表
   point: '/my-assets-pages/integral/index', // 我的积分
   get_coupon: '/my-assets-pages/coupon-center/index', // 领券中心
-  gold_price: '', // 今日金价
+  gold_price: '/my-assets-pages/gold-price/index', // 今日金价
   wm_center: '/pages/center/index', // 个人中心
   wm_index: '/pages/index/index', //  首页
   sign: '', // 签到
@@ -46,6 +46,10 @@ const pageCode: any = {
   installCenter: '/pages/center/account-set', // 账户设置
   addressList: '/pages/address/address-list', // 收货地址
   finishAddress: '/pages/login/finish-address', // 完善信息地址
+  updatePhone: '/pages/center/user-info/update-phone', // 修改手机号
+  cert: '/pages/center/user-info/cert', // 修改证件
+  location: '/pages/center/user-info/address', // 修改地址
+  goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
 };
 
 // 路由控制

@@ -68,6 +68,24 @@
       }
     },
     {
+      "path": "pages/center/user-info/update-phone",
+      "style": {
+        "navigationBarTitleText": "修改手机号"
+      }
+    },
+    {
+      "path": "pages/center/user-info/cert",
+      "style": {
+        "navigationBarTitleText": "证件号"
+      }
+    },
+    {
+      "path": "pages/center/user-info/address",
+      "style": {
+        "navigationBarTitleText": "修改地址"
+      }
+    },
+    {
       "path": "pages/nearby-store/index",
       "style": {
         "navigationBarTitleText": "附近门店"
@@ -263,6 +281,12 @@
           "style": {
             "navigationBarTitleText": "正在支付"
           }
+        },
+        {
+          "path": "gold-price/pay",
+          "style": {
+            "navigationBarTitleText": "今日金价"
+          }
         }
       ]
     },
@@ -284,6 +308,4 @@
       "packages": ["my-assets-pages"]
     }
   }
-
-
 }
