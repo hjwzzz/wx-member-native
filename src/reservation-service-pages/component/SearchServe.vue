@@ -153,7 +153,7 @@ const loadMore = () => {
 };
 
 const goDetail = ({ id }: { id: string }) => {
-  uni.navigateTo({ url: `/reservationService/serveDetail/index?id=${id}&distId=${data.value.distId}&storeName=${data.value.storeName}` });
+  uni.navigateTo({ url: `/reservation-service-pages/serveDetail/index?id=${id}&distId=${data.value.distId}&storeName=${data.value.storeName}` });
 };
 
 // 查询预约服务项目列表
