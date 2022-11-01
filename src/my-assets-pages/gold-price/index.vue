@@ -2,25 +2,32 @@
   <CustomPage>
     <view class="gold-price">
       <view class="banner" v-if="bannerList.length > 0">
-        <u-swiper
-          @click="bannerClick"
-          :list="bannerList"
-          :mode="bannerList.length > 1 ? 'round' : 'none'"
-          :height="300"
-          name="imgUrl"
-        ></u-swiper>
+        <swiper
+          style="height: 300rpx"
+          :indicator-dots="bannerList.length > 1"
+          indicator-color
+          indicator-active-color="#FF547B"
+          autoplay
+        >
+          <block v-for="(item, index) in bannerList" :key="index">
+            <swiper-item @click.stop="bannerClick(item)">
+              <image
+                class=""
+                style="height: 300rpx; width: 690rpx"
+                :src="item.imgUrl"
+                mode="aspectFill"
+              ></image>
+            </swiper-item>
+          </block>
+        </swiper>
       </view>
 
-      <view
-        class="shop"
-        @click="onChooseStore"
-        v-if="goldPriceDatas && goldPriceDatas.store"
-      >
+      <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
         <view class="name">{{ goldPriceDatas.store.storeName || '--' }}</view>
-        <u-icon name="arrow-right" color="#B7B8C4" size="28"></u-icon>
+        <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
 
-      <view class="price-box" v-if="goldPriceDatas && goldPriceDatas.param">
+      <view class="price-box" v-if="goldPriceDatas?.param">
         <uni-segmented-control
           :current="current"
           :values="showTabs"
@@ -29,19 +36,9 @@
           :activeColor="initBasicsData.mainColor"
         ></uni-segmented-control>
 
-        <view
-          class="tab-bd"
-          v-if="
-            goldPriceDatas.param.todayGoldPriceShowed === 'Y' ||
-            goldPriceDatas.param.recoveryGoldPriceShowed === 'Y'
-          "
-        >
-          <view class="inner" v-if="!current">
-            <view
-              class="item"
-              v-for="(item, index) in goldPriceDatas.brandPrice"
-              :key="index"
-            >
+        <view class="tab-bd" v-if="showTabs.length > 1">
+          <view class="inner">
+            <view class="item" v-for="item in showData" :key="item.brandId">
               <view class="left">
                 <view class="t ttt"
                   >{{ item.met }} {{ item.metCtn || '' }}</view
@@ -56,7 +53,7 @@
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
-                  >工费：¥{{ item.laborFee }}</view
+                  >工费：¥{{ item.laborFee || item.laborPrice }}</view
                 >
               </view>
             </view>
@@ -76,55 +73,12 @@
               <view class="stopText">暂无金价信息</view>
             </view>
           </view>
-          <view class="inner" v-if="current === 1">
-            <view
-              class="item"
-              v-for="(item, index) in goldPriceDatas.brandOldPrice"
-              :key="index"
-            >
-              <view class="left">
-                <view class="t ttt"
-                  >{{ item.met }} {{ item.metCtn || '' }}</view
-                >
-                <view class="b bbb">
-                  {{ item.brandName ? '品牌：' : '' }}
-                  {{ item.brandName || '' }}
-                </view>
-              </view>
-              <view class="right">
-                <view class="t mC">¥{{ item.price }}</view>
-                <view
-                  class="b"
-                  v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
-                  >工费：¥{{ item.laborPrice }}</view
-                >
-              </view>
-            </view>
-            <!-- 空 -->
-            <view
-              class="empty empty-page"
-              v-if="!goldPriceDatas.brandOldPrice.length"
-            >
-              <image
-                width="250rpx"
-                height="250rpx"
-                class="emptyIcon"
-                mode="aspectFill"
-                :src="`${staticUrl}/img/themoney.png`"
-              ></image>
-              <view class="stopText">暂无金价信息</view>
-            </view>
-          </view>
         </view>
       </view>
 
       <view
         class="remark-box"
-        v-if="
-          goldPriceDatas &&
-          goldPriceDatas.param &&
-          goldPriceDatas.param.remarkShowed === 'Y'
-        "
+        v-if="goldPriceDatas?.param?.remarkShowed === 'Y'"
       >
         <view
           v-if="goldPriceDatas.param.remark"
@@ -141,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { queryShareSett } from '@/api';
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
@@ -159,17 +113,14 @@ onLoad((e: any) => {
   getBannerList();
   getGoldPrice(e.distId);
 });
-const bannerList = ref([]);
+const bannerList: Ref<any[]> = ref([]);
 const list = ref<any[]>([]);
 const goldPriceDatas = ref<any>({});
 const current = ref(0);
 
-// tabActive: "jr", // jr 今日金价， hs 回收金价
-const bannerClick = (index: number) => {
-  const { miniUrl } = bannerList.value[index];
-  if (miniUrl) {
-    uni.navigateTo({ url: miniUrl });
-  }
+const bannerClick = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  router.goCodePage(url.code || url.systemUrl);
 };
 const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
@@ -184,22 +135,8 @@ const richImage = (e: any) => {
 let shareObj: any = {};
 const defaultObj: any = {};
 const showTabs = computed(() => list.value.map(i => i.name));
-const isShare = async () => {
-  const res = await queryShareSett({ pageName: 'WM_TODAY_GOLD_PRICE' });
-  const { miniProgramName, miniAvatarUrl } = res.data;
-  shareObj = res.data;
-  defaultObj.name = miniProgramName;
-  defaultObj.url = miniAvatarUrl;
+const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
 
-  let hideShareItems: any = [];
-  if (res.data.shareChumEnabled.code === 'N') {
-    hideShareItems = ['shareAppMessage', 'shareTimeline'];
-  } else if (res.data.shareChumCircleEnabled.code === 'N') {
-    hideShareItems = ['shareTimeline'];
-  }
-  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
-  uni.hideShareMenu({ hideShareItems });
-};
 const getBannerList = async () => {
   const res = await getGoldPriceAdBannerList('');
   bannerList.value = res.data;
@@ -220,6 +157,23 @@ const getGoldPrice = async (id = '') => {
     }
   }
 };
+
+const isShare = async () => {
+  const res = await queryShareSett({ pageName: 'WM_TODAY_GOLD_PRICE' });
+  const { miniProgramName, miniAvatarUrl } = res.data;
+  shareObj = res.data;
+  defaultObj.name = miniProgramName;
+  defaultObj.url = miniAvatarUrl;
+
+  let hideShareItems: any = [];
+  if (res.data.shareChumEnabled.code === 'N') {
+    hideShareItems = ['shareAppMessage', 'shareTimeline'];
+  } else if (res.data.shareChumCircleEnabled.code === 'N') {
+    hideShareItems = ['shareTimeline'];
+  }
+  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
+  uni.hideShareMenu({ hideShareItems });
+};
 onShareAppMessage(() => {
   {
     return {
@@ -239,13 +193,15 @@ onShareAppMessage(() => {
 
 <style scoped lang="scss">
 :deep(.segmented-control) {
-  height: 100rpx !important;
+  height: 50px !important;
   background-color: white;
   .segmented-control__text {
     color: #9697a2 !important;
   }
   .segmented-control__item--text {
     font-weight: 500;
+    padding: 12px 0;
+    border-bottom-width: 3px;
     color: var(--main-color) !important;
   }
 }
@@ -283,7 +239,9 @@ onShareAppMessage(() => {
   background: #ffffff;
   display: flex;
   justify-content: space-between;
-  padding: 30rpx;
+  height: 98rpx;
+  align-items: center;
+  padding: 0 30rpx;
   border-radius: 16rpx;
   .name {
     font-size: 28rpx;
