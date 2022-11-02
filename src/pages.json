@@ -322,6 +322,18 @@
           "style": {
             "navigationBarTitleText": "投诉反馈"
           }
+        },
+        {
+          "path": "sign-in/index",
+          "style": {
+            "navigationBarTitleText": "签到有礼"
+          }
+        },
+        {
+          "path": "prize/index",
+          "style": {
+            "navigationBarTitleText": "我的奖品"
+          }
         }
       ]
     }

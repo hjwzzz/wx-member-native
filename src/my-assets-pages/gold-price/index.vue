@@ -28,13 +28,11 @@
       </view>
 
       <view class="price-box" v-if="goldPriceDatas?.param">
-        <uni-segmented-control
-          :current="current"
-          :values="showTabs"
-          @clickItem="(e: any) => current = e.currentIndex"
-          styleType="text"
-          :activeColor="initBasicsData.mainColor"
-        ></uni-segmented-control>
+        <Tabs
+          :tabList="list"
+          v-model:current="current"
+          @change="(e: any) => current = e.index"
+        />
 
         <view class="tab-bd" v-if="showTabs.length > 1">
           <view class="inner">
@@ -58,10 +56,7 @@
               </view>
             </view>
             <!-- 空 -->
-            <view
-              class="empty empty-page"
-              v-if="!goldPriceDatas.brandPrice.length"
-            >
+            <view class="empty empty-page" v-if="!showData.length">
               <image
                 width="250rpx"
                 height="250rpx"
@@ -96,7 +91,6 @@
 
 <script setup lang="ts">
 import { computed, Ref, ref } from 'vue';
-import { useBasicsData } from '@/store/basicsData';
 import { queryShareSett } from '@/api';
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
 import {
@@ -106,8 +100,8 @@ import {
 } from '@/api/gold-price';
 import router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
+import Tabs from '@/components/Tabs/index.vue';
 
-const initBasicsData = useBasicsData();
 onLoad((e: any) => {
   isShare();
   getBannerList();
@@ -192,19 +186,6 @@ onShareAppMessage(() => {
 </script>
 
 <style scoped lang="scss">
-:deep(.segmented-control) {
-  height: 50px !important;
-  background-color: white;
-  .segmented-control__text {
-    color: #9697a2 !important;
-  }
-  .segmented-control__item--text {
-    font-weight: 500;
-    padding: 12px 0;
-    border-bottom-width: 3px;
-    color: var(--main-color) !important;
-  }
-}
 .mC {
   color: var(--main-color);
 }

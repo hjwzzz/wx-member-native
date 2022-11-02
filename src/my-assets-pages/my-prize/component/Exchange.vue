@@ -131,9 +131,9 @@ const storeInfo = ref<any>({});
 const goStore = () => {
   uni.$once('chooseStore', e => storeInfo.value = e);
   uni.navigateTo({
-    url: `store-list?id=${storeInfo.value.distId ?? ''}&relatedId=${
-      props.item.relatedId
-    }`,
+    url: `/my-assets-pages/my-prize/store-list?id=${
+      storeInfo.value.distId ?? ''
+    }&relatedId=${props.item.relatedId}`,
   });
 };
 
