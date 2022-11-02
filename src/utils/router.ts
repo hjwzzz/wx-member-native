@@ -1,7 +1,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
 // 配置需要登录才能进入的页面
-const configRouterAuth = ['point', 'my_prize', 'userInfo'];
+const configRouterAuth = ['point', 'my_prize', 'userInfo', 'sign'];
 // 配置switchTab切换页面
 const switchTabUrl = [
   '/pages/index/index',

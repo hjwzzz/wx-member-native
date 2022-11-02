@@ -25,12 +25,14 @@
         </view>
         <view class="right" v-if="showData.notified === 'Y'">
           <text class="right-text">签到提醒</text
-          ><u-switch
-            v-model="check"
+          ><switch
+            class="right-switch"
+            :checked="check"
             size="30"
             @change="change"
-            active-color="#FF394E"
-          ></u-switch>
+            color="#FF394E"
+            style="transform: scale(0.56) translateX(-25%)"
+          ></switch>
         </view>
       </view>
 
@@ -111,7 +113,7 @@ watch(
   val => {
     setStatus(dateArr.value, val.giftDate || [], 'gift');
     setStatus(dateArr.value, val.signInDate || [], 'signIn');
-    check.value = val.userNotified;
+    check.value = val.userNotified === 'Y';
     isEmpty.value = !val.award;
   }
 );
@@ -230,7 +232,7 @@ const lastMonth = () => {
   // 全部时间的月份都是按0~11基准，显示月份才+1
   year.value = month.value - 2 < 0 ? year.value - 1 : year.value;
   const monthNew = month.value - 2 < 0 ? 11 : month.value - 2;
-  month.value += 1;
+  month.value = monthNew + 1;
   dateInit(year.value, monthNew);
   emits(
     'getMonth',
@@ -288,7 +290,12 @@ onShow(() => {
     display: flex;
     align-items: center;
     &-text {
+      flex: 1;
       margin-right: 10rpx;
+    }
+    &-switch {
+      flex: none;
+      width: 64rpx;
     }
   }
   .left {

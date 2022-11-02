@@ -73,14 +73,17 @@
           ></view>
         </view>
         <view class="gift-ad" v-if="hasAd">
-          <u-swiper
-            name="imgUrl"
-            @click="goDetail"
-            img-mode="aspectFit"
-            :list="data.wxappActivityAdvertList"
-            :height="180"
-          ></u-swiper>
+          <swiper name="imgUrl">
+            <swiper-item
+              v-for="(v, i) in data.wxappActivityAdvertList"
+              :key="v.id"
+              @click="goDetail(i)"
+            >
+              <image mode="aspectFill" :src="v.imgUrl"></image>
+            </swiper-item>
+          </swiper>
         </view>
+        <!-- 签到成功提示 -->
         <uni-popup
           ref="toastRef"
           mask-background-color="rgba(0,0,0,0)"
@@ -95,6 +98,7 @@
             签到成功
           </view>
         </uni-popup>
+        <!-- 活动规则、签到奖励内容 -->
         <uni-popup ref="guizeRef" :show="showPopou" mode="center" class="guize">
           <view class="content">
             <view class="content-con">
@@ -142,12 +146,8 @@
             </view>
           </view>
         </uni-popup>
-        <uni-popup
-          ref="guizeTwoRef"
-          :show="showMoreGift"
-          mode="center"
-          class="guize"
-        >
+        <!-- 额外奖励 -->
+        <uni-popup ref="guizeTwoRef" mode="center" class="guize">
           <view class="content">
             <view class="content-con con">
               <scroll-view
@@ -178,7 +178,9 @@ import { richImage } from '@/utils/util';
 import Router from '@/utils/router';
 import Calendar from './component/Calendar/index.vue';
 import { onShareAppMessage, onShow } from '@dcloudio/uni-app';
+import { useBasicsData } from '@/store/basicsData';
 
+const initBasicsData = useBasicsData();
 const showData = ref({});
 const toastRef = ref();
 const guizeRef = ref();
@@ -223,7 +225,6 @@ const data = reactive<any>({
 });
 const over2lows = ref(false);
 const guizeTwoRef = ref();
-const showMoreGift = ref(false);
 const giftDetail = ref<any>({});
 onShareAppMessage(() => ({
   title: data.actParam.pageSetting.shareTitle,
@@ -240,10 +241,9 @@ const todayGift = computed(() => {
   return text;
 });
 onShow(() => {
-  // if (!checkHasLogined()) {
-  //   uni.setStorageSync("pages", "/signInGift/giftPage/index");
-  //   return router.go("/pages/login/index");
-  // }
+  if (!initBasicsData.checkLogin) {
+    return Router.goLogin();
+  }
   getUserSignActivityByIdFun();
 });
 const moveStop = () => {
@@ -253,16 +253,11 @@ const moveStop = () => {
 const getMonth = (val: any) => {
   getUserSignActivityByIdFun(val);
 };
+// 签到
 const signIn = async () => {
   const res = await addMemberSignActivity({});
   const { code } = res;
   if (res && !code) {
-    // #ifdef H5
-    // if (data.firstSign && data.actParam.notified === "Y") {
-    //   showSignTip.show = true;
-    // }
-    // #endif
-    // #ifdef MP-WEIXIN
     if (data.firstSign) {
       uni.requestSubscribeMessage({
         tmplIds: [''],
@@ -271,11 +266,8 @@ const signIn = async () => {
         },
       });
     }
-    // #endif
-    // showToast.value = true;
     toastRef.value.open();
     setTimeout(() => {
-      // showToast.value = false;
       toastRef.value.close();
     }, 3000);
     getUserSignActivityByIdFun();
@@ -294,6 +286,7 @@ const close = () => {
   showPopou.value = false;
   guizeRef.value.close();
 };
+// 查看签到奖励
 const clickGift = (val: any) => {
   showPop();
   giftDetail.value =
@@ -302,6 +295,7 @@ const clickGift = (val: any) => {
         {}
       : val;
 };
+// 签到提醒切换
 const openNotice = async (val: any) => {
   await udpateUserNoticed('');
   if (val) {
@@ -310,13 +304,13 @@ const openNotice = async (val: any) => {
 };
 const showMore = () => {
   if (over2lows.value) {
-    showMoreGift.value = true;
     guizeTwoRef.value.open();
   }
 };
 const closeMore = () => {
   guizeTwoRef.value.close();
 };
+// 获取签到信息
 const getUserSignActivityByIdFun = async (month: number | string = '') => {
   const { data: info } = await getUserSignActivityById({
     month:
@@ -331,32 +325,17 @@ const getUserSignActivityByIdFun = async (month: number | string = '') => {
             .getMonth() + 1}`
       }`,
   });
-  // #ifdef H5
-  // if (!this.isInitShare) {
-  //   this.initH5Share();
-  // }
-  // #endif
   data.userNotified = info.userNotified !== 'N';
   Object.assign(data, info);
   data?.h5ActivityAdvertList.forEach((item: any) => {
     item.imgUrl = item.promotionImgUrlList.length
       ? item.promotionImgUrlList[0]
       : '';
-    // this.$set(
-    //   item,
-    //   "imgUrl",
-    //   item.promotionImgUrlList.length ? item.promotionImgUrlList[0] : ""
-    // );
   });
   data?.wxappActivityAdvertList.forEach((item: any) => {
     item.imgUrl = item.promotionImgUrlList.length
       ? item.promotionImgUrlList[0]
       : '';
-    // this.$set(
-    //   item,
-    //   "imgUrl",
-    //   item.promotionImgUrlList.length ? item.promotionImgUrlList[0] : ""
-    // );
   });
   Object.assign(showData.value, { giftDate: [], signInDate: [] });
   setTimeout(() => {
@@ -376,7 +355,7 @@ const getUserSignActivityByIdFun = async (month: number | string = '') => {
       .exec();
   });
 };
-const setShowData = (val: any = '') => {
+const setShowData = (val = false) => {
   showData.value = {
     giftDate:
       data?.serialSignAwardList?.map((item: any) => item.seriesDate) || [],
@@ -529,9 +508,13 @@ const richImageFun = (item: any) => richImage(item);
   &-ad {
     padding: 30rpx 30rpx 0 30rpx;
 
+    swiper {
+      height: 180rpx;
+    }
     image {
       max-height: 180rpx;
       width: 100%;
+      border-radius: 16rpx;
     }
   }
 
