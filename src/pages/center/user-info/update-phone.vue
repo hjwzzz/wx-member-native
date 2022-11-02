@@ -218,19 +218,5 @@ const handleCert = () => [];
     font-weight: 400;
     color: #ff547b;
   }
-
-  .footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-
-    width: 100%;
-    height: 64rpx;
-    font-size: 24rpx;
-    font-weight: 400;
-    color: #d8d9e0;
-    line-height: 64rpx;
-    text-align: center;
-  }
 }
 </style>
