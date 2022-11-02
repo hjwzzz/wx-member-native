@@ -47,7 +47,11 @@
             ></image>
           </template>
           <template #bottom-left>
-            <text> 等后端处理 </text>
+            <text>
+              有效期：{{ ticketData.cutValidTime }}至{{
+                ticketData.cutExpireTime
+              }}
+            </text>
           </template>
         </CouponItem>
       </view>

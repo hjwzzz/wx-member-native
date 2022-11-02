@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { onShow } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import Storage from '@/utils/storage';
 import { h5Url } from '@/utils/config';
 import { ref } from 'vue';
@@ -16,6 +16,15 @@ const token = Storage.getToken();
 const param = `?appId=${jqzAppid}&appType=mini&epid=${epid}&token=${token}&mid=${mid}`;
 const lastUrl = `${h5Url}/#/pointsMallGages/tabber/index${param}`;
 const webViewUrl = ref(lastUrl);
+onLoad((option: any) => {
+  // console.log(option);
+  if (option.productId) {
+    webViewUrl.value = `${h5Url}/#/pointsMallGages/productDetails/index${param}&productId=${option.productId}`;
+  }
+  // /pointsMallGages/productDetails/index?id=${id}
+  // productId
+});
+
 onShow(() => {
   uni.getStorage({
     key: 'ProductShopPayment',

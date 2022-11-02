@@ -53,7 +53,9 @@
             ></image>
           </template>
           <template #bottom-left>
-            <text> 等后端处理 </text>
+            <text>
+              有效期：{{ item.cutValidTime }}至{{ item.cutExpireTime }}
+            </text>
           </template>
           <template #bottom-rigth>
             <view class="arrow-right">
@@ -135,8 +137,13 @@ const getCouponList = async () => {
       sort: '',
     },
   };
+  uni.showLoading({
+    title: '加载中',
+    mask: true,
+  });
   // this.loading = true;
   const res = await queryMyCouponList(params);
+  uni.hideLoading();
   if (res.code === 0 && res.data) {
     const { curPage, totalPage, records } = res.data;
 
@@ -151,23 +158,6 @@ const getCouponList = async () => {
       couponListData.value.push(...records);
     }
   }
-
-  // console.log('res', res);
-  // if (res.code === 0) {
-  //   if (this.page === 1) this.listData = [];
-  //   const resData = res.data;
-  //   this.totalPage = resData.totalPage;
-  //   this.listData = this.listData.concat(resData.records);
-  //   this.listData.forEach(item => {
-  //     item.willEnd = false;
-  //     item.countdown = '';
-  //   });
-  //   if (this.page >= this.totalPage) this.status = 'nomore';
-  //   else this.status = 'loading';
-
-  // }
-  // this.loading = false;
-  // this.loadingTop = false;
 };
 
 const onCouponDetail = (item: any) => {
