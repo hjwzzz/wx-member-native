@@ -1,13 +1,12 @@
 <template>
   <CustomPage>
     <view class="top">
-      <uni-segmented-control
-        :current="current"
-        :values="items.map(i => i.name)"
-        @clickItem="changeTab"
-        styleType="text"
-        :activeColor="basicsData.mainColor"
-      ></uni-segmented-control>
+      <Tabs
+        :tabList="items"
+        v-model:current="current"
+        @change="changeTab"
+        fixed
+      />
       <view class="content" v-for="item in list" :key="item.id">
         <goods :item="item" status>
           <view class="bottom">
@@ -49,6 +48,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { queryFront, updateReceiveSend, updateToStore } from '@/api/my-prize';
 import goods from './component/Goods.vue';
 import NoneData from '@/pages/component/NoneData.vue';
+import Tabs from '@/components/Tabs/index.vue';
 
 const basicsData = useBasicsData();
 const items = reactive([
@@ -184,25 +184,13 @@ const showDetail = (item: prizeType) => {
   uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}&getWay=${item.recvManner.code}` });
 };
 const changeTab = (e: any) => {
-  current.value = parseInt(e?.currentIndex ?? e);
+  current.value = e?.index ?? e;
   list.value = [];
   getData();
 };
 </script>
 
 <style lang="scss" scoped>
-:deep(.segmented-control) {
-  height: 100rpx !important;
-  background-color: white;
-  .segmented-control__text {
-    color: #9697a2 !important;
-  }
-  .segmented-control__item--text {
-    font-weight: 500;
-    color: var(--main-color) !important;
-  }
-}
-
 .content {
   padding: 0 30rpx;
 }

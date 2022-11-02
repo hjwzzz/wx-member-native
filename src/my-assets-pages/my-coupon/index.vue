@@ -180,7 +180,7 @@ const onCouponDetail = (item: any) => {
 .coupon-list {
   min-height: calc(100vh - 334rpx - constant(safe-area-inset-bottom));
   min-height: calc(100vh - 334rpx - env(safe-area-inset-bottom));
-  padding-top: 125rpx;
+  padding-top: 35rpx;
   padding-bottom: 60rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;
