@@ -166,6 +166,12 @@
           "style": {
             "navigationBarTitleText": "服务评价"
           }
+        },
+        {
+          "path": "appointmentAppointment/index",
+          "style": {
+            "navigationBarTitleText": "服务预约"
+          }
         }
       ]
     },
@@ -295,7 +301,7 @@
           }
         },
         {
-          "path": "gold-price/pay",
+          "path": "gold-price/index",
           "style": {
             "navigationBarTitleText": "今日金价"
           }
