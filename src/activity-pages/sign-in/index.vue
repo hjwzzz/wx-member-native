@@ -374,8 +374,7 @@ const goDetail = (index: number) => {
   Router.go(url);
 };
 const toPrize = () => {
-  uni.setStorageSync('actId', data.id);
-  uni.navigateTo({ url: `/activity/inviteGift/prize?actId=${data.id}&c=` });
+  Router.goCodePage('activiy_prize', `?actId=${data.id}&c=`);
 };
 const richImageFun = (item: any) => richImage(item);
 </script>

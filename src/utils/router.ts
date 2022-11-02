@@ -51,6 +51,7 @@ const pageCode: any = {
   cert: '/pages/center/user-info/cert', // 修改证件
   location: '/pages/center/user-info/address', // 修改地址
   goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
+  activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
 };
 
 // 路由控制
