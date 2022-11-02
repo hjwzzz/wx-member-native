@@ -68,6 +68,24 @@
       }
     },
     {
+      "path": "pages/center/user-info/update-phone",
+      "style": {
+        "navigationBarTitleText": "修改手机号"
+      }
+    },
+    {
+      "path": "pages/center/user-info/cert",
+      "style": {
+        "navigationBarTitleText": "证件号"
+      }
+    },
+    {
+      "path": "pages/center/user-info/address",
+      "style": {
+        "navigationBarTitleText": "修改地址"
+      }
+    },
+    {
       "path": "pages/nearby-store/index",
       "style": {
         "navigationBarTitleText": "附近门店"
@@ -135,6 +153,24 @@
           "path": "reservation-service/store-pattern",
           "style": {
             "navigationBarTitleText": "预约服务"
+          }
+        },
+        {
+          "path": "serveDetail/index",
+          "style": {
+            "navigationBarTitleText": "服务详情"
+          }
+        },
+        {
+          "path": "serveDetail/serveEvaluate",
+          "style": {
+            "navigationBarTitleText": "服务评价"
+          }
+        },
+        {
+          "path": "appointmentAppointment/index",
+          "style": {
+            "navigationBarTitleText": "服务预约"
           }
         }
       ]
@@ -229,6 +265,12 @@
           }
         },
         {
+          "path": "quality/custom",
+          "style": {
+            "navigationBarTitleText": "质保单"
+          }
+        },
+        {
           "path": "no-wifi/index",
           "style": {
             "navigationBarTitleText": "网络异常"
@@ -250,6 +292,24 @@
           "path": "notice/index",
           "style": {
             "navigationBarTitleText": "公告"
+          }
+        },
+        {
+          "path": "point-mall/index",
+          "style": {
+            "navigationBarTitleText": "积分商城"
+          }
+        },
+        {
+          "path": "point-mall/pay",
+          "style": {
+            "navigationBarTitleText": "正在支付"
+          }
+        },
+        {
+          "path": "gold-price/index",
+          "style": {
+            "navigationBarTitleText": "今日金价"
           }
         }
       ]
@@ -278,6 +338,4 @@
       "packages": ["my-assets-pages"]
     }
   }
-
-
 }

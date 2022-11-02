@@ -3,7 +3,7 @@ import { onLaunch } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
-
+// import Storage from '@/utils/storage';
 const initBasicsData = useBasicsData();
 
 // 获取基础数据
@@ -24,14 +24,8 @@ const initData = async () => {
 };
 
 onLaunch(() => {
+  // Storage.removeEpid();
   initData();
-  // this.setData({
-  //   bottomNavList: getWmmeberNavRequestRes.data.bottomNavList || [],
-  //   actionColor: getWmColorThemeRes.data.styleType,
-  // });
-  // // Storage.setColorTheme(res.data);
-  // Storage.setMainColor(getWmColorThemeRes.data.mainColor);
-  // console.log('App Launch');
 });
 // onShow(() => {
 //   console.log('App Show');
@@ -39,13 +33,6 @@ onLaunch(() => {
 // onHide(() => {
 //   console.log('App Hide');
 // });
-
-// const dddd = ref('22222222');
-// setTimeout(() => {
-//   dddd.value = '开始的换届大会';
-// }, 5000);
-
-// provide('test', dddd);
 </script>
 <style lang="scss">
 page {
@@ -56,7 +43,12 @@ page {
 .uni-searchbar__cancel {
   color: var(--main-color) !important;
 }
-
+.clM {
+  color: var(--main-color);
+}
+.bgCM {
+  background: var(--main-color);
+}
 @font-face {
   font-family: 'iconfont'; /* Project id 2631660 */
   src: url('//at.alicdn.com/t/font_2631660_wse1qki9nw.woff2?t=1637726230788')

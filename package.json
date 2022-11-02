@@ -9,7 +9,11 @@
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:h5": "uni build",
     "build:h5:ssr": "uni build --ssr",
-    "build:mp-weixin": "uni build -p mp-weixin"
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "build:mp-weixin:wx-dev": "uni build -p mp-weixin --mode dev",
+    "build:mp-weixin:wx-fat": "uni build -p mp-weixin  --mode fat",
+    "build:mp-weixin:wx-uat": "uni build -p mp-weixin --mode uat",
+    "build:mp-weixin:wx-prod": "uni build -p mp-weixin --mode prod"
   },
   "dependencies": {
     "@dcloudio/uni-app": "^3.0.0-alpha-3060420220922001",

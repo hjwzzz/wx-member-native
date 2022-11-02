@@ -4,7 +4,7 @@
       <view class="left">
         <text class="title">{{ props.title || '今日金价' }}</text>
       </view>
-      <view class="right">
+      <view class="right" @click="more">
         <text class="more">更多</text>
         <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
@@ -57,6 +57,7 @@
 <script setup lang="ts">
 // import { useBasicsData } from '@/store/basicsData';
 // import { onMounted } from 'vue';
+import Router from '@/utils/router';
 import NoneData from './NoneData.vue';
 // const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -71,6 +72,9 @@ const props = withDefaults(defineProps<Props>(), {
   showed: false,
   goldPrice: [],
 });
+const more = () => {
+  Router.goCodePage('goldPrice');
+};
 </script>
 
 <style lang="scss" scoped>

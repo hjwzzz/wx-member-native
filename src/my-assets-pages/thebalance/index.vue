@@ -46,7 +46,7 @@
         </view>
       </view>
       <view v-else class="imagewu">
-        <image class=".image" :src="staticUrl + 'img/wuyuer.png'" mode="" />
+        <image class="image" :src="staticUrl + 'img/wuyuer.png'" mode="" />
         <view class="wujilu"> 暂无交易记录 </view>
       </view>
     </view>

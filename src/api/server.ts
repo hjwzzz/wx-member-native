@@ -20,6 +20,13 @@ export const queryGoldPriceByPage = async (data: any) => {
   return await request(url, data);
 };
 
+// 根据订单id获取提交支付订单信息
+export const getPayOrder = async (data: any) => {
+  const url = `${baseUrl}/points-mall/orderFront/usr/getPayOrder`;
+  const res = await request(url, data);
+  return res;
+};
+
 // 获取质保单列表
 export const queryPolicyList = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
@@ -58,9 +65,34 @@ export const getMemberInfo = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// 修改手机号码-发送验证码
+export const updatePhoneSendCode = async (data: any) => {
+  const url = `${baseUrl}/emp-base/member/login/Front/updatePhoneSendCode`;
+  const res = await request(url, data);
+  return res;
+};
+// 修改手机号码-验证
+export const updatePhoneVerify = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhoneVerify`;
+  const res = await request(url, data);
+  return res;
+};
+// 手机登录/注册-验证
+export const updatePhone = async (data: any) => {
+  const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhone`;
+  const res = await request(url, data);
+  return res;
+};
 // 查询注册管理设置
 export const queryRegistRequiredSetting = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSetting`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 公共枚举查询类
+export const query = async (data: any) => {
+  const url = `${baseUrl}/emp-base/common/select/query`;
   const res = await request(url, data);
   return res;
 };

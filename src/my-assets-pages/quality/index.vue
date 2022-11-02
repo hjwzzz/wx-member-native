@@ -68,7 +68,7 @@
 import { onMounted, ref, Ref } from 'vue';
 import { warrantyList } from '@/api/quality';
 import { staticUrl } from '@/utils/config';
-
+import Storage from '@/utils/storage';
 // const showModal = ref(false);
 // 分页所需参数配置
 const status = ref('loadmore');
@@ -96,11 +96,9 @@ const goDetail = (type: any, item: any) => {
   if (type === 33) {
     popupModalRef.value.open();
   } else {
-    uni.navigateTo({
-      url: `/pages/center/quality/custom?url=${item.warrantyCustUrl}&n=${
-        item.id
-      }&t=${uni.getStorageSync(`token${uni.getStorageSync('jqzAppid')}`)}&a=${uni.getStorageSync('jqzAppid')}&e=${uni.getStorageSync(`epid${uni.getStorageSync('jqzAppid')}`)}&kind=${item.warrantyKind}`,
-    });
+    const { warrantyCustUrl: url, id, warrantyKind: kind } = item;
+    const path = '/my-assets-pages/quality/custom';
+    uni.navigateTo({ url: `${path}?url=${url}&n=${id}&t=${Storage.getToken()}&a=${Storage.getJqzAppId()}&e=${Storage.getEpid()}&kind=${kind}` });
   }
 };
 

@@ -1,5 +1,5 @@
 <template>
-  <view class="tabs-list">
+  <view class="tabs-list" :class="props.fixed ? 'fixed' : ''">
     <view
       class="tabs-list-item"
       v-for="(item, index) in props.tabList"
@@ -16,9 +16,11 @@
 interface Props {
   current: number;
   tabList: any;
+  fixed?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   current: 0,
+  fixed: false,
   tabList: () => [],
 });
 const emits = defineEmits(['change', 'update:current']);
@@ -29,12 +31,14 @@ const change = (index: number, item: any) => {
 </script>
 
 <style lang="scss" scoped>
-.tabs-list {
+.fixed {
   z-index: 999;
   position: fixed;
   top: 0rpx;
   left: 0rpx;
   right: 0rpx;
+}
+.tabs-list {
   //
   display: flex;
   justify-content: space-between;

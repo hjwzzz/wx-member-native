@@ -120,10 +120,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.main-color {
-  color: var(--main-color);
-}
-
 .growthDetails {
   // height: 100vh;
   .wrapper {

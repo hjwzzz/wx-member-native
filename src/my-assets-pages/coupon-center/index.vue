@@ -63,8 +63,7 @@
       :type="getResult"
       @ok="onConfirm"
       @cancel="onCancel"
-    >
-    </CouponResultModal>
+    />
   </CustomPage>
 </template>
 
