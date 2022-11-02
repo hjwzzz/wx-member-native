@@ -4,15 +4,21 @@
       <view
         class="integral-item"
         v-for="(item, index) in dataList"
-        @click="userintegral(item)"
         :key="index"
       >
-        <image class="integral-item-image" :src="item.imgUrl" mode=""></image>
-        <view class="integral-item-info">
-          <view class="integral-item-name"> 我的{{ item.name }} </view>
-          <view class="integral-item-price">
-            {{ item.value }}
+        <view class="integral-item-left">
+          <image class="integral-item-image" :src="item.imgUrl" mode=""></image>
+          <view class="integral-item-info">
+            <view class="integral-item-name integral-item-text">
+              我的{{ item.name }}
+            </view>
+            <view class="integral-item-price integral-item-text">
+              {{ item.value }}
+            </view>
           </view>
+        </view>
+        <view class="integral-item-detail" @click="userintegral(item)">
+          明细
         </view>
       </view>
       <view class="none-data" v-if="!dataList.length">
@@ -73,9 +79,10 @@ const queryPointListFun = async () => {
     height: 170rpx;
     background-color: white;
     border-radius: 16rpx;
-    padding: 30rpx 30rpx 20rpx;
+    padding: 10rpx 30rpx;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 30rpx;
     .integral-item-image {
       width: 88rpx;
@@ -84,11 +91,17 @@ const queryPointListFun = async () => {
     .integral-item-info {
       margin-left: 30rpx;
     }
+    .integral-item-left {
+      display: flex;
+      justify-content: flex-start;
+    }
     .integral-item-name {
       margin-top: -12rpx;
       font-size: 28rpx;
       color: #9697a2;
-      width: calc(100vw - 250rpx);
+    }
+    .integral-item-text {
+      width: calc(100vw - 400rpx);
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -97,9 +110,20 @@ const queryPointListFun = async () => {
     .integral-item-price {
       margin-top: 6rpx;
       font-size: 48rpx;
-      font-family: PingFang-SC-Heavy, PingFang-SC;
       font-weight: 800;
       color: var(--main-color);
+    }
+    .integral-item-detail {
+      width: 128rpx;
+      height: 60rpx;
+      // background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--main-color);
+      color: var(--main-color);
+      border-radius: 16px;
+      font-size: 14px;
     }
   }
 

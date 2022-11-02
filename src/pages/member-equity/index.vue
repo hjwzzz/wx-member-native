@@ -224,11 +224,11 @@ const currentStyle = computed(() => {
     position: relative;
     padding: 30rpx 0 0;
     box-sizing: border-box;
-    min-height: 100vh;
+    // min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #fff9f1;
+    // background-color: #fff9f1;
     .cont-inner {
       padding: 0 0 80rpx;
     }

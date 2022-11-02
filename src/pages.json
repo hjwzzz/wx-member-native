@@ -259,6 +259,12 @@
           }
         },
         {
+          "path": "quality/custom",
+          "style": {
+            "navigationBarTitleText": "质保单"
+          }
+        },
+        {
           "path": "no-wifi/index",
           "style": {
             "navigationBarTitleText": "网络异常"
