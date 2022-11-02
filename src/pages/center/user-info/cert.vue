@@ -32,7 +32,6 @@
         </view>
       </view>
       <view class="next" @click="handleSubmit">确定</view>
-      <view class="footer">技术支持：金千枝数智云</view>
     </view>
   </CustomPage>
 </template>
@@ -136,8 +135,8 @@ const handleSubmit = async () => {
 <style scoped lang="scss">
 .cert {
   width: 100%;
-  height: 100%;
-  min-height: 100vh;
+  // height: 100%;
+  // min-height: 100vh;
   background: #f5f5f5;
   overflow: auto;
 
@@ -206,20 +205,6 @@ const handleSubmit = async () => {
     font-size: 32rpx;
     font-weight: 400;
     color: #ffffff;
-  }
-
-  .footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-
-    width: 100%;
-    height: 64rpx;
-    font-size: 24rpx;
-    font-weight: 400;
-    color: #d8d9e0;
-    line-height: 64rpx;
-    text-align: center;
   }
 }
 </style>
