@@ -31,7 +31,7 @@
             size="30"
             @change="change"
             color="#FF394E"
-            style="transform: scale(0.56) translateX(-25%)"
+            style="transform: scale(0.56) translate(-25%, -42%)"
           ></switch>
         </view>
       </view>
@@ -121,10 +121,8 @@ const setStatus = (arr: any[], val: any, name: any) => {
   arr.forEach(item => {
     if (val.includes(item.date)) {
       item[name] = true;
-      // this.$set(item, name, true)
     } else {
       item[name] = false;
-      // this.$set(item, name, false)
     }
   });
 };
@@ -141,6 +139,7 @@ const init = () => {
 const dateInit = (setYear = 0, setMonth = 0) => {
   // 全部时间的月份都是按0~11基准，显示月份才+1
   const dateArrNew = []; // 需要遍历的日历数组数据
+  let arrLen = 0; // dateArr的数组长度
   const now = setYear ? new Date(setYear, setMonth) : new Date();
   const year = setYear || now.getFullYear();
   let nextYear = 0;
@@ -167,6 +166,8 @@ const dateInit = (setYear = 0, setMonth = 0) => {
     dayNums = new Date(nextYear, nextMonth, 0)
       .getDate();
   }
+  arrLen = startWeek + dayNums;
+  console.log('arrLen', arrLen);
   let day = 0;
   for (let i = 0; i < 42; i++) {
     num = i - startWeek + 1;
@@ -296,6 +297,7 @@ onShow(() => {
     &-switch {
       flex: none;
       width: 64rpx;
+      height: 36rpx;
     }
   }
   .left {

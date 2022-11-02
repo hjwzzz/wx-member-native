@@ -229,7 +229,7 @@ const giftDetail = ref<any>({});
 onShareAppMessage(() => ({
   title: data.actParam.pageSetting.shareTitle,
   content: data.actParam.pageSetting.shareContent,
-  path: '/signInGift/giftPage/index',
+  path: '/activity-pages/sign-in/index',
 }));
 const hasAd = computed(() => data?.h5ActivityAdvertList?.length || data?.wxappActivityAdvertList?.length);
 const todayGift = computed(() => {
