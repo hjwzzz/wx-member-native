@@ -50,13 +50,11 @@
         <view class="detail">
           <u-sticky :h5-nav-height="0">
             <view class="bgW">
-              <uni-segmented-control
-                :current="current"
-                :values="tabList.map(i => i.name)"
-                @clickItem="tabChange"
-                styleType="text"
-                :activeColor="initBasicsData.mainColor"
-              ></uni-segmented-control>
+              <Tabs
+                :tabList="tabList"
+                v-model:current="current"
+                @change="tabChange"
+              />
             </view>
           </u-sticky>
           <view class="main">
@@ -77,7 +75,7 @@
               <template v-if="storeList && storeList.length">
                 <view
                   v-for="item in storeList"
-                  :key="item.opsId"
+                  :key="item.distId"
                   class="store-item"
                 >
                   <view class="name">
@@ -200,12 +198,10 @@ import {
 } from '@/api/reservation-service';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, Ref, ref } from 'vue';
-import { useBasicsData } from '@/store/basicsData';
 import { mergeFullAddress } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import evaluateItem from '../component/evaluate-item.vue';
-
-const initBasicsData = useBasicsData();
+import Tabs from '@/components/Tabs/index.vue';
 
 const id = ref('');
 const dist: Ref<any> = ref({});
@@ -270,9 +266,9 @@ const queryEvaluateList = async () => {
   });
   evaluateList.value = data.records.slice(0, 2);
 };
-const tabChange = (index: any) => {
-  current.value = index.currentIndex;
-  index.currentIndex === 1 &&
+const tabChange = (e: any) => {
+  current.value = e.index;
+  e.index === 1 &&
     uni.getLocation({
       type: 'wgs84',
       success: res => {

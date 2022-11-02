@@ -17,52 +17,45 @@
             </view>
           </view>
         </view>
-
-        <u-form ref="myForm" :model="form">
-          <u-form-item label-width="120rpx" label="预约门店" required>
-            <template #right>
-              <view class="right-value" @click="selectStore">
-                {{ form.storeName ? form.storeName : '请选择' }}
-                <uni-icons
-                  class="icon"
-                  type="arrowright"
-                  size="14"
-                  color="#B7B8C4"
-                />
-              </view>
-            </template>
-          </u-form-item>
-          <u-form-item label-width="120rpx" label="预约时间" required>
-            <template #right>
-              <view class="right-value" @click="selectDateTime">
-                {{ form.dataTime || '请选择' }}
-                <uni-icons
-                  class="icon"
-                  type="arrowright"
-                  size="14"
-                  color="#B7B8C4"
-                />
-              </view>
-            </template>
-          </u-form-item>
-          <u-form-item
-            v-if="data.boolShowGuide === 'Y'"
-            label-width="120rpx"
+        <uni-forms :modelValue="form" ref="myForm">
+          <uni-forms-item label-width="166rpx" label="预约门店" required>
+            <view class="right-value" @click="selectStore">
+              {{ form.storeName ? form.storeName : '请选择' }}
+              <uni-icons
+                class="icon"
+                type="arrowright"
+                size="14"
+                color="#B7B8C4"
+              />
+            </view>
+          </uni-forms-item>
+          <uni-forms-item label-width="166rpx" label="预约时间" required>
+            <view class="right-value" @click="selectDateTime">
+              {{ form.dataTime || '请选择' }}
+              <uni-icons
+                class="icon"
+                type="arrowright"
+                size="14"
+                color="#B7B8C4"
+              />
+            </view>
+          </uni-forms-item>
+          <uni-forms-item
+            label-width="166rpx"
             label="预约导购"
+            v-if="data.boolShowGuide === 'Y'"
           >
-            <template #right>
-              <view class="right-value" @click="selectGuide">
-                {{ form.guideName ? form.guideName : '请选择' }}
-                <uni-icons
-                  class="icon"
-                  type="arrowright"
-                  size="14"
-                  color="#B7B8C4"
-                />
-              </view>
-            </template>
-          </u-form-item>
-        </u-form>
+            <view class="right-value" @click="selectGuide">
+              {{ form.guideName ? form.guideName : '请选择' }}
+              <uni-icons
+                class="icon"
+                type="arrowright"
+                size="14"
+                color="#B7B8C4"
+              />
+            </view>
+          </uni-forms-item>
+        </uni-forms>
 
         <u-form label-position="top">
           <u-form-item :model="form" label="备注" class="form-remark">
@@ -146,6 +139,7 @@ import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { saveImmeBookServ } from '@/api/reservation-service';
 import { onLoad } from '@dcloudio/uni-app';
+import router from '@/utils/router';
 
 const data: Ref<any> = ref({});
 const imgUrlList: any[] = [];
@@ -165,7 +159,11 @@ const modelShow = ref(false);
 const modelContent = ref('');
 onLoad((e: any) => data.value = e);
 const selectStore = () => {
-  uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/store?id=${data.value.id}&distId=${form.value.distId}` });
+  uni.$once('chooseStore', e => {
+    form.value.distId = e.distId;
+    form.value.storeName = e.storeName;
+  });
+  uni.navigateTo({ url: `/my-assets-pages/my-prize/store-list?id=${form.value.distId ?? ''}` });
 };
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;
@@ -199,7 +197,17 @@ const selectGuide = () => {
     });
     return;
   }
-  uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/guide?distId=${form.value.distId}&uid=${form.value.uid}` });
+
+  uni.$once('updateGuide', e => {
+    if (!e.uid) return;
+    form.value.uid = e.uid;
+    form.value.guideName = e.name;
+  });
+
+  router.goCodePage(
+    'updateGuide',
+    `?id=${form.value.distId}&uid=${form.value.uid}`
+  );
 };
 
 const uploadImg1 = () => {
@@ -377,20 +385,19 @@ const submitAppointment = () => {
         }
       }
     }
-    .u-form {
+    :deep(.uni-forms) {
+      box-sizing: border-box;
       background: #fff;
       border-radius: 16rpx;
       margin-bottom: 30rpx;
-      .u-form-item {
+      .uni-forms-item {
+        box-sizing: border-box;
         line-height: 100rpx;
-        padding: 0 30rpx 0 46rpx;
-        .u-form-item--left__content__label {
-          width: 160rpx !important;
-          line-height: 30rpx;
-          /*padding-top: 30rpx;*/
-        }
-        .u-form-item--right__content__slot {
-          display: inline-block;
+        padding: 0 30rpx;
+        margin-bottom: 0;
+        border-bottom: solid 1px #ebedf0;
+        .uni-forms-item__label {
+          color: #323338 !important;
         }
         .right-value {
           text-align: right;
@@ -399,7 +406,6 @@ const submitAppointment = () => {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          width: 468rpx;
           padding-right: 28rpx;
           position: relative;
           .icon {
