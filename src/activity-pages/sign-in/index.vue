@@ -172,7 +172,7 @@ import {
   addMemberSignActivity,
   getUserSignActivityById,
   udpateUserNoticed,
-} from '@/api/activity/sign-in';
+} from '@/activity-pages/api/sign-in';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
 import Router from '@/utils/router';
