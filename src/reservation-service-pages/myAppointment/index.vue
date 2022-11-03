@@ -1,13 +1,6 @@
 <template>
   <CustomPage>
     <view class="myAppointment">
-      <!-- <Tabs
-        :tabList="list"
-        v-model:current="current"
-        @change="handleChangeTab"
-        fixed
-      /> -->
-
       <Tabs
         :list="list"
         :current="current"
@@ -134,10 +127,10 @@ import { onShow } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
+import Tabs from '@/components/Tabs/tab2.vue';
+import cancelReason from './component/cancel-reason.vue';
+
 const initBasicsData = useBasicsData();
-
-import Tabs from '@/components/Tabs/two.vue';
-
 const list = [
   { name: '全部' },
   { name: '待确认' },
@@ -167,7 +160,7 @@ onShow(() => {
   }
 });
 
-const handleChangeTab = ({ index }: any) => {
+const handleChangeTab = (index: number) => {
   current.value = index;
   const arr = ['', 'NEW', 'CFD', 'FIN', 'CANCEL', 'CLOSE'];
   subscribeList.value = [];
@@ -303,6 +296,7 @@ const querySubscribeList = async () => {
           justify-content: flex-end;
           /*margin-top: 20rpx;*/
           .btn {
+            box-sizing: border-box;
             height: 64rpx;
             border-radius: 32rpx;
             border: 2rpx solid #ebedf0;
