@@ -172,6 +172,12 @@
           "style": {
             "navigationBarTitleText": "服务预约"
           }
+        },
+        {
+          "path": "appointmentAppointment/date-time",
+          "style": {
+            "navigationBarTitleText": "预约时间"
+          }
         }
       ]
     },

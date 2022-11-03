@@ -1,5 +1,6 @@
-import { baseUrl } from '@/utils/config';
+import { baseUrl, imgUrl } from '@/utils/config';
 import request from '@/utils/request';
+export const imgBaseUrl = imgUrl;
 
 // 获取质保单列表
 export const warrantyList = async (data: any) => {

@@ -56,20 +56,25 @@
             </view>
           </uni-forms-item>
         </uni-forms>
-
-        <u-form label-position="top">
-          <u-form-item :model="form" label="备注" class="form-remark">
-            <uni-easyinput
-              v-model="form.remark"
-              type="textarea"
-              placeholder="请输入"
-              :maxlength="200"
-              :input-border="false"
-              :styles="{ textAlign: 'justify' }"
-            />
-            <view class="numbers"> {{ form.remark?.length ?? 0 }}/200 </view>
-          </u-form-item>
-        </u-form>
+        <view class="form-remark">
+          <uni-forms
+            label-position="top"
+            class="form-remark"
+            :modelValue="form"
+          >
+            <uni-forms-item label="备注">
+              <uni-easyinput
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入"
+                :maxlength="200"
+                :input-border="false"
+                :styles="{ textAlign: 'justify' }"
+              />
+              <view class="numbers"> {{ form.remark?.length ?? 0 }}/200 </view>
+            </uni-forms-item>
+          </uni-forms>
+        </view>
 
         <view class="img-list">
           <template>
@@ -84,7 +89,7 @@
                 :src="item.value"
                 @click="previewImage(index)"
               />
-              <view class="close" @click="removeImg(index)">
+              <view class="close" @click="form.imgUrlList.splice(index, 1)">
                 <uni-icons
                   class="icon-close"
                   type="closeempty"
@@ -140,6 +145,7 @@ import { staticUrl } from '@/utils/config';
 import { saveImmeBookServ } from '@/api/reservation-service';
 import { onLoad } from '@dcloudio/uni-app';
 import router from '@/utils/router';
+import { imgBaseUrl } from '@/api/quality';
 
 const data: Ref<any> = ref({});
 const imgUrlList: any[] = [];
@@ -160,8 +166,15 @@ const modelContent = ref('');
 onLoad((e: any) => data.value = e);
 const selectStore = () => {
   uni.$once('chooseStore', e => {
-    form.value.distId = e.distId;
-    form.value.storeName = e.storeName;
+    Object.assign(form.value, {
+      distId: e.distId,
+      storeName: e.storeName,
+      dataTime: '',
+      selectedTime: '',
+      timeId: '',
+      uid: '',
+      guideName: '',
+    });
   });
   uni.navigateTo({ url: `/my-assets-pages/my-prize/store-list?id=${form.value.distId ?? ''}` });
 };
@@ -176,18 +189,14 @@ const selectDateTime = () => {
     return;
   }
   const { startTime, endTime, id } = data.value;
-  uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/dateTime?startTime=${startTime}&endTime=${endTime}&id=${id}&distId=${distId}&selectedTime=${selectedTime}&timeId=${timeId}` });
-};
-const previewImage = (index: any) => {
-  uni.previewImage({
-    current: index,
-    urls: form.value.imgUrlList.map((item: { value: any }) => item.value),
+  uni.$once('chooseDateTime', e => {
+    console.log(e);
+
+    Object.assign(form.value, e);
   });
+  uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/date-time?startTime=${startTime}&endTime=${endTime}&id=${id}&distId=${distId}&selectedTime=${selectedTime}&timeId=${timeId}` });
 };
-const removeImg = (n: any) => {
-  const { imgUrlList } = form.value;
-  form.value.imgUrlList = imgUrlList.filter((item: any, index: any) => index !== n);
-};
+
 const selectGuide = () => {
   if (!form.value.distId) {
     uni.showToast({
@@ -211,53 +220,44 @@ const selectGuide = () => {
 };
 
 const uploadImg1 = () => {
+  const { imgUrlList } = form.value;
   uni.chooseImage({
-    count: 6 - form.value.imgUrlList.length,
+    count: 6 - imgUrlList.length,
     sizeType: 'compressed',
     sourceType: ['album', 'camera'],
     success: async ({ tempFiles }) => {
       for (const val of tempFiles as any[]) {
-        form.value.imgUrlList.length < 6 &&
-          (form.value.imgUrlList = [
-            ...form.value.imgUrlList,
-            {
-              key: val.path,
-              value: '',
-            },
-          ]);
+        imgUrlList.push({
+          key: val.path,
+          value: '',
+        });
         const size = Math.floor(val.size / 1024 / 1024 * 100) / 100;
-        let compressValue;
-        // let compressValue = await compress(val)
-        if (size <= 1) {
-          compressValue = val.path;
-        } else {
+        let filePath = val.path;
+        if (size > 1) {
           const { tempFilePath }: any = await uni.compressImage({
             src: val.path,
             quality: 40,
           });
-          compressValue = tempFilePath;
+          filePath = tempFilePath;
         }
         uni.uploadFile({
-          url: `${staticUrl}/upload/uploadImageFile`,
-          filePath: compressValue,
+          url: `${imgBaseUrl}/upload/uploadImageFile`,
+          filePath,
           name: 'file',
           formData: { user: 'test' },
           header: {
             category: 'COMM',
-            epid: uni.getStorageSync(`epid${uni.getStorageSync('jqzAppid')}`),
-            token: uni.getStorageSync(`token${uni.getStorageSync('jqzAppid')}`),
+            epid: uni.getStorageSync('epid'),
+            token: uni.getStorageSync('token'),
           },
           success: uploadFileRes => {
             const upload = JSON.parse(uploadFileRes.data);
-            for (let i = 0; i < form.value.imgUrlList.length; i++) {
-              if (form.value.imgUrlList[i].key === val.path) {
-                form.value.imgUrlList.splice(i, 1, {
-                  key: val,
-                  value: upload.data.fullPathUrl,
-                });
-                break;
+            imgUrlList.some(i => {
+              if (i.key === val.path) {
+                i.value = upload.data.fullPathUrl;
+                return true;
               }
-            }
+            });
           },
         });
       }
@@ -348,6 +348,12 @@ const submitAppointment = () => {
     }, 500);
   }
 };
+const previewImage = (index: any) => {
+  uni.previewImage({
+    current: index,
+    urls: form.value.imgUrlList.map((item: { value: any }) => item.value),
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -397,6 +403,8 @@ const submitAppointment = () => {
         margin-bottom: 0;
         border-bottom: solid 1px #ebedf0;
         .uni-forms-item__label {
+          line-height: 100rpx;
+          height: 100rpx;
           color: #323338 !important;
         }
         .right-value {
@@ -414,20 +422,20 @@ const submitAppointment = () => {
           }
         }
       }
-      .form-remark {
-        padding-bottom: 30rpx;
-        .u-form-item {
-          padding-bottom: 30rpx;
-        }
-        .u-form-item--left__content__label {
-          line-height: 30rpx;
+    }
+    .form-remark {
+      :deep(.uni-forms) {
+        .uni-forms-item__label {
           padding-top: 30rpx;
+          height: 60rpx;
+          color: #323338 !important;
         }
         .numbers {
           line-height: 32rpx;
           font-size: 24rpx;
           color: #999999;
           text-align: right;
+          padding-bottom: 30rpx;
         }
       }
     }
@@ -463,6 +471,7 @@ const submitAppointment = () => {
         }
       }
       .upload {
+        box-sizing: border-box;
         width: 156rpx;
         height: 156rpx;
         background: #ffffff;
