@@ -5,14 +5,19 @@
         <text class="title">{{ props.title || '推荐礼品' }}</text>
         <text class="number"></text>
       </view>
-      <view class="right">
+      <view class="right" @click="onMall">
         <text class="more">更多</text>
         <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
     </view>
     <view class="content-mall" v-if="mallList.length > 0">
       <!-- @click="toDetails(item.id)" -->
-      <view class="mall-item" v-for="(item, index) in mallList" :key="index">
+      <view
+        class="mall-item"
+        v-for="(item, index) in mallList"
+        :key="index"
+        @click="onMallDetail(item.id)"
+      >
         <view class="img">
           <image class="image" :src="item.displayImgUrl" mode=""></image>
         </view>
@@ -47,6 +52,14 @@ const mallList: Ref<any> = ref([]);
 const getMemberRecommend = async () => {
   const { data } = await queryMemberRecommend('');
   mallList.value = data || [];
+};
+
+const mallUrl = '/my-assets-pages/point-mall/index';
+const onMall = () => {
+  uni.navigateTo({ url: mallUrl });
+};
+const onMallDetail = (id: string) => {
+  uni.navigateTo({ url: `${mallUrl}?productId=${id}` });
 };
 </script>
 
@@ -115,7 +128,6 @@ const getMemberRecommend = async () => {
         line-height: 44rpx;
         color: #323338;
       }
-
       .number {
         width: 36rpx;
         height: 40rpx;
@@ -126,7 +138,6 @@ const getMemberRecommend = async () => {
         color: #ff547b;
       }
     }
-
     .right {
       .more {
         width: 48rpx;
@@ -138,11 +149,11 @@ const getMemberRecommend = async () => {
         color: #b7b8c4;
       }
 
-      .icon {
-        width: 10rpx;
-        height: 18rpx;
-        color: #b7b8c4;
-      }
+      // .icon {
+      //   width: 10rpx;
+      //   height: 18rpx;
+      //   color: #b7b8c4;
+      // }
     }
   }
 }

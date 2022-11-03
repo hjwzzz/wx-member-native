@@ -9,6 +9,7 @@ const configRouterAuth = [
   'point_mall_order',
   'point_mall_commodity',
   'point_mall_index',
+  'sign',
 ];
 // 配置switchTab切换页面
 const switchTabUrl = [
@@ -35,7 +36,7 @@ const pageCode: any = {
   gold_price: '/my-assets-pages/gold-price/index', // 今日金价
   wm_center: '/pages/center/index', // 个人中心
   wm_index: '/pages/index/index', //  首页
-  sign: '', // 签到
+  sign: '/activity-pages/sign-in/index', // 签到
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '/my-assets-pages/my-coupon/index', // 我的优惠券
   nearby_store: '/pages/nearby-store/index', // 附近门店
@@ -50,6 +51,7 @@ const pageCode: any = {
   cert: '/pages/center/user-info/cert', // 修改证件
   location: '/pages/center/user-info/address', // 修改地址
   goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
+  activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
 };
 
 // 路由控制

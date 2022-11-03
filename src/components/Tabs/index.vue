@@ -1,14 +1,17 @@
 <template>
-  <view class="tabs-list" :class="props.fixed ? 'fixed' : ''">
-    <view
-      class="tabs-list-item"
-      v-for="(item, index) in props.tabList"
-      :key="index"
-      @click="change(index, item)"
-      :class="props.current === index ? 'tabs-list-item-action' : ''"
-    >
-      {{ item.name }}
+  <view>
+    <view class="tabs-list" :class="props.fixed ? 'fixed' : ''">
+      <view
+        class="tabs-list-item"
+        v-for="(item, index) in props.tabList"
+        :key="index"
+        @click="change(index, item)"
+        :class="props.current === index ? 'tabs-list-item-action' : ''"
+      >
+        {{ item.name }}
+      </view>
     </view>
+    <view class="fixed-bg-view" v-if="props.fixed"></view>
   </view>
 </template>
 
@@ -31,6 +34,9 @@ const change = (index: number, item: any) => {
 </script>
 
 <style lang="scss" scoped>
+.fixed-bg-view {
+  height: 90rpx;
+}
 .fixed {
   z-index: 999;
   position: fixed;

@@ -172,6 +172,18 @@
           "style": {
             "navigationBarTitleText": "服务预约"
           }
+        },
+        {
+          "path": "appointmentAppointment/date-time",
+          "style": {
+            "navigationBarTitleText": "预约时间"
+          }
+        },
+        {
+          "path": "myAppointment/index",
+          "style": {
+            "navigationBarTitleText": "我的预约"
+          }
         }
       ]
     },
@@ -321,6 +333,18 @@
           "path": "complaint/index",
           "style": {
             "navigationBarTitleText": "投诉反馈"
+          }
+        },
+        {
+          "path": "sign-in/index",
+          "style": {
+            "navigationBarTitleText": "签到有礼"
+          }
+        },
+        {
+          "path": "prize/index",
+          "style": {
+            "navigationBarTitleText": "我的奖品"
           }
         }
       ]
