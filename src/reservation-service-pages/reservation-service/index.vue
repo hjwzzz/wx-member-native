@@ -23,7 +23,7 @@ onLoad((opting: any) => {
 // const isShowBtn = computed(() => Object.keys(data.value).length === 0);
 
 const seeMyAppointment = () => {
-  uni.navigateTo({ url: '/reservationService/myAppointment/index' });
+  uni.navigateTo({ url: '/reservation-service-pages/myAppointment/index' });
 };
 </script>
 

@@ -178,6 +178,12 @@
           "style": {
             "navigationBarTitleText": "预约时间"
           }
+        },
+        {
+          "path": "myAppointment/index",
+          "style": {
+            "navigationBarTitleText": "我的预约"
+          }
         }
       ]
     },

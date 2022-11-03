@@ -190,8 +190,6 @@ const selectDateTime = () => {
   }
   const { startTime, endTime, id } = data.value;
   uni.$once('chooseDateTime', e => {
-    console.log(e);
-
     Object.assign(form.value, e);
   });
   uni.navigateTo({ url: `/reservation-service-pages/appointmentAppointment/date-time?startTime=${startTime}&endTime=${endTime}&id=${id}&distId=${distId}&selectedTime=${selectedTime}&timeId=${timeId}` });
