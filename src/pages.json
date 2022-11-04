@@ -334,6 +334,21 @@
           "style": {
             "navigationBarTitleText": "我的奖品"
           }
+        }, {
+          "path": "popularity/index",
+          "style": {
+            "navigationBarTitleText": "人气值千金"
+          }
+        }, {
+          "path": "popularity/rank/index",
+          "style": {
+            "navigationBarTitleText": "排行榜"
+          }
+        }, {
+          "path": "popularity/exchange/index",
+          "style": {
+            "navigationBarTitleText": "兑换奖品"
+          }
         }
       ]
     }

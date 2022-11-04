@@ -95,3 +95,27 @@ export const onShareCoupon = (res: any) => {
     // desc: '送你一张优惠券', // 自定义分享描述
   };
 };
+
+/**
+ * 深克隆
+ * @param target：克隆的目标对象
+ */
+export function cloneDeep(target: any) {
+  let result: any;
+  const type = Object.prototype.toString.call(target)
+    .slice(8, -1);
+  if (type === 'Object') {
+    result = {};
+    for (const key in target) {
+      result[key] = cloneDeep(target[key]);
+    }
+  } else if (type === 'Array') {
+    result = [];
+    target.forEach((item: any, index: number) => {
+      result[index] = cloneDeep(item);
+    });
+  } else {
+    result = target;
+  }
+  return result;
+}
