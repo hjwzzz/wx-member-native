@@ -37,6 +37,14 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
+function addUnit(value = 'auto', unit = 'rpx') {
+  value = String(value);
+  // 用uView内置验证规则中的number判断是否为数值
+  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value)
+    ? `${value}${unit}`
+    : value;
+}
 
 /**
  * tabs 标签
@@ -67,6 +75,7 @@
  */
 export default {
   name: 'u-tabs',
+  emits: ['change'],
   props: {
     // 导航菜单是否需要滚动，如只有2或者3个的时候，就不需要滚动了，此时使用flex平分tab的宽度
     isScroll: {
@@ -182,7 +191,8 @@ export default {
       componentWidth: 0, // 屏幕宽度，单位为px
       scrollBarLeft: 0, // 移动bar需要通过translateX()移动的距离
       parentLeft: 0, // 父元素(tabs组件)到屏幕左边的距离
-      id: `${new Date()}`, // id值
+      id: `id${new Date()
+        .getTime()}`, // id值
       currentIndex: this.current,
       barFirstTimeMove: true, // 滑块第一次移动时(页面刚生成时)，无需动画，否则给人怪异的感觉
     };
@@ -194,7 +204,7 @@ export default {
       // list变动时，重制内部索引，否则可能导致超出数组边界的情况
       if (n.length !== o.length) this.currentIndex = 0;
       // 用$nextTick等待视图更新完毕后再计算tab的局部信息，否则可能因为tab还没生成就获取，就会有问题
-      this.$nextTick(() => {
+      nextTick(() => {
         this.init();
       });
     },
@@ -202,7 +212,7 @@ export default {
       immediate: true,
       handler(nVal) {
         // 视图更新后再执行移动操作
-        this.$nextTick(() => {
+        nextTick(() => {
           this.currentIndex = nVal;
           this.scrollByIndex();
         });
@@ -236,7 +246,7 @@ export default {
           'transition-duration': `${this.duration}s`,
           padding: this.isScroll ? `0 ${this.gutter}rpx` : '',
           flex: this.isScroll ? 'auto' : '1',
-          width: this.$u.addUnit(this.itemWidth),
+          width: addUnit(this.itemWidth),
         };
         // 字体加粗
         if (index === this.currentIndex && this.bold) style.fontWeight = 'bold';
@@ -252,6 +262,23 @@ export default {
     },
   },
   methods: {
+    $uGetRect(selector, all) {
+      return new Promise(resolve => {
+        uni
+          .createSelectorQuery()
+          .in(this)
+          .select(selector)
+          .boundingClientRect(rect => {
+            if (all && Array.isArray(rect) && rect.length) {
+              resolve(rect);
+            }
+            if (!all && rect) {
+              resolve(rect);
+            }
+          })
+          .exec();
+      });
+    },
     // 设置一个init方法，方便多处调用
     async init() {
       // 获取tabs组件的尺寸信息
@@ -267,6 +294,7 @@ export default {
       // 点击当前活动tab，不触发事件
       if (index === this.currentIndex) return;
       // 发送事件给父组件
+
       this.$emit('change', index);
     },
     // 查询tab的布局信息
@@ -294,6 +322,7 @@ export default {
     scrollByIndex() {
       // 当前活动tab的布局信息，有tab菜单的width和left(为元素左边界到父元素左边界的距离)等信息
       const tabInfo = this.tabQueryInfo[this.currentIndex];
+
       if (!tabInfo) return;
       // 活动tab的宽度
       const tabWidth = tabInfo.width;
@@ -320,11 +349,20 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 view,
 scroll-view {
   box-sizing: border-box;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar,
+::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+  -webkit-appearance: none;
+  background: transparent;
 }
 
 .u-scroll-box {
@@ -339,7 +377,7 @@ scroll-view {
 
 .u-tab-item {
   position: relative;
-
+  display: inline-block;
   text-align: center;
   transition-property: background-color, color;
 }
