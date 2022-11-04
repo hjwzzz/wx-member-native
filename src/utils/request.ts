@@ -4,7 +4,7 @@ import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { debounce } from '@/utils/util';
 import { baseUrl } from '@/utils/config';
-// import { BaseRequestRes } from './request.type';
+import { BaseRequestRes } from './request.type';
 
 const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
 // 网络错误的页面
@@ -96,7 +96,7 @@ const asyncRequest = (params: any) => new Promise<[null, any]>((resolve, reject)
 });
 
 // 请求
-const request = async (
+const request = async <T = any>(
   url: any,
   args: any = '',
   method: any = 'POST',
@@ -133,9 +133,7 @@ const request = async (
       header: {
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
-        token:
-          Storage.getToken() ||
-          'emp:wx:login:tk:20BDD6F1-794B-C1CC-3E55-07FCC9D4590D:fdedb34b-996a-4ac3-8bd5-58c850c01a77',
+        token: Storage.getToken(),
         sessionKey: '',
         refreshToken: '',
         epid,
@@ -166,26 +164,26 @@ const request = async (
           duration: 3000,
         });
       }, 500);
-      return Promise.resolve(res.data);
+      return Promise.resolve(res.data as BaseRequestRes<T>);
     }
     // 服务过期处理
     if (res.data.code === 610) {
       uni.redirectTo({ url: '/my-assets-pages/no-wifi/invalid-serve' });
-      return Promise.resolve(res.data);
+      return Promise.resolve(res.data as BaseRequestRes<T>);
     }
 
     // 没有登录
     if (res.data.code === 401) {
       Storage.setMid('');
       Router.goLogin();
-      return Promise.reject(res.data);
+      return Promise.reject(res.data as BaseRequestRes<T>);
     }
     // 请求错误
     if (error) {
       return Promise.reject(error);
     }
     // 默认返回值
-    return Promise.resolve(res.data);
+    return Promise.resolve(res.data as BaseRequestRes<T>);
     // 请求发生错误
   } catch (error) {
     return Promise.reject(error);

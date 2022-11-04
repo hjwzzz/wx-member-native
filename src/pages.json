@@ -223,7 +223,8 @@
         {
           "path": "my-prize/index",
           "style": {
-            "navigationBarTitleText": "我的奖品"
+            "navigationBarTitleText": "我的奖品",
+            "enablePullDownRefresh": true
           }
         },
         {

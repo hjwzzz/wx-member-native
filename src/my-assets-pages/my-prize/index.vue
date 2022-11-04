@@ -42,16 +42,22 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-import { onLoad, onUnload } from '@dcloudio/uni-app';
+import {
+  onLoad,
+  onPullDownRefresh,
+  onReachBottom,
+  onUnload,
+} from '@dcloudio/uni-app';
 import { queryFront, updateReceiveSend, updateToStore } from '@/api/my-prize';
 import goods from './component/Goods.vue';
 import NoneData from '@/pages/component/NoneData.vue';
 import Tabs from '@/components/Tabs/index.vue';
+import type { PrizeType } from '@/api/types/my-prize';
 
 const basicsData = useBasicsData();
-const items = reactive([
+const items = [
   {
     key: ['TEXC'],
     name: '待兑换',
@@ -68,45 +74,30 @@ const items = reactive([
     key: ['CLOSED'],
     name: '已失效',
   },
-]);
+];
 const current = ref(0);
 const page = ref(0);
-interface prizeType {
-  id: string;
-  url: string;
-  prizeName: string;
-  quantity: string;
-  cutValidTime: string;
-  cutExpireTime: string;
-  tommorry: boolean;
-  relatedKind: { name: string };
-  recvManner: { code: string };
-  param: string;
-  status: { name: string; code: string };
-}
 
-const list = ref<prizeType[]>([]);
+const list = ref<PrizeType[]>([]);
+
 const getData = async (curPage = 1) => {
+  const { key: status } = items[current.value];
   const params = {
     curPage,
     pageSize: 10,
-    status: items[current.value].key,
+    status,
   };
   const {
     code,
-    data: { records },
+    data: { records, curPage: _curPage },
   } = await queryFront(params);
-  if (code !== 0) return;
-  if (items[current.value].key.includes('TEXC')) {
-    const newDate = new Date();
-    records.forEach((item: any) => {
-      const sortTime =
-        new Date(item.validTime.replace(/-/g, '/'))
-          .getTime() -
-        new Date(newDate)
-          .getTime();
-      item.tommorry = sortTime > 0;
-    });
+  if (code !== 0 || _curPage - page.value > 1) return;
+  if (status.includes('TEXC')) {
+    const isAfterToday = (date: string) => {
+      const getTime = (i?: string) => (i ? new Date(i) : new Date()).getTime();
+      return getTime(date.replace(/-/g, '/')) > getTime();
+    };
+    records.forEach((i: PrizeType) => i.tommorry = isAfterToday(i.validTime));
   }
 
   page.value = curPage;
@@ -117,17 +108,18 @@ const getData = async (curPage = 1) => {
   list.value = records;
 };
 onLoad((e: any) => {
-  uni.$on('changeTab', changeTab);
-  if (e.tab) {
-    changeTab(e.tab);
-  }
-  getData();
+  changeTab(e?.tab ?? 0);
   // 奖品详情修改后，切换tab栏
+  uni.$on('changeTab', changeTab);
 });
-onUnload(() => {
-  uni.$off('changeTab');
+onUnload(() => uni.$off('changeTab'));
+onPullDownRefresh(() => {
+  getData();
+  uni.stopPullDownRefresh();
 });
-const showSureButton = (item: any) => {
+onReachBottom(() => getData(page.value + 1));
+
+const showSureButton = (item: PrizeType) => {
   const {
     status: { name } = { name: '' }, // 奖品状态
     recvManner: { code } = { code: '' }, // 领取方式 邮寄、到店
@@ -140,7 +132,7 @@ const showSureButton = (item: any) => {
   );
 };
 // 截至日期显示内容
-const dateLableString = (item: prizeType) => {
+const dateLableString = (item: PrizeType) => {
   const {
     cutValidTime,
     cutExpireTime,
@@ -157,7 +149,7 @@ const dateLableString = (item: prizeType) => {
   }
   return '';
 };
-const determine = async (item: prizeType) => {
+const determine = async (item: PrizeType) => {
   const { cancel }: any = await uni.showModal({
     content: '确认已领取该奖品',
 
@@ -180,11 +172,11 @@ const determine = async (item: prizeType) => {
   });
   changeTab(2);
 };
-const showDetail = (item: prizeType) => {
+const showDetail = (item: PrizeType) => {
   uni.navigateTo({ url: `prize-detail?name=${item.status.name}&id=${item.id}&getWay=${item.recvManner.code}` });
 };
 const changeTab = (e: any) => {
-  current.value = e?.index ?? e;
+  current.value = Number(e?.index ?? e);
   list.value = [];
   getData();
 };

@@ -1,11 +1,11 @@
 import { baseUrl } from '@/utils/config';
 import request from '@/utils/request';
+import type { DataList } from '@/api/types/my-prize';
 
 // 我的奖品
 export const queryFront = async (data: unknown) => {
   const url = `${baseUrl}/emp-base/MemberPrizeFront/usr/queryMemberPrizeList`;
-  const res = await request(url, data);
-  return res;
+  return request<DataList>(url, data);
 };
 // 兑换奖品 邮寄
 export const queryDetail = async (data: unknown) => {
