@@ -95,3 +95,44 @@ export const onShareCoupon = (res: any) => {
     // desc: '送你一张优惠券', // 自定义分享描述
   };
 };
+
+export async function compress (files: any) {
+  return new Promise(resolve => {
+    // #ifdef H5
+    if (files.type === 'image/gif') {
+      resolve(files)
+    }
+    const imgNode = new Image()
+    imgNode.src = URL.createObjectURL(files)
+    imgNode.onload = function (res) {
+      const myCanvas = document.createElement('canvas')
+      const width = imgNode.width
+      const height = imgNode.height
+      myCanvas.width = width
+      myCanvas.height = height
+      const painting: any = myCanvas.getContext('2d')
+      painting.drawImage(imgNode, 0, 0, width, height)
+      const base64 = myCanvas.toDataURL('image/jpeg', 0.4)
+      var arr: any[] = base64.split(',')
+      var mime = arr[0].match(/:(.*?);/)[1]
+      var bstr = atob(arr[1])
+      var n = bstr.length
+      var u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      resolve(new window.File([new Blob([u8arr], { type: mime })], files.name, { type: files.type }))
+    }
+    // #endif
+
+    // #ifdef MP-WEIXIN
+    uni.compressImage({
+      src: files.path,
+      quality: 40,
+      success: res => {
+        resolve(res.tempFilePath)
+      }
+    })
+    // #endif
+  })
+}

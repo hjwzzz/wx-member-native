@@ -203,7 +203,7 @@ const popupOk = () => {
   querySubscribeList();
 };
 const goDetail = (obj: { id: any }) => {
-  uni.navigateTo({ url: `/reservationService/myAppointment/detail?id=${obj.id}` });
+  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/detail?id=${obj.id}` });
 };
 const scrolltolower = () => {
   if (moreStatus.value === 'nomore') {
