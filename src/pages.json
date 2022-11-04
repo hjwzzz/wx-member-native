@@ -190,7 +190,13 @@
           "style": {
             "navigationBarTitleText": "预约详情"
           }
-        }
+        },
+				{
+					"path": "myAppointment/evaluate",
+					"style": {
+						"navigationBarTitleText": "评价"
+					}
+				}
       ]
     },
     {

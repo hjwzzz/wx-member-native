@@ -134,6 +134,7 @@
           </view>
         </view>
       </view>
+			<ScrollViewFooter></ScrollViewFooter>
 
       <view
         v-if="
@@ -171,7 +172,8 @@
 
 <script lang="ts" setup>
 import { ref, Ref, computed } from 'vue';
-import cancelReason from './components/cancel-reason.vue';
+import cancelReason from './component/cancel-reason.vue';
+import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import {
   queryCBookServPage,
   updateFinishBookServ,
@@ -248,7 +250,7 @@ const complete = () => {
   });
 };
 const goEvaluate = () => {
-  uni.navigateTo({ url: `/reservationService/myAppointment/evaluate?id=${detail.value.id}` });
+  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/evaluate?id=${detail.value.id}` });
 };
 const popupOk = () => {
   queryDetails();
@@ -279,10 +281,6 @@ const viewLocation = (obj: any) => {
 <style lang="scss" scoped>
 .detail {
   height: 100%;
-  /*height: 100vh;*/
-  /*padding-bottom: calc(112rpx + constant(safe-area-inset-bottom));*/
-  /*padding-bottom: calc(112rpx + env(safe-area-inset-bottom));*/
-  position: relative;
   .wrapper {
     height: 100%;
     padding: 30rpx;
@@ -413,24 +411,20 @@ const viewLocation = (obj: any) => {
   .footer {
 		box-sizing: border-box;
     width: 100vw;
-    position: absolute;
-    bottom: 0;
+    position: fixed;
+		bottom: 0;
     left: 0;
-    /*height: calc(112rpx + constant(safe-area-inset-bottom));*/
-    /*height: calc(112rpx + env(safe-area-inset-bottom));*/
     background: #ffffff;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
     padding: 20rpx 30rpx;
-    /*padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));*/
-    /*padding-bottom: calc(20rpx + env(safe-area-inset-bottom));*/
+    padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
+    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
     display: flex;
     justify-content: flex-end;
     margin-top: 20rpx;
     .btn {
 			box-sizing: border-box;
-      /*width: 160rpx;*/
       height: 64rpx;
-      /*line-height: 64rpx;*/
       text-align: center;
       border-radius: 32rpx;
       border: 2rpx solid #ebedf0;
