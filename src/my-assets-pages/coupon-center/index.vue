@@ -75,10 +75,13 @@ import type {
   ReceiveCenterList,
 } from './index.type';
 import {
+  queryAdvertFront,
+  //
   getCouponsFront,
-  queryAdvertFrontRequest,
   queryReceiveCenterListFrontRequest,
-} from '@/api/coupon-center';
+} from '@/my-assets-pages/api/coupon';
+
+import { queryAdvertFrontRequest } from '@/api/coupon-center';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
 import { staticUrl } from '@/utils/config';
@@ -96,11 +99,18 @@ const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   curPage: 1,
 });
 
-const queryAdvertFront = async () => {
-  const queryAdvertFrontRequestRes = await queryAdvertFrontRequest();
+const getAdvertFront = async () => {
+  const queryAdvertFron = await queryAdvertFrontRequest();
+
+  console.log('queryAdvertFron旧', JSON.stringify(queryAdvertFron));
+  const queryAdvertFrontRequestRes = await queryAdvertFront('');
   if (!queryAdvertFrontRequestRes?.data) {
     return;
   }
+  console.log(
+    'queryAdvertFrontRequestRes新',
+    JSON.stringify(queryAdvertFrontRequestRes)
+  );
   advertList.value = queryAdvertFrontRequestRes.data;
 };
 const queryReceiveCenterListFront = async () => {
@@ -113,8 +123,8 @@ const queryReceiveCenterListFront = async () => {
 };
 
 onMounted(() => {
-  queryAdvertFront();
-  queryReceiveCenterListFront();
+  getAdvertFront();
+  // queryReceiveCenterListFront();
 });
 
 // 领取优惠券

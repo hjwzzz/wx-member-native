@@ -254,12 +254,14 @@ const getPrize = async () => {
   Object.assign(data, info);
 };
 const goCouponList = (item: any) => {
-  let pages = '/pages/center/ticket/index';
+  // let pages = '/pages/center/ticket/index';
   if (item.id) {
-    pages = `/pages/center/ticket/detail?id=${item.id}&status=${item.couponStatus.code}`;
+    Router.go(`/my-assets-pages/my-coupon/detail?id=${item.id}&status=${item.couponStatus.code}`);
+  } else {
+    Router.goCodePage('coupon');
   }
-  uni.setStorageSync('pages', pages);
-  Router.go(pages);
+  // uni.setStorageSync('pages', pages);
+  // Router.go(pages);
 };
 const goPrizeList = (item: any) => {
   const { id, status, recvManner } = item;
@@ -300,12 +302,12 @@ const goDepositList = (item: any) => {
 };
 // 跳转成长值
 const goMemberList = async () => {
-  const pages = '/pages/center/member-benefits/index';
+  const pages = '/pages/member-equity/index';
   const res = await queryAllLevelRights('');
   if (!res.data) {
     Router.goCodePage('wm_center');
   }
-  uni.setStorageSync('pages', pages);
+  // uni.setStorageSync('pages', pages);
   Router.go(pages);
 };
 const backHome = () => {
