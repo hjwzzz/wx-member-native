@@ -265,7 +265,6 @@
     <!-- <fail-popup v-model="showPopup" ref="failPopup" /> -->
     <!-- 提示 -->
     <!-- <u-toast ref="uToast" :duration="3000" /> -->
-    </uni-popup>
     <!-- 活动规则 -->
     <rule-template
       v-if="styleObj.page.actRuleContent"
