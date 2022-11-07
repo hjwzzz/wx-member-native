@@ -1,26 +1,29 @@
 <template>
   <view
-    class="u-tabs"
+    class="u-tabs bsBB"
     :style="{
       background: bgColor,
     }"
   >
     <!-- $u.getRect()对组件根节点无效，因为写了.in(this)，故这里获取内层接点尺寸 -->
-    <view :id="id">
+    <view :id="id" class="bsBB">
       <scroll-view
         scroll-x
-        class="u-scroll-view"
+        class="u-scroll-view bsBB"
         :scroll-left="scrollLeft"
         scroll-with-animation
       >
-        <view class="u-scroll-box" :class="{ 'u-tabs-scorll-flex': !isScroll }">
+        <view
+          class="u-scroll-box bsBB"
+          :class="{ 'u-tabs-scorll-flex': !isScroll }"
+        >
           <view
-            class="u-tab-item u-line-1"
+            class="u-tab-item u-line-1 bsBB"
             :id="'u-tab-item-' + index"
-            v-for="(item, index) in list"
+            v-for="(item, index) in (list as any[])"
             :key="index"
             @tap="clickTab(index)"
-            :style="[tabItemStyle(index)]"
+            :style="tabItemStyle(index)"
           >
             <u-badge
               :count="item[count] || item['count'] || 0"
@@ -29,16 +32,21 @@
             ></u-badge>
             {{ item[name] || item['name'] }}
           </view>
-          <view v-if="showBar" class="u-tab-bar" :style="[tabBarStyle]"></view>
+          <view
+            v-if="showBar"
+            class="u-tab-bar bsBB"
+            :style="tabBarStyle"
+          ></view>
         </view>
       </scroll-view>
     </view>
   </view>
 </template>
 
-<script>
-import { nextTick } from 'vue';
-function addUnit(value = 'auto', unit = 'rpx') {
+<script lang="ts">
+import { CSSProperties, nextTick } from 'vue';
+
+function addUnit(value: number | string = 'auto', unit = 'rpx') {
   value = String(value);
   // 用uView内置验证规则中的number判断是否为数值
   return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value)
@@ -231,22 +239,24 @@ export default {
         height: `${this.barHeight}rpx`,
         opacity: this.barFirstTimeMove ? 0 : 1,
         // 设置一个很大的值，它会自动取能用的最大值，不用高度的一半，是因为高度可能是单数，会有小数出现
-        'border-radius': `${this.barHeight / 2}px`,
+        'border-radius': `${(this.barHeight as number) / 2}px`,
       };
       Object.assign(style, this.barStyle);
       return style;
     },
     // tab的样式
     tabItemStyle() {
-      return index => {
+      return (index: string | number) => {
         let style = {
           height: `${this.height}rpx`,
           'line-height': `${this.height}rpx`,
           'font-size': `${this.fontSize}rpx`,
           'transition-duration': `${this.duration}s`,
           padding: this.isScroll ? `0 ${this.gutter}rpx` : '',
+          fontWeight: '400',
           flex: this.isScroll ? 'auto' : '1',
           width: addUnit(this.itemWidth),
+          color: '',
         };
         // 字体加粗
         if (index === this.currentIndex && this.bold) style.fontWeight = 'bold';
@@ -257,12 +267,12 @@ export default {
         } else {
           style.color = this.inactiveColor;
         }
-        return style;
+        return style as CSSProperties;
       };
     },
   },
   methods: {
-    $uGetRect(selector, all) {
+    $uGetRect(selector: string, all?: undefined) {
       return new Promise(resolve => {
         uni
           .createSelectorQuery()
@@ -282,7 +292,7 @@ export default {
     // 设置一个init方法，方便多处调用
     async init() {
       // 获取tabs组件的尺寸信息
-      const tabRect = await this.$uGetRect(`#${this.id}`);
+      const tabRect: any = await this.$uGetRect(`#${this.id}`);
       // tabs组件距离屏幕左边的宽度
       this.parentLeft = tabRect.left;
       // tabs组件的宽度
@@ -290,7 +300,7 @@ export default {
       this.getTabRect();
     },
     // 点击某一个tab菜单
-    clickTab(index) {
+    clickTab(index: number) {
       // 点击当前活动tab，不触发事件
       if (index === this.currentIndex) return;
       // 发送事件给父组件
@@ -306,22 +316,25 @@ export default {
       for (let i = 0; i < this.list.length; i++) {
         // 只要size和rect两个参数
         query.select(`#u-tab-item-${i}`)
-          .fields({
-            size: true,
-            rect: true,
-          });
+          .fields(
+            {
+              size: true,
+              rect: true,
+            },
+            () => []
+          );
       }
       // 执行查询，一次性获取多个结果
-      query.exec(function (res) {
+      query.exec((res: any) => {
         this.tabQueryInfo = res;
         // 初始化滚动条和移动bar的位置
         this.scrollByIndex();
-      }.bind(this));
+      });
     },
     // 滚动scroll-view，让活动的tab处于屏幕的中间位置
     scrollByIndex() {
       // 当前活动tab的布局信息，有tab菜单的width和left(为元素左边界到父元素左边界的距离)等信息
-      const tabInfo = this.tabQueryInfo[this.currentIndex];
+      const tabInfo: any = this.tabQueryInfo[this.currentIndex as number];
 
       if (!tabInfo) return;
       // 活动tab的宽度
@@ -334,7 +347,7 @@ export default {
       // 当前活动item的中点点到左边的距离减去滑块宽度的一半，即可得到滑块所需的移动距离
       const left = tabInfo.left + tabInfo.width / 2 - this.parentLeft;
       // 计算当前活跃item到组件左边的距离
-      this.scrollBarLeft = left - uni.upx2px(this.barWidth) / 2;
+      this.scrollBarLeft = left - uni.upx2px(this.barWidth as number) / 2;
       // 第一次移动滑块的时候，barFirstTimeMove为true，放到延时中将其设置false
       // 延时是因为scrollBarLeft作用于computed计算时，需要一个过程需，否则导致出错
       if (this.barFirstTimeMove === true) {
@@ -350,11 +363,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-view,
-scroll-view {
+// view,
+// scroll-view {
+//   box-sizing: border-box;
+// }
+
+.bsBB {
   box-sizing: border-box;
 }
-
 ::-webkit-scrollbar,
 ::-webkit-scrollbar,
 ::-webkit-scrollbar {
