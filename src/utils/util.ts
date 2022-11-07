@@ -96,33 +96,33 @@ export const onShareCoupon = (res: any) => {
   };
 };
 
-export async function compress (files: any) {
+export async function compress(files: any) {
   return new Promise(resolve => {
     // #ifdef H5
     if (files.type === 'image/gif') {
-      resolve(files)
+      resolve(files);
     }
-    const imgNode = new Image()
-    imgNode.src = URL.createObjectURL(files)
+    const imgNode = new Image();
+    imgNode.src = URL.createObjectURL(files);
     imgNode.onload = function (res) {
-      const myCanvas = document.createElement('canvas')
-      const width = imgNode.width
-      const height = imgNode.height
-      myCanvas.width = width
-      myCanvas.height = height
-      const painting: any = myCanvas.getContext('2d')
-      painting.drawImage(imgNode, 0, 0, width, height)
-      const base64 = myCanvas.toDataURL('image/jpeg', 0.4)
-      var arr: any[] = base64.split(',')
-      var mime = arr[0].match(/:(.*?);/)[1]
-      var bstr = atob(arr[1])
-      var n = bstr.length
-      var u8arr = new Uint8Array(n)
+      const myCanvas = document.createElement('canvas');
+      const width = imgNode.width;
+      const height = imgNode.height;
+      myCanvas.width = width;
+      myCanvas.height = height;
+      const painting: any = myCanvas.getContext('2d');
+      painting.drawImage(imgNode, 0, 0, width, height);
+      const base64 = myCanvas.toDataURL('image/jpeg', 0.4);
+      const arr: any[] = base64.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
       while (n--) {
-        u8arr[n] = bstr.charCodeAt(n)
+        u8arr[n] = bstr.charCodeAt(n);
       }
-      resolve(new window.File([new Blob([u8arr], { type: mime })], files.name, { type: files.type }))
-    }
+      resolve(new window.File([new Blob([u8arr], { type: mime })], files.name, { type: files.type }));
+    };
     // #endif
 
     // #ifdef MP-WEIXIN
@@ -130,9 +130,33 @@ export async function compress (files: any) {
       src: files.path,
       quality: 40,
       success: res => {
-        resolve(res.tempFilePath)
-      }
-    })
+        resolve(res.tempFilePath);
+      },
+    });
     // #endif
-  })
+  });
+}
+
+/**
+ * 深克隆
+ * @param target：克隆的目标对象
+ */
+export function cloneDeep(target: any) {
+  let result: any;
+  const type = Object.prototype.toString.call(target)
+    .slice(8, -1);
+  if (type === 'Object') {
+    result = {};
+    for (const key in target) {
+      result[key] = cloneDeep(target[key]);
+    }
+  } else if (type === 'Array') {
+    result = [];
+    target.forEach((item: any, index: number) => {
+      result[index] = cloneDeep(item);
+    });
+  } else {
+    result = target;
+  }
+  return result;
 }
