@@ -1,9 +1,15 @@
 import { devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
+import type { IAddress } from '@/pages/api/types/address';
 // 查询会员收货地址表
 export const getAdressList = async (data: any) => {
   const url = `${devBaseUrl}/usr/addressFront/queryAddressListFront`;
-  return request(url, data);
+  return request<IAddress[]>(url, data);
+};
+// 查询会员收货地址表
+export const getAddressById = async (appId: any) => {
+  const url = `${devBaseUrl}/usr/addressFront/getAddressByIdFront`;
+  return request<IAddress>(url, appId);
 };
 
 // 新增地址
