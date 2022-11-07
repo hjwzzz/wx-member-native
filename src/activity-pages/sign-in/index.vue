@@ -73,13 +73,13 @@
           ></view>
         </view>
         <view class="gift-ad" v-if="hasAd">
-          <swiper name="imgUrl">
+          <swiper>
             <swiper-item
               v-for="(v, i) in data.wxappActivityAdvertList"
               :key="v.id"
               @click="goDetail(i)"
             >
-              <image mode="aspectFill" :src="v.imgUrl"></image>
+              <image mode="aspectFit" :src="v.imgUrl"></image>
             </swiper-item>
           </swiper>
         </view>
