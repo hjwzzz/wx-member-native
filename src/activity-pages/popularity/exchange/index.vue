@@ -14,42 +14,52 @@
       </view>
     </view>
     <view class="exchange-tip"> 请正确填写以下兑换信息，填写后不可更改 </view>
-    <uni-forms :model="form" ref="uForm" label-width="170rpx">
+    <uni-forms :model="form" ref="uForm">
       <block v-for="v in formArr" :key="v.type">
         <uni-forms-item
           v-if="v.type == 'DIST_NAME'"
           :key="v.type"
-          :label="v.propertyName"
           right-icon="arrow-right"
-          :required="v.notNull == 'Y'"
         >
+          <template #label>
+            <view class="forms-item-label">
+              <text v-if="v.notNull === 'Y'" class="required-icon">*</text>
+              {{ v.propertyName }}
+            </view>
+          </template>
           <input
             v-model="form.distName"
             disabled
             @click="selectShopFun"
             :placeholder="v.propertyRemind"
           />
+          <image
+            class="forms-item-icon"
+            :src="staticUrl + 'activity/right.png'"
+          ></image>
         </uni-forms-item>
-        <uni-forms-item
-          v-if="v.type == 'NAME'"
-          :key="v.type"
-          :label="v.propertyName"
-          :required="v.notNull == 'Y'"
-        >
+        <uni-forms-item v-if="v.type == 'NAME'" :key="v.type">
+          <template #label>
+            <view class="forms-item-label">
+              <text v-if="v.notNull === 'Y'" class="required-icon">*</text>
+              {{ v.propertyName }}
+            </view>
+          </template>
           <input v-model="form.name" :placeholder="v.propertyRemind" />
         </uni-forms-item>
-        <uni-forms-item
-          v-if="v.type == 'PHONE'"
-          :key="v.type"
-          :label="v.propertyName"
-          :required="v.notNull == 'Y'"
-        >
+        <uni-forms-item v-if="v.type == 'PHONE'" :key="v.type">
+          <template #label>
+            <view class="forms-item-label">
+              <text v-if="v.notNull === 'Y'" class="required-icon">*</text>
+              {{ v.propertyName }}
+            </view>
+          </template>
           <input
             v-model="form.phone"
             disabled
             :placeholder="v.propertyRemind"
           />
-          <template #right>
+          <view class="forms-item-supply">
             <button
               class="exchange-phone-btn"
               open-type="getPhoneNumber"
@@ -58,7 +68,7 @@
               <block v-if="form.phone">更换手机号</block>
               <block v-else>获取手机号</block>
             </button>
-          </template>
+          </view>
         </uni-forms-item>
       </block>
     </uni-forms>
@@ -102,6 +112,7 @@ import {
 import Router from '@/utils/router';
 import { onLoad } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
+import { staticUrl } from '@/utils/config';
 
 const actId = ref('');
 const openId = ref('');
@@ -391,13 +402,42 @@ const richImageFun = (item: any) => richImage(item);
     height: 22rpx;
   }
   :deep(.uni-forms) {
-    .uni-forms-item__label {
-      width: 170rpx;
+    .uni-forms-item__content {
+      display: flex;
+      align-items: center;
     }
     input {
       flex: 1;
-      height: 100%;
+      height: 70rpx;
     }
+    .input-placeholder {
+      color: rgba(192, 196, 204, 1);
+    }
+  }
+  .required-icon {
+    position: absolute;
+    left: -16rpx;
+    padding-top: 6rpx;
+    color: #fa3534;
+    vertical-align: middle;
+  }
+  .forms-item-label {
+    position: relative;
+    display: flex;
+    width: 170rpx;
+    align-items: center;
+    color: #303133;
+    font-size: 28rpx;
+  }
+  .forms-item-supply {
+    flex: none;
+  }
+  .forms-item-icon {
+    position: absolute;
+    right: 6rpx;
+    z-index: 1;
+    width: 12rpx;
+    height: 22rpx;
   }
 }
 </style>

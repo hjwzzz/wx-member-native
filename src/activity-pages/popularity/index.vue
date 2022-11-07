@@ -264,7 +264,8 @@
     <!-- 失败弹窗 -->
     <!-- <fail-popup v-model="showPopup" ref="failPopup" /> -->
     <!-- 提示 -->
-    <u-toast ref="uToast" :duration="3000" />
+    <!-- <u-toast ref="uToast" :duration="3000" /> -->
+    </uni-popup>
     <!-- 活动规则 -->
     <rule-template
       v-if="styleObj.page.actRuleContent"
@@ -290,7 +291,7 @@ import {
   checkChgAward,
 } from '@/activity-pages/api/popularity';
 import TimeCountDown from '../component/TimeCountDown/index.vue';
-import { cloneDeep, richImage } from '@/utils/util';
+import { richImage } from '@/utils/util';
 import OptionsTemplate from './component/Options/index.vue';
 import EmptyTemplate from './component/Empty/index.vue';
 import RankListTemplate from './component/RankList/index.vue';
@@ -370,7 +371,6 @@ onLoad((options: any) => {
   openId.value = options.openId || uni.getStorageSync('openId');
   uni.setStorageSync('actId', id.value);
   uni.setStorageSync('openId', openId.value);
-  console.log('initBasicsData', initBasicsData.checkLogin);
   if (!openId.value) {
     isLogin.value = initBasicsData.checkLogin;
   } else {
@@ -384,7 +384,7 @@ onShow(() => {
   }
 });
 onHide(() => {
-  console.log('隐藏');
+  // console.log('隐藏');
   if (optionsTemplateRef.value?.pauseMusic) {
     optionsTemplateRef.value.pauseMusic();
   }
@@ -416,7 +416,7 @@ const getDetail = (type = 'first', isLoading = true) => {
         for (const key in info) {
           styleObj[key] = info[key];
         }
-        console.log('this.styleObj', styleObj);
+        // console.log('this.styleObj', styleObj);
         hasTop.value = page.isOpenActCountdown || page.isShowJoinNum;
 
         awards.map((v: any) => {
@@ -441,12 +441,12 @@ const getDetail = (type = 'first', isLoading = true) => {
         bannerList.value = bannerListNew;
 
         if (page.isOpenCarousel) {
-          getNoticeList('first');
+          getNoticeList();
         }
         if (page.isOpenRanking) {
           getRankList();
         }
-        console.log('page', page);
+        // console.log('page', page);
         if (type === 'update') {
         // 针对音乐开关状态更新，音乐播放异常问题
           if (!page.isOpenBgMusic) optionsTemplateRef.value.pauseMusic();
@@ -463,7 +463,6 @@ const getDetail = (type = 'first', isLoading = true) => {
         }
         if (page.isOpenBgMusic) {
           nextTick(() => {
-            console.log('optionsTemplateRef.value', optionsTemplateRef.value);
             optionsTemplateRef.value.audioAutoPlay();
           });
         }
@@ -483,7 +482,7 @@ const getRankList = () => {
   };
   queryPopularityActivityJoinRecordRanking(params)
     .then(res => {
-      console.log('res', res);
+    // console.log('res', res);
       if (res.code === 0) {
         const { data = [] } = res;
         rankList.value = data.filter((v: any, i: number) => i < 10);
@@ -492,33 +491,36 @@ const getRankList = () => {
 };
 // 提示
 const showToast = (str: string) => {
-  this.$refs.uToast.show({ title: str });
+  uni.showToast({
+    title: str,
+    duration: 3000,
+    icon: 'none',
+  });
 };
 // 获取中奖信息列表
-const getNoticeList = (type = '') => {
+const getNoticeList = () => {
   const params = {
     id: id.value,
     openId: openId.value,
   };
   queryTargetRecordList(params)
     .then((res: any) => {
-      console.log('noticeList', res);
+    // console.log('noticeList', res);
       if (res.code === 0) {
         const list = res.data || [];
-        // for(let i = 0; i < 10; i++) {
-        // 	list.push(
-        // 		{
-        // 			id: i + 1,
-        // 			wxNickName: '**备' + i,
-        // 			awardContent: '优惠券',
-        // 			avatarUrl: 'https://img.dev.jqzplat.com/12D3868F/COMM/c0f5607d-20220519.png',
-        // 		}
-        // 	)
+        // for (let i = 0; i < 10; i++) {
+        //   list.push({
+        //     id: i + 1,
+        //     wxNickName: `**备${i}`,
+        //     awardContent: '优惠券',
+        //     avatarUrl:
+        //     'https://img.dev.jqzplat.com/12D3868F/COMM/c0f5607d-20220519.png',
+        //   });
         // }
         const oneList = [] as any[];
         const twoList = [] as any[];
         list.map((v: any, i: number) => {
-          if (i % 2 == 0) {
+          if (i % 2 === 0) {
             oneList.push(v);
           } else {
             twoList.push(v);
@@ -553,7 +555,6 @@ const calcProgressPercent = (hasGiven: string, activeStorageNum: string) => {
   // 占比多少等分
   const intSum = Math.ceil(Number(hasGiven) / int);
   const s = 100 / 30 * intSum;
-  console.log('s', s);
   return s >= 90 && s < 100 ? s : Math.ceil(s / 6.6) * 6.6;
 };
 const toNumberFun = (str: string) => Number(str || 0);
@@ -586,7 +587,7 @@ const getPrizeCover = (code: string) => {
 const getPrizeName = (item: any) => {
   const { kind, awardNum, name } = item;
   let result = '';
-  if (kind == 'COUPON' || kind == 'PRIZE') {
+  if (kind === 'COUPON' || kind === 'PRIZE') {
     result = name;
   } else {
     result = awardNum + name;
@@ -597,7 +598,7 @@ const getPrizeName = (item: any) => {
 const onExchange = (item: any) => {
   const { page, wxLoginRspVo } = styleObj;
   const color = page.topImgBgColor;
-  console.log('wxLoginRspVo', wxLoginRspVo);
+  // console.log('wxLoginRspVo', wxLoginRspVo);
   if (!wxLoginRspVo) {
     uni.setStorageSync('popularityPrizeInfo', item);
     uni.navigateTo({ url: `/activity-pages/popularity/exchange/index?actId=${id.value}&color=${color}` });
@@ -609,7 +610,7 @@ const checkPrize = (info: any, params: any) => {
   const { memberPrizeId: id, recvManner } = info;
   checkChgAward(params)
     .then(res => {
-      if (res.code == 0) {
+      if (res.code === 0) {
       // this.showToast('兑换成功')
       // if (item.kind == 'PRIZE') {
       // 	const url = '/pages/center/user-theprize/index'
@@ -658,7 +659,7 @@ const onShowAuth = () => {
 // 缓存用户信息
 const setUserInfo = (info: any) => {
   const list = Object.keys(info);
-  console.log('kist', list);
+  // console.log('kist', list);
   list.map(item => {
     if (info[item]) {
       // uni.setStorageSync(item, info[item]);
@@ -1091,6 +1092,10 @@ const changBannerSwiper = (e: any) => {
     font-size: 20rpx;
     line-height: 24rpx;
     color: rgba(0, 0, 0, 0.45);
+  }
+
+  .toast-info {
+    background-color: #fff;
   }
 }
 </style>
