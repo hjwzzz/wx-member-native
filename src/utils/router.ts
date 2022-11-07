@@ -77,7 +77,7 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string, urlQueryParams = '') {
+  static goCodePage(code: string, urlQueryParams = '', type = '') {
     console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
@@ -93,6 +93,10 @@ class Router {
     // 如果没有登录，需要登录的页面-就去登录
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
       return this.goLogin();
+    }
+    // 关闭所有页面，打开指定页面
+    if (type === 'reLaunch') {
+      return uni.reLaunch({ url: url + urlQueryParams });
     }
     uni.navigateTo({ url: url + urlQueryParams });
   }

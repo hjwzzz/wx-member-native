@@ -62,7 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { deleteAddress, getAdressList, updateAddress } from '@/api/address';
+import {
+  deleteAddress,
+  getAdressList,
+  updateAddress,
+} from '@/pages/api/address';
 import { onShow } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
