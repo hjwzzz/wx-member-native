@@ -25,7 +25,7 @@
       :fixed="fixed"
       @change="handleChange"
     ></Tabs>
-		<slot></slot>
+    <slot></slot>
   </view>
 </template>
 
@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   fixed: false,
 });
 
-console.log('props', props);
+// console.log('props', props);
 
 const emits = defineEmits([
   'update:time',
@@ -91,11 +91,11 @@ const changeDate = (event: any) => {
 };
 
 const handleChange = ({ index, item }: any) => {
-  emits('update:current', index)
-	emits('changeTabs', { index, item })
+  emits('update:current', index);
+  emits('changeTabs', { index, item });
 };
 
-onMounted(() => {});
+// onMounted(() => {});
 </script>
 
 <style lang="scss" scoped>
@@ -109,7 +109,7 @@ onMounted(() => {});
     display: flex;
     justify-content: space-between;
     align-items: center;
-		margin-bottom: 30rpx;
+    margin-bottom: 30rpx;
     .picker-left {
       font-weight: 800;
       font-size: 28rpx;

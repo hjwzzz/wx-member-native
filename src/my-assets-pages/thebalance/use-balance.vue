@@ -57,65 +57,65 @@
             v-model:current="current"
             @changeDate="changeDate"
             @changeTabs="changeTabs"
-					>
-						<!-- 全部页面 -->
-						<view class="boxList">
-							<view class="title">
-								<view class="tit">
-									<view class="item">
-										<view class="left">
-											{{ totalData.time || timeValue }}
-										</view>
-										<view class="right">
-											<view class="r1" v-if="current === 0 || current === 1">
-												收入：<text class="yuan">
-												{{ totalData.totalInOfMonth }}
-											</text>
-											</view>
-											<view class="r2" v-if="current === 0 || current === 2">
-												支出：<text class="yuan">
-												{{ totalData.totalOutOfMonth }}
-											</text>
-											</view>
-										</view>
-									</view>
-								</view>
-								<view v-if="dataList.length" class="xiaofei">
-									<view
-										v-for="(item, index) in dataList"
-										:key="index"
-										class="item"
-										@click="detail(item)"
-									>
-										<view class="top">
-											<view class="left">
-												<text v-if="item.remark">
-													{{ getText(item.remark) || '' }}
-												</text>
-											</view>
-											<view
-												class="bottwo"
-												:class="{
+          >
+            <!-- 全部页面 -->
+            <view class="boxList">
+              <view class="title">
+                <view class="tit">
+                  <view class="item">
+                    <view class="left">
+                      {{ totalData.time || timeValue }}
+                    </view>
+                    <view class="right">
+                      <view class="r1" v-if="current === 0 || current === 1">
+                        收入：<text class="yuan">
+                          {{ totalData.totalInOfMonth }}
+                        </text>
+                      </view>
+                      <view class="r2" v-if="current === 0 || current === 2">
+                        支出：<text class="yuan">
+                          {{ totalData.totalOutOfMonth }}
+                        </text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+                <view v-if="dataList.length" class="xiaofei">
+                  <view
+                    v-for="(item, index) in dataList"
+                    :key="index"
+                    class="item"
+                    @click="detail(item)"
+                  >
+                    <view class="top">
+                      <view class="left">
+                        <text v-if="item.remark">
+                          {{ getText(item.remark) || '' }}
+                        </text>
+                      </view>
+                      <view
+                        class="bottwo"
+                        :class="{
                           income: item.opKind && item.opKind.code === 'BON_IN',
                         }"
-											>
-												{{ incomeFun(item.opKind) }}{{ item.realValue }}
-											</view>
-										</view>
-										<view class="bottom">
-											{{ item.createTime }}
-										</view>
-									</view>
-								</view>
-								<view v-else class="imagewu">
-									<image :src="`${staticUrl}img/wuyuer.png`" mode="aspectFit" />
-									<view class="wujilu"> 暂无交易记录 </view>
-								</view>
-							</view>
-						</view>
-					</IncExpDetail>
+                      >
+                        {{ incomeFun(item.opKind) }}{{ item.realValue }}
+                      </view>
+                    </view>
+                    <view class="bottom">
+                      {{ item.createTime }}
+                    </view>
+                  </view>
+                </view>
+                <view v-else class="imagewu">
+                  <image :src="`${staticUrl}img/wuyuer.png`" mode="aspectFit" />
+                  <view class="wujilu"> 暂无交易记录 </view>
+                </view>
+              </view>
+            </view>
+          </IncExpDetail>
 
-					<!--<picker
+          <!--<picker
 						mode="date"
 						fields="month"
 						:value="timeValue"
@@ -269,19 +269,19 @@ const totalPage = ref(0);
 //   nomore: '已经到底了',
 // };
 const tabList = [
-	{
-	  name: '全部',
-		key: 0
-	},
+  {
+    name: '全部',
+    key: 0,
+  },
   {
     name: '收入',
-    key: 1
+    key: 1,
   },
   {
     name: '支出',
-    key: 2
+    key: 2,
   },
-]
+];
 const totalData: Ref<any> = ref({
   time: '',
   totalInOfMonth: 0,
@@ -438,22 +438,7 @@ const changeDate = (time: string) => {
   timeValue.value = time;
   queryDepDetailPageFun();
 };
-const changeTabs = ({ index, item }: any) => {
-  current.value = index
-  page.value = 1;
-  dataList.value = [];
-  opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
-  dataList.value = [];
-  queryDepDetailPageFun();
-}
-const changeData = (event: any) => {
-  dataList.value = [];
-  timeValue.value = event.detail.value;
-  queryDepDetailPageFun();
-};
-
-// 切换页面
-const change = (index: any) => {
+const changeTabs = ({ index }: any) => {
   current.value = index;
   page.value = 1;
   dataList.value = [];
@@ -461,6 +446,21 @@ const change = (index: any) => {
   dataList.value = [];
   queryDepDetailPageFun();
 };
+// const changeData = (event: any) => {
+//   dataList.value = [];
+//   timeValue.value = event.detail.value;
+//   queryDepDetailPageFun();
+// };
+
+// 切换页面
+// const change = (index: any) => {
+//   current.value = index;
+//   page.value = 1;
+//   dataList.value = [];
+//   opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
+//   dataList.value = [];
+//   queryDepDetailPageFun();
+// };
 
 // 跳转到 明细记录页面
 const detail = (item: any) => {
@@ -484,17 +484,17 @@ const detail = (item: any) => {
 // };
 
 // 去年
-const getPassYearFormatDate = () => {
-  const nowDate = new Date();
-  nowDate.setDate(nowDate.getDate() - 365);
-  const year = nowDate.getFullYear();
-  let month: any = nowDate.getMonth() + 1;
-  if (month >= 1 && month <= 9) {
-    month = `0${month}`;
-  }
-  const currentdate = `${year}-${month}`;
-  return currentdate;
-};
+// const getPassYearFormatDate = () => {
+//   const nowDate = new Date();
+//   nowDate.setDate(nowDate.getDate() - 365);
+//   const year = nowDate.getFullYear();
+//   let month: any = nowDate.getMonth() + 1;
+//   if (month >= 1 && month <= 9) {
+//     month = `0${month}`;
+//   }
+//   const currentdate = `${year}-${month}`;
+//   return currentdate;
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -625,125 +625,124 @@ const getPassYearFormatDate = () => {
           }
         }
       }
-			.remark {
-				width: 378rpx;
-				overflow: hidden;
-				white-space: nowrap;
-				display: block;
-				text-overflow: ellipsis;
-			}
+      .remark {
+        width: 378rpx;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+        text-overflow: ellipsis;
+      }
     }
 
-		:deep(.income-expenditure-detail) {
-			.tabs-list {
-				border-top-left-radius: 30rpx;
-				border-top-right-radius: 30rpx;
-			}
-		}
+    :deep(.income-expenditure-detail) {
+      .tabs-list {
+        border-top-left-radius: 30rpx;
+        border-top-right-radius: 30rpx;
+      }
+    }
 
-		.boxList {
-			margin-top: -4rpx;
-			border-top: 1rpx solid #f6f7f8;
-			min-height: calc(100vh - 650rpx);
-			background-color: #fff;
-			border-bottom-left-radius: 30rpx;
-			border-bottom-right-radius: 30rpx;
-			.tit {
-				height: 88rpx;
-				padding: 0 15rpx 0 15rpx;
+    .boxList {
+      margin-top: -4rpx;
+      border-top: 1rpx solid #f6f7f8;
+      min-height: calc(100vh - 650rpx);
+      background-color: #fff;
+      border-bottom-left-radius: 30rpx;
+      border-bottom-right-radius: 30rpx;
+      .tit {
+        height: 88rpx;
+        padding: 0 15rpx 0 15rpx;
 
-				.item {
-					font-size: 24rpx;
-					margin-top: 28rpx;
-					height: 60rpx;
-					line-height: 60rpx;
-					background-color: #fafafa;
-					display: flex;
-					justify-content: space-between;
-					padding: 0 20rpx;
+        .item {
+          font-size: 24rpx;
+          margin-top: 28rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          background-color: #fafafa;
+          display: flex;
+          justify-content: space-between;
+          padding: 0 20rpx;
 
-					.left {
-						font-weight: 400;
-					}
+          .left {
+            font-weight: 400;
+          }
 
-					.right {
-						display: flex;
+          .right {
+            display: flex;
 
-						.r1 {
-							.yuan {
-								color: #71d8a1;
-							}
-						}
+            .r1 {
+              .yuan {
+                color: #71d8a1;
+              }
+            }
 
-						.r2 {
-							margin-left: 20rpx;
+            .r2 {
+              margin-left: 20rpx;
 
-							.yuan {
-								color: #fa7777;
-							}
-						}
-					}
-				}
-			}
+              .yuan {
+                color: #fa7777;
+              }
+            }
+          }
+        }
+      }
 
-			.xiaofei {
-				margin-top: -24rpx;
+      .xiaofei {
+        margin-top: -24rpx;
 
-				.item:nth-child(1) {
-					border-top: 0 solid #007aff;
-				}
+        .item:nth-child(1) {
+          border-top: 0 solid #007aff;
+        }
 
-				.item {
-					padding: 30rpx;
-					height: 131rpx;
-					border-top: 2rpx solid #f7f8f9;
+        .item {
+          padding: 30rpx;
+          height: 131rpx;
+          border-top: 2rpx solid #f7f8f9;
 
-					.top {
-						font-size: 28rpx;
-						font-weight: 800;
-						display: flex;
-						justify-content: space-between;
+          .top {
+            font-size: 28rpx;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
 
-						.bott {
-							padding-top: 8rpx;
-							flex: 1;
-						}
-					}
+            .bott {
+              padding-top: 8rpx;
+              flex: 1;
+            }
+          }
 
-					.bottom {
-						font-size: 24rpx;
-						font-family: PingFangSC-Regular, PingFang SC;
-						font-weight: 400;
-						color: #b7b8c4;
-					}
-				}
-			}
+          .bottom {
+            font-size: 24rpx;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #b7b8c4;
+          }
+        }
+      }
 
-			.imagewu {
-				text-align: center;
-				margin-top: 80rpx;
+      .imagewu {
+        text-align: center;
+        margin-top: 80rpx;
 
-				/* margin-bottom: ; */
-				image {
-					width: 320rpx;
-					height: 320rpx;
-				}
+        /* margin-bottom: ; */
+        image {
+          width: 320rpx;
+          height: 320rpx;
+        }
 
-				.wujilu {
-					font-size: 28rpx;
-					color: #9697a2;
-					margin: 40rpx 0 148rpx 0;
-				}
-			}
+        .wujilu {
+          font-size: 28rpx;
+          color: #9697a2;
+          margin: 40rpx 0 148rpx 0;
+        }
+      }
 
-			.left {
-				font-weight: 400;
-				font-size: 28rpx;
-			}
-		}
+      .left {
+        font-weight: 400;
+        font-size: 28rpx;
+      }
+    }
 
-
-		.bottwo {
+    .bottwo {
       padding-top: 8rpx;
       color: #fa5252;
     }
