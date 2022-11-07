@@ -123,3 +123,17 @@ export const updateMemberBaseInfo = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+
+// 查询附近门店
+export const queryNearStore = async (data: any) => {
+  const url = `${baseUrl}/emp-base/MemberDistributorFront/queryNearStore`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 小程序授权信息
+export const getWxMiniInfo = async (data: any) => {
+  const url = `${baseUrl}/emp-base/member/login/Front/getWxMiniInfo`;
+  const res = await request(url, data);
+  return res;
+};

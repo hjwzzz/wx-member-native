@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_BASEURL: string;
   readonly VITE_APP_IMGBASEURL: string;
   readonly VITE_APP_WXURL: string;
+  readonly VITE_APP_BASEURLDEV: string;
   // 更多环境变量...
 }
 
