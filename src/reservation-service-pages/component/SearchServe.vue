@@ -108,7 +108,8 @@
 import { onMounted, ref, Ref } from 'vue';
 import { debounce } from '@/utils/util';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
-import { queryServicePage } from '@/api/reservation-service';
+// import { queryServicePage } from '@/api/reservation-service';
+import { queryServicePageFront } from '../api/api';
 import { staticUrl } from '@/utils/config';
 
 const codeImage = (item: any) => {
@@ -158,13 +159,15 @@ const goDetail = ({ id }: { id: string }) => {
 
 // 查询预约服务项目列表
 const queryServeProList = async (name = '', distId = '') => {
-  const { data: { records, totalRecord } } = await queryServicePage({
+  const { data: { records, totalRecord } } = await queryServicePageFront({
     curPage: curPage.value,
     pageSize: pageSize.value,
     name,
     distId,
     storeModel: data.value.hasOwnProperty('mode') ? 'Y' : 'N',
   });
+  console.log(111, records);
+  console.log(222, totalRecord);
   if (curPage.value === 1) {
     serveProList.value = records;
   } else {
