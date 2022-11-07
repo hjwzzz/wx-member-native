@@ -95,11 +95,11 @@ const handleSelectedAddress = (e: IAddress) => {
 
 // 编辑地址;
 const handleSelectedGuid = () => uni.navigateTo({ url: 'add' });
-const goToUpdatePage = (e: any) => {
+const goToUpdatePage = (e: IAddress) => {
   uni.navigateTo({ url: `add?id=${e.id}` });
 };
 const deleAdress = async (id: string) => {
-  const { cancel }: any = await uni.showModal({ content: '确定要删除该地址吗？' });
+  const { cancel } = (await uni.showModal({ content: '确定要删除该地址吗？' })) as unknown as { cancel: boolean };
   if (cancel) return;
   const { msg } = await deleteAddress(id);
   if (msg !== '成功') return;
@@ -110,7 +110,7 @@ const deleAdress = async (id: string) => {
   getData();
 };
 // 修改默认地址
-const changeDefaultAddress = async (e: any, d: string) => {
+const changeDefaultAddress = async (e: IAddress, d: string) => {
   e.isDefault = d === 'Y' ? 'N' : 'Y';
   const { msg } = await updateAddress(e);
   msg === '成功' && getData(true);
