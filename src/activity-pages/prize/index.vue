@@ -268,7 +268,7 @@ const goPrizeList = (item: any) => {
   let pages = '';
   switch (status.code || '') {
     case 'TEXC': // 待兑换
-      pages = '/pages/center/user-theprize/to_convert/exchange';
+      pages = '/my-assets-pages/my-prize/prize-detail';
       pages += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
       break;
     // case 'CLOSED': // 已失效
