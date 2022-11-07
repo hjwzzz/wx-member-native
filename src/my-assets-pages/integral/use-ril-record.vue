@@ -23,52 +23,18 @@
             </view>
           </view>
 
-          <picker
-            mode="date"
-            fields="month"
-            :value="timeValue"
-            :start="getPassYearFormatDate()"
-            :end="current_time()"
-            @change="changeData"
+          <IncExpDetail
+            :title="`${totalObj.name}明细`"
+            v-model:time="timeValue"
+            :tabList="[
+              { key: 0, name: '全部' },
+              { key: 1, name: '收入' },
+              { key: 2, name: '支出' },
+            ]"
+            v-model:current="current"
+            @changeDate="changeDate"
+            @changeTabs="changeTabs"
           >
-            <view class="rqi-cell-item">
-              <view class="rqi-cell-item-left">
-                {{ totalObj.name + '明细' }}
-              </view>
-              <view class="rqi-cell-item-right">
-                <text>
-                  {{ timeValue }}
-                </text>
-                <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
-              </view>
-            </view>
-          </picker>
-
-          <view class="allList">
-            <view class="tabs-list">
-              <view
-                class="tabs-list-item"
-                :class="current === 0 ? 'tabs-list-item-action' : ''"
-                @click="change(0)"
-              >
-                全部
-              </view>
-              <view
-                class="tabs-list-item"
-                :class="current === 1 ? 'tabs-list-item-action' : ''"
-                @click="change(1)"
-              >
-                收入
-              </view>
-              <view
-                class="tabs-list-item"
-                :class="current === 2 ? 'tabs-list-item-action' : ''"
-                @click="change(2)"
-              >
-                支出
-              </view>
-            </view>
-            <!-- 全部页面 -->
             <view class="boxList">
               <view class="title">
                 <view class="tit">
@@ -128,7 +94,114 @@
                 </view>
               </view>
             </view>
-          </view>
+          </IncExpDetail>
+
+          <!--          <picker
+            mode="date"
+            fields="month"
+            :value="timeValue"
+            :start="getPassYearFormatDate()"
+            :end="current_time()"
+            @change="changeData"
+          >
+            <view class="rqi-cell-item">
+              <view class="rqi-cell-item-left">
+                {{ totalObj.name + '明细' }}
+              </view>
+              <view class="rqi-cell-item-right">
+                <text>
+                  {{ timeValue }}
+                </text>
+                <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
+              </view>
+            </view>
+          </picker>-->
+
+          <!--<view class="allList">
+            <view class="tabs-list">
+              <view
+                class="tabs-list-item"
+                :class="current === 0 ? 'tabs-list-item-action' : ''"
+                @click="change(0)"
+              >
+                全部
+              </view>
+              <view
+                class="tabs-list-item"
+                :class="current === 1 ? 'tabs-list-item-action' : ''"
+                @click="change(1)"
+              >
+                收入
+              </view>
+              <view
+                class="tabs-list-item"
+                :class="current === 2 ? 'tabs-list-item-action' : ''"
+                @click="change(2)"
+              >
+                支出
+              </view>
+            </view>
+            &lt;!&ndash; 全部页面 &ndash;&gt;
+            <view class="boxList">
+              <view class="title">
+                <view class="tit">
+                  <view class="item">
+                    <view class="left">
+                      {{ totalData.time }}
+                    </view>
+                    <view class="right">
+                      <view class="r1" v-if="current === 0 || current === 1">
+                        收入：<text class="yuan">{{
+                          totalData.totalInOfMonth || 0
+                        }}</text>
+                      </view>
+                      <view class="r2" v-if="current === 0 || current === 2">
+                        支出：<text class="yuan">{{
+                          setTotalOutOfMonth(totalData.totalOutOfMonth) || 0
+                        }}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+                <view class="jifei" v-if="dataList.length">
+                  <view
+                    class="item"
+                    v-for="(item, index) in dataList"
+                    :key="index"
+                  >
+                    <view class="top">
+                      <view class="left">
+                        <text v-if="item.remark">{{
+                          getText(item.remark) || ''
+                        }}</text>
+                      </view>
+                      <view
+                        class="bott"
+                        :style="{
+                          color:
+                            Number(item.realPoint) < 0 ? '#f33030' : '#000',
+                        }"
+                      >
+                        {{ incomeFun(item.opKind) }}{{ item.realPoint }}
+                      </view>
+                    </view>
+                    <view class="bottom">
+                      <view class="left left-time">
+                        {{ item.createTime }}
+                      </view>
+                    </view>
+                  </view>
+                </view>
+                <view class="imagewu" v-else>
+                  <image
+                    :src="staticUrl + 'img/noIntegral.png'"
+                    mode=""
+                  ></image>
+                  <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
+                </view>
+              </view>
+            </view>
+          </view>-->
         </view>
       </scroll-view>
 
@@ -154,6 +227,8 @@ import { onLoad } from '@dcloudio/uni-app';
 import { queryPointDetailPage } from '@/api/center';
 import { staticUrl } from '@/utils/config';
 import { onMounted, ref, Ref } from 'vue';
+import IncExpDetail from '../component/IncomeExpenditureDetail/index.vue';
+
 const indexBackgroundImage = `url(${staticUrl}quality/integar-bg.png) #ff547b  center center / 100% 100% no-repeat;`;
 
 const loadingTop = ref(true);
@@ -199,7 +274,6 @@ onLoad((options: any) => {
   const data = JSON.parse(options.item);
   totalObj.value = data;
   uni.setNavigationBarTitle({ title: `我的${data.name}` || '积分' });
-  // console.log(JSON.stringify(data));
 });
 
 onMounted(() => {
@@ -279,7 +353,7 @@ const queryPointDetailPagFun = async (setMIn?: any) => {
     pageSize: 5000,
   };
   const res: any = await queryPointDetailPage(body);
-  const { detailList, totalData: totalList } = res?.data;
+  const { detailList, totalData: totalList } = res.data;
   totalPage.value = detailList.totalPage;
   totalData.value = totalList;
   timeValue.value = totalList.time;
@@ -328,18 +402,23 @@ const incomeFun = (opKind: any) => {
 // };
 
 // 日期确认返回值
-const changeData = (event: any) => {
+const changeDate = (date: string) => {
   dataList.value = [];
-  timeValue.value = event.detail.value;
+  timeValue.value = date;
   queryPointDetailPagFun();
 };
+// const changeData = (event: any) => {
+//   dataList.value = [];
+//   timeValue.value = event.detail.value;
+//   queryPointDetailPagFun();
+// };
 
 // 切换页面
-const change = (index: any) => {
-  current.value = index;
+const changeTabs = (obj: any) => {
+  current.value = obj.index;
   page.value = 1;
   dataList.value = [];
-  switch (index) {
+  switch (obj.index) {
     case 0:
       opKind.value = '';
       break;
@@ -353,6 +432,24 @@ const change = (index: any) => {
   dataList.value = [];
   queryPointDetailPagFun();
 };
+// const change = (index: any) => {
+//   current.value = index;
+//   page.value = 1;
+//   dataList.value = [];
+//   switch (index) {
+//     case 0:
+//       opKind.value = '';
+//       break;
+//     case 1:
+//       opKind.value = 'IN';
+//       break;
+//     case 2:
+//       opKind.value = 'OUT';
+//       break;
+//   }
+//   dataList.value = [];
+//   queryPointDetailPagFun();
+// };
 
 // 分页加载更多
 // const onReachBottom = () => {
@@ -370,17 +467,17 @@ const change = (index: any) => {
 // };
 
 // 去年
-const getPassYearFormatDate = () => {
-  const nowDate = new Date();
-  nowDate.setDate(nowDate.getDate() - 365);
-  const year = nowDate.getFullYear();
-  let month: any = nowDate.getMonth() + 1;
-  if (month >= 1 && month <= 9) {
-    month = `0${month}`;
-  }
-  const currentdate = `${year}-${month}`;
-  return currentdate;
-};
+// const getPassYearFormatDate = () => {
+//   const nowDate = new Date();
+//   nowDate.setDate(nowDate.getDate() - 365);
+//   const year = nowDate.getFullYear();
+//   let month: any = nowDate.getMonth() + 1;
+//   if (month >= 1 && month <= 9) {
+//     month = `0${month}`;
+//   }
+//   const currentdate = `${year}-${month}`;
+//   return currentdate;
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -477,20 +574,21 @@ const getPassYearFormatDate = () => {
         }
       }
     }
-
-    .boxList {
-      margin-top: -4rpx;
-      border-top: 1rpx solid #f6f7f8;
-      .left {
-        font-weight: 400;
-        font-size: 28rpx;
-        color: #323338;
-        &.left-time {
-          color: #b7b8c4;
-        }
-      }
+  }
+  :deep(.income-expenditure-detail) {
+    .tabs-list {
+      border-top-left-radius: 30rpx;
+      border-top-right-radius: 30rpx;
     }
+  }
 
+  .boxList {
+    margin-top: -4rpx;
+    border-top: 1rpx solid #f6f7f8;
+    min-height: calc(100vh - 650rpx);
+    background-color: #fff;
+    border-bottom-left-radius: 30rpx;
+    border-bottom-right-radius: 30rpx;
     .tit {
       height: 88rpx;
       padding: 0 15rpx 0 15rpx;
@@ -504,7 +602,14 @@ const getPassYearFormatDate = () => {
         display: flex;
         justify-content: space-between;
         padding: 0 20rpx;
-
+        .left {
+          font-weight: 400;
+          font-size: 28rpx;
+          color: #323338;
+          &.left-time {
+            color: #b7b8c4;
+          }
+        }
         .right {
           display: flex;
 

@@ -49,26 +49,92 @@
               </view>
             </view>
           </view>
-          <picker
-            mode="date"
-            fields="month"
-            :value="timeValue"
-            :start="getPassYearFormatDate()"
-            :end="current_time()"
-            @change="changeData"
+
+          <IncExpDetail
+            title="交易明细"
+            v-model:time="timeValue"
+            :tabList="tabList"
+            v-model:current="current"
+            @changeDate="changeDate"
+            @changeTabs="changeTabs"
           >
-            <view class="rqi-cell-item">
-              <view class="rqi-cell-item-left"> 交易明细 </view>
-              <view class="rqi-cell-item-right">
-                <text>
-                  {{ timeValue }}
-                </text>
-                <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
+            <!-- 全部页面 -->
+            <view class="boxList">
+              <view class="title">
+                <view class="tit">
+                  <view class="item">
+                    <view class="left">
+                      {{ totalData.time || timeValue }}
+                    </view>
+                    <view class="right">
+                      <view class="r1" v-if="current === 0 || current === 1">
+                        收入：<text class="yuan">
+                          {{ totalData.totalInOfMonth }}
+                        </text>
+                      </view>
+                      <view class="r2" v-if="current === 0 || current === 2">
+                        支出：<text class="yuan">
+                          {{ totalData.totalOutOfMonth }}
+                        </text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+                <view v-if="dataList.length" class="xiaofei">
+                  <view
+                    v-for="(item, index) in dataList"
+                    :key="index"
+                    class="item"
+                    @click="detail(item)"
+                  >
+                    <view class="top">
+                      <view class="left">
+                        <text v-if="item.remark">
+                          {{ getText(item.remark) || '' }}
+                        </text>
+                      </view>
+                      <view
+                        class="bottwo"
+                        :class="{
+                          income: item.opKind && item.opKind.code === 'BON_IN',
+                        }"
+                      >
+                        {{ incomeFun(item.opKind) }}{{ item.realValue }}
+                      </view>
+                    </view>
+                    <view class="bottom">
+                      {{ item.createTime }}
+                    </view>
+                  </view>
+                </view>
+                <view v-else class="imagewu">
+                  <image :src="`${staticUrl}img/wuyuer.png`" mode="aspectFit" />
+                  <view class="wujilu"> 暂无交易记录 </view>
+                </view>
               </view>
             </view>
-          </picker>
+          </IncExpDetail>
 
-          <view class="allList">
+          <!--<picker
+						mode="date"
+						fields="month"
+						:value="timeValue"
+						:start="getPassYearFormatDate()"
+						:end="current_time()"
+						@change="changeData"
+					>
+						<view class="rqi-cell-item">
+							<view class="rqi-cell-item-left"> 交易明细111 </view>
+							<view class="rqi-cell-item-right">
+								<text>
+									{{ timeValue }}
+								</text>
+								<uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
+							</view>
+						</view>
+					</picker>-->
+
+          <!--<view class="allList">
             <view class="tabs-list">
               <view
                 class="tabs-list-item"
@@ -92,7 +158,7 @@
                 支出
               </view>
             </view>
-            <!-- 全部页面 -->
+            &lt;!&ndash; 全部页面 &ndash;&gt;
             <view class="boxList">
               <view class="title">
                 <view class="tit">
@@ -147,7 +213,7 @@
                 </view>
               </view>
             </view>
-          </view>
+          </view>-->
         </scroll-view>
         <!-- 加载更多 -->
         <!-- <u-loadmore
@@ -172,6 +238,8 @@ import { queryDepDetailPage, queryDepList } from '@/api/center';
 // import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
 import { onMounted, ref, Ref } from 'vue';
+import IncExpDetail from '../component/IncomeExpenditureDetail/index.vue';
+
 // const initBasicsData = useBasicsData();
 // const loadingTop = ref(true);
 const _freshing = ref(false);
@@ -200,7 +268,20 @@ const totalPage = ref(0);
 //   loading: '加载中...',
 //   nomore: '已经到底了',
 // };
-
+const tabList = [
+  {
+    name: '全部',
+    key: 0,
+  },
+  {
+    name: '收入',
+    key: 1,
+  },
+  {
+    name: '支出',
+    key: 2,
+  },
+];
 const totalData: Ref<any> = ref({
   time: '',
   totalInOfMonth: 0,
@@ -352,14 +433,12 @@ const incomeFun = (opKind: any) => {
 // };
 
 // 日期确认返回值
-const changeData = (event: any) => {
-  dataList.value = [];
-  timeValue.value = event.detail.value;
+const changeDate = (time: string) => {
+  // dataList.value = [];
+  timeValue.value = time;
   queryDepDetailPageFun();
 };
-
-// 切换页面
-const change = (index: any) => {
+const changeTabs = ({ index }: any) => {
   current.value = index;
   page.value = 1;
   dataList.value = [];
@@ -367,6 +446,21 @@ const change = (index: any) => {
   dataList.value = [];
   queryDepDetailPageFun();
 };
+// const changeData = (event: any) => {
+//   dataList.value = [];
+//   timeValue.value = event.detail.value;
+//   queryDepDetailPageFun();
+// };
+
+// 切换页面
+// const change = (index: any) => {
+//   current.value = index;
+//   page.value = 1;
+//   dataList.value = [];
+//   opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
+//   dataList.value = [];
+//   queryDepDetailPageFun();
+// };
 
 // 跳转到 明细记录页面
 const detail = (item: any) => {
@@ -390,17 +484,17 @@ const detail = (item: any) => {
 // };
 
 // 去年
-const getPassYearFormatDate = () => {
-  const nowDate = new Date();
-  nowDate.setDate(nowDate.getDate() - 365);
-  const year = nowDate.getFullYear();
-  let month: any = nowDate.getMonth() + 1;
-  if (month >= 1 && month <= 9) {
-    month = `0${month}`;
-  }
-  const currentdate = `${year}-${month}`;
-  return currentdate;
-};
+// const getPassYearFormatDate = () => {
+//   const nowDate = new Date();
+//   nowDate.setDate(nowDate.getDate() - 365);
+//   const year = nowDate.getFullYear();
+//   let month: any = nowDate.getMonth() + 1;
+//   if (month >= 1 && month <= 9) {
+//     month = `0${month}`;
+//   }
+//   const currentdate = `${year}-${month}`;
+//   return currentdate;
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -531,25 +625,29 @@ const getPassYearFormatDate = () => {
           }
         }
       }
-
-      .boxList {
-        margin-top: -4rpx;
-        border-top: 1rpx solid #f6f7f8;
-
-        .left {
-          font-weight: 400;
-          font-size: 28rpx;
-        }
-
-        .remark {
-          width: 378rpx;
-          overflow: hidden;
-          white-space: nowrap;
-          display: block;
-          text-overflow: ellipsis;
-        }
+      .remark {
+        width: 378rpx;
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+        text-overflow: ellipsis;
       }
+    }
 
+    :deep(.income-expenditure-detail) {
+      .tabs-list {
+        border-top-left-radius: 30rpx;
+        border-top-right-radius: 30rpx;
+      }
+    }
+
+    .boxList {
+      margin-top: -4rpx;
+      border-top: 1rpx solid #f6f7f8;
+      min-height: calc(100vh - 650rpx);
+      background-color: #fff;
+      border-bottom-left-radius: 30rpx;
+      border-bottom-right-radius: 30rpx;
       .tit {
         height: 88rpx;
         padding: 0 15rpx 0 15rpx;
@@ -636,6 +734,11 @@ const getPassYearFormatDate = () => {
           color: #9697a2;
           margin: 40rpx 0 148rpx 0;
         }
+      }
+
+      .left {
+        font-weight: 400;
+        font-size: 28rpx;
       }
     }
 
