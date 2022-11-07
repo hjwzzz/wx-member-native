@@ -6,7 +6,7 @@
       @change="changeTabs"
       fixed
     />
-    <scroll-view style="height: 100vh" scroll-y>
+    <scroll-view class="coupon-scroll-view" scroll-y>
       <view class="coupon-list">
         <CouponItem
           v-for="(item, index) in couponListData"
@@ -167,9 +167,12 @@ const onCouponDetail = (item: any) => {
 </script>
 
 <style lang="scss" scoped>
+.coupon-scroll-view {
+  height: calc(100vh - 90rpx);
+}
 .coupon-list {
-  min-height: calc(100vh - 334rpx - constant(safe-area-inset-bottom));
-  min-height: calc(100vh - 334rpx - env(safe-area-inset-bottom));
+  min-height: calc(100vh - 292rpx - constant(safe-area-inset-bottom));
+  min-height: calc(100vh - 292rpx - env(safe-area-inset-bottom));
   padding-top: 35rpx;
   padding-bottom: 60rpx;
   padding-left: 30rpx;
