@@ -22,8 +22,13 @@ export const getCouponsFront = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
-
-// ///////center/queryCouponCenterListFront
+// 我的优惠券列表   新接口
+export const queryCouponPageFront = async (data: any) => {
+  const url = `${devBaseUrl}/usr/memberCouponFront/queryCouponPageFront`;
+  const res = await request(url, data);
+  return res;
+};
+// ///////center/queryCouponCenterListFront              /usr/memberCouponFront/queryCouponPageFront
 
 // // 优惠券--查询广告轮播图--必传:运营体系ID
 // export const queryAdvertFrontRequest = async () => request<couponCenter.QueryAdvertFrontRequestRes>(`${devBaseUrl}/emp-base/center/queryAdvertFront`);

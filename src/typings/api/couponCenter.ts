@@ -265,7 +265,7 @@ export interface QueryReceiveCenterListFrontRequestResDataItem {
   prod?: string;
 
   /** 产品代码 */
-  prodCode?: CouponConversionVo;
+  prodCode?: any;
 
   /**
    * 1已领取 0 未领取

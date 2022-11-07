@@ -107,7 +107,8 @@ const condition2 = [
 ];
 
 const showStatus = computed(() => props.showStatus);
-const prodCode = computed(() => props.item.prodCode?.code || '');
+
+const prodCode = computed(() => props.item.prodCode?.code || props.item.prod || props.item.prodCode || '');
 const showCondition = computed(() => {
   const code = prodCode.value;
   const { laborChargesType: labor, threshold } = props.item.paramVo;
@@ -128,7 +129,6 @@ const showCondition = computed(() => {
   grid-template-columns: 1fr;
   margin: 0 0 30rpx;
   box-sizing: border-box;
-
   .coupon-top-valid {
     background-image: v-bind('couponItem.topImage');
   }
@@ -159,49 +159,33 @@ const showCondition = computed(() => {
         position: absolute;
         right: -4rpx;
         top: 0rpx;
-        // .image {
-        //   width: 100%;
-        //   height: 100%;
-        //   overflow: hidden;
-        // }
       }
     }
-
     &.RIGHT {
       background-position-x: 100%;
-      // right: 0;
     }
-
     &.LEFT {
       background-position-x: 0;
-      // left: 0;
     }
-
     &.CENTER {
       background-position-x: 50%;
-      // left: 50%;
-      // transform: translateX(-50%);
     }
-
     .image {
       position: absolute;
       bottom: 0;
       z-index: 1;
       max-height: 200rpx;
     }
-
     .name {
       // z-index: 999;
       align-self: start;
       font-size: 28rpx;
       font-weight: 500;
     }
-
     .handle {
       display: flex;
       align-self: start;
       justify-content: flex-end;
-
       .receive {
         height: 48rpx;
         padding: 0 30rpx;
@@ -219,20 +203,17 @@ const showCondition = computed(() => {
       height: 80rpx;
       line-height: 80rpx;
       vertical-align: bottom;
-
       .currency-symbol {
         display: inline-block;
         font-size: 36rpx;
         font-weight: 500;
       }
-
       .num {
         display: inline-block;
         font-size: 80rpx;
         font-weight: 800;
       }
     }
-
     .threshold {
       z-index: 2;
       font-size: 24rpx;
