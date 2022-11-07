@@ -113,7 +113,10 @@ import Router from '@/utils/router';
 import { onLoad } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
+import Storage from '@/utils/storage';
+import { useBasicsData } from '@/store/basicsData';
 
+const initBasicsData = useBasicsData();
 const actId = ref('');
 const openId = ref('');
 const color = ref('');
@@ -245,20 +248,23 @@ const onSumbit = () => {
           if (wxLoginRspVo[item]) {
           // uni.setStorageSync(item, info[item]);
             if (item === 'token') {
-              uni.setStorageSync(
-                item + uni.getStorageSync('jqzAppid'),
-                wxLoginRspVo[item]
-              );
+              Storage.setToken(wxLoginRspVo[item]);
+            // uni.setStorageSync(
+            //   item + uni.getStorageSync('jqzAppid'),
+            //   wxLoginRspVo[item]
+            // );
             } else if (item === 'mid') {
-              uni.setStorageSync(
-                item + uni.getStorageSync('jqzAppid'),
-                wxLoginRspVo[item]
-              );
+              initBasicsData.setUseMid(wxLoginRspVo[item]);
+            // uni.setStorageSync(
+            //   item + uni.getStorageSync('jqzAppid'),
+            //   wxLoginRspVo[item]
+            // );
             } else if (item === 'epid') {
-              uni.setStorageSync(
-                item + uni.getStorageSync('jqzAppid'),
-                wxLoginRspVo[item]
-              );
+              Storage.setEpid(wxLoginRspVo[item]);
+            // uni.setStorageSync(
+            //   item + uni.getStorageSync('jqzAppid'),
+            //   wxLoginRspVo[item]
+            // );
             } else {
               uni.setStorageSync(item, wxLoginRspVo[item]);
             }
@@ -267,9 +273,14 @@ const onSumbit = () => {
         if (prizeInfo.value.kind === 'PRIZE') {
           checkPrize(chgAwardRspVo);
         } else {
-          const url = `/activity/inviteGift/prize?actId=${actId.value}&c=${color.value}`;
-          uni.setStorageSync('pages', url);
-          uni.reLaunch({ url });
+        // const url = `/activity/inviteGift/prize?actId=${actId.value}&c=${color.value}`;
+        // uni.setStorageSync('pages', url);
+        // uni.reLaunch({ url });
+          Router.goCodePage(
+            'activiy_prize',
+            `?actId=${actId.value}&c=${color.value}`,
+            'reLaunch'
+          );
         }
       }
     });
@@ -288,9 +299,9 @@ const checkPrize = (info: any) => {
           uni.setStorageSync('storeName', form.distName);
           uni.setStorageSync('storage_id', form.distId);
         }
-        let url = '/pages/center/user-theprize/to_convert/exchange';
+        let url = '/my-assets-pages/my-prize/prize-detail';
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
-        uni.setStorageSync('pages', url);
+        // uni.setStorageSync('pages', url);
         uni.reLaunch({ url });
       }
     });

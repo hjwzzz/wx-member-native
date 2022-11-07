@@ -620,9 +620,9 @@ const checkPrize = (info: any, params: any) => {
       // 	uni.setStorageSync('pages', url)
       // 	router.go(url)
       // }
-        let url = '/pages/center/user-theprize/to_convert/exchange';
+        let url = '/my-assets-pages/my-prize/prize-detail';
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
-        uni.setStorageSync('pages', url);
+        // uni.setStorageSync('pages', url);
         Router.go(url);
       }
     });
@@ -642,9 +642,10 @@ const onReceivePrize = (item: any) => {
         if (item.kind === 'PRIZE') {
           checkPrize(chgAwardRspVo, params);
         } else {
-          const url = `/activity/inviteGift/prize?actId=${id.value}&c=${color}`;
-          uni.setStorageSync('pages', url);
-          Router.go(url);
+        // const url = `/activity/inviteGift/prize?actId=${id.value}&c=${color}`;
+        // uni.setStorageSync('pages', url);
+        // Router.go(url);
+          Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
         }
       }
     });
