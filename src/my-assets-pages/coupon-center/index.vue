@@ -75,13 +75,11 @@ import type {
   ReceiveCenterList,
 } from './index.type';
 import {
-  queryAdvertFront,
-  //
   getCouponsFront,
-  queryReceiveCenterListFrontRequest,
+  queryAdvertFront,
+  queryCouponCenterListFront,
 } from '@/my-assets-pages/api/coupon';
 
-import { queryAdvertFrontRequest } from '@/api/coupon-center';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
 import { staticUrl } from '@/utils/config';
@@ -94,37 +92,29 @@ const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
 const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   createTime: '',
-  opsId: '57614F85-F843-C47C-B965-0753D121430F',
+  opsId: '',
   pageSize: 10000,
   curPage: 1,
 });
 
 const getAdvertFront = async () => {
-  const queryAdvertFron = await queryAdvertFrontRequest();
-
-  console.log('queryAdvertFron旧', JSON.stringify(queryAdvertFron));
-  const queryAdvertFrontRequestRes = await queryAdvertFront('');
-  if (!queryAdvertFrontRequestRes?.data) {
+  const { data } = await queryAdvertFront('');
+  if (!data) {
     return;
   }
-  console.log(
-    'queryAdvertFrontRequestRes新',
-    JSON.stringify(queryAdvertFrontRequestRes)
-  );
-  advertList.value = queryAdvertFrontRequestRes.data;
+  advertList.value = data;
 };
 const queryReceiveCenterListFront = async () => {
-  const queryReceiveCenterListFrontRequestRes =
-    await queryReceiveCenterListFrontRequest(queryReceiveCenterListForm);
-  if (!queryReceiveCenterListFrontRequestRes?.data) {
+  const { data } = await queryCouponCenterListFront(queryReceiveCenterListForm);
+  if (!data) {
     return;
   }
-  receiveCenterList.value = queryReceiveCenterListFrontRequestRes.data.records;
+  receiveCenterList.value = data.records;
 };
 
 onMounted(() => {
   getAdvertFront();
-  // queryReceiveCenterListFront();
+  queryReceiveCenterListFront();
 });
 
 // 领取优惠券
@@ -137,9 +127,8 @@ const receiveCoupon = async (item: any) => {
       cancelText: '暂不登录',
       confirmText: '立即登录',
       success: res => {
-        // res.cancel
         if (res.confirm) {
-          uni.reLaunch({ url: '/pages/login/index' });
+          Router.goLogin();
         }
       },
     });
@@ -175,10 +164,6 @@ const onCancel = () => modelShow.value = false;
 </script>
 
 <style lang="scss" scoped>
-// page {
-//   padding: 30rpx;
-// }
-
 .coupon-list {
   padding: 30rpx;
   .receive {
