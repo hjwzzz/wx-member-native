@@ -9,6 +9,6 @@ export const getNearStore = async (data: unknown) => {
 
 // 获取附近门店详情信息
 export const queryStoreDetails = async (data: unknown) => {
-  const url = `${devBaseUrl}/usr/operationDistributorFront/queryNearStoreFront`;
+  const url = `${devBaseUrl}/usr/operationDistributorFront/getNearStoreDetailsFront`;
   return request(url, data);
 };

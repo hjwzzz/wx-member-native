@@ -7,7 +7,7 @@
           <image
             class="img"
             :src="`${staticUrl}prize/${detail.status}.png`"
-            mode=""
+            mode="widthFix"
           />
         </view>
         <view class="right">
@@ -280,8 +280,10 @@ const getPrize = async () => {
     title: code === 0 ? '领取成功' : '奖品已被领取',
     icon: 'success',
   });
-  uni.$emit('changeTab', 2);
-  uni.navigateBack({ delta: 1 });
+  setTimeout(() => {
+    uni.$emit('changeTab', 2);
+    uni.navigateBack({ delta: 1 });
+  }, 1000);
 };
 onLoad(() => {
   getData();

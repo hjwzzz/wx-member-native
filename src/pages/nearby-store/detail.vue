@@ -178,7 +178,6 @@ const openLocation = (item: any) => {
 
 <style scoped lang="scss">
 .content-view {
-  height: calc(100% - 92rpx);
   .top {
     width: 100%;
     height: 400rpx;
