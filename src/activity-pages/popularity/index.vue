@@ -304,6 +304,7 @@ import Router from '@/utils/router';
 import { onHide, onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { useBasicsData } from '@/store/basicsData';
 import ToastTemplate from '../component/Toast/index.vue';
+import Storage from '@/utils/storage';
 
 const initBasicsData = useBasicsData();
 const id = ref('');
@@ -668,11 +669,14 @@ const setUserInfo = (info: any) => {
     if (info[item]) {
       // uni.setStorageSync(item, info[item]);
       if (item === 'token') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        Storage.setToken(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else if (item === 'mid') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        initBasicsData.setUseMid(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else if (item === 'epid') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        Storage.setEpid(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else {
         uni.setStorageSync(item, info[item]);
       }
