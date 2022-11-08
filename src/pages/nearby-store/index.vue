@@ -95,7 +95,7 @@ import NoneData from '@/pages/component/NoneData.vue';
 import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
-import { updateNearStore } from '@/api/my-prize';
+import { getNearStore } from '@/pages/api/store';
 import { mergeFullAddress } from '@/utils/util';
 
 // 店铺信息
@@ -152,7 +152,7 @@ const coordCur = computed(() => {
 });
 // 刷新列表
 const updateNearStorePost = async () => {
-  const { code, data } = await updateNearStore({
+  const { code, data } = await getNearStore({
     distId: '',
     storeName: keyward.value,
     coordCur: coordCur.value,
