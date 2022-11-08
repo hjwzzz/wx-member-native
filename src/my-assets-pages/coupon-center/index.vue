@@ -76,9 +76,10 @@ import type {
 } from './index.type';
 import {
   getCouponsFront,
-  queryAdvertFrontRequest,
-  queryReceiveCenterListFrontRequest,
-} from '@/api/coupon-center';
+  queryAdvertFront,
+  queryCouponCenterListFront,
+} from '@/my-assets-pages/api/coupon';
+
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
 import { staticUrl } from '@/utils/config';
@@ -91,29 +92,28 @@ const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
 const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   createTime: '',
-  opsId: '57614F85-F843-C47C-B965-0753D121430F',
+  opsId: '',
   pageSize: 10000,
   curPage: 1,
 });
 
-const queryAdvertFront = async () => {
-  const queryAdvertFrontRequestRes = await queryAdvertFrontRequest();
-  if (!queryAdvertFrontRequestRes?.data) {
+const getAdvertFront = async () => {
+  const { data } = await queryAdvertFront('');
+  if (!data) {
     return;
   }
-  advertList.value = queryAdvertFrontRequestRes.data;
+  advertList.value = data;
 };
 const queryReceiveCenterListFront = async () => {
-  const queryReceiveCenterListFrontRequestRes =
-    await queryReceiveCenterListFrontRequest(queryReceiveCenterListForm);
-  if (!queryReceiveCenterListFrontRequestRes?.data) {
+  const { data } = await queryCouponCenterListFront(queryReceiveCenterListForm);
+  if (!data) {
     return;
   }
-  receiveCenterList.value = queryReceiveCenterListFrontRequestRes.data.records;
+  receiveCenterList.value = data.records;
 };
 
 onMounted(() => {
-  queryAdvertFront();
+  getAdvertFront();
   queryReceiveCenterListFront();
 });
 
@@ -127,9 +127,8 @@ const receiveCoupon = async (item: any) => {
       cancelText: '暂不登录',
       confirmText: '立即登录',
       success: res => {
-        // res.cancel
         if (res.confirm) {
-          uni.reLaunch({ url: '/pages/login/index' });
+          Router.goLogin();
         }
       },
     });
@@ -165,10 +164,6 @@ const onCancel = () => modelShow.value = false;
 </script>
 
 <style lang="scss" scoped>
-// page {
-//   padding: 30rpx;
-// }
-
 .coupon-list {
   padding: 30rpx;
   .receive {

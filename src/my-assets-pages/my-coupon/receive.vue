@@ -70,7 +70,9 @@
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-import { getUserCoupon, getLogo } from '@/api/coupon-center';
+import { getLogo } from '@/api/coupon-center';
+import { getUserCoupon } from '@/my-assets-pages/api/coupon';
+// getUserCoupon
 import Router from '@/utils/router';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
 // import Storage from '@/utils/storage';
@@ -123,20 +125,25 @@ const onGetCouponHandle = async () => {
   const res = await getUserCoupon(params);
   // console.log(JSON.stringify(res));
   handleFlag.value = false;
-  // console.log('getCouponsFront', res);
-  if (res.code === 4125) {
+  // console.log('getCouponsFront222222', res);
+  if (res.data === 30101065) {
     // 优惠券领取成功
     getResult.value = 'success';
     modelShow.value = true;
-  } else if (res.code === 4111) {
+  } else if (res.data === 30101042) {
     // 已失效
     getResult.value = 'invalid';
     modelShow.value = true;
-  } else if (res.code === 4124) {
+    //
+  } else if (res.data === 30101062) {
     // 已领完
     getResult.value = 'over';
     modelShow.value = true;
-  } else if (res.code === 4123) {
+  } else if (res.data === 30101043) {
+    // 已领
+    getResult.value = 'overing';
+    modelShow.value = true;
+  } else if (res.data === 30101063) {
     // 您不可领取自己转赠的优惠券
     getResult.value = 'self';
     modelShow.value = true;

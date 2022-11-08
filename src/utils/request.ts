@@ -134,6 +134,7 @@ const request = async <T = any>(
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
         token: Storage.getToken(),
+        'ops-id': 'CE273B4B-2146-1ACA-6547-04C8AB0F7E4F',
         sessionKey: '',
         refreshToken: '',
         epid,

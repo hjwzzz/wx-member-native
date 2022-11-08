@@ -37,10 +37,10 @@
               <view class="right-text">
                 <picker
                   mode="region"
-                  @change="(e:any)=>params.index = e.detail.value"
-                  :value="params.index"
+                  @change="(e:any)=>areaList = e.detail.value"
+                  :value="areaList"
                 >
-                  <view class="uni-input">{{ params.index?.join(' / ') }}</view>
+                  <view class="uni-input">{{ areaList?.join(' / ') }}</view>
                 </picker>
               </view>
               <span @click="showMap" style="color: #9697a2; white-space: nowrap"
@@ -70,9 +70,9 @@
           >
             <view class="left leftlen">设为默认地址</view>
             <switch
-              :checked="params.isDefault"
+              :checked="params.isDefault === 'Y'"
               :color="initBasicsData.mainColor"
-              @change="(e:any) => (params.isDefault = e.detail.value)"
+              @change="(e:any) => (params.isDefault = e.detail.value?'Y':'N')"
             ></switch>
           </view>
         </view>
@@ -89,45 +89,24 @@
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import CustomPage from '@/components/CustomPage/index.vue';
-import { addAddress, updateAddress } from '@/api/address';
+import { addAddress, updateAddress, getAddressById } from '@/pages/api/address';
+import type { IAddress } from '@/pages/api/types/address';
 import { onLoad } from '@dcloudio/uni-app';
 const initBasicsData = useBasicsData();
 
 const mall = ref(false);
 const props = defineProps({ id: { type: String } });
+const areaList = ref(['广东省', '深圳市', '罗湖区']);
+const params = ref<IAddress>({ isDefault: 'N' } as IAddress);
 
-onLoad(e => {
-  if (e.item) {
-    uni.setNavigationBarTitle({ title: '修改收货地址' });
-    const {
-      id,
-      city,
-      phone,
-      address,
-      receiver,
-      province,
-      district,
-      isDefault,
-    } = JSON.parse(e.item);
-    params.value = {
-      id,
-      index: [province, city, district],
-      phone,
-      address,
-      receiver,
-      isDefault: isDefault === 'true',
-    };
-  }
-});
-const params = ref<{
-  [key: string]: any;
-}>({
-  receiver: '',
-  phone: '',
-  address: '',
-  index: ['广东省', '深圳市', '罗湖区'],
-  isDefault: false,
-});
+onLoad(async e => e.id && getData(e.id));
+const getData = async (id: string) => {
+  uni.setNavigationBarTitle({ title: '修改收货地址' });
+  const { data } = await getAddressById(id);
+  params.value = data;
+  const { city, province, district } = data;
+  areaList.value = [province, city, district];
+};
 
 const showMap = () => {
   uni.chooseLocation({
@@ -137,15 +116,15 @@ const showMap = () => {
       if (!name && !address) return;
       params.value.address = name;
       const reg = /.+?(省|市|自治区|自治州|县|区)/g;
-      params.value.index = address.match(reg) as string[];
+      areaList.value = address.match(reg) as string[];
     },
     fail(res) {
-      console.error('fail', res);
+      throw new Error(res);
     },
   });
 };
 
-const editAddress = () => {
+const editAddress = async () => {
   // 校验数据
   const phoneReg =
     /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
@@ -155,7 +134,7 @@ const editAddress = () => {
     ['address', (e: string) => e.length > 2, '请输入详细地址'],
   ];
   const haveEmpty = rules.some(([k, v, s]) => {
-    if (!v(params.value[k])) {
+    if (!v(params.value[k as keyof IAddress] as string)) {
       uni.showModal({
         content: s,
         showCancel: false,
@@ -170,21 +149,23 @@ const editAddress = () => {
     params.value.id = props.id;
     url = updateAddress;
   }
-  const {
-    index: [province, city, district],
-    ...d
-  } = params.value;
+  const [province, city, district] = areaList.value;
 
-  url({ province, city, district, ...d, mid: initBasicsData.useMid })
-    .then(({ msg, code }) => {
-      if (msg === '成功' || code === 0) {
-        uni.showToast({
-          title: props.id ? '修改成功' : '保存成功',
-          duration: 3000,
-        });
-        setTimeout(uni.navigateBack, 500);
-      }
+  const { msg, code } = await url({
+    ...params.value,
+    province,
+    city,
+    district,
+    mid: initBasicsData.useMid,
+  });
+
+  if (msg === '成功' || code === 0) {
+    uni.showToast({
+      title: props.id ? '修改成功' : '保存成功',
+      duration: 3000,
     });
+    setTimeout(uni.navigateBack, 500);
+  }
 };
 </script>
 

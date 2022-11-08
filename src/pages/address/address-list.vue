@@ -11,7 +11,6 @@
               {{ item.phone }}
             </view>
           </view>
-          <!--  -->
           <view style="word-wrap: break-word">
             {{ item.province + item.city + item.district + item.address }}
           </view>
@@ -21,12 +20,12 @@
             <text
               :class="[
                 'iconfont margin-text',
-                item.isDefault == 'true' ? 'icon-yigouxuan' : 'icon-weigouxuan',
+                item.isDefault == 'Y' ? 'icon-yigouxuan' : 'icon-weigouxuan',
                 'icon-text',
               ]"
             >
             </text>
-            {{ item.isDefault ? '默认地址' : '设为默认' }}
+            {{ item.isDefault == 'Y' ? '默认地址' : '设为默认' }}
           </view>
           <view class="edit-del">
             <view style="margin-right: 48rpx" @click="goToUpdatePage(item)">
@@ -37,7 +36,6 @@
             </view>
           </view>
         </view>
-        <!-- icon-weigouxuan 未选择 icon-yigouxuan 已选中 -->
       </view>
       <view class="address-tip-show">
         <view class="adress-tip" v-if="adressList.length == 0">
@@ -62,35 +60,34 @@
 </template>
 
 <script setup lang="ts">
-import { deleteAddress, getAdressList, updateAddress } from '@/api/address';
+import {
+  deleteAddress,
+  getAdressList,
+  updateAddress,
+} from '@/pages/api/address';
+
+import type { IAddress } from '@/pages/api/types/address';
 import { onShow } from '@dcloudio/uni-app';
 import { ref } from 'vue';
-import { useBasicsData } from '@/store/basicsData';
 import CustomPage from '@/components/CustomPage/index.vue';
 import { staticUrl } from '@/utils/config';
 
 const props = defineProps({ flag: { type: Boolean, default: false } });
-const adressList = ref<any[]>([]);
-const store = useBasicsData();
-const getData = (flag = false) => {
-  getAdressList({ mid: store.useMid || 'C880523C-623F-BAC9-D951-07FCC9E9A9E4' })
-    .then(res => {
-      const { records } = res.data;
-      adressList.value = records;
-      if (flag) {
-        setTimeout(() => {
-          uni.showToast({
-            title: '设置成功!',
-            icon: 'none',
-          });
-        }, 100);
-      }
-    });
+const adressList = ref<IAddress[]>([]);
+const getData = async (flag = false) => {
+  const { data } = await getAdressList('');
+  adressList.value = data;
+  if (flag) {
+    setTimeout(() => {
+      uni.showToast({
+        title: '设置成功!',
+        icon: 'none',
+      });
+    }, 100);
+  }
 };
-onShow(() => {
-  getData();
-});
-const handleSelectedAddress = (e: any) => {
+onShow(getData);
+const handleSelectedAddress = (e: IAddress) => {
   if (!props.flag) return;
   uni.$emit('chooseAddress', e);
   uni.navigateBack();
@@ -98,11 +95,11 @@ const handleSelectedAddress = (e: any) => {
 
 // 编辑地址;
 const handleSelectedGuid = () => uni.navigateTo({ url: 'add' });
-const goToUpdatePage = (e: any) => {
-  uni.navigateTo({ url: `add?id=${e.id}&item=${JSON.stringify(e)}` });
+const goToUpdatePage = (e: IAddress) => {
+  uni.navigateTo({ url: `add?id=${e.id}` });
 };
 const deleAdress = async (id: string) => {
-  const { cancel }: any = await uni.showModal({ content: '确定要删除该地址吗？' });
+  const { cancel } = (await uni.showModal({ content: '确定要删除该地址吗？' })) as unknown as { cancel: boolean };
   if (cancel) return;
   const { msg } = await deleteAddress(id);
   if (msg !== '成功') return;
@@ -113,8 +110,8 @@ const deleAdress = async (id: string) => {
   getData();
 };
 // 修改默认地址
-const changeDefaultAddress = async (e: any, d: string) => {
-  e.isDefault = d === 'true' ? 'false' : 'true';
+const changeDefaultAddress = async (e: IAddress, d: string) => {
+  e.isDefault = d === 'Y' ? 'N' : 'Y';
   const { msg } = await updateAddress(e);
   msg === '成功' && getData(true);
 };

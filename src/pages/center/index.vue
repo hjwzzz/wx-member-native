@@ -205,9 +205,9 @@ const todayGoldPriceShowed = ref(false);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
-const login = () => {
-  uni.navigateTo({ url: '/pages/login/index' });
-};
+// const login = () => {
+//   uni.navigateTo({ url: '/pages/login/index' });
+// };
 
 onShow(() => {
   getMemberCentertIndex();

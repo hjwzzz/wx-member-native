@@ -2,7 +2,7 @@
 import { baseUrl } from '@/utils/config';
 import request from '@/utils/request';
 
-// 根据微信APPID获取EAPPID
+//
 export const wxmemberIndex = async (data: unknown) => {
   const url = `${baseUrl}/emp-base/wxmeberFront/wxmember/index`;
   const res = await request(url, data);

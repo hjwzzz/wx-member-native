@@ -50,7 +50,8 @@ import {
   onReachBottom,
   onUnload,
 } from '@dcloudio/uni-app';
-import { queryFront, updateReceiveSend, updateToStore } from '@/api/my-prize';
+import { updateReceiveSend, updateToStore } from '@/api/my-prize';
+import { queryFront } from '../api/my-prize';
 import goods from './component/Goods.vue';
 import NoneData from '@/pages/component/NoneData.vue';
 import Tabs from '@/components/Tabs/index.vue';
