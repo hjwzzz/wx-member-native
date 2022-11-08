@@ -265,6 +265,10 @@
     <!-- <fail-popup v-model="showPopup" ref="failPopup" /> -->
     <!-- 提示 -->
     <!-- <u-toast ref="uToast" :duration="3000" /> -->
+    <toast-template
+      v-model:visible="toastVisible"
+      :message="toastMsg"
+    ></toast-template>
     <!-- 活动规则 -->
     <rule-template
       v-if="styleObj.page.actRuleContent"
@@ -291,7 +295,7 @@ import {
 } from '@/activity-pages/api/popularity';
 import TimeCountDown from '../component/TimeCountDown/index.vue';
 import { richImage } from '@/utils/util';
-import OptionsTemplate from './component/Options/index.vue';
+import OptionsTemplate from '../component/Options/index.vue';
 import EmptyTemplate from './component/Empty/index.vue';
 import RankListTemplate from './component/RankList/index.vue';
 import RuleTemplate from '../component/Rules/index.vue';
@@ -299,6 +303,7 @@ import AuthPopup from './component/AuthPopup/index.vue';
 import Router from '@/utils/router';
 import { onHide, onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { useBasicsData } from '@/store/basicsData';
+import ToastTemplate from '../component/Toast/index.vue';
 
 const initBasicsData = useBasicsData();
 const id = ref('');
@@ -389,7 +394,7 @@ onHide(() => {
   }
 });
 onUnload(() => {
-  optionsTemplateRef.value.clearFun();
+  optionsTemplateRef.value?.clearFun();
 });
 
 const onLogin = () => {
@@ -489,12 +494,11 @@ const getRankList = () => {
     });
 };
 // 提示
+const toastVisible = ref(false);
+const toastMsg = ref('');
 const showToast = (str: string) => {
-  uni.showToast({
-    title: str,
-    duration: 3000,
-    icon: 'none',
-  });
+  toastMsg.value = str;
+  toastVisible.value = true;
 };
 // 获取中奖信息列表
 const getNoticeList = () => {

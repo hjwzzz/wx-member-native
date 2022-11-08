@@ -225,7 +225,7 @@ import { ref, reactive, computed } from 'vue';
 import Router from '@/utils/router';
 import { queryAllLevelRights } from '@/api/server';
 import { onLoad, onShow } from '@dcloudio/uni-app';
-import { queryCommonUserActivityAwardList } from '@/activity-pages/api/inviteGift';
+import { queryCommonUserActivityAwardList } from '@/activity-pages/api/invite-gift';
 import { staticUrl } from '@/utils/config';
 
 const actId = ref('');

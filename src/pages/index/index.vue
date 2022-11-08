@@ -168,11 +168,15 @@
 import { ref, onMounted, Ref, computed } from 'vue';
 import { queryGoldPriceByPage } from '@/api/server';
 import {
-  wxmemberIndex,
+  // wxmemberIndex,
   getIndexAdBannerList,
   queryPopup,
   getWmAlertAdBannerList,
 } from '@/api/index';
+
+import { getWmIndex } from '@/pages/api/index';
+
+//
 import { useBasicsData } from '@/store/basicsData';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
@@ -202,7 +206,7 @@ const goldPrice: Ref<any> = ref([]);
 const todayGoldPriceShowed = ref(false);
 // 页面数据
 const getPageDate = async () => {
-  const result = await wxmemberIndex('');
+  const result = await getWmIndex('');
   const banner = result.data?.bannerList || [];
 
   dataList.value = result.data;

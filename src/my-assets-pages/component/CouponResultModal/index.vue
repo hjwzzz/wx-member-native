@@ -43,6 +43,9 @@ const showText = computed(() => {
   if (props.type === 'over') {
     return '优惠券已被领完了';
   }
+  if (props.type === 'overing') {
+    return '优惠券已领取';
+  }
   if (props.type === 'self') {
     return '抱歉，您不可领取自己转赠的优惠券';
   }

@@ -1,12 +1,20 @@
 // import type { wxmeberFront, member } from '@/typings/api';
-import { baseUrl } from '@/utils/config';
+import { baseUrl, devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
-
+// 微会员导航栏获取
+export const getWeMemberNavFront = async () => {
+  const url = `${devBaseUrl}/sysUiFront/getWeMemberNavFront`;
+  return request(url, '');
+};
 // 获取主题色系
-export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
+export const queryWmColorThemeFront = async () => request(`${devBaseUrl}/sysUiFront/queryWmColorThemeFront`, '');
+
+// 以下-------------------
+// 获取主题色系
+// export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
 
 // 微会员导航栏获取
-export const getWmmeberNavRequest = () => request(`${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`, '');
+// export const getWmmeberNavRequest = () => request(`${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`, '');
 
 // 获取企业LOGO
 export const getLogoRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getLogo`, '');

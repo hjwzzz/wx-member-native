@@ -18,9 +18,7 @@
           <template #btn>
             <view @click.stop="">
               <button
-                v-if="
-                  item.couponStatus === 'EFFECTIVE' && item.present.code === 'Y'
-                "
+                v-if="item.couponStatus === 'EFFECTIVE' && item.present === 'Y'"
                 class="share-btn"
                 :style="{
                   color: item.style.topBgColorTop,
@@ -87,11 +85,14 @@ import { onShareAppMessage, onLoad } from '@dcloudio/uni-app';
 import { onMounted, ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/index.vue';
-import { queryMyCouponList } from '@/api/coupon-center';
+// import { queryMyCouponList } from '@/api/coupon-center';
+import { queryCouponPageFront } from '@/my-assets-pages/api/coupon';
+
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import { staticUrl } from '@/utils/config';
 import { onShareCoupon } from '@/utils/util';
+import Router from '@/utils/router';
 // import Storage from '@/utils/storage';
 onLoad(() => {
   uni.hideShareMenu({ hideShareItems: ['shareAppMessage', 'shareTimeline'] });
@@ -132,17 +133,13 @@ const getCouponList = async () => {
     mid: initBasicsData.useMid,
     couponStatus: couponStatus.value,
     pageSize: pageSize.value,
-    sort: {
-      field: '',
-      sort: '',
-    },
   };
   uni.showLoading({
     title: '加载中',
     mask: true,
   });
   // this.loading = true;
-  const res = await queryMyCouponList(params);
+  const res = await queryCouponPageFront(params);
   uni.hideLoading();
   if (res.code === 0 && res.data) {
     const { curPage, totalPage, records } = res.data;
@@ -162,7 +159,9 @@ const getCouponList = async () => {
 
 const onCouponDetail = (item: any) => {
   uni.setStorageSync('ticketInfo', item);
-  uni.navigateTo({ url: '/my-assets-pages/my-coupon/detail' });
+  // coupon_detail
+  Router.goCodePage('coupon_detail');
+  // uni.navigateTo({ url: '/my-assets-pages/my-coupon/detail' });
 };
 </script>
 
