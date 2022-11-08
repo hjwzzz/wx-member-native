@@ -177,7 +177,7 @@ const hideWxMiniAuthModal = () => {
 };
 
 const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
-  const { data, code, msg } = await wxMiniAuthRequest(params);
+  const { data, code, msg } = await wxMiniAuthRequest(params) as any;
   if (code !== 0 || !data.token) {
     uni.showModal({
       content: msg || '登录失败',

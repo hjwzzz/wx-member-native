@@ -27,7 +27,7 @@ const pageCode: any = {
   point_mall_commodity: '/my-assets-pages/point-mall/index', // 商品(积分)
   point_mall_index: '/my-assets-pages/point-mall/index', // 首页(积分)
   reg: '', // 注册登录
-  invite_courteous: '', // 邀请有礼
+  invite_courteous: '/activity-pages/invite-gift/index', // 邀请有礼
   my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
   reservation: '/reservation-service-pages/reservation-service/index', // 预约服务
   warranty_list: '', // 质保单列表
@@ -53,6 +53,7 @@ const pageCode: any = {
   location: '/pages/center/user-info/address', // 修改地址
   goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
+  popularity: '/activity-pages/popularity/index', // 活动-人气值千金
 };
 
 // 路由控制

@@ -374,6 +374,12 @@
           "style": {
             "navigationBarTitleText": "兑换奖品"
           }
+        },
+        {
+          "path": "invite-gift/index",
+          "style": {
+            "navigationBarTitleText": "邀请有礼"
+          }
         }
       ]
     }

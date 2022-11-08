@@ -160,3 +160,12 @@ export function cloneDeep(target: any) {
   }
   return result;
 }
+
+export function copyText(val: string) {
+  const oInput = document.createElement('input');
+  oInput.value = val;
+  document.body.appendChild(oInput);
+  oInput.select(); // 选择对象
+  document.execCommand('Copy'); // 执行浏览器复制命令
+  document.body.removeChild(oInput); // 删除临时实例
+}

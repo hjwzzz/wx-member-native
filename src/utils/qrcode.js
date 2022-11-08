@@ -1852,8 +1852,7 @@
         return;
       }
 
-      let size = Math.min(cavW, cavH);
-      console.log(width);
+      let size = Math.min(cavW, cavH); 
       const frame = this.getFrame(string),
       ctx = wx.createContext(),
       px = Math.round(size / (width )); 

@@ -6,21 +6,19 @@
         <view class="left">
           <image
             class="img"
-            :src="`${staticUrl}prize/${
-              detail.status?.code ?? detail.status
-            }.png`"
+            :src="`${staticUrl}prize/${detail.status}.png`"
             mode=""
           />
         </view>
         <view class="right">
-          <view class="title">{{ statusName }}</view>
+          <view class="title">{{ detail.statusName }}</view>
           <view class="text">{{ detail.remindContent }}</view>
         </view>
       </view>
       <!-- 核销码 -->
       <view
         class="Qrode"
-        v-if="statusName === '待领取' && detail.recvManner?.code === '1'"
+        v-if="detail.statusName === '待领取' && detail.recvManner === '1'"
       >
         <view class="verification"> 核销码：{{ detail.vcode }} </view>
         <view class="erweima">
@@ -32,7 +30,7 @@
         <view class="guoqi"> 有效期至：{{ detail.cutExpireTime }} </view>
       </view>
       <!-- 领取成功状态 -->
-      <view class="Qrode" v-if="statusName === '已领取'">
+      <view class="Qrode" v-if="detail.statusName === '已领取'">
         <view class="erweima">
           <image :src="`${staticUrl}prize/lingquchenggong.png`" mode="" />
         </view>
@@ -42,9 +40,9 @@
       <!-- 收件人信息 -->
       <view
         v-if="
-          detail.recvManner?.code === '2' &&
+          detail.recvManner === '2' &&
           (detail.receiver || detail.phone || detail.fullAddress) &&
-          statusName !== '已失效'
+          detail.statusName !== '已失效'
         "
         class="youji"
       >
@@ -74,11 +72,15 @@
         </view>
       </Goods>
       <!-- 兑奖方式 -->
-      <Exchange :item="detail" v-if="statusName === '待兑换'"></Exchange>
+
+      <Exchange :item="detail" v-if="detail.statusName === '待兑换'"></Exchange>
       <!-- 门店信息 -->
       <view
         class="information"
-        v-if="statusName !== '待兑换' && detail.fulldisAddress"
+        v-if="
+          detail.statusName !== '待兑换' &&
+          !(detail.recvManner === '2' && !detail.fulldisAddress)
+        "
       >
         <view class="title"> 兑换信息 </view>
         <view class="address">
@@ -108,22 +110,22 @@
       <view
         class="foohead"
         v-if="
-          statusName !== '待兑换' &&
+          detail.statusName !== '待兑换' &&
           (detail.receiver || detail.phone || detail.bizTime)
         "
       >
         <view class="a1" v-for="{ k, v } in manInfoRow" :key="k">
           <view class="left"> {{ k }} </view>
           <view class="right">
-            {{ detail[v as keyof prizeType] || '--' }}
+            {{ detail[v as keyof IPrize] || '--' }}
           </view>
         </view>
       </view>
       <!-- 发货信息 -->
       <view
         v-if="
-          ['已领取', '待领取', '已发货'].includes(statusName) &&
-          detail.recvManner?.code === '2'
+          ['已领取', '待领取', '已发货'].includes(detail.statusName) &&
+          detail.recvManner === '2'
         "
         class="foohead"
         style="border-radius: 12rpx"
@@ -149,10 +151,7 @@
         </view>
       </view>
 
-      <view
-        v-if="statusName === '待领取' || statusName === '已发货'"
-        class="button"
-      >
+      <view v-if="showSureButton(detail)" class="button">
         <button class="btn" type="button" @click="getPrize">确认领取</button>
       </view>
     </view>
@@ -162,14 +161,15 @@
 <script setup lang="ts">
 import qrCode from '@/utils/qrcode.js';
 import {
-  queryDetail,
-  querySend,
-  queryStatus,
+  getPrizeDetail,
+  getPrizeInfoSend,
+  getPrizeInfoToStore,
   updateReceiveSend,
   updateToStore,
-} from '@/api/my-prize';
+} from '@/my-assets-pages/api/my-prize';
+import type { IPrize } from '@/my-assets-pages/api/types/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
-import { ref, toRef } from 'vue';
+import { ref } from 'vue';
 import Goods from './component/Goods.vue';
 import { useBasicsData } from '@/store/basicsData';
 import Exchange from './component/Exchange.vue';
@@ -182,49 +182,7 @@ const props = defineProps<{
   id: string;
   getWay: string;
 }>();
-interface prizeType {
-  // 奖品信息
-  id: string;
-  url: string;
-  quantity: string;
-  recvTime: string;
-  cutValidTime: string;
-  prizeName: string;
-  cutExpireTime: string;
-  // 是否开放兑换
-  tommorry: boolean;
-  // 获取途径
-  relatedKind: { name: string };
 
-  /**
-   * 领取方式 1到店 2邮寄
-   */
-  recvManner: { code: '1' | '2' };
-  param: { allowGet: string };
-  status: { name: string; code: string };
-  // 二维码
-  vcode: string;
-  // 店铺信息
-  distName: string;
-  disProvince: string;
-  disCity: string;
-  disDistrict: string;
-  disAddress: string;
-  // 领取人信息
-  tel: string;
-  receiver: string;
-  phone: string;
-  bizTime: string;
-  recvBillNo: string;
-  // 快递信息
-  expNo: string;
-  express: string;
-  shipTime: string;
-  // 自定义
-  remindContent: string; // 订单状态对应的提示语
-  fullAddress: string; // 完整收货人地址
-  fulldisAddress: string; // 完整公司地址
-}
 const manInfoRow = [
   {
     k: '领取人',
@@ -243,51 +201,53 @@ const manInfoRow = [
     v: 'recvBillNo',
   },
 ];
-
-const detail = ref<prizeType>({} as prizeType);
-const statusName = toRef(props, 'name');
-const recvMannerCode = toRef(props, 'getWay');
+const showSureButton = (item: IPrize) => {
+  const {
+    statusName, // 奖品状态
+    recvManner, // 领取方式 邮寄、到店
+    param,
+  } = item;
+  const p = JSON.parse(param || '{"allowGet":"N"}');
+  return (
+    ['待领取', '已发货'].includes(statusName) &&
+    ['1', '2'].includes(recvManner) &&
+    p.allowGet === 'Y'
+  );
+};
+const detail = ref<IPrize>({} as IPrize);
 
 const getData = async () => {
-  let detailRequest = querySend;
-  if (recvMannerCode.value === '1') {
-    detailRequest = queryStatus;
+  const { data, code } = await getPrizeDetail(props.id);
+  const { recvManner } = data;
+  if (data.status !== 'TEXC') {
+    const request = recvManner === '1' ? getPrizeInfoToStore : getPrizeInfoSend;
+    const { data: d } = await request(props.id);
+    Object.assign(data, d);
   }
-  if (statusName.value === '待兑换') {
-    detailRequest = queryDetail;
-  }
-  const { data, code } = await detailRequest(props.id);
-  data.param = JSON.parse(data.param);
+
   if (code === 0) {
     data.name ??= data.prizeName;
 
-    // statusName.value = data.status.name;
-    // statusCode.value = data.status.code;
-    data.status = 'INVALID';
     // 提示标语
     const orderStatusRemindObj: any = {
       UNCLAIMED: ['请到指定门店领取', '商家已发货，请收到货后再确认收货'], // 待领取
       SHIPPED: ['请到指定门店领取', '请到指定门店领取'], // 已发货
       FINISHED: ['您已领取奖品', '您已确认收货并领取奖品'], // 已领取
       CHOICE: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
+      CONFIRMERD: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
       DELIVERED: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
       INVALID: ['您的奖品已超过领取时间', '您的奖品已超过兑换时间'], // 已失效
     };
-    const remindArr = orderStatusRemindObj[data.status?.code ?? data.status];
-    if (remindArr) {
-      data.remindContent = remindArr[parseInt(recvMannerCode.value) - 1];
-    }
-
+    const remindArr = orderStatusRemindObj[data.status];
+    data.remindContent = remindArr?.[+recvManner - 1];
     // 完整地址
     data.fullAddress = mergeFullAddress(data);
     data.fulldisAddress = mergeFullAddress(data, 'dis');
-
     detail.value = data;
-
     // 二维码;
     if (
-      statusName.value === '待领取' &&
-      recvMannerCode.value === '1' &&
+      detail.value.statusName === '待领取' &&
+      recvManner === '1' &&
       data.vcode
     ) {
       qrCode.draw(data.vcode, 'myQrcode', 150, 150);
@@ -303,7 +263,7 @@ const getPrize = async () => {
   if (cancel) return;
   const { recvManner } = detail.value;
   let updateRequest = updateReceiveSend; // 2邮寄
-  if (recvManner?.code === '1') {
+  if (recvManner === '1') {
     updateRequest = updateToStore; // 1到店
   }
   const { code } = await updateRequest({
@@ -365,7 +325,7 @@ onLoad(() => {
   font-size: 12px;
   font-weight: 400;
   color: #b7b8c4;
-  margin-top: 3 0rpx;
+  margin-top: 30rpx;
 }
 // 兑换信息
 .information {
@@ -456,7 +416,7 @@ onLoad(() => {
 
   .guoqi {
     margin-top: 40rpx;
-    /* padding: 90rpx; */
+    padding: 0 90rpx;
     margin: 0 56rpx;
     height: 64rpx;
     line-height: 64rpx;

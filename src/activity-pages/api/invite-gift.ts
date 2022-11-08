@@ -2,9 +2,9 @@ import { baseUrl } from '@/utils/config';
 import request from '@/utils/request';
 
 // 查询邀请活动信息
-export const getInviteActInfo = async (data: any) => {
+export const getInviteActInfo = async (data: any, isLoading = true) => {
   const url = `${baseUrl}/emp-base/activity/inviteFront/getInviteActInfo`;
-  return await request(url, data);
+  return await request(url, data, 'post', isLoading);
 };
 // 查询邀请动态达标记录
 export const queryInviteTargetRecordPage = async (data: any) => {
