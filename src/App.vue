@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onLaunch } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
-import { getWmmeberNavRequest, getWmColorTheme } from '@/api/server';
+import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
 // import Storage from '@/utils/storage';
 const initBasicsData = useBasicsData();
@@ -9,9 +9,10 @@ const initBasicsData = useBasicsData();
 // 获取基础数据
 const initData = async () => {
   const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
-    getWmColorTheme(),
-    getWmmeberNavRequest(),
+    queryWmColorThemeFront(),
+    getWeMemberNavFront(),
   ]);
+
   if (getWmmeberNavRequestRes.data) {
     const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
     initBasicsData.setBottomNavList(bottomNavList);
