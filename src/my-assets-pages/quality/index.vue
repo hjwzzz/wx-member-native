@@ -66,7 +66,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
-import { warrantyList } from '@/api/quality';
+// import { warrantyList } from '@/api/quality';
+import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 // const showModal = ref(false);
@@ -108,7 +109,7 @@ const getWarrantyList = async () => {
     curPage: 1,
     pageSize: 1000,
   };
-  const res = await warrantyList(body);
+  const res = await queryWarrantyListPageFront(body);
   dataList.value = [];
   const { records, totalPage: total } = res.data;
   totalPage.value = total;

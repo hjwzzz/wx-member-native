@@ -5,3 +5,9 @@ export const getWmIndex = async (data: any) => {
   const url = `${devBaseUrl}/sysUiFront/getWmIndex`;
   return request(url, data);
 };
+
+// 获取首页广告图
+export const queryHomBannerListFront = async (data: any) => {
+  const url = `${devBaseUrl}/usr/memberAdvertFront/queryHomBannerListFront`;
+  return request(url, data);
+};

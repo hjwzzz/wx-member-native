@@ -93,16 +93,24 @@
 import { computed, Ref, ref } from 'vue';
 import { queryShareSett } from '@/api';
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
+import { richImage } from '@/utils/util';
+
 import {
-  getGoldPriceAdBannerList,
+  // getGoldPriceAdBannerList,
   queryDefShowGoldPrice,
   queryGoldPriceByDist,
 } from '@/api/gold-price';
+import {
+  queryGoldPriceBannerListFront,
+  getSaleMetalPrice,
+} from '@/my-assets-pages/api/gold-price';
+
 import router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import Tabs from '@/components/Tabs/index.vue';
 
 onLoad((e: any) => {
+  console.log('onLoad((e: any) ', e);
   isShare();
   getBannerList();
   getGoldPrice(e.distId);
@@ -121,24 +129,25 @@ const onChooseStore = () => {
   router.goCodePage('storeInfo');
 };
 
-const richImage = (e: any) => {
-  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
-  return content;
-};
+// const richImage = (e: any) => {
+//   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+//   const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+//   return content;
+// };
 let shareObj: any = {};
 const defaultObj: any = {};
 const showTabs = computed(() => list.value.map(i => i.name));
 const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
 
 const getBannerList = async () => {
-  const res = await getGoldPriceAdBannerList('');
+  const res = await queryGoldPriceBannerListFront('');
   bannerList.value = res.data;
 };
 
 const getGoldPrice = async (id = '') => {
   const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
   const { code, data } = await url(id);
+  // const { code, data } = await getSaleMetalPrice(id);
 
   if (code === 0) {
     list.value = [];
@@ -169,19 +178,19 @@ const isShare = async () => {
   uni.hideShareMenu({ hideShareItems });
 };
 onShareAppMessage(() => {
-  {
-    return {
-      title: `${
-        shareObj.shareChumTitle || defaultObj.miniProgramName || ''
-      }金千枝今日金价`,
-      // path: "pages/center/gold-price/index",
-      path: 'pages/center/gold-price/index',
-      desc: `${
-        shareObj.shareChumDescribe || defaultObj.miniProgramName || ''
-      }金千枝今日金价`,
-      imageUrl: shareObj.shareChumImage,
-    };
-  }
+  const {
+    shareChumTitle: title,
+    shareChumDescribe: describe,
+    shareChumImage,
+  } = shareObj;
+  const name = defaultObj.miniProgramName || '';
+  const msg = '金千枝今日金价';
+  return {
+    title: `${title || name}${msg}`,
+    path: 'pages/center/gold-price/index',
+    desc: `${describe || name}${msg}`,
+    imageUrl: shareChumImage,
+  };
 });
 </script>
 

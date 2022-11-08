@@ -9,6 +9,12 @@ export const getWeMemberNavFront = async () => {
 // 获取主题色系
 export const queryWmColorThemeFront = async () => request(`${devBaseUrl}/sysUiFront/queryWmColorThemeFront`, '');
 
+// 获取质保单列表
+export const queryWarrantyListPageFront = async (data: any) => {
+  const url = `${devBaseUrl}/warranty/usr/queryWarrantyListPageFront`;
+  return request(url, data);
+};
+
 // 以下-------------------
 // 获取主题色系
 // export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
@@ -36,10 +42,10 @@ export const getPayOrder = async (data: any) => {
 };
 
 // 获取质保单列表
-export const queryPolicyList = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
-  return await request(url, data);
-};
+// export const queryPolicyList = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
+//   return await request(url, data);
+// };
 
 //  会员权益
 export const queryAllLevelRights = async (data: any) => {

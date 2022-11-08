@@ -129,9 +129,8 @@
         <!-- 今日金价 -->
         <TodayGoldPrice
           v-else-if="item.kind === entryType.GO"
-          :showed="todayGoldPriceShowed"
-          :goldPrice="goldPrice"
           :title="item.param.title"
+          type="WM_CENTER"
         />
         <!-- 积分商品推荐 -->
         <ContentMall v-else-if="item.kind === entryType.RE" />
@@ -165,7 +164,9 @@
 import { onShow } from '@dcloudio/uni-app';
 import { ref, reactive, Ref } from 'vue';
 import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
-import { queryGoldPriceByPage } from '@/api/server';
+import { getMemberCenterIndex } from '@/pages/api/center';
+//
+// import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
@@ -200,8 +201,8 @@ const userInfo = reactive({
 const loginList: Ref<any> = ref([]);
 const panelList: Ref<any> = ref([]);
 const bannerList: Ref<any> = ref([]);
-const goldPrice: Ref<any> = ref([]);
-const todayGoldPriceShowed = ref(false);
+// const goldPrice: Ref<any> = ref([]);
+// const todayGoldPriceShowed = ref(false);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
@@ -212,7 +213,7 @@ const policyListNum = ref(0);
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
-  getGoldPriceByPage();
+  // getGoldPriceByPage();
 });
 
 const getMemberCentertIndex = async () => {
@@ -259,26 +260,26 @@ const bannerListClick = (item: any) => {
 };
 
 // 获取今日金价
-const getGoldPriceByPage = async () => {
-  if (!initBasicsData.checkLogin) {
-    return;
-  }
-  const res = await queryGoldPriceByPage('WM_CENTER');
-  if (res.code === 0 && res.data) {
-    const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
-    // this.uiParam = uiParam;
-    const { showNum } = param;
-    const result: any = [];
+// const getGoldPriceByPage = async () => {
+//   if (!initBasicsData.checkLogin) {
+//     return;
+//   }
+//   const res = await queryGoldPriceByPage('WM_CENTER');
+//   if (res.code === 0 && res.data) {
+//     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
+//     // this.uiParam = uiParam;
+//     const { showNum } = param;
+//     const result: any = [];
 
-    branPriceList.map((item: any, index: number) => {
-      if (index < showNum) {
-        result.push(item);
-      }
-    });
-    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
-    goldPrice.value = result;
-  }
-};
+//     branPriceList.map((item: any, index: number) => {
+//       if (index < showNum) {
+//         result.push(item);
+//       }
+//     });
+//     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
+//     goldPrice.value = result;
+//   }
+// };
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
