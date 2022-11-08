@@ -2,7 +2,7 @@ import { devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
 import type { IAddress } from '@/pages/api/types/address';
 // 查询会员收货地址表
-export const getAdressList = async (data: any) => {
+export const getAdressList = async (data: any = '') => {
   const url = `${devBaseUrl}/usr/addressFront/queryAddressListFront`;
   return request<IAddress[]>(url, data);
 };

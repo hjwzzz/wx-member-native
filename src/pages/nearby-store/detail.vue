@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { queryStoreDetails } from '@/api/my-prize';
+import { queryStoreDetails } from '@/pages/api/store';
 import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';

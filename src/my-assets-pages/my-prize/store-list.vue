@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 import NoneData from '@/pages/component/NoneData.vue';
-import { updateNearStore } from '@/api/my-prize';
+import { getNearStore } from '@/my-assets-pages/api/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
@@ -153,7 +153,7 @@ const updateNearStorePost = async () => {
     return [lng, lat].filter(Boolean)
       .join(',');
   }
-  const { code, data } = await updateNearStore({
+  const { code, data } = await getNearStore({
     distId: '',
     storeName: keyward.value,
     coordCur: logValut(local.value) || '',
