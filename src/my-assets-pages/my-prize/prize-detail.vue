@@ -41,8 +41,7 @@
       <view
         v-if="
           detail.recvManner === '2' &&
-          (detail.receiver || detail.phone || detail.fullAddress) &&
-          detail.statusName !== '已失效'
+          (detail.receiver || detail.phone || detail.fullAddress)
         "
         class="youji"
       >
@@ -58,7 +57,7 @@
               {{ detail.phone }}
             </text>
           </view>
-          <view class="text addr-show" style="margin-right: 30rpx">
+          <view class="text addr-show">
             <text>
               {{ detail.fullAddress || '--' }}
             </text>
@@ -67,9 +66,9 @@
       </view>
 
       <Goods :item="detail" :status="false">
-        <view class="addTime">
+        <!-- <view class="addTime">
           兑换有效期：{{ detail.cutValidTime }}至{{ detail.cutExpireTime }}
-        </view>
+        </view> -->
       </Goods>
       <!-- 兑奖方式 -->
 
@@ -207,6 +206,10 @@ const showSureButton = (item: IPrize) => {
     recvManner, // 领取方式 邮寄、到店
     param,
   } = item;
+  if (recvManner === '2') {
+    return ['待领取', '已发货'].includes(statusName);
+  }
+
   const p = JSON.parse(param || '{"allowGet":"N"}');
   return (
     ['待领取', '已发货'].includes(statusName) &&
@@ -237,9 +240,11 @@ const getData = async () => {
       CONFIRMERD: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
       DELIVERED: ['商家备货完成后即可到店领取', '商家备货完成后将发货'], // 备货中
       INVALID: ['您的奖品已超过领取时间', '您的奖品已超过兑换时间'], // 已失效
+      CLOSED: ['奖品已失效，无法兑换', '奖品已失效，无法兑换'], // 已失效
     };
     const remindArr = orderStatusRemindObj[data.status];
     data.remindContent = remindArr?.[+recvManner - 1];
+    data.statusName === '已关闭' && (data.statusName = '已失效');
     // 完整地址
     data.fullAddress = mergeFullAddress(data);
     data.fulldisAddress = mergeFullAddress(data, 'dis');
@@ -416,7 +421,8 @@ onLoad(() => {
 
   .guoqi {
     margin-top: 40rpx;
-    padding: 0 90rpx;
+    // padding: 0 90rpx;
+    width: 478rpx;
     margin: 0 56rpx;
     height: 64rpx;
     line-height: 64rpx;

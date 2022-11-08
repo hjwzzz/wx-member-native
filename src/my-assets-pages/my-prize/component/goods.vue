@@ -4,7 +4,7 @@
       <view class="left">
         <image class="good-img" :src="item.url" mode="aspectFill" />
         <view class="center">
-          <view class=""> {{ item.prizeName }} </view>
+          <view class="title-view"> {{ item.prizeName }} </view>
           <view class="amount"> x{{ item.quantity }} </view>
           <view class="amount">
             {{ item.relatedKindName }}
@@ -63,6 +63,14 @@ const item = toRef(props, 'item');
     width: 340rpx;
     color: #323338;
     font-size: 28rpx;
+    .title-view {
+      line-height: 40rpx;
+      max-height: 80rpx;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
     .amount {
       font-size: 24rpx;
       margin-top: 10rpx;
