@@ -1,8 +1,8 @@
-import { baseUrl } from '@/utils/config';
+import { baseUrl, devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
 // 会员签到
 export const addMemberSignActivity = async (data: any) => {
-  const url = `${baseUrl}/emp-base/signActivityFront/usr/addMemberSignActivity`;
+  const url = `${devBaseUrl}/signActivityFront/usr/saveMemberSignActivityFront`;
   const res = await request(url, data);
   return res;
 };

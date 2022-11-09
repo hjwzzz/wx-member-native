@@ -130,6 +130,9 @@ const showSureButton = (item: IPrizeItem) => {
     recvManner, // 领取方式 邮寄、到店
     param,
   } = item;
+  if (recvManner === '2') {
+    return ['待领取', '已发货'].includes(statusName);
+  }
   return (
     ['待领取', '已发货'].includes(statusName) &&
     ['1', '2'].includes(recvManner) &&

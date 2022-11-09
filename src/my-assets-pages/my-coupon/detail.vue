@@ -185,10 +185,10 @@ const createdtatus = async () => {
     const { records = [] } = res.data;
     if (records.length > 0) ticketData.value = records[0];
     vcode.value = ticketData.value.vcode;
-    return;
+  } else {
+    ticketData.value = uni.getStorageSync('ticketInfo');
+    vcode.value = ticketData.value.vcode;
   }
-  ticketData.value = uni.getStorageSync('ticketInfo');
-  vcode.value = ticketData.value.vcode;
 
   qrCode.draw(vcode.value, 'myGiftQrcode', 155, 155);
   BrCode128(uni.createCanvasContext('Brcode'), vcode.value, '300', '64');
