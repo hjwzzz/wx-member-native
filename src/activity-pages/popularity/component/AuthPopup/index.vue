@@ -2,7 +2,6 @@
   <uni-popup
     ref="popupRef"
     class="auth-popup"
-    v-model="visible"
     border-radius="20"
     :safe-area-inset-bottom="true"
   >

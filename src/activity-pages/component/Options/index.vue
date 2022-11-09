@@ -94,8 +94,8 @@ const emits = defineEmits(['showRule']);
 const musicIcon = ref('https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png');
 const musicDisabledIcon = ref('https://img.dev.jqzplat.com/12D3868F/COMM/8c0ad9ea-20220525.png');
 const musicPlay = ref(true); // 是否播放音乐
-const musicDom = ref(null); // 音乐Dom
-const showRulePopup = ref(false); // 活动规则显示
+// const musicDom = ref(null); // 音乐Dom
+// const showRulePopup = ref(false); // 活动规则显示
 const isH5 = ref(true);
 // 暂停音乐
 const pauseMusic = () => {
@@ -144,15 +144,15 @@ const audioAutoPlay = () => {
   // #endif
 };
 // 设置音乐
-const setMusic = () => {
-  // #ifdef H5
-  // this.$nextTick(function(){
-  // 	const dom = document.querySelectorAll('audio')[0]
-  // 	this.musicDom = dom
-  // 	if (musicPlay.value) this.audioAutoPlay()
-  // })
-  // #endif
-};
+// const setMusic = () => {
+// #ifdef H5
+// this.$nextTick(function(){
+// 	const dom = document.querySelectorAll('audio')[0]
+// 	this.musicDom = dom
+// 	if (musicPlay.value) this.audioAutoPlay()
+// })
+// #endif
+// };
 // 音乐切换
 const musicCheck = () => {
   musicPlay.value = !musicPlay.value;
@@ -164,21 +164,21 @@ const musicCheck = () => {
   // #endif
 };
 // 音乐操作
-const onMusicFun = () => {
-  // #ifdef H5
-  // const audio = this.musicDom
-  // console.log('audio',audio)
-  // if (this.musicPlay) {
-  // 	audio.play()
-  // } else {
-  // 	audio.pause()
-  // }
-  // #endif
-  // #ifdef MP
-  // if (!this.showMusic) return
-  audioAutoPlay();
-  // #endif
-};
+// const onMusicFun = () => {
+// #ifdef H5
+// const audio = this.musicDom
+// console.log('audio',audio)
+// if (this.musicPlay) {
+// 	audio.play()
+// } else {
+// 	audio.pause()
+// }
+// #endif
+// #ifdef MP
+// if (!this.showMusic) return
+// audioAutoPlay();
+// #endif
+// };
 // 跳转
 const toLink = (type: number) => {
   switch (type) {
@@ -200,7 +200,7 @@ const toLink = (type: number) => {
   }
 };
 const clearFun = () => {
-  console.log('销毁2');
+  // console.log('销毁2');
   // #ifdef H5
   // musicDom.value = null
   // #endif

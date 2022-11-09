@@ -52,13 +52,13 @@ const tableArr = ref([
     name: '助力时间',
   },
 ]);
-const sortIconList = ref([
-  'https://img.dev.jqzplat.com/12D3868F/COMM/2f6cdf52-20220526.png',
-  'https://img.dev.jqzplat.com/12D3868F/COMM/990ae03e-20220526.png',
-  'https://img.dev.jqzplat.com/12D3868F/COMM/50b65049-20220526.png',
-]);
+// const sortIconList = ref([
+//   'https://img.dev.jqzplat.com/12D3868F/COMM/2f6cdf52-20220526.png',
+//   'https://img.dev.jqzplat.com/12D3868F/COMM/990ae03e-20220526.png',
+//   'https://img.dev.jqzplat.com/12D3868F/COMM/50b65049-20220526.png',
+// ]);
 
-const sortClassList = ref(['one', 'two', 'three']);
+// const sortClassList = ref(['one', 'two', 'three']);
 </script>
 <style lang="scss" scoped>
 .rank-title-box {

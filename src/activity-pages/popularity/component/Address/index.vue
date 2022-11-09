@@ -55,7 +55,7 @@ export default { name: '' };
 import { ref, PropType } from 'vue';
 import { cloneDeep } from '@/utils/util';
 
-const props = defineProps({
+defineProps({
   list: {
     type: Array as PropType<any[]>,
     default() {
@@ -74,7 +74,7 @@ const checkIcon = ref('https://img.dev.jqzplat.com/12D3868F/COMM/4f536893-202205
 const uncheckIcon = ref('https://img.dev.jqzplat.com/12D3868F/COMM/58ef1906-20220527.png');
 const onCheck = (e: any) => {
   const { item } = e.currentTarget.dataset;
-  console.log('onCheck1', item);
+  // console.log('onCheck1', item);
   emits('onCheck', cloneDeep(item));
 };
 </script>

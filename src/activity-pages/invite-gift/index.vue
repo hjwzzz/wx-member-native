@@ -293,15 +293,15 @@ onUnload(() => {
   optionsTemplateRef.value?.clearFun();
 });
 
-const isEnd = () => {
-  setTimeout(() => {
-    uni.showToast({
-      title: indexData?.endTag || '活动已结束',
-      icon: 'none',
-      duration: 3000,
-    });
-  }, 500);
-};
+// const isEnd = () => {
+//   setTimeout(() => {
+//     uni.showToast({
+//       title: indexData?.endTag || '活动已结束',
+//       icon: 'none',
+//       duration: 3000,
+//     });
+//   }, 500);
+// };
 const getParamData = async (scene: string, ops = {}) => {
   const res = await getIdByNumber(scene);
   setParamData({ ...ops, actId: res.data });
@@ -314,7 +314,7 @@ const setParamData = (options: any) => {
   //   pages: '/activity/inviteGift/index',
   //   ...options,
   // };
-  console.log('initBasicsData.checkLogin', initBasicsData.checkLogin);
+  // console.log('initBasicsData.checkLogin', initBasicsData.checkLogin);
   if (initBasicsData.checkLogin) {
     inviteHandle();
   } else {
@@ -371,26 +371,22 @@ const getRankData = async (type = 0) => {
 const richImageFun = (str: any) => richImage(str);
 const getIndexData = async (type = 'first', isLoading = true) => {
   const res = await getInviteActInfo({ actId: actId.value }, isLoading);
-  console.log('res', res);
+  // console.log('res', res);
   // this.indexData = res.data || this.indexData;
   Object.assign(indexData, res.data || indexData);
   hasTop.value =
     indexData.page.isOpenActCountdown || indexData.page.isShowJoinNum;
   // playStatus.value = indexData.page.isOpenBgMusic === 'Y';
-  console.log('indexData', indexData);
+  // console.log('indexData', indexData);
   if (indexData.page.isOpenInviterCarousel) {
     queryInviteTargetRecord();
   }
   if (indexData.page.isOpenRanking && initBasicsData.checkLogin) {
     getRankData();
   }
-  if (indexData?.activityStatus === 'ENDED') {
-    isEnd();
-  }
-  if (indexData.conditionErrorMsg) {
-    // 活动提示
-    showToast(indexData.conditionErrorMsg);
-  }
+  // if (indexData?.activityStatus === 'ENDED') {
+  //   isEnd();
+  // }
   if (type === 'update') {
     // 针对音乐开关状态更新，音乐播放异常问题
     if (indexData.page.isOpenBgMusic === 'N') optionsTemplateRef.value.pauseMusic();
@@ -403,9 +399,13 @@ const getIndexData = async (type = 'first', isLoading = true) => {
   }
   if (indexData.page.isOpenBgMusic === 'Y') {
     nextTick(() => {
-      console.log('optionsTemplateRef', optionsTemplateRef.value);
+      // console.log('optionsTemplateRef', optionsTemplateRef.value);
       optionsTemplateRef.value.audioAutoPlay();
     });
+  }
+  if (indexData.conditionErrorMsg) {
+    // 活动提示
+    showToast(indexData.conditionErrorMsg);
   }
   isInit.value = false;
   // #ifdef MP

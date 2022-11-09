@@ -9,6 +9,7 @@
     <scroll-view class="coupon-scroll-view" scroll-y>
       <view class="coupon-list">
         <CouponItem
+          class="coupon-item"
           v-for="(item, index) in couponListData"
           :item="item"
           :key="index"
@@ -173,7 +174,7 @@ const onCouponDetail = (item: any) => {
   min-height: calc(100vh - 292rpx - constant(safe-area-inset-bottom));
   min-height: calc(100vh - 292rpx - env(safe-area-inset-bottom));
   padding-top: 35rpx;
-  padding-bottom: 60rpx;
+  // padding-bottom: 60rpx;
   padding-left: 30rpx;
   padding-right: 30rpx;
   .status-image {
@@ -216,6 +217,11 @@ const onCouponDetail = (item: any) => {
       font-size: 28rpx;
       color: #9697a2;
     }
+  }
+}
+:deep(.coupon-item) {
+  &:last-child .coupon-list-item {
+    margin-bottom: 0;
   }
 }
 </style>

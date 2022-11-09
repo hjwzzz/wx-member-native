@@ -86,6 +86,9 @@ const queryPointListFun = async () => {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30rpx;
+    &:last-child {
+      margin-bottom: 0;
+    }
     .integral-item-image {
       width: 88rpx;
       height: 88rpx;
