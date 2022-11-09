@@ -10,6 +10,8 @@
         :bar-width="80"
         class="tabBar"
         @change="handleChangeTab"
+        sticky
+        offset-top="0px"
       />
       <scroll-view
         class="wrapper"
@@ -232,10 +234,15 @@ const querySubscribeList = async () => {
 
 <style scoped lang="scss">
 .myAppointment {
-  .tabBar {
-    position: sticky;
-    top: 0;
-  }
+  // padding-top: 80rpx;
+  // .tabBar {
+  //   // position: sticky;
+  //   position: fixed;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: 1;
+  //   box-shadow: 0px 5px 5px #efefef;
+  // }
   .wrapper {
     height: calc(100% - 86rpx);
     .main {
