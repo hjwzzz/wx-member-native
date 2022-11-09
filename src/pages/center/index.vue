@@ -196,6 +196,7 @@ const entryType = {
 const userInfo = reactive({
   avatarUrl: '',
   nickName: '',
+  name: '',
   curLevelName: '',
 });
 const loginList: Ref<any> = ref([]);
@@ -217,9 +218,9 @@ onShow(() => {
 });
 
 const getMemberCentertIndex = async () => {
-  const res = await memberCentertIndex('');
+  const res = await getMemberCenterIndex('');
   if (res.code === 0 && res.data) {
-    const { avatarUrl, nickName, wmCenterRspVo, curLevelName } = res.data;
+    const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
     const quickNavList = wmCenterRspVo.param?.quickNavList || [];
     const panelListItem: any = wmCenterRspVo.panelList;
     const srvObj =
@@ -230,7 +231,7 @@ const getMemberCentertIndex = async () => {
     srvProshowNum.value = srvObj.param?.showNum || 1;
     policyListNum.value = policyList.param?.showNum || 0;
     userInfo.avatarUrl = avatarUrl || '';
-    userInfo.nickName = nickName;
+    userInfo.nickName = nickName || name;
     userInfo.curLevelName = curLevelName;
     loginList.value = quickNavList;
     panelList.value = panelListItem;

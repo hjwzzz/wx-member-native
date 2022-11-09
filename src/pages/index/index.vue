@@ -165,8 +165,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, Ref, computed } from 'vue';
+import { onShareTimeline, onShareAppMessage } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
-import { queryPopup } from '@/api/index';
+import { queryPopup, queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
 import { getWmIndex, queryHomBannerListFront } from '@/pages/api/index';
 
@@ -178,7 +179,8 @@ import Tabbar from '@/components/Tabbar/index.vue';
 import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
-
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
+//  shareAppMessage  shareTimeline
 // const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 
@@ -188,7 +190,23 @@ onMounted(() => {
   // getGoldPriceByPage();
   queryPopupFun();
   getWmAlertAdBannerListFun();
+
+  getShareSet();
 });
+
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WM_INDEX' });
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '首页',
+    path: 'pages/index/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
+onShareTimeline(() => shareTimeline(shareData.value));
 
 const bannerList: Ref<any> = ref([]);
 const swiperVav: Ref<any> = ref([]);
