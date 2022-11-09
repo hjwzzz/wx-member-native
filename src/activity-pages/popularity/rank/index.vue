@@ -71,16 +71,16 @@ const openId = ref('');
 const optionsInfo = ref('');
 const rankList = ref([]);
 const friendList = ref([]);
-const tabList = ref([
-  {
-    id: 1,
-    name: '人气排名',
-  },
-  {
-    id: 2,
-    name: '助力好友',
-  },
-]);
+// const tabList = ref([
+//   {
+//     id: 1,
+//     name: '人气排名',
+//   },
+//   {
+//     id: 2,
+//     name: '助力好友',
+//   },
+// ]);
 const tabIndex = ref(0);
 const userInfo = reactive({
   avatarUrl: 'https://static.jqzplat.com/popularity/user-bg.png',
@@ -103,7 +103,7 @@ onLoad((options: any) => {
   } else {
     isLogin.value = true;
   }
-  console.log('this.isLogin', isLogin.value);
+  // console.log('this.isLogin', isLogin.value);
   if (isLogin.value) {
     getUserInfo();
   }
@@ -119,14 +119,14 @@ const onLogin = () => {
   // }
   // handleLogin(params)
 };
-const changeTab = (e: number) => {
-  console.log('changeTab', e);
-  tabIndex.value = e;
-  isEmpty.value = false;
-  curPage.value = 1;
-  total.value = 0;
-  getList();
-};
+// const changeTab = (e: number) => {
+//   console.log('changeTab', e);
+//   tabIndex.value = e;
+//   isEmpty.value = false;
+//   curPage.value = 1;
+//   total.value = 0;
+//   getList();
+// };
 const getList = () => {
   const index = tabIndex.value;
   if (index === 0) getRankList();
@@ -140,7 +140,7 @@ const getUserInfo = () => {
   };
   getActInfo(params, false)
     .then(res => {
-      console.log('res', res);
+    // console.log('res', res);
       if (res.code === 0) {
         const info = res.data;
         info.userPopularityNum = Number(info.userPopularityNum || 0);
@@ -158,7 +158,7 @@ const getRankList = () => {
   };
   queryPopularityActivityJoinRecordRanking(params, true)
     .then(res => {
-      console.log('res', res);
+    // console.log('res', res);
       if (res.code === 0) {
         const { data = [] } = res;
         rankList.value = data;
@@ -176,7 +176,7 @@ const getFriendList = () => {
   };
   queryUserPopularityPage(params, true)
     .then(res => {
-      console.log('res', res);
+    // console.log('res', res);
       if (res.code === 0) {
         const { records = [], totalPage = 0 } = res.data;
         friendList.value = records;

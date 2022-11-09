@@ -306,6 +306,7 @@ const goMemberList = async () => {
   const res = await queryAllLevelRights('');
   if (!res.data) {
     Router.goCodePage('wm_center');
+    return;
   }
   // uni.setStorageSync('pages', pages);
   Router.go(pages);

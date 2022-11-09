@@ -57,11 +57,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { PropType, ref } from 'vue';
 
 defineProps({
   list: {
-    type: Array,
+    type: Array as PropType<any[]>,
     default: () => [],
   },
   hasTop: {
