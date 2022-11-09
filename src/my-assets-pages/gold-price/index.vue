@@ -91,9 +91,10 @@
 
 <script setup lang="ts">
 import { computed, Ref, ref } from 'vue';
-import { queryShareSett } from '@/api';
-import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
+import { queryShareSett } from '@/api/index';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
 import {
   // getGoldPriceAdBannerList,
@@ -134,8 +135,8 @@ const onChooseStore = () => {
 //   const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
 //   return content;
 // };
-let shareObj: any = {};
-const defaultObj: any = {};
+// const shareObj: any = {};
+// const defaultObj: any = {};
 const showTabs = computed(() => list.value.map(i => i.name));
 const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
 
@@ -161,37 +162,19 @@ const getGoldPrice = async (id = '') => {
   }
 };
 
+const shareData: Ref<any> = ref([]);
 const isShare = async () => {
   const res = await queryShareSett({ pageName: 'WM_TODAY_GOLD_PRICE' });
-  const { miniProgramName, miniAvatarUrl } = res.data;
-  shareObj = res.data;
-  defaultObj.name = miniProgramName;
-  defaultObj.url = miniAvatarUrl;
-
-  let hideShareItems: any = [];
-  if (res.data.shareChumEnabled.code === 'N') {
-    hideShareItems = ['shareAppMessage', 'shareTimeline'];
-  } else if (res.data.shareChumCircleEnabled.code === 'N') {
-    hideShareItems = ['shareTimeline'];
-  }
-  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
-  uni.hideShareMenu({ hideShareItems });
-};
-onShareAppMessage(() => {
-  const {
-    shareChumTitle: title,
-    shareChumDescribe: describe,
-    shareChumImage,
-  } = shareObj;
-  const name = defaultObj.miniProgramName || '';
-  const msg = '金千枝今日金价';
-  return {
-    title: `${title || name}${msg}`,
-    path: 'pages/center/gold-price/index',
-    desc: `${describe || name}${msg}`,
-    imageUrl: shareChumImage,
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '金千枝今日金价',
+    path: 'my-assets-pages/gold-price/index',
+    shareObj: res.data,
   };
-});
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
+onShareTimeline(() => shareTimeline(shareData.value));
 </script>
 
 <style scoped lang="scss">

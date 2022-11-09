@@ -255,7 +255,7 @@ const getMonth = (val: any) => {
 };
 // 签到
 const signIn = async () => {
-  const res = await addMemberSignActivity({});
+  const res = await addMemberSignActivity('');
   const { code } = res;
   if (res && !code) {
     if (data.firstSign) {

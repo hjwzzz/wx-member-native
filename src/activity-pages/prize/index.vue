@@ -264,26 +264,26 @@ const goCouponList = (item: any) => {
   // Router.go(pages);
 };
 const goPrizeList = (item: any) => {
-  const { id, status, recvManner } = item;
+  const { id, recvManner } = item;
   let pages = '';
-  switch (status.code || '') {
-    case 'TEXC': // 待兑换
-      pages = '/my-assets-pages/my-prize/prize-detail';
-      pages += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
-      break;
-    // case 'CLOSED': // 已失效
-    // case 'FINISHED': // 已领取
-    //   break
-    default:
-      if (Number(recvManner.code) === 1) {
-        pages = '/pages/center/user-theprize/state/dailingqu';
-        pages += `?id=${id}&name=${status.name}`;
-      } else {
-        pages = '/pages/center/user-theprize/state/get_theview';
-        pages += `?id=${id}&name=${status.name}`;
-      }
-  }
-  uni.setStorageSync('pages', pages);
+  // switch (status.code || '') {
+  //   case 'TEXC': // 待兑换
+  pages = '/my-assets-pages/my-prize/prize-detail';
+  pages += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+  // break;
+  // case 'CLOSED': // 已失效
+  // case 'FINISHED': // 已领取
+  //   break
+  // default:
+  //   if (Number(recvManner.code) === 1) {
+  //     pages = '/pages/center/user-theprize/state/dailingqu';
+  //     pages += `?id=${id}&name=${status.name}`;
+  //   } else {
+  //     pages = '/pages/center/user-theprize/state/get_theview';
+  //     pages += `?id=${id}&name=${status.name}`;
+  //   }
+  // }
+  // uni.setStorageSync('pages', pages);
   Router.go(pages);
 };
 // 跳转积分
