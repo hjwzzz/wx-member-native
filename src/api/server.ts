@@ -137,7 +137,7 @@ export const queryRegistRequiredSettingNew = async (data: any) => {
 
 // 更新头像昵称信息
 export const updateMemberBaseInfo = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberBaseInfo`;
+  const url = `${devBaseUrl}/usr/memberInfoFront/updateMemberBaseInfo`;
   const res = await request(url, data);
   return res;
 };

@@ -95,7 +95,7 @@ import NoneData from '@/pages/component/NoneData.vue';
 import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
-import { getNearStore } from '@/pages/api/store';
+import { getNearStore } from '@/pages/api/nearby-store';
 import { mergeFullAddress } from '@/utils/util';
 
 // 店铺信息

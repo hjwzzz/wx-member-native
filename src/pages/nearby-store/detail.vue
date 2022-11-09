@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { queryStoreDetails } from '@/pages/api/store';
+import { getStoreDetails } from '@/pages/api/nearby-store';
 import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';
@@ -155,7 +155,7 @@ onLoad((e: any) => {
 });
 
 const getData = async (params: any) => {
-  const { data } = await queryStoreDetails(params);
+  const { data } = await getStoreDetails(params);
   data.fullAddress = mergeFullAddress(data);
   // 距离
   const { range } = data;
