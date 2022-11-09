@@ -25,29 +25,31 @@
           </view>
         </view>
 
-				<form class="uni-form">
-					<view class="uni-form-item">
-						<view class="title">其他建议</view>
-						<view class="txt">
-							<textarea
-								v-model="form.content"
-								placeholder="请输入"
-								placeholder-style="font-size: 26rpx"
-								class="content"
-								:maxlength="200"
-								:style="{ width: form.content.length ? 'calc(100% - 44rpx)' : '100%' }"
-							/>
-							<image
-								v-if="form.content.length"
-								class="img"
-								mode="aspectFit"
-								:src="staticUrl + 'reservation-service/delete.png'"
-								@click="form.content = ''"
-							></image>
-						</view>
-						<view class="numbers">{{ form.content.length }}/200</view>
-					</view>
-				</form>
+        <form class="uni-form">
+          <view class="uni-form-item">
+            <view class="title">其他建议</view>
+            <view class="txt">
+              <textarea
+                v-model="form.content"
+                placeholder="请输入"
+                placeholder-style="font-size: 26rpx"
+                class="content"
+                :maxlength="200"
+                :style="{
+                  width: form.content.length ? 'calc(100% - 44rpx)' : '100%',
+                }"
+              />
+              <image
+                v-if="form.content.length"
+                class="img"
+                mode="aspectFit"
+                :src="staticUrl + 'reservation-service/delete.png'"
+                @click="form.content = ''"
+              ></image>
+            </view>
+            <view class="numbers">{{ form.content.length }}/200</view>
+          </view>
+        </form>
         <view class="img-list">
           <template>
             <view
@@ -86,16 +88,10 @@
         </view>
       </view>
 
-			<ScrollViewFooter></ScrollViewFooter>
+      <ScrollViewFooter></ScrollViewFooter>
 
       <view class="footer">
-        <button
-          class="btn"
-          type="primary"
-          @click="confirm"
-        >
-          确认
-        </button>
+        <button class="btn" type="primary" @click="confirm">确认</button>
       </view>
     </view>
   </CustomPage>
@@ -103,7 +99,8 @@
 
 <script lang="ts" setup>
 import { ref, Ref, reactive } from 'vue';
-import { queryCommTagList, saveSubmitComm } from '@/api/reservation-service';
+// import { queryCommTagList, saveSubmitComm } from '@/api/reservation-service';
+import { queryAppraiseTagListFront, saveAppraiseFront } from '../api/api';
 import { imgBaseUrl } from '@/api/quality';
 import { compress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';
@@ -147,7 +144,7 @@ const previewImage = (index: number) => {
   });
 };
 const querytagList = async () => {
-  const res = await queryCommTagList(form.level);
+  const res = await queryAppraiseTagListFront(form.level);
   tagList.value = res.data;
   form.tag = tagList.value
     .map((item: any) => item.id)
@@ -224,7 +221,7 @@ const uploadImg1 = () => {
     },
   });
 };
-const createImg = (url: string) => new Promise((resolve, reject) => {
+const createImg = (url: string) => new Promise(resolve => {
   const image = new Image();
   let code;
   image.src = url;
@@ -258,7 +255,7 @@ const createImg = (url: string) => new Promise((resolve, reject) => {
     const fileLength = parseInt(String(code.length - code.length / 8 * 2));
     const size = (fileLength / 1024).toFixed(2);
     // alert(size)
-    console.log(`文件大小为：${size}KB`);
+    // console.log(`文件大小为：${size}KB`);
     resolve(code);
   };
 });
@@ -267,8 +264,8 @@ const uploadImg = () => {
     count: 9 - form.bookCommImgList.length,
     success: (res: any) => {
       res.tempFilePaths.forEach(async (item: any) => {
-        console.log('item', item);
-        let imgType;
+        // console.log('item', item);
+        let imgType: any;
         let base64Code; // 临时文件转为base64
         // #ifdef MP-WEIXIN
         imgType = item.split('.')[1];
@@ -341,8 +338,7 @@ const confirm = async () => {
     list.forEach((item: any) => {
       if (!item) throw '图片未加载完成';
     });
-
-    await saveSubmitComm({
+    await saveAppraiseFront({
       bookId: data.value.id,
       bookCommImgList: form.bookCommImgList.map((item: any) => item.value),
       content: form.content,
@@ -417,6 +413,7 @@ const confirm = async () => {
           color: #646771;
           margin-right: 20rpx;
           margin-bottom: 20rpx;
+          box-sizing: border-box;
         }
         .active {
           color: #fff;
@@ -426,41 +423,41 @@ const confirm = async () => {
         }
       }
     }
-		.uni-form {
-			.uni-form-item {
-				background: #fff;
-				border-radius: 16rpx;
-				margin: 30rpx 0;
-				padding: 30rpx;
-				.title {
-					font-size: 26rpx;
-					margin-bottom: 10rpx;
-				}
-				.txt {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					.content {
-						font-size: 26rpx;
-						text-align: justify;
-						height: 192rpx;
-						line-height: 42rpx;
-						padding: 10rpx 0;
-					}
-					.img {
-						width: 32rpx;
-						height: 32rpx;
-					}
-				}
+    .uni-form {
+      .uni-form-item {
+        background: #fff;
+        border-radius: 16rpx;
+        margin: 30rpx 0;
+        padding: 30rpx;
+        .title {
+          font-size: 26rpx;
+          margin-bottom: 10rpx;
+        }
+        .txt {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .content {
+            font-size: 26rpx;
+            text-align: justify;
+            height: 192rpx;
+            line-height: 42rpx;
+            padding: 10rpx 0;
+          }
+          .img {
+            width: 32rpx;
+            height: 32rpx;
+          }
+        }
 
-				.numbers {
-					line-height: 32rpx;
-					font-size: 24rpx;
-					color: #999999;
-					text-align: right;
-				}
-			}
-		}
+        .numbers {
+          line-height: 32rpx;
+          font-size: 24rpx;
+          color: #999999;
+          text-align: right;
+        }
+      }
+    }
     .img-list {
       display: grid;
       grid-template-columns: 156rpx 156rpx 156rpx 156rpx;
@@ -499,7 +496,7 @@ const confirm = async () => {
         border-radius: 16rpx;
         text-align: center;
         padding: 34rpx 0;
-				box-sizing: border-box;
+        box-sizing: border-box;
         .img {
           width: 44rpx;
           height: 44rpx;
@@ -522,14 +519,14 @@ const confirm = async () => {
     padding: 10rpx 30rpx;
     padding-bottom: calc(15rpx + constant(safe-area-inset-bottom));
     padding-bottom: calc(15rpx + env(safe-area-inset-bottom));
-		box-sizing: border-box;
+    box-sizing: border-box;
     .btn {
       font-size: 28rpx;
       height: 80rpx;
       line-height: 80rpx;
       border-radius: 40rpx;
-			background-color: var(--main-color);
-			box-sizing: border-box;
+      background-color: var(--main-color);
+      box-sizing: border-box;
     }
   }
 }

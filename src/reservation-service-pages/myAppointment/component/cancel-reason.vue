@@ -5,6 +5,7 @@
     background-color="white"
     @change="(e: any)=>emits('update:popupShow',e.show)"
     type="bottom"
+    @touchmove.stop.prevent
   >
     <view class="popup-header">取消原因</view>
     <scroll-view
@@ -64,10 +65,14 @@
 </template>
 
 <script setup lang="ts">
+// import {
+//   queryCancelReasonList,
+//   updateCancelBookServ,
+// } from '@/api/reservation-service';
 import {
-  queryCancelReasonList,
-  updateCancelBookServ,
-} from '@/api/reservation-service';
+  queryCancelReasonListFront,
+  updateCancelBookingFront,
+} from '../../api/api';
 import { nextTick, Ref, ref, toRef, unref, watch } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 const initBasicsData = useBasicsData();
@@ -106,7 +111,7 @@ watch(toRef(props, 'recordId'), val => {
 });
 
 const queryReasonList = async () => {
-  const res = await queryCancelReasonList('');
+  const res = await queryCancelReasonListFront('');
   reasonList.value = res.data;
 };
 const radioChange = async (e: any) => {
@@ -143,7 +148,7 @@ const submit = async () => {
   }
   loading.value = true;
   try {
-    await updateCancelBookServ({
+    await updateCancelBookingFront({
       id: id.value,
       reason: unref(res),
     });

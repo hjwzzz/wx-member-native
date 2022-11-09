@@ -12,17 +12,15 @@
       /> -->
       <!--  @clear="handleClear" -->
       <uni-search-bar
-        @confirm="handleSearch"
         v-model="searchValue"
-        @input="handleInput"
-        @cancel="handleSearch"
-        cancelButton="always"
+        cancelButton="none"
         placeholder="搜一搜预约服务"
-        cancelText="搜索"
         radius="20"
-        :focus="true"
+        class="searchBar"
+        @input="handleInput"
       >
       </uni-search-bar>
+      <text class="search-text" @click="handleSearch">搜索</text>
     </view>
 
     <view class="wrapper">
@@ -66,7 +64,7 @@
                     <view class="view">{{ item.name }}</view>
                     <text class="integral">
                       {{
-                        item.cost.code === 'FREE'
+                        item.cost === 'FREE'
                           ? '免费预约'
                           : parseInt(item.value) + item.acctName
                       }}
@@ -111,9 +109,10 @@ import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 // import { queryServicePage } from '@/api/reservation-service';
 import { queryServicePageFront } from '../api/api';
 import { staticUrl } from '@/utils/config';
+import { onLoad } from '@dcloudio/uni-app';
 
 const codeImage = (item: any) => {
-  if (item.boolBookServ.code === 'Y') {
+  if (item.boolBookServ === 'Y') {
     return `${staticUrl}reservation-service/time.png`;
   }
   return `${staticUrl}reservation-service/tip.png`;
@@ -126,6 +125,10 @@ const curPage = ref(1);
 const pageSize = ref(50);
 const serveProList: Ref<any> = ref([]);
 const data: Ref<any> = ref({});
+
+onLoad((obj: any) => {
+  data.value = obj;
+});
 
 onMounted(() => {
   Object.keys(data.value).length
@@ -144,7 +147,6 @@ const goStore = () => {
   uni.navigateTo({ url: '/reservation-service-pages/reservation-service/store-pattern' });
 };
 const loadMore = () => {
-  // console.log('loadMoreloadMoreloadMoreloadMore');
   if (moreStatus.value === 'no-more') return;
   moreStatus.value = 'loading';
   curPage.value++;
@@ -166,8 +168,6 @@ const queryServeProList = async (name = '', distId = '') => {
     distId,
     storeModel: data.value.hasOwnProperty('mode') ? 'Y' : 'N',
   });
-  console.log(111, records);
-  console.log(222, totalRecord);
   if (curPage.value === 1) {
     serveProList.value = records;
   } else {
@@ -187,7 +187,6 @@ const handleInput = debounce(() => {
 
 <style lang="scss" scoped>
 .search-serve {
-  // height: 100%;
   padding-top: 140rpx;
   .search-bar {
     position: fixed;
@@ -198,6 +197,17 @@ const handleInput = debounce(() => {
     height: 104rpx;
     background-color: #fff;
     padding: 16rpx 30rpx;
+    display: flex;
+    .searchBar {
+      width: calc(100% - 80rpx);
+    }
+    .search-text {
+      padding-left: 10rpx;
+      font-size: 28rpx;
+      color: var(--main-color);
+      display: flex;
+      align-items: center;
+    }
   }
   & > .wrapper {
     // padding-bottom: calc(94rpx + constant(safe-area-inset-bottom));

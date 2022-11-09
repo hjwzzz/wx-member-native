@@ -5,7 +5,6 @@
         <uni-search-bar
           class="search-bar"
           v-model="keyward"
-          :focus="true"
           @input="searchChange"
           radius="100"
           placeholder="搜索"

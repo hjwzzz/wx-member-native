@@ -3,17 +3,15 @@
     <view class="storePattern">
       <view class="search-bar">
         <uni-search-bar
-          @confirm="handleSearch"
           v-model="searchValue"
-          @input="handleInput"
-          @cancel="handleSearch"
-          cancelButton="always"
+          cancelButton="none"
           placeholder="搜一搜门店"
-          cancelText="搜索"
           radius="20"
-          :focus="true"
+          class="searchBar"
+          @input="handleInput"
         >
         </uni-search-bar>
+        <text class="search-text" @click="handleSearch">搜索</text>
       </view>
 
       <view class="page-section page-section-gap">
@@ -64,7 +62,8 @@
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, Ref } from 'vue';
 import { debounce } from '@/utils/util';
-import { queryNearStore } from '@/api/reservation-service';
+// import { queryNearStore } from '@/api/reservation-service';
+import { queryNearStoreFront } from '../api/api';
 import { staticUrl } from '@/utils/config';
 const searchValue = ref('');
 const longitude: Ref<number> = ref(-99);
@@ -125,7 +124,7 @@ const queryStoreList = async () => {
     coordCur: `${longitude.value},${latitude.value}`,
     storeName: searchValue.value,
   };
-  const { data } = await queryNearStore(param);
+  const { data } = await queryNearStoreFront(param);
   if (!data) {
     return setTimeout(() => {
       uni.showToast({
@@ -159,7 +158,6 @@ const queryStoreList = async () => {
       height: 30,
     };
   });
-  console.log({ ...markers.value });
   storeObj.value = markers.value[0];
 };
 
@@ -177,12 +175,17 @@ const seeServe = () => {
     background-color: #fff;
     padding-left: 10rpx;
     padding-right: 10rpx;
-    // padding: 16rpx 30rpx;
-    /*#ifdef H5*/
-    // & /deep/ [type='search']::-webkit-search-decoration {
-    //   display: none;
-    // }
-    /*#endif*/
+    display: flex;
+    .searchBar {
+      width: calc(100% - 80rpx);
+    }
+    .search-text {
+      padding-left: 10rpx;
+      font-size: 28rpx;
+      color: var(--main-color);
+      display: flex;
+      align-items: center;
+    }
   }
   .page-section {
     height: calc(100vh - 104rpx);

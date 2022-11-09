@@ -8,6 +8,7 @@
         inactive-color="#9697A2"
         :active-item-style="{ color: '#323338' }"
         :bar-width="80"
+        class="tabBar"
         @change="handleChangeTab"
       />
       <scroll-view
@@ -119,10 +120,14 @@
 </template>
 
 <script setup lang="ts">
+// import {
+//   queryCBookServPage,
+//   updateFinishBookServ,
+// } from '@/api/reservation-service';
 import {
-  queryCBookServPage,
-  updateFinishBookServ,
-} from '@/api/reservation-service';
+  queryServiceBookPageFront,
+  updateFinishBookingFront,
+} from '../api/api';
 import { onShow } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
@@ -179,7 +184,7 @@ const complete = (obj: { id: any }) => {
     success: res => {
       if (res.confirm) {
         // 完成服务逻辑
-        updateFinishBookServ({ id: obj.id })
+        updateFinishBookingFront({ id: obj.id })
           .then(async () => {
             subscribeList.value = [];
             await querySubscribeList();
@@ -196,7 +201,7 @@ const complete = (obj: { id: any }) => {
   });
 };
 const goEvaluate = ({ id }: any) => {
-  uni.navigateTo({ url: `/reservationService/myAppointment/evaluate?id=${id}` });
+  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/evaluate?id=${id}` });
 };
 const popupOk = () => {
   subscribeList.value = [];
@@ -213,7 +218,7 @@ const scrolltolower = () => {
   querySubscribeList();
 };
 const querySubscribeList = async () => {
-  const res = await queryCBookServPage({
+  const res = await queryServiceBookPageFront({
     curPage,
     pageSize,
     mid: uni.getStorageSync(`mid${uni.getStorageSync('jqzAppid')}`),
@@ -227,7 +232,10 @@ const querySubscribeList = async () => {
 
 <style scoped lang="scss">
 .myAppointment {
-  height: 100vh;
+  .tabBar {
+    position: sticky;
+    top: 0;
+  }
   .wrapper {
     height: calc(100% - 86rpx);
     .main {
