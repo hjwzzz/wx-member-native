@@ -12,6 +12,7 @@
 
     <view class="coupon-list" v-if="receiveCenterList.length">
       <CouponItem
+        class="coupon-item"
         :item="item"
         v-for="item in receiveCenterList"
         :key="item.couponId"
@@ -26,7 +27,7 @@
             }"
             @click.stop="receiveCoupon(item)"
           >
-            <text> 领取</text>
+            <text> 领取 </text>
           </view>
         </template>
         <template #image>
@@ -188,6 +189,7 @@ const onCancel = () => modelShow.value = false;
 <style lang="scss" scoped>
 .coupon-list {
   padding: 30rpx;
+  padding-bottom: 0;
   .receive {
     height: 48rpx;
     padding: 0 30rpx;
@@ -198,6 +200,11 @@ const onCancel = () => modelShow.value = false;
   .status-image {
     width: 116rpx;
     height: 96rpx;
+  }
+}
+:deep(.coupon-item) {
+  &:last-child .coupon-list-item {
+    margin-bottom: 0;
   }
 }
 .preferential {
