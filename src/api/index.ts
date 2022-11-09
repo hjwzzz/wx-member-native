@@ -1,6 +1,13 @@
 // import type { wxmeberFront, member } from '../typings/api';
-import { baseUrl } from '@/utils/config';
+import { baseUrl, devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
+
+// 根据页面名字code获取对应配置信息   新接口
+export const queryShareSett = async (data: any) => {
+  const url = `${devBaseUrl}/share/queryShareSettFront`;
+  const res = await request(url, data);
+  return res;
+};
 
 //
 // export const wxmemberIndex = async (data: unknown) => {
@@ -34,9 +41,9 @@ export const queryPopup = async (data: unknown) => {
 //   const res = await request(url, data);
 //   return res;
 // };
-// 根据页面名字code获取对应配置信息
-export const queryShareSett = async (data: any) => {
-  const url = `${baseUrl}/emp-base/shareFront/queryShareSett`;
-  const res = await request(url, data);
-  return res;
-};
+// // 根据页面名字code获取对应配置信息    /share/queryShareSettFront
+// export const queryShareSett = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/shareFront/queryShareSett`;
+//   const res = await request(url, data);
+//   return res;
+// };

@@ -68,7 +68,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onShareAppMessage } from '@dcloudio/uni-app';
+import { onMounted, reactive, ref, Ref } from 'vue';
 import type {
   AdvertList,
   QueryReceiveCenterListForm,
@@ -79,6 +80,7 @@ import {
   queryAdvertFront,
   queryCouponCenterListFront,
 } from '@/my-assets-pages/api/coupon';
+import { queryShareSett } from '@/api/index';
 
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
@@ -86,6 +88,7 @@ import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
 const initBasicsData = useBasicsData();
 const advertList = ref<AdvertList>([]);
@@ -115,7 +118,26 @@ const queryReceiveCenterListFront = async () => {
 onMounted(() => {
   getAdvertFront();
   queryReceiveCenterListFront();
+
+  getShareSet();
 });
+
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WM_COUPON_CENTER' });
+  // 控住分享
+  if (res.data.shareChumEnabled === 'N') {
+    uni.hideShareMenu({ hideShareItems: ['shareAppMessage'] });
+  } else {
+    uni.showShareMenu({ menus: ['shareAppMessage'] });
+  }
+  shareData.value = {
+    title: '领券中心',
+    path: 'my-assets-pages/coupon-center/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
 
 // 领取优惠券
 const modelShow = ref(false);

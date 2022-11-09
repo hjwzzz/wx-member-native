@@ -178,9 +178,27 @@ const searchChange = (e: any) => {
   updateNearStorePost();
 };
 
-const thephone = (item: any) => uni.makePhoneCall({ phoneNumber: item.tel });
+const thephone = (item: any) => {
+  if (!item.tel) {
+    uni.showToast({
+      icon: 'none',
+      title: '商家还未设置电话号码',
+    });
+    return;
+  }
+
+  uni.makePhoneCall({ phoneNumber: item.tel });
+};
 const openLocation = (item: storeType) => {
   const [lng, lat] = item.coord?.split?.(',') ?? [];
+  if (!item.coord) {
+    uni.showToast({
+      icon: 'none',
+      title: '商家还未设置地理位置',
+    });
+    return;
+  }
+
   uni.openLocation({
     latitude: Number(lat),
     longitude: Number(lng),

@@ -35,10 +35,14 @@
 </template>
 
 <script setup lang="ts">
+// import {
+//   getCmtCntAndCmtImgCnt,
+//   queryCBookCommentPage,
+// } from '@/api/reservation-service';
 import {
-  getCmtCntAndCmtImgCnt,
-  queryCBookCommentPage,
-} from '@/api/reservation-service';
+  getAppraiseCntFront,
+  queryServiceBookCommentPageFront,
+} from '../api/api';
 import { onLoad } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
@@ -69,7 +73,7 @@ const whetherMoreThanOneHundred = (e: number | string) => {
   return e;
 };
 const queryEvaluateList = async () => {
-  const res = await queryCBookCommentPage({
+  const res = await queryServiceBookCommentPageFront({
     curPage: curPage.value,
     pageSize: 50,
     id: data.value.id,
@@ -80,14 +84,14 @@ const queryEvaluateList = async () => {
 };
 
 const queryHasImgEvaluateCont = async () => {
-  const res = await getCmtCntAndCmtImgCnt({ id: data.value.id });
+  const res = await getAppraiseCntFront({ id: data.value.id });
   cmtImgCnt.value = res.data.cmtImgCnt;
 };
 </script>
 
 <style scoped lang="scss">
 .serveEvaluate {
-  height: 100vh;
+  // height: 100vh;
   background: #fff;
   padding: 0 30rpx;
   overflow-y: auto;
