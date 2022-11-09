@@ -1,18 +1,18 @@
 <template>
   <CustomPage>
     <view class="myAppointment">
-      <Tabs
-        :list="list"
-        :current="current"
-        :bar-style="{ background: initBasicsData.mainColor }"
-        inactive-color="#9697A2"
-        :active-item-style="{ color: '#323338' }"
-        :bar-width="80"
-        class="tabBar"
-        @change="handleChangeTab"
-        sticky
-        offset-top="0px"
-      />
+      <USticky offset-top="0">
+        <Tabs
+          :list="list"
+          :current="current"
+          :bar-style="{ background: initBasicsData.mainColor }"
+          inactive-color="#9697A2"
+          :active-item-style="{ color: '#323338' }"
+          :bar-width="80"
+          class="tabBar"
+          @change="handleChangeTab"
+        />
+      </USticky>
       <scroll-view
         class="wrapper"
         :scroll-y="true"
@@ -135,6 +135,7 @@ import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/tab2.vue';
+import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
 
 const initBasicsData = useBasicsData();

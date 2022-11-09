@@ -204,7 +204,7 @@ const dateInit = (setYear = 0, setMonth = 0) => {
     dateArrNew[i] = obj;
   }
   let arr = [...dateArrNew];
-  const lastDayIndex = dateArrNew.findIndex((item: any) => item.date ==
+  const lastDayIndex = dateArrNew.findIndex((item: any) => item.date ===
       `${year}-${month + 1 >= 10 ? month + 1 : `0${month + 1}`}-${
         lastDateOfMonth >= 10 ? lastDateOfMonth : `0${lastDateOfMonth}`
       }`);

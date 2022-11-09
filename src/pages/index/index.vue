@@ -118,9 +118,8 @@
         <!-- 今日金价 -->
         <TodayGoldPrice
           v-else-if="items.kind === 'GOLD_PRICE'"
-          :showed="todayGoldPriceShowed"
-          :goldPrice="goldPrice"
           :title="items.param.title"
+          type="WM_HOME"
         ></TodayGoldPrice>
         <!-- 积分商城推荐  -->
         <ContentMall
@@ -166,14 +165,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted, Ref, computed } from 'vue';
-import { queryGoldPriceByPage } from '@/api/server';
-import {
-  wxmemberIndex,
-  getIndexAdBannerList,
-  queryPopup,
-  getWmAlertAdBannerList,
-} from '@/api/index';
-import { useBasicsData } from '@/store/basicsData';
+import { onShareTimeline, onShareAppMessage } from '@dcloudio/uni-app';
+// import { queryGoldPriceByPage } from '@/api/server';
+import { queryPopup, queryShareSett } from '@/api/index';
+import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
+import { getWmIndex, queryHomBannerListFront } from '@/pages/api/index';
+
+// import { useBasicsData } from '@/store/basicsData';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -181,28 +179,45 @@ import Tabbar from '@/components/Tabbar/index.vue';
 import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
-
-const initBasicsData = useBasicsData();
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
+//  shareAppMessage  shareTimeline
+// const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 
 onMounted(() => {
   getPageDate();
   getAdBannerList();
-  getGoldPriceByPage();
+  // getGoldPriceByPage();
   queryPopupFun();
   getWmAlertAdBannerListFun();
+
+  getShareSet();
 });
+
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WM_INDEX' });
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '首页',
+    path: 'pages/index/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
+onShareTimeline(() => shareTimeline(shareData.value));
 
 const bannerList: Ref<any> = ref([]);
 const swiperVav: Ref<any> = ref([]);
 const swiperVavHeight = ref(196);
 const dataList: Ref<any> = ref({});
 const adBannerList: Ref<any> = ref([]);
-const goldPrice: Ref<any> = ref([]);
-const todayGoldPriceShowed = ref(false);
+// const goldPrice: Ref<any> = ref([]);
+// const todayGoldPriceShowed = ref(false);
 // 页面数据
 const getPageDate = async () => {
-  const result = await wxmemberIndex('');
+  const result = await getWmIndex('');
   const banner = result.data?.bannerList || [];
 
   dataList.value = result.data;
@@ -244,7 +259,7 @@ const getPanelList = () => {
 };
 // 获取广告
 const getAdBannerList = async () => {
-  const result = await getIndexAdBannerList('');
+  const result = await queryHomBannerListFront('');
   if (result?.data && result?.data.length) {
     const list =
       result?.data.map((item: any) => ({
@@ -257,28 +272,28 @@ const getAdBannerList = async () => {
   }
 };
 
-// 获取今日金价
-const getGoldPriceByPage = async () => {
-  if (!initBasicsData.checkLogin) {
-    return;
-  }
-  const res = await queryGoldPriceByPage('WM_HOME');
-  if (res.code === 0 && res.data) {
-    const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
-    // this.uiParam = uiParam;
-    const { showNum } = param;
-    const result: any = [];
+// 获取今日金价  type="WM_HOME"
+// const getGoldPriceByPage = async () => {
+//   if (!initBasicsData.checkLogin) {
+//     return;
+//   }
+//   const res = await queryGoldPriceByPage('WM_HOME');
+//   if (res.code === 0 && res.data) {
+//     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
+//     // this.uiParam = uiParam;
+//     const { showNum } = param;
+//     const result: any = [];
 
-    branPriceList.map((item: unknown, index: number) => {
-      if (index < showNum) {
-        result.push(item);
-      }
-    });
-    todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
-    goldPrice.value = result;
-    // console.log('goldPrice', result);
-  }
-};
+//     branPriceList.map((item: unknown, index: number) => {
+//       if (index < showNum) {
+//         result.push(item);
+//       }
+//     });
+//     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
+//     goldPrice.value = result;
+
+//   }
+// };
 
 // const richImage = (item: string) => {
 //   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
@@ -323,7 +338,7 @@ const queryPopupFun = async () => {
 };
 // 弹窗广告图
 const getWmAlertAdBannerListFun = async () => {
-  const res = await getWmAlertAdBannerList('');
+  const res = await queryWeMemberAlertBannerListFront('');
   const floatAds = res?.data.splice(0, 3) || [];
   floatAdsPopup.value = floatAds.map((item: any) => ({
     image: item.imgUrl,

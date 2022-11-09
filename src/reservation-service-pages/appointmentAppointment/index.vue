@@ -181,7 +181,11 @@ const selectStore = () => {
       guideName: '',
     });
   });
-  uni.navigateTo({ url: `/my-assets-pages/my-prize/store-list?id=${form.value.distId ?? ''}` });
+  uni.navigateTo({
+    url: `/my-assets-pages/my-prize/store-list?id=${
+      data.value.id ?? ''
+    }&type=getServiceStore`,
+  });
 };
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;

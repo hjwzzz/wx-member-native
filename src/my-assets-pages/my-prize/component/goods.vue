@@ -2,16 +2,18 @@
   <view class="card">
     <view class="top">
       <view class="left">
-        <image class="good-img" :src="props.item.url" mode="" />
+        <image class="good-img" :src="item.url" mode="aspectFill" />
         <view class="center">
-          <view class=""> {{ props.item.prizeName }} </view>
-          <view class="amount"> x{{ props.item.quantity }} </view>
-          <view class="amount"> {{ props.item.relatedKind?.name }} </view>
+          <view class="title-view"> {{ item.prizeName }} </view>
+          <view class="amount"> x{{ item.quantity }} </view>
+          <view class="amount">
+            {{ item.relatedKindName }}
+          </view>
         </view>
       </view>
-      <view class="right" v-if="props.status">
+      <view class="right" v-if="status">
         <text :style="`color:${basicsData.mainColor}`">
-          {{ props.item.status?.name }}
+          {{ item.statusName }}
         </text>
       </view>
     </view>
@@ -21,18 +23,16 @@
 
 <script setup lang="ts">
 import { useBasicsData } from '@/store/basicsData';
+import { toRef } from 'vue';
+
+import type { IPrize, IPrizeItem } from '@/my-assets-pages/api/types/my-prize';
 const basicsData = useBasicsData();
 interface propsType {
-  item: {
-    url: string;
-    prizeName: string;
-    quantity: string;
-    relatedKind: { name: string };
-    status: { name: string };
-  };
+  item: IPrize | IPrizeItem;
   status: boolean;
 }
 const props = defineProps<propsType>();
+const item = toRef(props, 'item');
 </script>
 
 <style scoped lang="scss">
@@ -63,6 +63,14 @@ const props = defineProps<propsType>();
     width: 340rpx;
     color: #323338;
     font-size: 28rpx;
+    .title-view {
+      line-height: 40rpx;
+      max-height: 80rpx;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
     .amount {
       font-size: 24rpx;
       margin-top: 10rpx;

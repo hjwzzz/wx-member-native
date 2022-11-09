@@ -54,7 +54,10 @@
 </template>
 
 <script setup lang="ts">
+import { queryDepositListFront } from '@/my-assets-pages/api/thebalance';
 import { queryDepList } from '@/api/center';
+//
+
 import { onLoad } from '@dcloudio/uni-app';
 import { onMounted, ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
@@ -119,7 +122,7 @@ const userRbalaancep = (item: any, type = '') => {
 };
 
 const queryDepListFun = async () => {
-  const res = await queryDepList(initBasicsData.useMid);
+  const res = await queryDepositListFront(initBasicsData.useMid);
   dataList.value = res?.data || [];
   // 大于3个账户的时候追加多个样式
   if (dataList.value.length > 3) {
@@ -169,6 +172,9 @@ const queryDepListFun = async () => {
       border-radius: 16rpx;
       margin-bottom: 30rpx;
       position: relative;
+      &:last-child {
+        margin-bottom: 0;
+      }
       .card-bg {
         height: 300rpx;
         position: absolute;

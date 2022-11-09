@@ -91,18 +91,27 @@
 
 <script setup lang="ts">
 import { computed, Ref, ref } from 'vue';
-import { queryShareSett } from '@/api';
-import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
+import { queryShareSett } from '@/api/index';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
+import { richImage } from '@/utils/util';
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
+
 import {
-  getGoldPriceAdBannerList,
+  // getGoldPriceAdBannerList,
   queryDefShowGoldPrice,
   queryGoldPriceByDist,
 } from '@/api/gold-price';
+import {
+  queryGoldPriceBannerListFront,
+  getSaleMetalPrice,
+} from '@/my-assets-pages/api/gold-price';
+
 import router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import Tabs from '@/components/Tabs/index.vue';
 
 onLoad((e: any) => {
+  console.log('onLoad((e: any) ', e);
   isShare();
   getBannerList();
   getGoldPrice(e.distId);
@@ -121,24 +130,25 @@ const onChooseStore = () => {
   router.goCodePage('storeInfo');
 };
 
-const richImage = (e: any) => {
-  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
-  return content;
-};
-let shareObj: any = {};
-const defaultObj: any = {};
+// const richImage = (e: any) => {
+//   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+//   const content = e.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+//   return content;
+// };
+// const shareObj: any = {};
+// const defaultObj: any = {};
 const showTabs = computed(() => list.value.map(i => i.name));
 const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
 
 const getBannerList = async () => {
-  const res = await getGoldPriceAdBannerList('');
+  const res = await queryGoldPriceBannerListFront('');
   bannerList.value = res.data;
 };
 
 const getGoldPrice = async (id = '') => {
   const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
   const { code, data } = await url(id);
+  // const { code, data } = await getSaleMetalPrice(id);
 
   if (code === 0) {
     list.value = [];
@@ -152,37 +162,19 @@ const getGoldPrice = async (id = '') => {
   }
 };
 
+const shareData: Ref<any> = ref([]);
 const isShare = async () => {
   const res = await queryShareSett({ pageName: 'WM_TODAY_GOLD_PRICE' });
-  const { miniProgramName, miniAvatarUrl } = res.data;
-  shareObj = res.data;
-  defaultObj.name = miniProgramName;
-  defaultObj.url = miniAvatarUrl;
-
-  let hideShareItems: any = [];
-  if (res.data.shareChumEnabled.code === 'N') {
-    hideShareItems = ['shareAppMessage', 'shareTimeline'];
-  } else if (res.data.shareChumCircleEnabled.code === 'N') {
-    hideShareItems = ['shareTimeline'];
-  }
-  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
-  uni.hideShareMenu({ hideShareItems });
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '金千枝今日金价',
+    path: 'my-assets-pages/gold-price/index',
+    shareObj: res.data,
+  };
 };
-onShareAppMessage(() => {
-  {
-    return {
-      title: `${
-        shareObj.shareChumTitle || defaultObj.miniProgramName || ''
-      }金千枝今日金价`,
-      // path: "pages/center/gold-price/index",
-      path: 'pages/center/gold-price/index',
-      desc: `${
-        shareObj.shareChumDescribe || defaultObj.miniProgramName || ''
-      }金千枝今日金价`,
-      imageUrl: shareObj.shareChumImage,
-    };
-  }
-});
+onShareAppMessage(() => shareAppMessage(shareData.value));
+onShareTimeline(() => shareTimeline(shareData.value));
 </script>
 
 <style scoped lang="scss">

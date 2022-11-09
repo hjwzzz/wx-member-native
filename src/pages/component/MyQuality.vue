@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { reactive, watch } from 'vue';
-import { queryPolicyList } from '@/api/server';
+import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
@@ -72,19 +72,13 @@ const toDetail = () => {
 };
 
 const getPolicyList = async () => {
-  if (initBasicsData.checkLogin) {
-    const res = await queryPolicyList({
-      mid: initBasicsData.useMid,
-      curPage: 1,
-      pageSize: props.policyListNum,
-      sort: {
-        field: '',
-        sort: '',
-      },
-    });
-    if (res.code === 0 && res.data) {
-      Object.assign(policyList, res.data);
-    }
+  const res = await queryWarrantyListPageFront({
+    mid: initBasicsData.useMid,
+    curPage: 1,
+    pageSize: props.policyListNum,
+  });
+  if (res.code === 0 && res.data) {
+    Object.assign(policyList, res.data);
   }
 };
 // policyListNum 有值再去请求

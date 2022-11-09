@@ -12,6 +12,7 @@
 
     <view class="coupon-list" v-if="receiveCenterList.length">
       <CouponItem
+        class="coupon-item"
         :item="item"
         v-for="item in receiveCenterList"
         :key="item.couponId"
@@ -26,7 +27,7 @@
             }"
             @click.stop="receiveCoupon(item)"
           >
-            <text> 领取</text>
+            <text> 领取 </text>
           </view>
         </template>
         <template #image>
@@ -68,64 +69,76 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onShareAppMessage } from '@dcloudio/uni-app';
+import { onMounted, reactive, ref, Ref } from 'vue';
 import type {
   AdvertList,
   QueryReceiveCenterListForm,
   ReceiveCenterList,
 } from './index.type';
 import {
-  queryAdvertFront,
-  //
   getCouponsFront,
-  queryReceiveCenterListFrontRequest,
+  queryAdvertFront,
+  queryCouponCenterListFront,
 } from '@/my-assets-pages/api/coupon';
+import { queryShareSett } from '@/api/index';
 
-import { queryAdvertFrontRequest } from '@/api/coupon-center';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
+import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
 const initBasicsData = useBasicsData();
 const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
 const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   createTime: '',
-  opsId: '57614F85-F843-C47C-B965-0753D121430F',
+  opsId: '',
   pageSize: 10000,
   curPage: 1,
 });
 
 const getAdvertFront = async () => {
-  const queryAdvertFron = await queryAdvertFrontRequest();
-
-  console.log('queryAdvertFron旧', JSON.stringify(queryAdvertFron));
-  const queryAdvertFrontRequestRes = await queryAdvertFront('');
-  if (!queryAdvertFrontRequestRes?.data) {
+  const { data } = await queryAdvertFront('');
+  if (!data) {
     return;
   }
-  console.log(
-    'queryAdvertFrontRequestRes新',
-    JSON.stringify(queryAdvertFrontRequestRes)
-  );
-  advertList.value = queryAdvertFrontRequestRes.data;
+  advertList.value = data;
 };
 const queryReceiveCenterListFront = async () => {
-  const queryReceiveCenterListFrontRequestRes =
-    await queryReceiveCenterListFrontRequest(queryReceiveCenterListForm);
-  if (!queryReceiveCenterListFrontRequestRes?.data) {
+  const { data } = await queryCouponCenterListFront(queryReceiveCenterListForm);
+  if (!data) {
     return;
   }
-  receiveCenterList.value = queryReceiveCenterListFrontRequestRes.data.records;
+  receiveCenterList.value = data.records;
 };
 
 onMounted(() => {
   getAdvertFront();
-  // queryReceiveCenterListFront();
+  queryReceiveCenterListFront();
+
+  getShareSet();
 });
+
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WM_COUPON_CENTER' });
+  // 控住分享
+  if (res.data.shareChumEnabled === 'N') {
+    uni.hideShareMenu({ hideShareItems: ['shareAppMessage'] });
+  } else {
+    uni.showShareMenu({ menus: ['shareAppMessage'] });
+  }
+  shareData.value = {
+    title: '领券中心',
+    path: 'my-assets-pages/coupon-center/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
 
 // 领取优惠券
 const modelShow = ref(false);
@@ -137,9 +150,8 @@ const receiveCoupon = async (item: any) => {
       cancelText: '暂不登录',
       confirmText: '立即登录',
       success: res => {
-        // res.cancel
         if (res.confirm) {
-          uni.reLaunch({ url: '/pages/login/index' });
+          Router.goLogin();
         }
       },
     });
@@ -175,12 +187,9 @@ const onCancel = () => modelShow.value = false;
 </script>
 
 <style lang="scss" scoped>
-// page {
-//   padding: 30rpx;
-// }
-
 .coupon-list {
   padding: 30rpx;
+  padding-bottom: 0;
   .receive {
     height: 48rpx;
     padding: 0 30rpx;
@@ -191,6 +200,11 @@ const onCancel = () => modelShow.value = false;
   .status-image {
     width: 116rpx;
     height: 96rpx;
+  }
+}
+:deep(.coupon-item) {
+  &:last-child .coupon-list-item {
+    margin-bottom: 0;
   }
 }
 .preferential {

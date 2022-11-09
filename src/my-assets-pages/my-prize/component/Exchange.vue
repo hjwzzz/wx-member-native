@@ -2,12 +2,20 @@
   <!-- 兑换奖品方式 -->
   <view class="container">
     <view class="address">
-      <picker :range="['到店', '邮寄']" @change="chooseChangeType">
-        <!-- <uni-list-item showArrow :rightText="exchangeName" title="领取方式" /> -->
+      <picker
+        :disabled="props.item?.recvManner !== '3'"
+        :range="['到店', '邮寄']"
+        @change="chooseChangeType"
+      >
         <view class="custom-cell bb">
           <view class="cell-label">领取方式</view>
           <view class="cell-body-input">{{ exchangeName }}</view>
-          <uni-icons type="right" color="#bbb" size="16"></uni-icons>
+          <uni-icons
+            v-if="props.item?.recvManner === '3'"
+            type="right"
+            color="#bbb"
+            size="16"
+          ></uni-icons>
         </view>
       </picker>
 
@@ -91,36 +99,45 @@
 </template>
 
 <script setup lang="ts">
-import { getAdressList } from '@/api/address';
-import { onLoad } from '@dcloudio/uni-app';
-import { ref, reactive, computed } from 'vue';
-import { useBasicsData } from '@/store/basicsData';
-import { updatePrizeStatus } from '@/api/my-prize';
+import { getAdressList } from '@/pages/api/address';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { exchangePrize } from '@/my-assets-pages/api/my-prize';
 import { staticUrl } from '@/utils/config';
-const initBasicsData = useBasicsData();
+import { mergeFullAddress } from '@/utils/util';
 
 const props = defineProps<{ item: any }>();
 const form = reactive({ name: '', phone: '' });
 
 const exchangeCode = ref(0);
 const exchangeName = computed(() => ['', '到店', '邮寄'][exchangeCode.value]);
-const chooseChangeType = (e: any) => exchangeCode.value = parseInt(e.detail.value) + 1;
+const chooseChangeType = (e: any) => exchangeCode.value = +e.detail.value + 1;
 
-onLoad(() => {
-  getAdressList({ mid: initBasicsData.useMid })
-    .then(res => {
-      const { records } = res.data;
-      // 个人中心的收货地址，已添加有地址时，如果没有设置默认地址，则显示“请选择收货地址”，点击跳转选择收货地址页面
-      address.value = records.find((item: { isDefault: string }) => item.isDefault === 'true');
-    });
+// 当前奖品允许领取的方式
+watch(
+  props.item,
+  () => {
+    const code: string = props.item?.recvManner ?? '1';
+    code !== '3' && (exchangeCode.value = parseInt(code));
+  },
+  { deep: true, immediate: true }
+);
+
+// 默认地址
+onMounted(async () => {
+  const { data } = await getAdressList();
+  // TODO 接口修改未生效，先测试使用
+  const d = data.find((i: any) => ['Y', 'true', 'false'].includes(i.isDefault));
+  if (d) {
+    address.value = d;
+    const { receiver, phone } = d;
+    form.name = receiver;
+    form.phone = phone;
+  }
 });
 
 // 选择地址
 const address = ref<any>({});
-const adressGroup = computed(() => {
-  const { province, city, district, address: adr } = address.value;
-  return province + city + district + adr;
-});
+const adressGroup = computed(() => mergeFullAddress(address.value));
 const goAdress = () => {
   uni.$once('chooseAddress', (e: any) => address.value = e);
   uni.navigateTo({ url: '/pages/address/address-list?flag=true' });
@@ -147,7 +164,7 @@ const getPrize = async () => {
     recverPhone: form.phone,
     quantity: props.item.quantity,
     prizeId: props.item.prizeId,
-    recvManner: exchangeCode.value,
+    recvManner: exchangeCode.value.toString(),
     recvStoreId: storeInfo.value.distId,
   };
   if (!exchangeCode.value) {
@@ -188,7 +205,7 @@ const getPrize = async () => {
     });
     return;
   }
-  const { code } = await updatePrizeStatus(params);
+  const { code } = await exchangePrize(params);
   if (code === 0) {
     uni.$emit('changeTab', 1);
     popup.value.open('center');

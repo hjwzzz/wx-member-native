@@ -1,18 +1,35 @@
 // import type { wxmeberFront, member } from '@/typings/api';
-import { baseUrl } from '@/utils/config';
+import { baseUrl, devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
-
+import { MemberEula } from '@/api/types/server';
+// 微会员导航栏获取
+export const getWeMemberNavFront = async () => {
+  const url = `${devBaseUrl}/sysUiFront/getWeMemberNavFront`;
+  return request(url, '');
+};
 // 获取主题色系
-export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
+export const queryWmColorThemeFront = async () => request(`${devBaseUrl}/sysUiFront/queryWmColorThemeFront`, '');
+
+// 获取质保单列表
+export const queryWarrantyListPageFront = async (data: any) => {
+  const url = `${devBaseUrl}/warranty/usr/queryWarrantyListPageFront`;
+  return request(url, data);
+};
+
+// 以下-------------------
+// 获取主题色系
+// export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
 
 // 微会员导航栏获取
-export const getWmmeberNavRequest = () => request(`${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`, '');
+// export const getWmmeberNavRequest = () => request(`${baseUrl}/emp-base/wxmeberFront/getWmmeberNav`, '');
 
-// 获取企业LOGO
-export const getLogoRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getLogo`, '');
+// （已废弃）获取企业LOGO 合并到用户协议中
+// export const getLogoRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getLogo`, '');
 
+// // 获取用户协议
+// export const getMemberEulaRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getMemberEula`, '');
 // 获取用户协议
-export const getMemberEulaRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getMemberEula`, '');
+export const getMemberEulaRequest = () => request<MemberEula>(`${devBaseUrl}/memberLoginFront/getMemberEula`, '');
 
 // 根据页面类型获取今日金价(首页:WM_HOME,个人中心:WM_CENTER)
 export const queryGoldPriceByPage = async (data: any) => {
@@ -28,10 +45,10 @@ export const getPayOrder = async (data: any) => {
 };
 
 // 获取质保单列表
-export const queryPolicyList = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
-  return await request(url, data);
-};
+// export const queryPolicyList = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/warranty/Front/list`;
+//   return await request(url, data);
+// };
 
 //  会员权益
 export const queryAllLevelRights = async (data: any) => {
@@ -52,6 +69,7 @@ export const queryPrivateFieldSetting = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// export const queryPrivateFieldSetting = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/queryPrivateFieldSetting`, data);
 // 修改会员个人资料
 export const updateMemberInfo = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberInfo`;
@@ -119,7 +137,7 @@ export const queryRegistRequiredSettingNew = async (data: any) => {
 
 // 更新头像昵称信息
 export const updateMemberBaseInfo = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberBaseInfo`;
+  const url = `${devBaseUrl}/usr/memberInfoFront/updateMemberBaseInfo`;
   const res = await request(url, data);
   return res;
 };

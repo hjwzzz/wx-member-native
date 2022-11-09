@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
-import { getMemberWarrantyUrl } from '@/api/quality';
+import { getMemberWarrantyUrlFront } from '@/my-assets-pages/api/quality';
 
 const url = ref('');
 onLoad(async (options: any) => {
@@ -21,7 +21,7 @@ onLoad(async (options: any) => {
 });
 
 const queryMemberWarrantyUrl = async (obj: any) => {
-  const url = await getMemberWarrantyUrl({
+  const url = await getMemberWarrantyUrlFront({
     opsId: '',
     ticket: obj.n,
   });

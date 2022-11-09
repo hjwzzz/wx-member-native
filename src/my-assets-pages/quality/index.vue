@@ -66,7 +66,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
-import { warrantyList } from '@/api/quality';
+// import { warrantyList } from '@/api/quality';
+import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 // const showModal = ref(false);
@@ -108,7 +109,7 @@ const getWarrantyList = async () => {
     curPage: 1,
     pageSize: 1000,
   };
-  const res = await warrantyList(body);
+  const res = await queryWarrantyListPageFront(body);
   dataList.value = [];
   const { records, totalPage: total } = res.data;
   totalPage.value = total;
@@ -246,28 +247,4 @@ const getWarrantyList = async () => {
     margin: 40rpx 0 148rpx 0;
   }
 }
-// .empty-container {
-//   display: flex;
-//   width: 100%;
-//   height: 100vh;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   padding: 0rpx 0 12vh;
-//   .no-date {
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     min-height: calc(100vh - 160rpx);
-//     image {
-//       width: 320rpx;
-//       height: 320rpx;
-//     }
-//     .wujilu {
-//       font-size: 28rpx;
-//       color: #9697a2;
-//       margin: 40rpx 0 148rpx 0;
-//     }
-//   }
-// }
 </style>

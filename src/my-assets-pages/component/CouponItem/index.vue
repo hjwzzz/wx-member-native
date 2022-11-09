@@ -5,11 +5,15 @@
         showStatus ? 'coupon-top-valid' : 'coupon-top-no'
       }`"
     >
-      <view class="name" :style="{ color: showMainColor }">
+      <view class="name" :style="{ color: couponItem.showMainColor }">
         {{ item.name || item.couponName }}
       </view>
       <view class="handle" v-if="showStatus">
-        <slot name="btn" :color="handleColor" :background="receiveColor">
+        <slot
+          name="btn"
+          :color="couponItem.topBgColorTop"
+          :background="couponItem.receiveColor"
+        >
         </slot>
       </view>
       <view v-else>
@@ -19,11 +23,11 @@
           </view>
         </view>
       </view>
-      <view class="stock" :style="{ color: showMainColor }">
+      <view class="stock" :style="{ color: couponItem.showMainColor }">
         <!-- 满减券 || 工费抵扣券  -->
         <block v-if="coupon1.includes(prodCode)">
           <view class="currency-symbol">￥</view>
-          <view class="num">{{ item.paramVo.discount }}</view>
+          <view class="num">{{ item.paramVo.discount || '' }}</view>
         </block>
         <!-- 随机券  -->
         <block v-if="coupon2.includes(prodCode)">
@@ -31,12 +35,12 @@
         </block>
         <!-- 折扣券 || 工费折扣券 -->
         <block v-if="coupon3.includes(prodCode)">
-          <view class="num">{{ item.paramVo.discount }}</view>
+          <view class="num">{{ item.paramVo.discount || '' }}</view>
           <view class="currency-symbol">折</view>
         </block>
       </view>
 
-      <view class="threshold" :style="{ color: showMainColor }">
+      <view class="threshold" :style="{ color: couponItem.showMainColor }">
         {{ showCondition }}
       </view>
     </view>
@@ -61,22 +65,25 @@ const props = defineProps<{
 
 const emits = defineEmits(['event']);
 
-const couponListItemTopBackgroundImage = computed(() => `url("${props.item.style?.watermarkImgUrl}"), linear-gradient(270deg, ${props.item.style?.topBgColorBottom} 1%, ${props.item.style?.topBgColorTop} 99% 100%, #f5f5f5)`);
+const couponItem = computed(() => {
+  const {
+    watermarkImgUrl: url,
+    topBgColorBottom,
+    topBgColorTop,
+    bottomBgColorTop,
+    complementaryColor,
+    mainColor,
+  }: any = props.item.style;
 
-const handleColor = computed(() => props.item.style?.topBgColorTop);
-
-const receiveColor = computed(() => props.item.style?.mainColor || '#ffffff');
-
-const showMainColor = computed(() => {
-  if (!props.showStatus) {
-    return '#ffffff';
-  }
-  return props.item.style?.mainColor;
+  return {
+    topImage: `url("${url}"), linear-gradient(270deg, ${topBgColorBottom} 1%, ${topBgColorTop} 99% 100%, #f5f5f5)`,
+    bottomColor: `linear-gradient(270deg, ${bottomBgColorTop} 0%, ${topBgColorTop} 100%)`,
+    complementaryColor,
+    topBgColorTop,
+    receiveColor: mainColor || '#ffffff',
+    showMainColor: props.showStatus ? mainColor : '#ffffff',
+  };
 });
-
-const couponListItemBottomBackgroundColor = computed(() => `linear-gradient(270deg, ${props.item.style?.bottomBgColorTop} 0%, ${props.item.style?.topBgColorTop} 100%)`);
-
-const couponListItemBottomColor = computed(() => props.item.style?.complementaryColor);
 
 // 根据类型显示金额
 // 满减券 || 工费抵扣券
@@ -99,10 +106,12 @@ const condition2 = [
   'labor_cost_discount_coupon',
 ];
 
+const showStatus = computed(() => props.showStatus);
+
+const prodCode = computed(() => props.item.prodCode?.code || props.item.prod || props.item.prodCode || '');
 const showCondition = computed(() => {
-  const code = props.item.prodCode?.code || '';
-  const labor = props.item.paramVo?.laborChargesType || '';
-  const threshold = props.item.paramVo?.threshold || '';
+  const code = prodCode.value;
+  const { laborChargesType: labor, threshold } = props.item.paramVo;
   if (condition1.includes(code)) {
     return threshold ? `满${threshold}可用` : '满任意金额可用';
   } else if (condition2.includes(code)) {
@@ -111,9 +120,6 @@ const showCondition = computed(() => {
   }
   return '';
 });
-
-const showStatus = computed(() => props.showStatus);
-const prodCode = computed(() => props.item.prodCode?.code || '');
 </script>
 
 <style lang="scss" scoped>
@@ -123,9 +129,8 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
   grid-template-columns: 1fr;
   margin: 0 0 30rpx;
   box-sizing: border-box;
-
   .coupon-top-valid {
-    background-image: v-bind('couponListItemTopBackgroundImage');
+    background-image: v-bind('couponItem.topImage');
   }
   .coupon-top-no {
     background: #d8d9e0;
@@ -154,58 +159,40 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
         position: absolute;
         right: -4rpx;
         top: 0rpx;
-        // .image {
-        //   width: 100%;
-        //   height: 100%;
-        //   overflow: hidden;
-        // }
       }
     }
-
-    // color: v-bind('handleColor');
-
     &.RIGHT {
       background-position-x: 100%;
-      // right: 0;
     }
-
     &.LEFT {
       background-position-x: 0;
-      // left: 0;
     }
-
     &.CENTER {
       background-position-x: 50%;
-      // left: 50%;
-      // transform: translateX(-50%);
     }
-
     .image {
       position: absolute;
       bottom: 0;
       z-index: 1;
       max-height: 200rpx;
     }
-
     .name {
       // z-index: 999;
       align-self: start;
       font-size: 28rpx;
       font-weight: 500;
     }
-
     .handle {
       display: flex;
       align-self: start;
       justify-content: flex-end;
-
       .receive {
         height: 48rpx;
         padding: 0 30rpx;
         line-height: 48rpx;
         border-radius: 28rpx;
-        color: v-bind('handleColor');
-        background: v-bind('receiveColor');
+        color: v-bind('couponItem.topBgColorTop');
+        background: v-bind('couponItem.receiveColor');
         font-size: 28rpx;
       }
     }
@@ -216,34 +203,27 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
       height: 80rpx;
       line-height: 80rpx;
       vertical-align: bottom;
-
       .currency-symbol {
         display: inline-block;
         font-size: 36rpx;
         font-weight: 500;
       }
-
       .num {
         display: inline-block;
         font-size: 80rpx;
         font-weight: 800;
       }
     }
-
     .threshold {
       z-index: 2;
       font-size: 24rpx;
       text-align: right;
     }
   }
-  // .coupon-list-item-bottom-valid {
-  //   background-image: v-bind('couponListItemBottomBackgroundColor');
-  //   color: v-bind('couponListItemBottomColor');
-  // }
 
   .coupon-bottom-valid {
-    background-image: v-bind('couponListItemBottomBackgroundColor');
-    color: v-bind('couponListItemBottomColor');
+    background-image: v-bind('couponItem.bottomColor');
+    color: v-bind('couponItem.complementaryColor');
   }
   .coupon-bottom-no {
     color: rgb(0 0 0 / 45%);
@@ -259,10 +239,7 @@ const prodCode = computed(() => props.item.prodCode?.code || '');
     transform: translate(0, -10rpx);
     z-index: 1;
     font-size: 24rpx;
-    // color: rgb(0 0 0 / 45%);
     background: #fff;
-    // background-image: v-bind('couponListItemBottomBackgroundColor');
-    // color: v-bind('couponListItemBottomColor');
     border-radius: 0rpx 0rpx 16rpx 16rpx;
     -webkit-mask-image: radial-gradient(
       circle at top,

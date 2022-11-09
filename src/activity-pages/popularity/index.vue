@@ -265,6 +265,10 @@
     <!-- <fail-popup v-model="showPopup" ref="failPopup" /> -->
     <!-- 提示 -->
     <!-- <u-toast ref="uToast" :duration="3000" /> -->
+    <toast-template
+      v-model:visible="toastVisible"
+      :message="toastMsg"
+    ></toast-template>
     <!-- 活动规则 -->
     <rule-template
       v-if="styleObj.page.actRuleContent"
@@ -291,7 +295,7 @@ import {
 } from '@/activity-pages/api/popularity';
 import TimeCountDown from '../component/TimeCountDown/index.vue';
 import { richImage } from '@/utils/util';
-import OptionsTemplate from './component/Options/index.vue';
+import OptionsTemplate from '../component/Options/index.vue';
 import EmptyTemplate from './component/Empty/index.vue';
 import RankListTemplate from './component/RankList/index.vue';
 import RuleTemplate from '../component/Rules/index.vue';
@@ -299,6 +303,8 @@ import AuthPopup from './component/AuthPopup/index.vue';
 import Router from '@/utils/router';
 import { onHide, onLoad, onShow, onUnload } from '@dcloudio/uni-app';
 import { useBasicsData } from '@/store/basicsData';
+import ToastTemplate from '../component/Toast/index.vue';
+import Storage from '@/utils/storage';
 
 const initBasicsData = useBasicsData();
 const id = ref('');
@@ -389,7 +395,7 @@ onHide(() => {
   }
 });
 onUnload(() => {
-  optionsTemplateRef.value.clearFun();
+  optionsTemplateRef.value?.clearFun();
 });
 
 const onLogin = () => {
@@ -489,12 +495,11 @@ const getRankList = () => {
     });
 };
 // 提示
+const toastVisible = ref(false);
+const toastMsg = ref('');
 const showToast = (str: string) => {
-  uni.showToast({
-    title: str,
-    duration: 3000,
-    icon: 'none',
-  });
+  toastMsg.value = str;
+  toastVisible.value = true;
 };
 // 获取中奖信息列表
 const getNoticeList = () => {
@@ -620,9 +625,9 @@ const checkPrize = (info: any, params: any) => {
       // 	uni.setStorageSync('pages', url)
       // 	router.go(url)
       // }
-        let url = '/pages/center/user-theprize/to_convert/exchange';
+        let url = '/my-assets-pages/my-prize/prize-detail';
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
-        uni.setStorageSync('pages', url);
+        // uni.setStorageSync('pages', url);
         Router.go(url);
       }
     });
@@ -642,9 +647,10 @@ const onReceivePrize = (item: any) => {
         if (item.kind === 'PRIZE') {
           checkPrize(chgAwardRspVo, params);
         } else {
-          const url = `/activity/inviteGift/prize?actId=${id.value}&c=${color}`;
-          uni.setStorageSync('pages', url);
-          Router.go(url);
+        // const url = `/activity/inviteGift/prize?actId=${id.value}&c=${color}`;
+        // uni.setStorageSync('pages', url);
+        // Router.go(url);
+          Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
         }
       }
     });
@@ -663,11 +669,14 @@ const setUserInfo = (info: any) => {
     if (info[item]) {
       // uni.setStorageSync(item, info[item]);
       if (item === 'token') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        Storage.setToken(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else if (item === 'mid') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        initBasicsData.setUseMid(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else if (item === 'epid') {
-        uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
+        Storage.setEpid(info[item]);
+        // uni.setStorageSync(item + uni.getStorageSync('jqzAppid'), info[item]);
       } else {
         uni.setStorageSync(item, info[item]);
       }

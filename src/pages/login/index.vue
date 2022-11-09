@@ -14,14 +14,14 @@
         <text>登录代表阅读并同意</text>
         <text
           class="eula-name"
-          @click="agreement('PRIV')"
+          @click="agreement('REG')"
           v-if="protocol.regAgreementShowed"
         >
           《注册协议》
         </text>
         <text
           class="eula-name"
-          @click="agreement('REG')"
+          @click="agreement('PRIV')"
           v-if="protocol.privacyAgreementShowed"
         >
           《隐私协议》
@@ -60,7 +60,6 @@
 <script lang="ts" setup>
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
 import {
-  getLogoRequest,
   getMemberEulaRequest,
   queryRegistRequiredSetting,
   completeInfo,
@@ -99,15 +98,9 @@ const jsCodeLogin = async () => {
   }, 1000);
 };
 
-const getLogo = async () => {
-  const { code, data = '' } = await getLogoRequest();
-  if (code === 0) {
-    logo.value = data;
-  }
-};
-
 const getMemberEula = async () => {
   const { data } = await getMemberEulaRequest();
+  logo.value = data.logo;
   data && Object.assign(protocol, data);
 };
 const agreement = (i: string) => {
@@ -177,7 +170,7 @@ const hideWxMiniAuthModal = () => {
 };
 
 const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
-  const { data, code, msg } = await wxMiniAuthRequest(params);
+  const { data, code, msg } = (await wxMiniAuthRequest(params)) as any;
   if (code !== 0 || !data.token) {
     uni.showModal({
       content: msg || '登录失败',
@@ -189,7 +182,6 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   const list = Object.keys(data);
   list.map(item => {
     if (data[item]) {
-      // uni.setStorageSync(item, data[item]);
       if (item === 'token') {
         Storage.setToken(data[item]);
       } else if (item === 'mid') {
@@ -248,7 +240,8 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   }
 };
 
-const back = () => Router.fromLoginBack();
+// const back = () => Router.fromLoginBack();
+const back = () => [];
 
 onLoad(opstion => {
   // 邀请信息
@@ -257,7 +250,6 @@ onLoad(opstion => {
   opstion?.inviteMid && uni.setStorageSync('inviteMid', opstion?.inviteMid);
 });
 onMounted(() => {
-  getLogo();
   getMemberEula();
   jsCodeLogin();
 });

@@ -95,113 +95,6 @@
               </view>
             </view>
           </IncExpDetail>
-
-          <!--          <picker
-            mode="date"
-            fields="month"
-            :value="timeValue"
-            :start="getPassYearFormatDate()"
-            :end="current_time()"
-            @change="changeData"
-          >
-            <view class="rqi-cell-item">
-              <view class="rqi-cell-item-left">
-                {{ totalObj.name + '明细' }}
-              </view>
-              <view class="rqi-cell-item-right">
-                <text>
-                  {{ timeValue }}
-                </text>
-                <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
-              </view>
-            </view>
-          </picker>-->
-
-          <!--<view class="allList">
-            <view class="tabs-list">
-              <view
-                class="tabs-list-item"
-                :class="current === 0 ? 'tabs-list-item-action' : ''"
-                @click="change(0)"
-              >
-                全部
-              </view>
-              <view
-                class="tabs-list-item"
-                :class="current === 1 ? 'tabs-list-item-action' : ''"
-                @click="change(1)"
-              >
-                收入
-              </view>
-              <view
-                class="tabs-list-item"
-                :class="current === 2 ? 'tabs-list-item-action' : ''"
-                @click="change(2)"
-              >
-                支出
-              </view>
-            </view>
-            &lt;!&ndash; 全部页面 &ndash;&gt;
-            <view class="boxList">
-              <view class="title">
-                <view class="tit">
-                  <view class="item">
-                    <view class="left">
-                      {{ totalData.time }}
-                    </view>
-                    <view class="right">
-                      <view class="r1" v-if="current === 0 || current === 1">
-                        收入：<text class="yuan">{{
-                          totalData.totalInOfMonth || 0
-                        }}</text>
-                      </view>
-                      <view class="r2" v-if="current === 0 || current === 2">
-                        支出：<text class="yuan">{{
-                          setTotalOutOfMonth(totalData.totalOutOfMonth) || 0
-                        }}</text>
-                      </view>
-                    </view>
-                  </view>
-                </view>
-                <view class="jifei" v-if="dataList.length">
-                  <view
-                    class="item"
-                    v-for="(item, index) in dataList"
-                    :key="index"
-                  >
-                    <view class="top">
-                      <view class="left">
-                        <text v-if="item.remark">{{
-                          getText(item.remark) || ''
-                        }}</text>
-                      </view>
-                      <view
-                        class="bott"
-                        :style="{
-                          color:
-                            Number(item.realPoint) < 0 ? '#f33030' : '#000',
-                        }"
-                      >
-                        {{ incomeFun(item.opKind) }}{{ item.realPoint }}
-                      </view>
-                    </view>
-                    <view class="bottom">
-                      <view class="left left-time">
-                        {{ item.createTime }}
-                      </view>
-                    </view>
-                  </view>
-                </view>
-                <view class="imagewu" v-else>
-                  <image
-                    :src="staticUrl + 'img/noIntegral.png'"
-                    mode=""
-                  ></image>
-                  <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
-                </view>
-              </view>
-            </view>
-          </view>-->
         </view>
       </scroll-view>
 
@@ -217,14 +110,14 @@
         color="#D8D9E0"
       /> -->
       <!-- 底部信息 -->
-      <!-- <footer-text></footer-text> -->
     </view>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
-import { queryPointDetailPage } from '@/api/center';
+// import { queryPointDetailPage } from '@/api/center';
+import { queryPointDetailPageFront } from '@/my-assets-pages/api/integral';
 import { staticUrl } from '@/utils/config';
 import { onMounted, ref, Ref } from 'vue';
 import IncExpDetail from '../component/IncomeExpenditureDetail/index.vue';
@@ -352,7 +245,7 @@ const queryPointDetailPagFun = async (setMIn?: any) => {
     opKind: opKind.value,
     pageSize: 5000,
   };
-  const res: any = await queryPointDetailPage(body);
+  const res: any = await queryPointDetailPageFront(body);
   const { detailList, totalData: totalList } = res.data;
   totalPage.value = detailList.totalPage;
   totalData.value = totalList;

@@ -27,7 +27,7 @@ const pageCode: any = {
   point_mall_commodity: '/my-assets-pages/point-mall/index', // 商品(积分)
   point_mall_index: '/my-assets-pages/point-mall/index', // 首页(积分)
   reg: '', // 注册登录
-  invite_courteous: '', // 邀请有礼
+  invite_courteous: '/activity-pages/invite-gift/index', // 邀请有礼
   my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
   reservation: '/reservation-service-pages/reservation-service/index', // 预约服务
   warranty_list: '', // 质保单列表
@@ -39,6 +39,7 @@ const pageCode: any = {
   sign: '/activity-pages/sign-in/index', // 签到
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '/my-assets-pages/my-coupon/index', // 我的优惠券
+  coupon_detail: '/my-assets-pages/my-coupon/detail', // 优惠券详情
   nearby_store: '/pages/nearby-store/index', // 附近门店
   storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
   login: '/pages/login/index',
@@ -52,6 +53,7 @@ const pageCode: any = {
   location: '/pages/center/user-info/address', // 修改地址
   goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
+  popularity: '/activity-pages/popularity/index', // 活动-人气值千金
 };
 
 // 路由控制
@@ -77,7 +79,7 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string, urlQueryParams = '') {
+  static goCodePage(code: string, urlQueryParams = '', type = '') {
     console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
@@ -93,6 +95,10 @@ class Router {
     // 如果没有登录，需要登录的页面-就去登录
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
       return this.goLogin();
+    }
+    // 关闭所有页面，打开指定页面
+    if (type === 'reLaunch') {
+      return uni.reLaunch({ url: url + urlQueryParams });
     }
     uni.navigateTo({ url: url + urlQueryParams });
   }

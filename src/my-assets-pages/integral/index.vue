@@ -29,7 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import { queryPointList } from '@/api/center';
+// import { queryPointList } from '@/api/center';
+import { queryPointListFront } from '@/my-assets-pages/api/integral';
+
 import { onLoad } from '@dcloudio/uni-app';
 import { onMounted, ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
@@ -58,7 +60,7 @@ const userintegral = (item: any, type = '') => {
 };
 
 const queryPointListFun = async () => {
-  const res = await queryPointList(initBasicsData.useMid);
+  const res = await queryPointListFront(initBasicsData.useMid);
   dataList.value = res?.data || [];
   if (selectId.value) {
     dataList.value.map((v: any) => {
@@ -84,6 +86,9 @@ const queryPointListFun = async () => {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30rpx;
+    &:last-child {
+      margin-bottom: 0;
+    }
     .integral-item-image {
       width: 88rpx;
       height: 88rpx;

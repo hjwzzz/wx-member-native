@@ -225,7 +225,7 @@ import { ref, reactive, computed } from 'vue';
 import Router from '@/utils/router';
 import { queryAllLevelRights } from '@/api/server';
 import { onLoad, onShow } from '@dcloudio/uni-app';
-import { queryCommonUserActivityAwardList } from '@/activity-pages/api/inviteGift';
+import { queryCommonUserActivityAwardList } from '@/activity-pages/api/invite-gift';
 import { staticUrl } from '@/utils/config';
 
 const actId = ref('');
@@ -264,26 +264,26 @@ const goCouponList = (item: any) => {
   // Router.go(pages);
 };
 const goPrizeList = (item: any) => {
-  const { id, status, recvManner } = item;
+  const { id, recvManner } = item;
   let pages = '';
-  switch (status.code || '') {
-    case 'TEXC': // 待兑换
-      pages = '/pages/center/user-theprize/to_convert/exchange';
-      pages += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
-      break;
-    // case 'CLOSED': // 已失效
-    // case 'FINISHED': // 已领取
-    //   break
-    default:
-      if (Number(recvManner.code) === 1) {
-        pages = '/pages/center/user-theprize/state/dailingqu';
-        pages += `?id=${id}&name=${status.name}`;
-      } else {
-        pages = '/pages/center/user-theprize/state/get_theview';
-        pages += `?id=${id}&name=${status.name}`;
-      }
-  }
-  uni.setStorageSync('pages', pages);
+  // switch (status.code || '') {
+  //   case 'TEXC': // 待兑换
+  pages = '/my-assets-pages/my-prize/prize-detail';
+  pages += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+  // break;
+  // case 'CLOSED': // 已失效
+  // case 'FINISHED': // 已领取
+  //   break
+  // default:
+  //   if (Number(recvManner.code) === 1) {
+  //     pages = '/pages/center/user-theprize/state/dailingqu';
+  //     pages += `?id=${id}&name=${status.name}`;
+  //   } else {
+  //     pages = '/pages/center/user-theprize/state/get_theview';
+  //     pages += `?id=${id}&name=${status.name}`;
+  //   }
+  // }
+  // uni.setStorageSync('pages', pages);
   Router.go(pages);
 };
 // 跳转积分
@@ -306,6 +306,7 @@ const goMemberList = async () => {
   const res = await queryAllLevelRights('');
   if (!res.data) {
     Router.goCodePage('wm_center');
+    return;
   }
   // uni.setStorageSync('pages', pages);
   Router.go(pages);

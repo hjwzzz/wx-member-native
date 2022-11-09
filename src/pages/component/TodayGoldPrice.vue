@@ -9,7 +9,7 @@
         <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
     </view>
-    <view v-if="props.goldPrice.length && props.showed">
+    <view v-if="goldPrice.length && showed">
       <!-- @change="swiperChange" -->
       <swiper
         class="swiper"
@@ -17,11 +17,11 @@
         :circular="true"
         :interval="2000"
         :duration="500"
-        :indicator-dots="props.goldPrice.length > 1"
+        :indicator-dots="goldPrice.length > 1"
         indicator-active-color="#FF547B"
         style="height: 280rpx"
       >
-        <swiper-item v-for="(price, index) in props.goldPrice" :key="index">
+        <swiper-item v-for="(price, index) in goldPrice" :key="index">
           <view class="swiper-item uni-bg-red">
             <view class="content-detail">
               <view class="detail-header">
@@ -55,25 +55,56 @@
 </template>
 
 <script setup lang="ts">
-// import { useBasicsData } from '@/store/basicsData';
-// import { onMounted } from 'vue';
+import { useBasicsData } from '@/store/basicsData';
+import { queryGoldPriceBannerListFront } from '@/pages/api/server';
 import Router from '@/utils/router';
+import { ref, onMounted } from 'vue';
 import NoneData from './NoneData.vue';
-// const initBasicsData = useBasicsData();
+const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 
 interface Props {
   title?: string;
-  showed?: boolean;
-  goldPrice?: any;
+  // showed?: boolean;
+  // goldPrice?: any;
+  type: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '今日金价',
-  showed: false,
-  goldPrice: [],
+  type: '',
+  // showed: false,
+  // goldPrice: [],
 });
 const more = () => {
   Router.goCodePage('goldPrice');
+};
+
+const showed = ref(false);
+const goldPrice = ref<any>([]);
+onMounted(() => {
+  // getGoldPriceByPage();
+});
+
+const getGoldPriceByPage = async () => {
+  if (!initBasicsData.checkLogin) {
+    return;
+  }
+  const res = await queryGoldPriceBannerListFront(props.type);
+  if (res.code === 0 && res.data) {
+    const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
+    // this.uiParam = uiParam;
+    const { showNum } = param;
+    const result: any = [];
+
+    branPriceList.map((item: unknown, index: number) => {
+      if (index < showNum) {
+        result.push(item);
+      }
+    });
+    showed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
+    goldPrice.value = result;
+    // console.log('goldPrice', result);
+  }
 };
 </script>
 
