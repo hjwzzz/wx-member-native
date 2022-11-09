@@ -274,14 +274,16 @@ const callPhone = (tel: string) => {
   uni.makePhoneCall({ phoneNumber: tel });
 };
 const viewLocation = (obj: any) => {
-  const arr = obj.coord.split(',');
-  const latitude = +arr[1];
-  const longitude = +arr[0];
-  uni.openLocation({
-    latitude,
-    longitude,
-    address: obj.province + obj.city + obj.district + obj.address,
-  });
+  const arr = obj?.coord?.split(',');
+  if (arr?.length) {
+    const latitude = +arr[1];
+    const longitude = +arr[0];
+    uni.openLocation({
+      latitude,
+      longitude,
+      address: obj.province + obj.city + obj.district + obj.address,
+    });
+  }
 };
 
 /**/
