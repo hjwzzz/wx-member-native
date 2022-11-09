@@ -164,20 +164,23 @@ const getData = async (params: any) => {
   if (!range) data.rangeInfo = '';
   detail.value = data;
 };
-const thephone = (item: any) => uni.makePhoneCall({ phoneNumber: item.tel });
-const openLocation = (item: any) => {
-  const [lng, lat] = item.coord?.split?.(',') ?? [];
+const thephone = () => uni.makePhoneCall({ phoneNumber: detail.value.tel });
+const openLocation = () => {
+  const { coord, storeName, fullAddress } = detail.value;
+  const [lng, lat] = coord?.split?.(',') ?? [];
   uni.openLocation({
     latitude: Number(lat),
     longitude: Number(lng),
-    name: item.storeName,
-    address: item.fullAddress,
+    name: storeName,
+    address: fullAddress,
   });
 };
 </script>
 
 <style scoped lang="scss">
 .content-view {
+  min-height: 100vh;
+  margin-bottom: -116rpx;
   .top {
     width: 100%;
     height: 400rpx;
