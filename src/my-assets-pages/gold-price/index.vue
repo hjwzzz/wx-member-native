@@ -127,7 +127,7 @@ const bannerClick = (item: any) => {
 };
 const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
-  router.goCodePage('storeInfo');
+  router.goCodePage('chooseStore');
 };
 
 // const richImage = (e: any) => {

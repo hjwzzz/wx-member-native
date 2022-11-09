@@ -1,5 +1,7 @@
 import { devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
+// 根据服务ID查询可预约门店信息
+export { getServiceStore } from '@/pages/api/appointment-store';
 
 // 查询附近门店
 export const queryNearStoreFront = async (data: any) => {
@@ -60,20 +62,6 @@ export const queryServiceBookPageFront = async (data: any) => {
 // 分页查询预约设置服务项目列表
 export const queryServicePageFront = async (data: any) => {
   const url = `${devBaseUrl}/usr/bookingServe/queryServicePageFront`;
-  const res = await request(url, data);
-  return res;
-};
-
-// 根据服务ID查询可预约门店信息
-export const queryServiceStoreListFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/bookingServe/queryServiceStoreListFront`;
-  const res = await request(url, data);
-  return res;
-};
-
-// 根据分销商ID获取对应导购列表
-export const queryShoppersListByDistIdFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/bookingServe/queryShoppersListByDistIdFront`;
   const res = await request(url, data);
   return res;
 };

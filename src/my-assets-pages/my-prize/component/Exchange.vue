@@ -72,7 +72,7 @@
           </view>
         </view>
         <view class="bottoms">
-          {{ adressGroup }}
+          {{ mergeFullAddress(address) }}
         </view>
       </view>
       <view class="right">
@@ -104,6 +104,7 @@ import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { exchangePrize } from '@/my-assets-pages/api/my-prize';
 import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
+import router from '@/utils/router';
 
 const props = defineProps<{ item: any }>();
 const form = reactive({ name: '', phone: '' });
@@ -137,7 +138,6 @@ onMounted(async () => {
 
 // 选择地址
 const address = ref<any>({});
-const adressGroup = computed(() => mergeFullAddress(address.value));
 const goAdress = () => {
   uni.$once('chooseAddress', (e: any) => address.value = e);
   uni.navigateTo({ url: '/pages/address/address-list?flag=true' });
@@ -147,11 +147,10 @@ const goAdress = () => {
 const storeInfo = ref<any>({});
 const goStore = () => {
   uni.$once('chooseStore', e => storeInfo.value = e);
-  uni.navigateTo({
-    url: `/my-assets-pages/my-prize/store-list?id=${
-      storeInfo.value.distId ?? ''
-    }&relatedId=${props.item.relatedId}`,
-  });
+  router.goCodePage(
+    'chooseStore',
+    `id=${storeInfo.value.distId ?? ''}&relatedId=${props.item.relatedId}`
+  );
 };
 
 // 确认兑换

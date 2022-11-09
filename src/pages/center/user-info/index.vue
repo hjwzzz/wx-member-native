@@ -128,7 +128,7 @@
                 class="right text"
                 v-if="item.code.code == 'PRIVATE_FIELD_LOCATION'"
               >
-                {{ userInfo.fullAddress }}
+                {{ mergeFullAddress(userInfo) }}
               </view>
               <view
                 class="right text"
@@ -353,7 +353,7 @@ const updateInfo = ({
         });
       });
       router.goCodePage(
-        'storeInfo',
+        'chooseStore',
         `?belong=true&id=${userInfo.value.belongDistId}`
       );
       break;
@@ -368,7 +368,7 @@ const updateInfo = ({
         });
       });
       if (userInfo.value.belongDistId) {
-        router.goCodePage('updateGuide', `?id=${userInfo.value.belongDistId}`);
+        router.goCodePage('chooseGuide', `?id=${userInfo.value.belongDistId}`);
         return;
       }
       uni.showModal({
@@ -530,9 +530,6 @@ const professionChange = (e: any) => {
 const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
-    // 拼接完整地址
-    data.fullAddress = mergeFullAddress(data);
-
     userInfo.value = data;
     // 计算农历生日
     if (data.birthSolar) {

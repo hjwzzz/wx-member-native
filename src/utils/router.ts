@@ -41,10 +41,10 @@ const pageCode: any = {
   coupon: '/my-assets-pages/my-coupon/index', // 我的优惠券
   coupon_detail: '/my-assets-pages/my-coupon/detail', // 优惠券详情
   nearby_store: '/pages/nearby-store/index', // 附近门店
-  storeInfo: '/my-assets-pages/my-prize/store-list', // 门店选择
+  chooseStore: '/pages/appointment-store/store-list', // 门店选择
+  chooseGuide: '/pages/appointment-store/guid-list', // 导购选择
   login: '/pages/login/index',
   userInfo: '/pages/center/user-info/index', // 个人资料
-  updateGuide: '/pages/center/user-info/guid-list', // 导购选择
   installCenter: '/pages/center/account-set', // 账户设置
   addressList: '/pages/address/address-list', // 收货地址
   finishAddress: '/pages/login/finish-address', // 完善信息地址
@@ -80,6 +80,7 @@ class Router {
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams = '', type = '') {
+    urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
     console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];

@@ -31,18 +31,6 @@ export const exchangePrize = async (data: unknown) => {
   return request(url, data);
 };
 
-// 附近门店
-export const getNearStore = async (data: unknown) => {
-  const url = `${devBaseUrl}/usr/operationDistributorFront/queryNearStoreFront`;
-  return request(url, data);
-};
-
-// 获取附近门店详情信息
-export const queryStoreDetails = async (data: unknown) => {
-  const url = `${devBaseUrl}/usr/operationDistributorFront/queryNearStoreFront`;
-  return request(url, data);
-};
-
 // 到店 确认领取
 export const updateToStore = async (data: unknown) => {
   const url = `${devBaseUrl}/usr/memberPrizeFront/updatePrizeToStoreFront`;

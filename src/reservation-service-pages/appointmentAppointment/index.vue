@@ -181,11 +181,10 @@ const selectStore = () => {
       guideName: '',
     });
   });
-  uni.navigateTo({
-    url: `/my-assets-pages/my-prize/store-list?id=${
-      data.value.id ?? ''
-    }&type=getServiceStore`,
-  });
+  router.goCodePage(
+    'chooseStore',
+    `?id=${data.value.id ?? ''}&type=getServiceStore`
+  );
 };
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;
@@ -221,8 +220,8 @@ const selectGuide = () => {
   });
 
   router.goCodePage(
-    'updateGuide',
-    `?id=${form.value.distId}&uid=${form.value.uid}`
+    'chooseGuide',
+    `?id=${form.value.distId}&uid=${form.value.uid}&type=getServiceShoppersList`
   );
 };
 
@@ -418,6 +417,7 @@ const previewImage = (index: any) => {
           color: #323338 !important;
         }
         .right-value {
+          box-sizing: border-box;
           text-align: right;
           color: #9697a2;
           font-size: 28rpx;
@@ -425,6 +425,7 @@ const previewImage = (index: any) => {
           text-overflow: ellipsis;
           white-space: nowrap;
           padding-right: 28rpx;
+          width: 468rpx;
           position: relative;
           .icon {
             position: absolute;

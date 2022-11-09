@@ -98,7 +98,7 @@
                       mode="aspectFill"
                       :src="`${staticUrl}reservation-service/address.png`"
                     />
-                    {{ address(item) }}
+                    {{ mergeFullAddress(item) }}
                   </view>
                   <view class="phone">
                     <image
@@ -195,7 +195,7 @@
 // } from '@/api/reservation-service';
 import {
   getServiceDetailsFront,
-  queryServiceStoreListFront,
+  getServiceStore,
   queryServiceBookCommentPageFront,
 } from '../api/api';
 import { onLoad } from '@dcloudio/uni-app';
@@ -225,7 +225,7 @@ const richImage = (s: string) => {
   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
   return s.replace(reg, '<img style="max-width: 100%;" src="$1" />');
 };
-const address = mergeFullAddress;
+
 const cost = computed(() => {
   const { cost, value, acctName } = detail.value;
   if (!cost) return '';
@@ -284,7 +284,7 @@ const tabChange = (e: any) => {
     });
 };
 const queryStoreList = async () => {
-  const res = await queryServiceStoreListFront({
+  const res = await getServiceStore({
     coordCur,
     id: detail.value.id,
   });

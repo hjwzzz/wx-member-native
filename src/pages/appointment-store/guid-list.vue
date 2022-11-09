@@ -47,18 +47,24 @@ import { ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import NoneData from '@/pages/component/NoneData.vue';
 import { useBasicsData } from '@/store/basicsData';
-import { getSalerByDistId } from '@/api/server';
+import {
+  getSalerByDistId,
+  getServiceShoppersList,
+} from '@/pages/api/appointment-store';
 const initBasicsData = useBasicsData();
 
 const props = defineProps<{
   id: string;
+  type: string;
 }>();
 
 // 加载列表
 const keyward = ref('');
 const list = ref<any[]>([]);
 const getData = async () => {
-  const { data } = await getSalerByDistId({
+  const requestUrl =
+    { getServiceShoppersList }[props.type || ''] || getSalerByDistId;
+  const { data } = await requestUrl({
     distId: props.id,
     name: keyward.value,
   });

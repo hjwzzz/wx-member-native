@@ -45,10 +45,7 @@
                   mode=""
                 ></image>
                 <text style="font-size: 24rpx" class="address">
-                  {{
-                    item.province + item.city + item.district + item.address ||
-                    '--'
-                  }}
+                  {{ mergeFullAddress(item) || '--' }}
                 </text>
               </view>
               <view class="right">
@@ -88,17 +85,19 @@
 
 <script setup lang="ts">
 import NoneData from '@/pages/component/NoneData.vue';
-import { getNearStore } from '@/my-assets-pages/api/my-prize';
+import { getServiceStore } from '@/pages/api/appointment-store';
+import { getNearStore } from '@/pages/api/nearby-store';
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
+import { mergeFullAddress } from '@/utils/util';
 
-const props = defineProps<{
-  id: string;
-  // name: string;
-  belong: boolean; // 修改归属门店
-  relatedId: string;
-}>();
+const props = defineProps({
+  id: { type: String },
+  belong: { type: Boolean }, // 修改归属门店
+  relatedId: { type: String },
+  type: { type: String, defaulet: 'getNearStore' }, // 接口类型
+});
 if (props.belong) {
   uni.setNavigationBarTitle({ title: '归属门店' });
 }
@@ -148,14 +147,14 @@ const local = ref({
 
 // 刷新列表
 const updateNearStorePost = async () => {
-  function logValut({ lng, lat }: any) {
-    return [lng, lat].filter(Boolean)
-      .join(',');
-  }
-  const { code, data } = await getNearStore({
+  const requestUrl = { getServiceStore }[props.type || ''] || getNearStore;
+  const geo = ({ lng, lat }: any) => [lng, lat].filter(Boolean)
+    .join(',');
+  const { code, data } = await requestUrl({
+    id: props.id || '',
     distId: '',
     storeName: keyward.value,
-    coordCur: logValut(local.value) || '',
+    coordCur: geo(local.value) || '',
     relatedId: props.relatedId,
   });
   if (code === 0) {
