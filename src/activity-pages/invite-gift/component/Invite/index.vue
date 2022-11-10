@@ -144,6 +144,7 @@ const clickItem = (item: any) => {
   font-weight: 400;
   color: #191919;
   border-top: 16rpx solid #f5f5f6;
+  box-sizing: border-box;
 }
 .popup-body {
   border-radius: 40rpx 40rpx 0 0;

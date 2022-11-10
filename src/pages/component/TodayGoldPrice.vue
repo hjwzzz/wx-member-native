@@ -9,7 +9,7 @@
         <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
     </view>
-    <view v-if="goldPrice.length && showed">
+    <view v-if="goldPrice?.length && showed">
       <!-- @change="swiperChange" -->
       <swiper
         class="swiper"
@@ -17,7 +17,7 @@
         :circular="true"
         :interval="2000"
         :duration="500"
-        :indicator-dots="goldPrice.length > 1"
+        :indicator-dots="goldPrice?.length > 1"
         indicator-active-color="#FF547B"
         style="height: 280rpx"
       >
@@ -56,9 +56,9 @@
 
 <script setup lang="ts">
 import { useBasicsData } from '@/store/basicsData';
-import { queryGoldPriceBannerListFront } from '@/pages/api/server';
+import { getGoldPriceByPage } from '@/pages/api/server';
 import Router from '@/utils/router';
-import { ref, onMounted } from 'vue';
+import { ref, Ref, onMounted } from 'vue';
 import NoneData from './NoneData.vue';
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -69,6 +69,8 @@ interface Props {
   // goldPrice?: any;
   type: string;
 }
+
+const distId: Ref<string> = ref('');
 const props = withDefaults(defineProps<Props>(), {
   title: '今日金价',
   type: '',
@@ -76,25 +78,31 @@ const props = withDefaults(defineProps<Props>(), {
   // goldPrice: [],
 });
 const more = () => {
-  Router.goCodePage('goldPrice');
+  Router.goCodePage('goldPrice', `?distId=${distId.value}`);
 };
 
 const showed = ref(false);
 const goldPrice = ref<any>([]);
 onMounted(() => {
-  // getGoldPriceByPage();
+  _getGoldPriceByPage();
 });
 
-const getGoldPriceByPage = async () => {
+const _getGoldPriceByPage = async () => {
   if (!initBasicsData.checkLogin) {
     return;
   }
-  const res = await queryGoldPriceBannerListFront(props.type);
+  const res = await getGoldPriceByPage(props.type);
   if (res.code === 0 && res.data) {
-    const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
+    const {
+      branPriceList,
+      param,
+      uiParam: todayGoldPrice,
+      distId: id,
+    } = res.data;
     // this.uiParam = uiParam;
     const { showNum } = param;
     const result: any = [];
+    distId.value = id;
 
     branPriceList.map((item: unknown, index: number) => {
       if (index < showNum) {

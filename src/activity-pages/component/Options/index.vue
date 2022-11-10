@@ -205,7 +205,7 @@ const clearFun = () => {
   // musicDom.value = null
   // #endif
   // #ifdef MP
-  audio.pause();
+  audio?.pause();
   audio = null;
   // #endif
 };

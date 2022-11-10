@@ -41,7 +41,7 @@
             <view class="item-three">
               <view class="left">
                 <image
-                  :src="`${staticUrl}/prize/store/address.png`"
+                  :src="`${staticUrl}prize/store/address.png`"
                   mode=""
                 ></image>
                 <text style="font-size: 24rpx" class="address">
@@ -62,10 +62,7 @@
               </view>
             </view>
             <view class="item-four">
-              <image
-                :src="`${staticUrl}/prize/store/phone.png`"
-                mode=""
-              ></image>
+              <image :src="`${staticUrl}prize/store/phone.png`" mode=""></image>
               <text style="font-size: 24rpx" class="address">
                 {{ item.tel || '--' }}
               </text>

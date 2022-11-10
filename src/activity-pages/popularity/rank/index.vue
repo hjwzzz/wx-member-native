@@ -31,7 +31,7 @@
         mode="aspectFill"
       ></image>
       <view class="rank-user-name">
-        <block v-if="isLogin">{{ userInfo.wxNickName }}</block>
+        <block v-if="isLogin">{{ userInfo.wxNickName || '--' }}</block>
         <block v-else>您还未登录</block>
       </view>
       <view class="rank-user-info">
@@ -147,6 +147,9 @@ const getUserInfo = () => {
         info.userRank = Number(info.userRank || 0);
         // this.userInfo = info
         Object.assign(userInfo, info);
+        userInfo.avatarUrl =
+        userInfo.avatarUrl ||
+        'https://static.jqzplat.com/popularity/user-bg.png';
       }
     });
 };
@@ -258,6 +261,7 @@ onReachBottom(() => {
     width: 100%;
     height: 124rpx;
     color: #999;
+    font-size: 28rpx;
     line-height: 34rpx;
     background-color: #fff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);

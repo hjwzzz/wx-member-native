@@ -41,7 +41,7 @@
         <view class="adress-tip" v-if="adressList.length == 0">
           <view class="_mgs tip-img">
             <image
-              :src="`${staticUrl}/points-mall-pages/addr-icon.png`"
+              :src="`${staticUrl}points-mall-pages/addr-icon.png`"
               mode=""
             ></image>
           </view>

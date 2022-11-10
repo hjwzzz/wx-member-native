@@ -33,10 +33,10 @@
                 </view>
                 <view
                   class="num"
-                  :class="{ expenditure: item.opKind === 'SUB' }"
+                  :class="{ expenditure: item.opKind.code === 'SUB' }"
                 >
                   {{
-                    item.opKind === 'ADD'
+                    item.opKind.code === 'ADD'
                       ? `+${item.realValue}`
                       : item.realValue
                   }}
@@ -70,11 +70,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
-// import { queryGrowthCount, queryMemberGrowthHistoryPage } from '@/api/center';
-import {
-  getGrowthCountFront,
-  queryMemberGrowthHistoryPageFront,
-} from '@/pages/api/member-equity';
+import { queryGrowthCount, queryMemberGrowthHistoryPage } from '@/api/center';
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
 
@@ -93,12 +89,12 @@ const growthList: Ref<any> = ref([]);
 const hexToRgba = (hex: string, opacity: number) => `rgba(${parseInt(`0x${hex.slice(1, 3)}`)},${parseInt(`0x${hex.slice(3, 5)}`)},${parseInt(`0x${hex.slice(5, 7)}`)}, ${opacity})`;
 
 const getGrowthCount = async () => {
-  const res = await getGrowthCountFront(initBasicsData.useMid);
+  const res = await queryGrowthCount(initBasicsData.useMid);
   growth.value = res.data.growth || 0;
 };
 //
 const queryGrowthHistoryList = async () => {
-  const res = await queryMemberGrowthHistoryPageFront({
+  const res = await queryMemberGrowthHistoryPage({
     curPage: curPage.value,
     pageSize: 50,
     mid: initBasicsData.useMid,

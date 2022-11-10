@@ -131,7 +131,7 @@
             <image
               class="noData-img"
               mode="aspectFit"
-              :src="`${staticUrl}/img/empty/prize.png`"
+              :src="`${staticUrl}img/empty/prize.png`"
             />
             <view class="text"> 暂无相关信息 </view>
           </view>

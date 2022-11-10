@@ -107,7 +107,8 @@ const agreement = (i: string) => {
   uni.navigateTo({ url: `agreement?eula=${JSON.stringify(agreementDetail)}` });
 };
 let waitPhoneAuth = false;
-const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
+
+const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } }: any) => {
   if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
@@ -119,6 +120,7 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any
       iv,
       sex: (['F', 'M'] as const)[sex] ?? 'U',
       jsCode,
+      code,
       nickName,
       avatarUrl,
       encryptedData,

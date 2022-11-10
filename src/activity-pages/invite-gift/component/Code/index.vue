@@ -13,7 +13,7 @@
         />
         <view class="content-con-title">使用微信扫一扫</view>
         <image
-          src="/static/img/home-close.png"
+          :src="staticUrl + 'img/home-close.png'"
           @click="close"
           class="content-con-close"
           mode="widthFix"
@@ -26,6 +26,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { staticUrl } from '@/utils/config';
 
 const props = defineProps({
   showCode: {
@@ -68,6 +69,7 @@ watch(
       border-radius: 32rpx;
       text-align: center;
       padding: 40rpx;
+      box-sizing: border-box;
 
       &-title {
         font-size: 28rpx;

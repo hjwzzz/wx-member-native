@@ -12,7 +12,7 @@
               />
               <image
                 v-else
-                :src="`${staticUrl}/img/person.png`"
+                :src="`${staticUrl}img/person.png`"
                 mode="scaleToFill"
               />
             </view>

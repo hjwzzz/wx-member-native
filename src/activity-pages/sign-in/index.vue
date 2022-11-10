@@ -88,6 +88,7 @@
           ref="toastRef"
           mask-background-color="rgba(0,0,0,0)"
           :is-mask-click="false"
+          background-color="#fff"
           class="toast"
         >
           <view class="content">
@@ -99,7 +100,7 @@
           </view>
         </uni-popup>
         <!-- 活动规则、签到奖励内容 -->
-        <uni-popup ref="guizeRef" :show="showPopou" mode="center" class="guize">
+        <uni-popup ref="guizeRef" class="guize">
           <view class="content">
             <view class="content-con">
               <view class="content-con-title">{{
@@ -147,7 +148,7 @@
           </view>
         </uni-popup>
         <!-- 额外奖励 -->
-        <uni-popup ref="guizeTwoRef" mode="center" class="guize">
+        <uni-popup ref="guizeTwoRef" class="guize">
           <view class="content">
             <view class="content-con con">
               <scroll-view

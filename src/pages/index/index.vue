@@ -18,12 +18,12 @@
         <swiper
           style="height: 300rpx"
           :indicator-dots="bannerList.length > 1"
-          indicator-color
+          indicator-color="#D8D9E0"
           indicator-active-color="#FF547B"
           autoplay
         >
           <block v-for="(item, index) in bannerList" :key="index">
-            <swiper-item @click.stop="bannerIndexFun(item)">
+            <swiper-item class="swiper-item" @click.stop="bannerIndexFun(item)">
               <image
                 class=""
                 style="height: 300rpx"
@@ -62,15 +62,15 @@
             style="height: 180rpx"
             class="banner"
             :indicator-dots="adBannerList.length > 1"
-            indicator-color
+            indicator-color="#D8D9E0"
             indicator-active-color="#FF547B"
             autoplay
           >
             <block v-for="(item, index) in adBannerList" :key="index">
-              <swiper-item>
+              <swiper-item class="swiper-item">
                 <image
                   @click="bannerIndexFun(item)"
-                  class=""
+                  class="image"
                   style="height: 180rpx"
                   :src="item.image"
                   mode="aspectFill"
@@ -88,10 +88,14 @@
             :style="{ height: swiperVavHeight + 'rpx' }"
             class=""
             :indicator-dots="swiperVav.length > 1"
-            indicator-color
+            indicator-color="#D8D9E0"
             indicator-active-color="#FF547B"
           >
-            <swiper-item v-for="(navs, index) in swiperVav" :key="index">
+            <swiper-item
+              class="swiper-item"
+              v-for="(navs, index) in swiperVav"
+              :key="index"
+            >
               <view
                 class="item-shop"
                 v-for="(item, index) in navs"
@@ -139,10 +143,14 @@
             :style="{ height: '680rpx' }"
             class=""
             :indicator-dots="floatAdsPopup.length > 1"
-            indicator-color
+            indicator-color="#D8D9E0"
             indicator-active-color="#FF547B"
           >
-            <swiper-item v-for="(item, index) in floatAdsPopup" :key="index">
+            <swiper-item
+              class="swiper-item"
+              v-for="(item, index) in floatAdsPopup"
+              :key="index"
+            >
               <image
                 @click="bannerIndexFun(item)"
                 :src="item.image"
@@ -167,9 +175,13 @@
 import { ref, onMounted, Ref, computed } from 'vue';
 import { onShareTimeline, onShareAppMessage } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
-import { queryPopup, queryShareSett } from '@/api/index';
+import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
-import { getWmIndex, queryHomBannerListFront } from '@/pages/api/index';
+import {
+  getWmIndex,
+  queryHomBannerListFront,
+  queryPopup,
+} from '@/pages/api/index';
 
 // import { useBasicsData } from '@/store/basicsData';
 import NoneData from '../component/NoneData.vue';
@@ -194,6 +206,7 @@ onMounted(() => {
   getShareSet();
 });
 
+// const shareObj: Ref<any> = ref({});
 const shareData: Ref<any> = ref([]);
 const getShareSet = async () => {
   const res = await queryShareSett({ pageName: 'WM_INDEX' });
@@ -402,12 +415,12 @@ const goMoreNotice = (item: any, noticTime: any) => {
     border-radius: 16rpx;
     overflow: hidden;
 
-    image {
+    .image {
       width: 100%;
       border-radius: 10rpx;
     }
 
-    swiper-item {
+    .swiper-item {
       overflow: hidden;
       border-radius: 10rpx;
     }
@@ -450,7 +463,7 @@ const goMoreNotice = (item: any, noticTime: any) => {
       color: #323338;
     }
 
-    swiper-item {
+    .swiper-item {
       display: flex;
       flex-wrap: wrap;
     }
