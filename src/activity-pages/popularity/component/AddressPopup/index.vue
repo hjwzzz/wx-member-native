@@ -47,7 +47,7 @@ watch(
   () => props.show,
   val => {
     visible.value = val;
-    console.log('val', val);
+    // console.log('val', val);
     if (val) {
       popupRef.value.open();
     } else {
@@ -62,27 +62,27 @@ watch(
   }
 );
 onReady(() => {
-  console.log('this.list', list.value);
+  // console.log('this.list', list.value);
   getLocation();
 });
 const getLocation = () => {
-  const that = this;
+  // const that = this;
   // return new Promise((resolve, reject) => {
-  const longitude = uni.getStorageSync('longitude');
-  const latitude = uni.getStorageSync('latitude');
+  // const longitude = uni.getStorageSync('longitude');
+  // const latitude = uni.getStorageSync('latitude');
   // if (!longitude && !latitude) {
   uni.getLocation({
     type: 'wgs84',
     success(res) {
-      console.log('res222', res);
+      // console.log('res222', res);
       uni.setStorageSync('longitude', res.longitude);
       uni.setStorageSync('latitude', res.latitude);
       queryShop(res);
       // resolve(true)
     },
-    fail: res => {
+    fail: () => {
       queryShop();
-      console.log('res111 res', res);
+      // console.log('res111 res', res);
       // resolve(false)
     },
   });
@@ -93,8 +93,8 @@ const getLocation = () => {
 };
 const queryShop = async (location = {} as any) => {
   // await this.getLocation()
-  console.log('location', location);
-  console.log('res2222');
+  // console.log('location', location);
+  // console.log('res2222');
   const { longitude: lo = '', latitude: la = '' } = location;
   const parmas = {
     coordCur: lo && la ? `${lo},${la}` : '',
@@ -102,14 +102,14 @@ const queryShop = async (location = {} as any) => {
     distId: '',
     relatedId: props.relatedId,
   };
-  const res = await queryNearStore(parmas, true);
+  const res = await queryNearStore(parmas);
   list.value = res.data || [];
   if (props.initSelect && list.value.length) {
     emits('onCheck', list.value[0]);
   }
 };
 const onCheck = (item: any) => {
-  console.log('onCheck2', item);
+  // console.log('onCheck2', item);
   emits('onCheck', item);
 };
 const onClosePopup = () => {

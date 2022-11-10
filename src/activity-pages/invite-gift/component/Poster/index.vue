@@ -21,12 +21,8 @@
   </uni-popup>
 </template>
 
-<script lang="ts">
-export default { name: '' };
-</script>
-
 <script lang="ts" setup>
-import { defineComponent, ref, reactive, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   showPoster: {

@@ -1,13 +1,13 @@
 <template>
   <view class="empty-box">
     <image
-      v-show="type == 1"
+      v-show="type === 1"
       class="empty-img"
       src="https://img.dev.jqzplat.com/12D3868F/COMM/2c4ec62a-20220525.png"
       mode="widthFix"
     ></image>
     <image
-      v-show="type == 2"
+      v-show="type === 2"
       class="empty-img"
       src="https://img.dev.jqzplat.com/12D3868F/COMM/f306e399-20220525.png"
       mode="widthFix"

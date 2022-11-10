@@ -123,30 +123,35 @@
             </text>
           </template>
         </view>
-        <button class="btn bgCM" :disabled="loading" @click="appointment">
+        <button class="btn bgCM" :loading="loading" @click="appointment">
           立即预约
         </button>
       </view>
 
-      <u-modal
-        v-model="modelShow"
-        title="确认支付"
-        :content="modelContent"
-        show-cancel-button
-        @confirm="submitAppointment"
-      />
+      <uni-popup ref="alertDialogRef" type="dialog">
+        <uni-popup-dialog
+          cancelText="关闭"
+          confirmText="确认"
+          title="确认支付"
+          :content="modelContent"
+          @confirm="submitAppointment"
+        ></uni-popup-dialog>
+      </uni-popup>
     </view>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
-import { staticUrl } from '@/utils/config';
-import { saveImmeBookServ } from '@/api/reservation-service';
+// import { staticUrl } from '@/utils/config';
+// import { saveImmeBookServ } from '@/api/reservation-service';
 import { onLoad } from '@dcloudio/uni-app';
 import router from '@/utils/router';
-import { imgBaseUrl } from '@/api/quality';
+// import { imgBaseUrl } from '@/api/quality';
+import { staticUrl, imgUrl } from '@/utils/config';
+import { saveBookingFront } from '../api/api';
 
+const alertDialogRef = ref();
 const data: Ref<any> = ref({});
 const imgUrlList: any[] = [];
 const form = ref({
@@ -160,8 +165,8 @@ const form = ref({
   timeId: '',
   guideName: '',
 });
-const loading = ref(false);
-const modelShow = ref(false);
+const loading: Ref<boolean> = ref(false);
+// const modelShow = ref(false);
 const modelContent = ref('');
 onLoad((e: any) => data.value = e);
 const selectStore = () => {
@@ -176,7 +181,10 @@ const selectStore = () => {
       guideName: '',
     });
   });
-  uni.navigateTo({ url: `/my-assets-pages/my-prize/store-list?id=${form.value.distId ?? ''}` });
+  router.goCodePage(
+    'chooseStore',
+    `?id=${data.value.id ?? ''}&type=getServiceStore`
+  );
 };
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;
@@ -212,8 +220,8 @@ const selectGuide = () => {
   });
 
   router.goCodePage(
-    'updateGuide',
-    `?id=${form.value.distId}&uid=${form.value.uid}`
+    'chooseGuide',
+    `?id=${form.value.distId}&uid=${form.value.uid}&type=getServiceShoppersList`
   );
 };
 
@@ -239,7 +247,7 @@ const uploadImg1 = () => {
           filePath = tempFilePath;
         }
         uni.uploadFile({
-          url: `${imgBaseUrl}/upload/uploadImageFile`,
+          url: `${imgUrl}/upload/uploadImageFile`,
           filePath,
           name: 'file',
           formData: { user: 'test' },
@@ -263,6 +271,9 @@ const uploadImg1 = () => {
   });
 };
 const appointment = () => {
+  if (loading.value) {
+    return;
+  }
   try {
     if (!form.value.distId) {
       throw '请选择门店';
@@ -270,15 +281,15 @@ const appointment = () => {
     if (!form.value.selectedTime && !form.value.timeId) {
       throw '请选择预约时间';
     }
-
     if (data.value.costCode === 'FREE') {
       submitAppointment();
     } else {
-      if (+data.value.balance < +data.value) {
+      if (Number(data.value.balance) < Number(data.value)) {
         throw `账户${data.value.costName}余额不足`;
       }
-      modelShow.value = true;
-      modelContent.value = `确定消耗${parseInt(data.value)}${
+      // modelShow.value = true;
+      alertDialogRef.value.open();
+      modelContent.value = `确定消耗${Number(data.value.value)}${
         data.value.acctName
       }，用于预约服务吗？`;
     }
@@ -300,7 +311,7 @@ const submitAppointment = () => {
     });
     loading.value = true;
     try {
-      saveImmeBookServ({
+      saveBookingFront({
         originChan: 'WM',
         distId: form.value.distId,
         selectedTime: form.value.selectedTime,
@@ -356,7 +367,7 @@ const previewImage = (index: any) => {
 
 <style scoped lang="scss">
 .appointmentAppointment {
-  height: 100vh;
+  // height: 100vh;
   position: relative;
   padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
@@ -406,6 +417,7 @@ const previewImage = (index: any) => {
           color: #323338 !important;
         }
         .right-value {
+          box-sizing: border-box;
           text-align: right;
           color: #9697a2;
           font-size: 28rpx;
@@ -413,6 +425,7 @@ const previewImage = (index: any) => {
           text-overflow: ellipsis;
           white-space: nowrap;
           padding-right: 28rpx;
+          width: 468rpx;
           position: relative;
           .icon {
             position: absolute;
@@ -501,6 +514,7 @@ const previewImage = (index: any) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
     .integral {
       color: var(--main-color);
       font-size: 36rpx;

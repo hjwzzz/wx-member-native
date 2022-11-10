@@ -172,6 +172,9 @@ const queryDepListFun = async () => {
       border-radius: 16rpx;
       margin-bottom: 30rpx;
       position: relative;
+      &:last-child {
+        margin-bottom: 0;
+      }
       .card-bg {
         height: 300rpx;
         position: absolute;

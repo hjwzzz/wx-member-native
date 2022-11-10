@@ -17,8 +17,7 @@
             </view>
             <view
               v-if="
-                detail.boolShowServCount &&
-                detail.boolShowServCount.code === 'Y'
+                detail.boolShowServCount && detail.boolShowServCount === 'Y'
               "
               class="top-mian-right"
             >
@@ -30,7 +29,7 @@
           </view>
           <view class="tip">
             <image
-              v-if="detail.boolBookServ?.code === 'Y'"
+              v-if="detail.boolBookServ === 'Y'"
               class="img"
               type="image"
               mode="aspectFill"
@@ -48,15 +47,13 @@
         </view>
 
         <view class="detail">
-          <u-sticky :h5-nav-height="0">
-            <view class="bgW">
-              <Tabs
-                :tabList="tabList"
-                v-model:current="current"
-                @change="tabChange"
-              />
-            </view>
-          </u-sticky>
+          <view class="bgW">
+            <Tabs
+              :tabList="tabList"
+              v-model:current="current"
+              @change="tabChange"
+            />
+          </view>
           <view class="main">
             <view v-show="current === 0" class="serve-introduce">
               <template v-if="detail.description">
@@ -86,7 +83,7 @@
                       <view class="storeName">
                         {{ item.storeName }}
                       </view>
-                      <view v-if="item.gsResult.code === 'Y'" class="tag bgCM">
+                      <view v-if="item.gsResult === 'Y'" class="tag bgCM">
                         归属
                       </view>
                     </view>
@@ -101,7 +98,7 @@
                       mode="aspectFill"
                       :src="`${staticUrl}reservation-service/address.png`"
                     />
-                    {{ address(item) }}
+                    {{ mergeFullAddress(item) }}
                   </view>
                   <view class="phone">
                     <image
@@ -169,7 +166,7 @@
 
       <view class="footer">
         <view class="integral clM">
-          <template v-if="detail.cost?.code === 'FREE'"> 免费预约 </template>
+          <template v-if="detail.cost === 'FREE'"> 免费预约 </template>
           <template v-else>
             {{ parseInt(detail.value) }}
             <text class="unit">
@@ -179,7 +176,7 @@
         </view>
 
         <button
-          :class="['btn', { isActive: detail.boolBookServ?.code === 'Y' }]"
+          :class="['btn', { isActive: detail.boolBookServ === 'Y' }]"
           size="mini"
           @click="appointment"
         >
@@ -191,11 +188,16 @@
 </template>
 
 <script setup lang="ts">
+// import {
+//   getServDetails,
+//   queryCBookCommentPage,
+//   queryDistStoreBySrvIdList,
+// } from '@/api/reservation-service';
 import {
-  getServDetails,
-  queryCBookCommentPage,
-  queryDistStoreBySrvIdList,
-} from '@/api/reservation-service';
+  getServiceDetailsFront,
+  getServiceStore,
+  queryServiceBookCommentPageFront,
+} from '../api/api';
 import { onLoad } from '@dcloudio/uni-app';
 import { computed, Ref, ref } from 'vue';
 import { mergeFullAddress } from '@/utils/util';
@@ -223,11 +225,11 @@ const richImage = (s: string) => {
   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
   return s.replace(reg, '<img style="max-width: 100%;" src="$1" />');
 };
-const address = mergeFullAddress;
+
 const cost = computed(() => {
   const { cost, value, acctName } = detail.value;
   if (!cost) return '';
-  return cost.code === 'FREE' ? '免费预约' : parseInt(value) + acctName;
+  return cost === 'FREE' ? '免费预约' : parseInt(value) + acctName;
 });
 
 const showTotalBook = computed(() => {
@@ -242,9 +244,9 @@ const whetherMoreThanOneHundred = (e: number | string) => {
   return e;
 };
 const queryServeDetail = async () => {
-  const { data } = await getServDetails({ id: id.value });
+  const { data } = await getServiceDetailsFront({ id: id.value });
   detail.value = data;
-  if (detail.value.boolShowAppraise.code === 'Y') {
+  if (detail.value.boolShowAppraise === 'Y') {
     tabList.value = [
       { name: '服务介绍' },
       { name: '可预约门店' },
@@ -257,12 +259,11 @@ const queryServeDetail = async () => {
 };
 
 const queryEvaluateList = async () => {
-  const { data } = await queryCBookCommentPage({
+  const { data } = await queryServiceBookCommentPageFront({
     curPage: 1,
     pageSize: 20,
     id: detail.value.id,
     isHaveImg: '',
-    sort: { sort: 'DESC' },
   });
   evaluateList.value = data.records.slice(0, 2);
 };
@@ -283,7 +284,7 @@ const tabChange = (e: any) => {
     });
 };
 const queryStoreList = async () => {
-  const res = await queryDistStoreBySrvIdList({
+  const res = await getServiceStore({
     coordCur,
     id: detail.value.id,
   });
@@ -301,10 +302,7 @@ const handleChangeTag = (data: string) => {
 const appointment = async () => {
   await queryServeDetail();
   const { boolBookServ, limitStatus, limitMsg, balance, value } = detail.value;
-  if (
-    boolBookServ.code === 'N' ||
-    boolBookServ.code === 'Y' && limitStatus === 'Y'
-  ) {
+  if (boolBookServ === 'N' || boolBookServ === 'Y' && limitStatus === 'Y') {
     setTimeout(() => {
       uni.showToast({
         title: limitMsg,
@@ -326,7 +324,7 @@ const appointment = async () => {
   }
   const obj = {
     id: detail.value.id,
-    boolShowGuide: detail.value.boolShowGuide.code,
+    boolShowGuide: detail.value.boolShowGuide,
     distId: dist.value.distId,
     storeName: dist.value.storeName,
     startTime: detail.value.allowBookingStartTime,
@@ -335,7 +333,7 @@ const appointment = async () => {
     value: detail.value.value,
     name: detail.value.name,
     imgUrl: detail.value.imgUrl,
-    costCode: detail.value.cost.code,
+    costCode: detail.value.cost,
     balance: detail.value.balance,
   };
   const str = Object.entries(obj)
@@ -351,14 +349,11 @@ const appointment = async () => {
   border-bottom: 1px solid #ebedf0;
 }
 .serveDetail {
-  height: 100vh;
   position: relative;
   padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
   .wrapper {
-    /*height: calc(100vh - 100rpx);*/
     height: 100%;
-    overflow-y: auto;
     .top {
       margin: 30rpx;
       padding: 24rpx;
@@ -418,7 +413,11 @@ const appointment = async () => {
     }
     .detail {
       height: calc(100% - 260rpx);
-
+      .bgW {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
       .main {
         min-height: calc(100% - 82rpx);
         background: #fff;

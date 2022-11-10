@@ -1,15 +1,17 @@
 <template>
   <CustomPage>
     <view class="myAppointment">
-      <Tabs
-        :list="list"
-        :current="current"
-        :bar-style="{ background: initBasicsData.mainColor }"
-        inactive-color="#9697A2"
-        :active-item-style="{ color: '#323338' }"
-        :bar-width="80"
-        @change="handleChangeTab"
-      />
+      <USticky offset-top="0" class="tabBar">
+        <Tabs
+          :list="list"
+          :current="current"
+          :bar-style="{ background: initBasicsData.mainColor }"
+          inactive-color="#9697A2"
+          :active-item-style="{ color: '#323338' }"
+          :bar-width="80"
+          @change="handleChangeTab"
+        />
+      </USticky>
       <scroll-view
         class="wrapper"
         :scroll-y="true"
@@ -119,15 +121,20 @@
 </template>
 
 <script setup lang="ts">
+// import {
+//   queryCBookServPage,
+//   updateFinishBookServ,
+// } from '@/api/reservation-service';
 import {
-  queryCBookServPage,
-  updateFinishBookServ,
-} from '@/api/reservation-service';
+  queryServiceBookPageFront,
+  updateFinishBookingFront,
+} from '../api/api';
 import { onShow } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/tab2.vue';
+import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
 
 const initBasicsData = useBasicsData();
@@ -179,7 +186,7 @@ const complete = (obj: { id: any }) => {
     success: res => {
       if (res.confirm) {
         // 完成服务逻辑
-        updateFinishBookServ({ id: obj.id })
+        updateFinishBookingFront({ id: obj.id })
           .then(async () => {
             subscribeList.value = [];
             await querySubscribeList();
@@ -196,7 +203,7 @@ const complete = (obj: { id: any }) => {
   });
 };
 const goEvaluate = ({ id }: any) => {
-  uni.navigateTo({ url: `/reservationService/myAppointment/evaluate?id=${id}` });
+  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/evaluate?id=${id}` });
 };
 const popupOk = () => {
   subscribeList.value = [];
@@ -213,7 +220,7 @@ const scrolltolower = () => {
   querySubscribeList();
 };
 const querySubscribeList = async () => {
-  const res = await queryCBookServPage({
+  const res = await queryServiceBookPageFront({
     curPage,
     pageSize,
     mid: uni.getStorageSync(`mid${uni.getStorageSync('jqzAppid')}`),
@@ -227,7 +234,17 @@ const querySubscribeList = async () => {
 
 <style scoped lang="scss">
 .myAppointment {
-  height: 100vh;
+  // padding-top: 80rpx;
+  .tabBar {
+    //   // position: sticky;
+    //   position: fixed;
+    //   top: 0;
+    //   left: 0;
+    //   z-index: 1;
+    :deep(.u-sticky) {
+      box-shadow: 0px 5px 5px #efefef;
+    }
+  }
   .wrapper {
     height: calc(100% - 86rpx);
     .main {

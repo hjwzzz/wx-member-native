@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { queryStoreDetails } from '@/pages/api/store';
+import { getStoreDetails } from '@/pages/api/nearby-store';
 import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';
@@ -155,7 +155,7 @@ onLoad((e: any) => {
 });
 
 const getData = async (params: any) => {
-  const { data } = await queryStoreDetails(params);
+  const { data } = await getStoreDetails(params);
   data.fullAddress = mergeFullAddress(data);
   // 距离
   const { range } = data;
@@ -164,20 +164,23 @@ const getData = async (params: any) => {
   if (!range) data.rangeInfo = '';
   detail.value = data;
 };
-const thephone = (item: any) => uni.makePhoneCall({ phoneNumber: item.tel });
-const openLocation = (item: any) => {
-  const [lng, lat] = item.coord?.split?.(',') ?? [];
+const thephone = () => uni.makePhoneCall({ phoneNumber: detail.value.tel });
+const openLocation = () => {
+  const { coord, storeName, fullAddress } = detail.value;
+  const [lng, lat] = coord?.split?.(',') ?? [];
   uni.openLocation({
     latitude: Number(lat),
     longitude: Number(lng),
-    name: item.storeName,
-    address: item.fullAddress,
+    name: storeName,
+    address: fullAddress,
   });
 };
 </script>
 
 <style scoped lang="scss">
 .content-view {
+  min-height: 100vh;
+  margin-bottom: -116rpx;
   .top {
     width: 100%;
     height: 400rpx;

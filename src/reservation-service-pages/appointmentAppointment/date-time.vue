@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { queryBookServTimeCaseList } from '@/api/reservation-service';
+// import { queryBookServTimeCaseList } from '@/api/reservation-service';
+import { queryBookingTimeCaseListFront } from '../api/api';
 import { onLoad } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 
@@ -67,7 +68,7 @@ onLoad((_data: any) => {
   queryTimeCaseList();
 });
 const queryTimeCaseList = async () => {
-  const { data: _data } = await queryBookServTimeCaseList({
+  const { data: _data } = await queryBookingTimeCaseListFront({
     distId: data.value.distId,
     beginTime: startDate.value,
     endTime: endDate.value,
@@ -76,7 +77,7 @@ const queryTimeCaseList = async () => {
   list = _data;
 
   fullList.value = list
-    .filter((i: any) => i.status.code === 'Y')
+    .filter((i: any) => i.status === 'Y')
     .map((i: any) => ({
       date: i.date,
       info: '已约满',
@@ -126,7 +127,7 @@ const confirm = () => {
   } catch (err: any) {
     setTimeout(() => {
       uni.showToast({
-        title: err.message,
+        title: err,
         icon: 'none',
         duration: 3000,
       });

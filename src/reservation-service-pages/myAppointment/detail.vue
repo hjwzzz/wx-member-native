@@ -134,7 +134,7 @@
           </view>
         </view>
       </view>
-			<ScrollViewFooter></ScrollViewFooter>
+      <ScrollViewFooter></ScrollViewFooter>
 
       <view
         v-if="
@@ -174,10 +174,14 @@
 import { ref, Ref, computed } from 'vue';
 import cancelReason from './component/cancel-reason.vue';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
+// import {
+//   queryCBookServPage,
+//   updateFinishBookServ,
+// } from '@/api/reservation-service';
 import {
-  queryCBookServPage,
-  updateFinishBookServ,
-} from '@/api/reservation-service';
+  queryServiceBookPageFront,
+  updateFinishBookingFront,
+} from '../api/api';
 import { onLoad, onShow } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
 
@@ -217,7 +221,12 @@ const addressFun = computed(() => {
 });
 
 const queryDetails = async () => {
-  const res = await queryCBookServPage({ id: data.value?.id });
+  const res = await queryServiceBookPageFront({
+    id: data.value?.id,
+    curPage: 1,
+    pageSize: 20,
+  });
+
   detail.value = res.data.records[0];
 };
 
@@ -234,7 +243,7 @@ const complete = () => {
     success: res => {
       if (res.confirm) {
         // 完成服务逻辑
-        updateFinishBookServ({ id: detail.value.id })
+        updateFinishBookingFront({ id: detail.value.id })
           .then(async () => {
             await queryDetails();
             setTimeout(() => {
@@ -265,14 +274,16 @@ const callPhone = (tel: string) => {
   uni.makePhoneCall({ phoneNumber: tel });
 };
 const viewLocation = (obj: any) => {
-  const arr = obj.coord.split(',');
-  const latitude = +arr[1];
-  const longitude = +arr[0];
-  uni.openLocation({
-    latitude,
-    longitude,
-    address: obj.province + obj.city + obj.district + obj.address,
-  });
+  const arr = obj?.coord?.split(',');
+  if (arr?.length) {
+    const latitude = +arr[1];
+    const longitude = +arr[0];
+    uni.openLocation({
+      latitude,
+      longitude,
+      address: obj.province + obj.city + obj.district + obj.address,
+    });
+  }
 };
 
 /**/
@@ -409,10 +420,10 @@ const viewLocation = (obj: any) => {
   }
 
   .footer {
-		box-sizing: border-box;
+    box-sizing: border-box;
     width: 100vw;
     position: fixed;
-		bottom: 0;
+    bottom: 0;
     left: 0;
     background: #ffffff;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
@@ -423,7 +434,7 @@ const viewLocation = (obj: any) => {
     justify-content: flex-end;
     margin-top: 20rpx;
     .btn {
-			box-sizing: border-box;
+      box-sizing: border-box;
       height: 64rpx;
       text-align: center;
       border-radius: 32rpx;

@@ -8,7 +8,7 @@
               <image
                 v-if="accountInfo.avatarUrl"
                 :src="accountInfo.avatarUrl"
-                mode="aspectFit"
+                mode="aspectFill"
               />
               <image
                 v-else

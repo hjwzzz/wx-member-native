@@ -363,7 +363,7 @@ const handle = (index: number) => {
         selectedShop.value = e;
       });
       router.goCodePage(
-        'storeInfo',
+        'chooseStore',
         `?belong=true&id=${memberInfo.value.belongDistId}`
       );
       break;
@@ -378,7 +378,7 @@ const handle = (index: number) => {
         });
       });
       if (selectedShop.value.distId) {
-        router.goCodePage('updateGuide', `?id=${selectedShop.value.distId}`);
+        router.goCodePage('chooseGuide', `?id=${selectedShop.value.distId}`);
         return;
       }
       uni.showModal({

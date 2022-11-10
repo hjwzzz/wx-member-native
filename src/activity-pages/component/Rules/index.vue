@@ -88,6 +88,7 @@ watch(
         &-content {
           padding: 0 30rpx 30rpx;
           white-space: pre-wrap;
+          word-break: break-all;
         }
       }
       &-close {
