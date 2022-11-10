@@ -1,4 +1,4 @@
-import type { couponCenter } from '@/typings/api';
+// import type { couponCenter } from '@/typings/api';
 import { baseUrl } from '@/utils/config';
 import request from '@/utils/request';
 

@@ -88,7 +88,7 @@ import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
-import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
+import { shareAppMessage } from '@/utils/shareHold';
 
 const initBasicsData = useBasicsData();
 const advertList = ref<AdvertList>([]);

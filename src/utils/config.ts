@@ -4,8 +4,9 @@ const h5Url = import.meta.env.VITE_APP_WXURL;
 const imgUrl = import.meta.env.VITE_APP_IMGBASEURL;
 
 // const devBaseUrl = import.meta.env.VITE_APP_BASEURLDEV;
-const devBaseUrl = 'http://192.168.20.116:10301';
-//
+// const devBaseUrl = 'http://192.168.20.116:10301';
+// const devBaseUrl = 'http://192.168.20.83:10301';
+const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 
 // const basePath = 'https://backend.dev.jqzplat.com';
 // const basePath = 'https://backend.fat.jqzplat.com';

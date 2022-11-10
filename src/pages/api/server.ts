@@ -6,9 +6,9 @@ export const getWeMemberNavFront = async (data: any) => {
   return request(url, data);
 };
 
-// 微会员导航栏获取
+// 微会员弹窗广告图
 export const queryWeMemberAlertBannerListFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/memberAdvertFront/queryWeMemberAlertBannerListFront`;
+  const url = `${devBaseUrl}/memberAdvertFront/queryWeMemberAlertBannerListFront`;
   return request(url, data);
 };
 

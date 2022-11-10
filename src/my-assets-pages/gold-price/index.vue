@@ -5,7 +5,7 @@
         <swiper
           style="height: 300rpx"
           :indicator-dots="bannerList.length > 1"
-          indicator-color
+          indicator-color="#D8D9E0"
           indicator-active-color="#FF547B"
           autoplay
         >
