@@ -33,10 +33,10 @@
                 </view>
                 <view
                   class="num"
-                  :class="{ expenditure: item.opKind.code === 'SUB' }"
+                  :class="{ expenditure: item.opKind === 'SUB' }"
                 >
                   {{
-                    item.opKind.code === 'ADD'
+                    item.opKind === 'ADD'
                       ? `+${item.realValue}`
                       : item.realValue
                   }}
@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
-import { queryGrowthCount, queryMemberGrowthHistoryPage } from '@/api/center';
+// import { queryGrowthCount, queryMemberGrowthHistoryPage } from '@/api/center';
 import {
   getGrowthCountFront,
   queryMemberGrowthHistoryPageFront,

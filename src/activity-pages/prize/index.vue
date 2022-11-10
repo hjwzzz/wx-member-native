@@ -209,7 +209,7 @@
         </view>
       </view>
     </view>
-    <view class="giftList-btn">
+    <view class="giftList-btn _back-btn">
       <view
         class="giftList-btn-btn"
         @click="backHome"
@@ -320,6 +320,10 @@ const backHome = () => {
   padding-bottom: 120rpx;
 }
 .giftList {
+  ._back-btn {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
   &-time {
     font-size: 28rpx;
     font-family: PingFangSC-Regular, PingFang SC;
