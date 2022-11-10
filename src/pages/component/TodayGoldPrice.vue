@@ -93,11 +93,16 @@ const _getGoldPriceByPage = async () => {
   }
   const res = await getGoldPriceByPage(props.type);
   if (res.code === 0 && res.data) {
-    const { branPriceList, param, uiParam: todayGoldPrice, distId } = res.data;
+    const {
+      branPriceList,
+      param,
+      uiParam: todayGoldPrice,
+      distId: id,
+    } = res.data;
     // this.uiParam = uiParam;
     const { showNum } = param;
     const result: any = [];
-    distId.value = distId;
+    distId.value = id;
 
     branPriceList.map((item: unknown, index: number) => {
       if (index < showNum) {

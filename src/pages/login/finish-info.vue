@@ -142,7 +142,7 @@
             <view v-if="selectedShop.fullAddress" class="shop-address">
               <view class="address-icon">
                 <image
-                  :src="`${staticUrl}/prize/store/address.png`"
+                  :src="`${staticUrl}prize/store/address.png`"
                   mode="scaleToFill"
                 />
               </view>
@@ -153,7 +153,7 @@
             <view v-if="selectedShop.tel" class="shop-phone">
               <view class="phone-icon">
                 <image
-                  :src="`${staticUrl}/prize/store/phone.png`"
+                  :src="`${staticUrl}prize/store/phone.png`"
                   mode="scaleToFill"
                 />
               </view>

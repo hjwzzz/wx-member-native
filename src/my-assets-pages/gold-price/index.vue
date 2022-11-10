@@ -62,7 +62,7 @@
                 height="250rpx"
                 class="emptyIcon"
                 mode="aspectFill"
-                :src="`${staticUrl}/img/themoney.png`"
+                :src="`${staticUrl}img/themoney.png`"
               ></image>
 
               <view class="stopText">暂无金价信息</view>
