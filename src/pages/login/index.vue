@@ -83,10 +83,9 @@ const protocol = reactive<Protocol>({});
  * 自动登录
  */
 const jsCodeLogin = async () => {
-  const jsCode = await getWxLoginCode();
-  if (!jsCode) return;
-
-  const { code, data } = await jsCodeLoginRequest(jsCode);
+  const jscode = await getWxLoginCode();
+  if (!jscode) return;
+  const { code, data } = await jsCodeLoginRequest({ jscode });
   if (code !== 0) return;
   const { token = '', mid = '' } = data;
   Storage.setToken(token);

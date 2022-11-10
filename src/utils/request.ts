@@ -161,7 +161,7 @@ const request = async <T = any>(
       setTimeout(() => {
         uni.showToast({
           icon: 'none',
-          title: '系统开小差了!',
+          title: res?.data?.msg || '系统开小差了!',
           duration: 3000,
         });
       }, 500);

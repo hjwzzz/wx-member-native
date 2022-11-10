@@ -204,7 +204,8 @@ import {
   getMemberInfo,
   queryRegistRequiredSettingNew,
 } from '@/api/server';
-import { queryNearStore } from '@/api/reservation-service';
+
+import { getNearStore } from '@/pages/api/nearby-store';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
@@ -283,7 +284,11 @@ onLoad(() => {
 });
 const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
-  data && (memberInfo.value = data);
+  if (data) {
+    memberInfo.value = data;
+    selectedShop.value.storeName = data.belongDistName;
+    selectedShop.value.distId = data.belongDistId;
+  }
 };
 // 获取附近门店
 const queryNearShop = async (distId: any) => {
@@ -294,7 +299,7 @@ const queryNearShop = async (distId: any) => {
     storeName: '',
     distId,
   };
-  const res = await queryNearStore(parmas);
+  const res = await getNearStore(parmas);
   if (!res.code && res.data?.length) {
     selectedShop.value = res.data[0];
   } else {
@@ -334,10 +339,10 @@ const queryWriteInfo = async (p = {}) => {
       storeName,
     });
 
-    memberInfo.value.belongUid = belongUid;
-    memberInfo.value.belongUser = belongUser;
-    selectedShop.value.storeName = storeName;
-    selectedShop.value.distId = distId;
+    belongUid && (memberInfo.value.belongUid = belongUid);
+    belongUser && (memberInfo.value.belongUser = belongUser);
+    storeName && (selectedShop.value.storeName = storeName);
+    distId && (selectedShop.value.distId = distId);
 
     if (isActivity.value) {
       distId && queryNearShop(distId);
@@ -466,6 +471,7 @@ const handleStep = async () => {
     birthLunar: '',
     birthSolar,
   };
+  console.log(params);
 
   const verifyData = list.value.some((i: any) => {
     if (i.required !== 'Y') return;
@@ -501,7 +507,7 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_GENDER': {
-        if (!['Y', 'U'].includes(params.sex)) {
+        if (!['M', 'F'].includes(params.sex)) {
           uni.showModal({
             content: '请选择性别',
             showCancel: false,
@@ -523,7 +529,7 @@ const handleStep = async () => {
       case 'REGIST_REQUIRED_ADDRESS': {
         if (!params.address && !params.province) {
           uni.showModal({
-            content: '请选择纪念日',
+            content: '请填写地址',
             showCancel: false,
           });
           return true;

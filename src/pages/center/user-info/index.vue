@@ -24,16 +24,16 @@
         </view>
       </view>
       <view class="wrapper-info">
-        <template v-for="item in setList" :key="item.code.code">
+        <template v-for="item in setList" :key="item.code">
           <!--				纪念日-->
           <view
             class="info"
-            :key="item.code.code"
+            :key="item.code"
             @click="updateInfo(item)"
-            v-if="item.code.code == 'PRIVATE_FIELD_MDAY' && userInfo.annday"
+            v-if="item.code == 'PRIVATE_FIELD_MDAY' && userInfo.annday"
           >
             <view class="left">
-              {{ item.code.name }}
+              {{ item.codeName }}
             </view>
             <view class="text-info">
               <view class="right text">
@@ -52,19 +52,14 @@
           <view
             class="info"
             @click="updateInfo(item)"
-            :key="item.code.code"
+            :key="item.code"
             v-if="
-              !['PRIVATE_FIELD_MDAY', 'PRIVATE_FIELD_SEX'].includes(
-                item.code.code
-              )
+              !['PRIVATE_FIELD_MDAY', 'PRIVATE_FIELD_SEX'].includes(item.code)
             "
           >
             <view class="left">
-              {{ item.code.name }}
-              <view
-                class="rilian"
-                v-if="item.code.code == 'PRIVATE_FIELD_BIRTH'"
-              >
+              {{ item.codeName }}
+              <view class="rilian" v-if="item.code == 'PRIVATE_FIELD_BIRTH'">
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
                     class="selecte-redio"
@@ -85,29 +80,23 @@
               </view>
             </view>
             <view class="text-info">
-              <view
-                class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_NAME'"
-              >
+              <view class="right text" v-if="item.code == 'PRIVATE_FIELD_NAME'">
                 {{ userInfo.name || '' }}
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_EMAIL'"
+                v-if="item.code == 'PRIVATE_FIELD_EMAIL'"
               >
                 {{ userInfo.email || '' }}
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_BELONG_STORE'"
+                v-if="item.code == 'PRIVATE_FIELD_BELONG_STORE'"
               >
                 <!-- 归属门店 -->
                 {{ userInfo.belongDistName || '' }}
               </view>
-              <view
-                class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_SEX'"
-              >
+              <view class="right text" v-if="item.code == 'PRIVATE_FIELD_SEX'">
                 <picker
                   @change="bindPickerChangeGender"
                   :value="genderIndex"
@@ -119,26 +108,26 @@
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_BELONG_SELLER'"
+                v-if="item.code == 'PRIVATE_FIELD_BELONG_SELLER'"
               >
                 <!-- 专属导购 -->
                 {{ userInfo.belongUser || '' }}
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_LOCATION'"
+                v-if="item.code == 'PRIVATE_FIELD_LOCATION'"
               >
                 {{ mergeFullAddress(userInfo) }}
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_CRED_NO'"
+                v-if="item.code == 'PRIVATE_FIELD_CRED_NO'"
               >
                 {{ userInfo.identNo || '' }}
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_PROFESSION'"
+                v-if="item.code == 'PRIVATE_FIELD_PROFESSION'"
               >
                 <picker
                   mode="multiSelector"
@@ -152,7 +141,7 @@
               </view>
               <view
                 class="right text"
-                v-if="item.code.code == 'PRIVATE_FIELD_EDUCATION'"
+                v-if="item.code == 'PRIVATE_FIELD_EDUCATION'"
               >
                 <picker
                   @change="updateEdu"
@@ -168,7 +157,7 @@
               </view>
               <view
                 class="text des-text"
-                v-if="item.code.code == 'PRIVATE_FIELD_BIRTH'"
+                v-if="item.code == 'PRIVATE_FIELD_BIRTH'"
               >
                 <!-- 农历、公历切换显示 -->
                 <text v-if="['S', 'U'].includes(userInfo.birthKind)">{{
@@ -191,11 +180,11 @@
             :range="gender"
             :disabled="item.update === 'N'"
             key="PRIVATE_FIELD_SEX"
-            v-else-if="item.code.code === 'PRIVATE_FIELD_SEX'"
+            v-else-if="item.code === 'PRIVATE_FIELD_SEX'"
           >
             <view class="info bB1">
               <view class="left">
-                {{ item.code.name }}
+                {{ item.codeName }}
               </view>
               <view class="text-info">
                 <view class="right text">
@@ -223,7 +212,7 @@
         >
         </uni-calendar>
       </view>
-      <uni-popup ref="popup" :maskClick="popup?.close?.()" type="dialog">
+      <uni-popup ref="popup" @maskClick="popup?.close" type="dialog">
         <uni-popup-dialog
           mode="input"
           :value="dialogValue"
@@ -257,10 +246,11 @@ import { computed, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
+import type { IPrivateFieldItem } from '@/api/types/server';
 const initBasicsData = useBasicsData();
 
 const header = ref();
-const setList = ref<any[]>([]);
+const setList = ref<IPrivateFieldItem[]>([]);
 const items = [
   {
     value: 'S',
@@ -317,7 +307,7 @@ onShow(() => {
 const userInfo = ref<any>({});
 
 const current = ref();
-const phoneSet = ref<any>({});
+const phoneSet = ref<IPrivateFieldItem>({} as IPrivateFieldItem);
 const handleUpdate = (item: any) => {
   const mark = phoneSet.value.update === 'Y';
   if (item.code === 'phone' && mark) {
@@ -330,13 +320,7 @@ const popup = ref();
 const dialogTitle = ref('');
 const dialogValue = ref('');
 const dialogKey = ref('');
-const updateInfo = ({
-  code: { code },
-  update,
-}: {
-  code: { code: string };
-  update: string;
-}) => {
+const updateInfo = ({ code, update }: { code: string; update: string }) => {
   if (update !== 'Y') return;
   switch (code) {
     case 'PRIVATE_FIELD_BELONG_STORE': {
@@ -401,7 +385,6 @@ const updateInfo = ({
       dialogKey.value = 'email';
       dialogValue.value = userInfo.value.email;
       popup.value.open();
-      // router.goCodePage('email');
       break;
     }
     case 'PRIVATE_FIELD_NAME': {
@@ -491,11 +474,10 @@ const bindPickerChangeGender = (e: any) => {
 const querySetting = async () => {
   const { code, data } = await queryPrivateFieldSetting('');
   if (code === 0 && data) {
-    const list = data;
-    const mark = 'PRIVATE_FIELD_PHONE';
     // 分离出电话号码栏
-    setList.value = list.filter((i: { code?: any }) => {
-      if (i.code.code !== mark) return true;
+    const mark = 'PRIVATE_FIELD_PHONE';
+    setList.value = data.filter(i => {
+      if (i.code !== mark) return true;
       phoneSet.value = i;
     });
   }

@@ -1,7 +1,7 @@
 // import type { wxmeberFront, member } from '@/typings/api';
 import { baseUrl, devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
-import { MemberEula } from '@/api/types/server';
+import { IPrivateFieldItem, IMemberEula } from '@/api/types/server';
 // 微会员导航栏获取
 export const getWeMemberNavFront = async () => {
   const url = `${devBaseUrl}/sysUiFront/getWeMemberNavFront`;
@@ -29,7 +29,7 @@ export const queryWarrantyListPageFront = async (data: any) => {
 // // 获取用户协议
 // export const getMemberEulaRequest = async () => request(`${baseUrl}/emp-base/member/login/Front/getMemberEula`, '');
 // 获取用户协议
-export const getMemberEulaRequest = () => request<MemberEula>(`${devBaseUrl}/memberLoginFront/getMemberEula`, '');
+export const getMemberEulaRequest = () => request<IMemberEula>(`${devBaseUrl}/memberLoginFront/getMemberEula`, '');
 
 // 根据页面类型获取今日金价(首页:WM_HOME,个人中心:WM_CENTER)
 export const queryGoldPriceByPage = async (data: any) => {
@@ -57,50 +57,59 @@ export const queryAllLevelRights = async (data: any) => {
   return res;
 };
 // 完善资料
-export const completeInfo = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/completeInfo`;
-  const res = await request(url, data);
-  return res;
-};
+export const completeInfo = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/saveOrUpdateMemberInfo`, data);
+// export const completeInfo = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/completeInfo`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 查询个人资料设置
-export const queryPrivateFieldSetting = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryPrivateFieldSetting`;
-  const res = await request(url, data);
-  return res;
-};
-// export const queryPrivateFieldSetting = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/queryPrivateFieldSetting`, data);
+// export const queryPrivateFieldSetting = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryPrivateFieldSetting`;
+//   const res = await request(url, data);
+//   return res;
+// };
+export const queryPrivateFieldSetting = (data: any) => request<IPrivateFieldItem[]>(
+  `${devBaseUrl}/usr/memberInfoFront/queryPrivateFieldSetting`,
+  data
+);
 // 修改会员个人资料
-export const updateMemberInfo = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberInfo`;
-  const res = await request(url, data);
-  return res;
-};
+export const updateMemberInfo = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/updateMemberInfo`, data);
+// export const updateMemberInfo = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/updateMemberInfo`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 获取会员个人资料
-export const getMemberInfo = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/getMemberInfo`;
-  const res = await request(url, data);
-  return res;
-};
+// export const getMemberInfo = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/getMemberInfo`;
+//   const res = await request(url, data);
+//   return res;
+// };
+export const getMemberInfo = async (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/getMemberInfo`, data);
 // 修改手机号码-发送验证码
-export const updatePhoneSendCode = async (data: any) => {
-  const url = `${baseUrl}/emp-base/member/login/Front/updatePhoneSendCode`;
-  const res = await request(url, data);
-  return res;
-};
+export const updatePhoneSendCode = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/sendCodeForUpdatePhone`, data);
+// export const updatePhoneSendCode = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/member/login/Front/updatePhoneSendCode`;
+//   const res = await request(url, data);
+//   return res;
+// };
 // 修改手机号码-验证
-export const updatePhoneVerify = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhoneVerify`;
-  const res = await request(url, data);
-  return res;
-};
+export const updatePhoneVerify = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/verifyOldPhone`, data);
+// export const updatePhoneVerify = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhoneVerify`;
+//   const res = await request(url, data);
+//   return res;
+// };
 // 手机登录/注册-验证
-export const updatePhone = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhone`;
-  const res = await request(url, data);
-  return res;
-};
+export const updatePhone = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/updatePhone`, data);
+// export const updatePhone = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/updatePhone`;
+//   const res = await request(url, data);
+//   return res;
+// };
 // 查询注册管理设置
 export const queryRegistRequiredSetting = async (data: any) => {
   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSetting`;
@@ -116,11 +125,7 @@ export const query = async (data: any) => {
 };
 
 // 职业下拉选择查询(根据分类)
-export const queryProfessionAsCate = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryProfessionAsCate`;
-  const res = await request(url, data);
-  return res;
-};
+export const queryProfessionAsCate = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/queryProfessionAsCate`, data);
 
 // 查询注册管理设置(新)
 export const queryRegistRequiredSettingNew = async (data: any) => {

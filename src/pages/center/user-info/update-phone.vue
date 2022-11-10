@@ -54,16 +54,18 @@ import {
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 
-onLoad((e: any) => {
-  phone.value = e.phone || '';
-  set.value = !!e.set;
-});
 const phone = ref('');
 const code = ref('');
 const letter = ref(true);
 const timer = ref(60);
 const set = ref(false);
+const verifyId = ref('');
 
+onLoad((e: any) => {
+  phone.value = e.phone || '';
+  set.value = !!e.set;
+  verifyId.value = e.verifyId;
+});
 let waitRequest = false;
 const handleCode = async () => {
   if (waitRequest) return;
@@ -105,10 +107,17 @@ const handleNext = async () => {
   }
 
   const url = set.value ? updatePhone : updatePhoneVerify;
-  const { code: c } = await url({
-    phone,
+
+  const {
+    code: c,
+    data,
+    msg,
+  } = await url({
+    phone: phone.value,
     verifyCode: code.value,
+    ...set.value && { verifyId: verifyId.value },
   });
+
   if (c === 0) {
     if (set.value) {
       uni.showToast({
@@ -117,8 +126,13 @@ const handleNext = async () => {
       });
       uni.navigateBack();
     } else {
-      uni.redirectTo({ url: '/pages/center/user-info/update-phone?set=true' });
+      uni.redirectTo({ url: `/pages/center/user-info/update-phone?set=true&verifyId=${data}` });
     }
+  } else {
+    uni.showToast({
+      title: msg,
+      icon: 'none',
+    });
   }
 };
 const handleCert = () => [];
