@@ -69,6 +69,7 @@ watch(
       border-radius: 32rpx;
       text-align: center;
       padding: 40rpx;
+      box-sizing: border-box;
 
       &-title {
         font-size: 28rpx;

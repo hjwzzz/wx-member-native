@@ -469,6 +469,7 @@ onShareAppMessage(() => ({
 </script>
 <style lang="scss" scoped>
 .invite {
+  font-size: 28rpx;
   &-content {
     overflow: hidden;
     position: relative;
