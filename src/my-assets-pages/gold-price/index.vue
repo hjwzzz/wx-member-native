@@ -1,10 +1,10 @@
 <template>
   <CustomPage>
     <view class="gold-price">
-      <view class="banner" v-if="bannerList.length > 0">
+      <view class="banner" v-if="bannerList?.length > 0">
         <swiper
           style="height: 300rpx"
-          :indicator-dots="bannerList.length > 1"
+          :indicator-dots="bannerList?.length > 1"
           indicator-color
           indicator-active-color="#FF547B"
           autoplay
@@ -34,7 +34,7 @@
           @change="(e: any) => current = e.index"
         />
 
-        <view class="tab-bd" v-if="showTabs.length > 1">
+        <view class="tab-bd" v-if="showTabs?.length > 1">
           <view class="inner">
             <view class="item" v-for="item in showData" :key="item.brandId">
               <view class="left">
@@ -56,7 +56,7 @@
               </view>
             </view>
             <!-- 空 -->
-            <view class="empty empty-page" v-if="!showData.length">
+            <view class="empty empty-page" v-if="!showData?.length">
               <image
                 width="250rpx"
                 height="250rpx"

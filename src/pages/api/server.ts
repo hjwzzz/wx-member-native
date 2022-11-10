@@ -6,14 +6,14 @@ export const getWeMemberNavFront = async (data: any) => {
   return request(url, data);
 };
 
-// 微会员导航栏获取
+// 微会员弹窗广告图
 export const queryWeMemberAlertBannerListFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/memberAdvertFront/queryWeMemberAlertBannerListFront`;
+  const url = `${devBaseUrl}/memberAdvertFront/queryWeMemberAlertBannerListFront`;
   return request(url, data);
 };
 
-// 获取金价广告图
-export const queryGoldPriceBannerListFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/memberAdvertFront/queryGoldPriceBannerListFront`;
+// 根据页面类型获取今日金价(首页:WM_HOME,个人中心:WM_CENTER)
+export const getGoldPriceByPage = async (data: any) => {
+  const url = `${devBaseUrl}/usr/metalPriceFront/getGoldPriceByPage`;
   return request(url, data);
 };

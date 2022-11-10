@@ -136,10 +136,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref } from 'vue';
-// import { queryAllLevelRights } from '@/api/server';
-import { getMemberLevelRights } from '@/pages/api/member-equity';
-
-//
+import { queryAllLevelRights } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
@@ -170,7 +167,7 @@ const onChangeSwp = (e: any) => {
 const getAllBenefits = async () => {
   // 获取会员权益数据
   const params = '';
-  const res = await getMemberLevelRights(params);
+  const res = await queryAllLevelRights(params);
   benefitsData.value = res.data;
   if (benefitsData.value) {
     curLevelId.value = benefitsData.value.curLevelId;
@@ -195,9 +192,8 @@ const getAllBenefits = async () => {
     } else {
       benefitsDataFlag.value = 'nodata';
     }
-    // console.log('currentIndex.value', currentIndex.value);
+
     currentBenefitsData.value = levelList.value[currentIndex.value];
-    // console.log('currentBenefitsData.value.value', currentBenefitsData.value);
   } else {
     benefitsDataFlag.value = 'nodata';
   }
@@ -322,9 +318,9 @@ const currentStyle = computed(() => {
     text-align: center;
     margin-bottom: 20rpx;
   }
-  // img {
-  //   max-width: 100%;
-  // }
+  img {
+    max-width: 100%;
+  }
 }
 .no-data-inner {
   .icon {
