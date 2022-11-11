@@ -166,8 +166,8 @@ const onCouponDetail = (item: any) => {
   height: calc(100vh - 90rpx);
 }
 .coupon-list {
-  min-height: calc(100vh - 292rpx - constant(safe-area-inset-bottom));
-  min-height: calc(100vh - 292rpx - env(safe-area-inset-bottom));
+  min-height: calc(100vh - 232rpx - constant(safe-area-inset-bottom));
+  min-height: calc(100vh - 232rpx - env(safe-area-inset-bottom));
   padding-top: 35rpx;
   // padding-bottom: 60rpx;
   padding-left: 30rpx;
