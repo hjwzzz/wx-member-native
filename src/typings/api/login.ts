@@ -5,6 +5,7 @@ export enum SEX {
 }
 
 export interface WxMiniAuthRequestParams {
+  code: string;
 
   /** 头像 */
   avatarUrl?: string;

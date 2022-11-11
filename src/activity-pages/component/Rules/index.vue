@@ -12,7 +12,7 @@
             <view class="prize-content">{{ data }}</view>
           </scroll-view>
           <image
-            src="/static/img/home-close.png"
+            :src="staticUrl + 'img/home-close.png'"
             @click="close"
             class="content-con-close"
             mode="widthFix"
@@ -30,6 +30,7 @@ export default { name: '' };
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { staticUrl } from '@/utils/config';
 
 const props = defineProps({
   showRule: {

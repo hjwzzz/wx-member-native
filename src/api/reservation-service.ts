@@ -15,12 +15,12 @@ export const queryServicePage = async (data: unknown) => {
   return res;
 };
 
-// 查询附近门店a
-export const queryNearStore = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/queryNearStore`;
-  const res = await request(url, data);
-  return res;
-};
+// // 查询附近门店a
+// export const queryNearStore = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/queryNearStore`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 根据服务项目ID返回服务详情信息
 export const getServDetails = async (data: unknown) => {
@@ -29,12 +29,12 @@ export const getServDetails = async (data: unknown) => {
   return res;
 };
 
-// 根据服务ID返回可预约门店信息
-export const queryDistStoreBySrvIdList = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/queryDistStoreBySrvIdList`;
-  const res = await request(url, data);
-  return res;
-};
+// // 根据服务ID返回可预约门店信息
+// export const queryDistStoreBySrvIdList = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/queryDistStoreBySrvIdList`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 分页查询服务预约评价表
 export const queryCBookCommentPage = async (data: unknown) => {

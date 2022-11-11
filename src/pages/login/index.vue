@@ -83,10 +83,9 @@ const protocol = reactive<Protocol>({});
  * 自动登录
  */
 const jsCodeLogin = async () => {
-  const jsCode = await getWxLoginCode();
-  if (!jsCode) return;
-
-  const { code, data } = await jsCodeLoginRequest(jsCode);
+  const jscode = await getWxLoginCode();
+  if (!jscode) return;
+  const { code, data } = await jsCodeLoginRequest({ jscode });
   if (code !== 0) return;
   const { token = '', mid = '' } = data;
   Storage.setToken(token);
@@ -108,7 +107,8 @@ const agreement = (i: string) => {
   uni.navigateTo({ url: `agreement?eula=${JSON.stringify(agreementDetail)}` });
 };
 let waitPhoneAuth = false;
-const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any) => {
+
+const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } }: any) => {
   if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') {
     return;
   }
@@ -120,6 +120,7 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv } }: any
       iv,
       sex: (['F', 'M'] as const)[sex] ?? 'U',
       jsCode,
+      code,
       nickName,
       avatarUrl,
       encryptedData,
