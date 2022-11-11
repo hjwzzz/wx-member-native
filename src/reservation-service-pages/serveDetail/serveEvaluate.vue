@@ -35,10 +35,6 @@
 </template>
 
 <script setup lang="ts">
-// import {
-//   getCmtCntAndCmtImgCnt,
-//   queryCBookCommentPage,
-// } from '@/api/reservation-service';
 import {
   getAppraiseCntFront,
   queryServiceBookCommentPageFront,

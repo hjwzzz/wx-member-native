@@ -22,6 +22,7 @@ const switchTabUrl = [
 const pageCode: any = {
   warranty_details: '', // 质保单详情
   warranty: '/my-assets-pages/quality/index', // 质保单
+  warranty_list: '/my-assets-pages/quality/index', // 质保单列表
   point_mall: '/my-assets-pages/point-mall/index', // 积分商城
   point_mall_order: '/my-assets-pages/point-mall/index', // 订单(积分)
   point_mall_commodity: '/my-assets-pages/point-mall/index', // 商品(积分)
@@ -30,7 +31,6 @@ const pageCode: any = {
   invite_courteous: '/activity-pages/invite-gift/index', // 邀请有礼
   my_prize: '/my-assets-pages/my-prize/index', // 	  我的奖品
   reservation: '/reservation-service-pages/reservation-service/index', // 预约服务
-  warranty_list: '', // 质保单列表
   point: '/my-assets-pages/integral/index', // 我的积分
   get_coupon: '/my-assets-pages/coupon-center/index', // 领券中心
   gold_price: '/my-assets-pages/gold-price/index', // 今日金价

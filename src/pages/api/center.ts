@@ -5,3 +5,9 @@ export const getMemberCenterIndex = async (data: any) => {
   const url = `${devBaseUrl}/sysUiFront/getMemberCenterIndex`;
   return request(url, data);
 };
+
+// 获取会员中心广告图
+export const queryMemberCenterBannerListFront = async (data: any) => {
+  const url = `${devBaseUrl}/memberAdvertFront/queryMemberCenterBannerListFront`;
+  return request(url, data);
+};

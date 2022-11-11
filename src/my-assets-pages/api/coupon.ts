@@ -4,21 +4,21 @@ import request from '@/utils/request';
 
 // 优惠券--查询广告轮播图--必传:运营体系ID   新接口
 export const queryAdvertFront = async (data: any) => {
-  const url = `${devBaseUrl}/center/queryAdvertFront`;
+  const url = `${devBaseUrl}/memberAdvertFront/queryCouponBannerListFront`;
   const res = await request(url, data);
   return res;
 };
 
 // 領券中心  新接口
 export const queryCouponCenterListFront = async (data: any) => {
-  const url = `${devBaseUrl}/center/queryCouponCenterListFront`;
+  const url = `${devBaseUrl}/coupon/center/queryCouponCenterListFront`;
   const res = await request(url, data);
   return res;
 };
 
 // 优惠券--领取优惠券   新接口
 export const getCouponsFront = async (data: any) => {
-  const url = `${devBaseUrl}/center/usr/getCouponsFront`;
+  const url = `${devBaseUrl}/coupon/center/usr/getCouponsFront`;
   const res = await request(url, data);
   return res;
 };

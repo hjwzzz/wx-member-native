@@ -214,7 +214,7 @@ const getShareSet = async () => {
   shareHold(res.data);
   shareData.value = {
     title: '首页',
-    path: 'pages/index/index',
+    path: '/pages/index/index',
     shareObj: res.data,
   };
 };

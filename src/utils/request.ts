@@ -2,15 +2,12 @@
 
 import Storage from '@/utils/storage';
 import Router from '@/utils/router';
-import { debounce } from '@/utils/util';
-import { baseUrl } from '@/utils/config';
+// import { debounce } from '@/utils/util';
+import { devBaseUrl } from '@/utils/config';
 import { BaseRequestRes } from './request.type';
 
-const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
-// 网络错误的页面
-// "/no-wifi/disabled-serve"
-// "/no-wifi/index"
-
+// const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
+const BASEURL = `${devBaseUrl}/commonFront/getWxAppidInfo`;
 // 默认
 const defaultParam = {
   cliVersion: '',
@@ -21,20 +18,8 @@ const defaultParam = {
   version: '',
 };
 
-// 加载
+// 加载数记录
 let requestCount = 0;
-const loading = debounce(() => {
-  if (requestCount) {
-    uni.showLoading({
-      title: '加载中',
-      mask: true,
-    });
-  } else {
-    uni.hideLoading();
-  }
-}, 200);
-//
-
 // 等待有epid阻塞请求
 let waitGetEpidIndex = 0;
 const waitGetEpid = () => new Promise(resolve => {
@@ -56,7 +41,7 @@ const getEpid = async () => {
       method: 'POST',
       url: BASEURL,
       data: {
-        appId: Storage.getJqzAppId() || '',
+        appId: '',
         param: Storage.getWXAppId(),
         ...defaultParam,
       },
@@ -64,10 +49,11 @@ const getEpid = async () => {
     if (err) {
       return '';
     }
-    const { appId, appType, epid } = res.data.data;
-    if (appId && appType && epid) {
+    const { appId, appType, epid, opsId } = res.data.data;
+    if (appId && appType && epid && opsId) {
       Storage.setJqzAppId(appId);
       Storage.setEpid(epid);
+      Storage.setOpsId(opsId);
     }
     return epid;
   }
@@ -106,24 +92,20 @@ const request = async <T = any>(
   uni.getNetworkType({
     success(res) {
       if (res.networkType === 'none') {
-        uni.showLoading({
-          title: '加载中',
-          mask: true,
-        });
-        setTimeout(function () {
-          uni.hideLoading();
-          uni.navigateTo({ url: '/my-assets-pages/no-wifi/index' });
-          return;
-        }, 5000);
+        uni.hideLoading();
+        uni.navigateTo({ url: '/my-assets-pages/no-wifi/index' });
       }
     },
   });
   //  是否添加-加载提示
   if (isLoading) requestCount++;
-  if (requestCount) {
-    loading();
+  // loading();
+  if (isLoading && requestCount === 1) {
+    uni.showLoading({
+      title: '加载中',
+      mask: true,
+    });
   }
-
   // 开始请求
   try {
     // 接口必须epid
@@ -134,7 +116,7 @@ const request = async <T = any>(
         appId: Storage.getJqzAppId() || '',
         wxAppid: Storage.getWXAppId(),
         token: Storage.getToken(),
-        'ops-id': 'CE273B4B-2146-1ACA-6547-04C8AB0F7E4F',
+        'ops-id': Storage.getOpsId() || 'CE273B4B-2146-1ACA-6547-04C8AB0F7E4F',
         sessionKey: '',
         refreshToken: '',
         epid,
@@ -150,14 +132,13 @@ const request = async <T = any>(
     // console.log('res', res);
     // 加载提示完成处理
     if (isLoading) requestCount--;
-    if (requestCount <= 0) {
-      setTimeout(() => {
-        uni.hideLoading();
-      }, 300);
+    // loading();
+    if (isLoading && requestCount === 0) {
+      uni.hideLoading();
     }
 
     // 系统开小差处理
-    if (res.statusCode === 500 || res.data.status === 500) {
+    if (res.code === 500 || res.statusCode === 500 || res.data.status === 500) {
       setTimeout(() => {
         uni.showToast({
           icon: 'none',

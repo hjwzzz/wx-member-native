@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang="ts">
-// import { queryBookServTimeCaseList } from '@/api/reservation-service';
 import { queryBookingTimeCaseListFront } from '../api/api';
 import { onLoad } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';

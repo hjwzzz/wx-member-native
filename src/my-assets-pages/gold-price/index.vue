@@ -169,7 +169,7 @@ const isShare = async () => {
   shareHold(res.data);
   shareData.value = {
     title: '金千枝今日金价',
-    path: 'my-assets-pages/gold-price/index',
+    path: '/my-assets-pages/gold-price/index',
     shareObj: res.data,
   };
 };
