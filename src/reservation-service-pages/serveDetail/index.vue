@@ -188,11 +188,6 @@
 </template>
 
 <script setup lang="ts">
-// import {
-//   getServDetails,
-//   queryCBookCommentPage,
-//   queryDistStoreBySrvIdList,
-// } from '@/api/reservation-service';
 import {
   getServiceDetailsFront,
   getServiceStore,

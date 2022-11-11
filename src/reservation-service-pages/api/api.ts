@@ -52,13 +52,6 @@ export const queryServiceBookCommentPageFront = async (data: any) => {
   return res;
 };
 
-// 分页查询我的预约信息列表
-export const queryServiceBookPageFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/bookingServe/queryServiceBookPageFront`;
-  const res = await request(url, data);
-  return res;
-};
-
 // 分页查询预约设置服务项目列表
 export const queryServicePageFront = async (data: any) => {
   const url = `${devBaseUrl}/usr/bookingServe/queryServicePageFront`;
