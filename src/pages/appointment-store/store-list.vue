@@ -317,7 +317,10 @@ const confimStore = () => {
   }
 }
 .empty-view {
-  height: calc(100vh - 300rpx);
+  // height: calc(100vh - 300rpx);
+
+  height: calc(100vh - 300rpx - constant(safe-area-inset-bottom));
+  height: calc(100vh - 300rpx - env(safe-area-inset-bottom));
   display: flex;
   justify-content: center;
   align-items: center;

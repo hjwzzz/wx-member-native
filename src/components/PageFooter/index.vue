@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<Props>(), { bottom: false });
 }
 
 .page-bottom2 {
-  padding-bottom: calc(140rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(145rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(145rpx + env(safe-area-inset-bottom));
 }
 </style>
