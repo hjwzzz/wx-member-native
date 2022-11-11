@@ -4,8 +4,7 @@
       <view class="left">
         <text class="title">{{ props.title }}</text>
       </view>
-      <!-- @click="handleSysUrl(item)" -->
-      <view class="right">
+      <view class="right" @click="handleSysUrl">
         <text class="more">更多</text>
         <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
       </view>
@@ -24,12 +23,12 @@
               !serve.acctId ? '免费' : parseInt(serve.value) + serve.acctName
             }}
           </view>
-          <van-icon
-            name="arrow"
+          <uni-icons
+            class="icon"
+            type="arrowright"
             size="18"
             color="#b7b8c4"
-            class="right-arrow"
-          />
+          ></uni-icons>
         </view>
       </view>
       <NoneData v-if="srvProList.length === 0" />
@@ -39,8 +38,7 @@
 
 <script setup lang="ts">
 import { ref, Ref, watch } from 'vue';
-import { queryCBookServPage } from '@/api/reservation-service';
-// import { queryServiceBookPageFront } from '@/reservation-service-pages/api/api';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { useBasicsData } from '@/store/basicsData';
 import NoneData from './NoneData.vue';
 
@@ -60,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
 const srvProList: Ref<any> = ref([]);
 const getMemberRecommend = async () => {
   if (initBasicsData.checkLogin) {
-    const servPage = await queryCBookServPage({
+    const servPage = await queryServiceBookPageFront({
       mid: initBasicsData.useMid,
       curPage: 1,
       pageSize: props.srvProshowNum,
@@ -69,6 +67,10 @@ const getMemberRecommend = async () => {
     srvProList.value = servPage.data?.records || [];
   }
 };
+const handleSysUrl = () => {
+  uni.navigateTo({ url: '/reservation-service-pages/myAppointment/index' });
+};
+
 // srvProshowNum有值再去请求
 watch(
   () => props.srvProshowNum,
@@ -176,9 +178,9 @@ watch(
           color: var(--main-color);
         }
 
-        .right-arrow {
+        .icon {
           position: absolute;
-          top: 12rpx;
+          top: 16rpx;
           right: 0;
         }
       }

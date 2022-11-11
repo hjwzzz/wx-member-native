@@ -174,14 +174,8 @@
 import { ref, Ref, computed } from 'vue';
 import cancelReason from './component/cancel-reason.vue';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
-// import {
-//   queryCBookServPage,
-//   updateFinishBookServ,
-// } from '@/api/reservation-service';
-import {
-  queryServiceBookPageFront,
-  updateFinishBookingFront,
-} from '../api/api';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
+import { updateFinishBookingFront } from '../api/api';
 import { onLoad, onShow } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
 

@@ -106,7 +106,6 @@
 import { onMounted, ref, Ref } from 'vue';
 import { debounce } from '@/utils/util';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
-// import { queryServicePage } from '@/api/reservation-service';
 import { queryServicePageFront } from '../api/api';
 import { staticUrl } from '@/utils/config';
 import { onLoad } from '@dcloudio/uni-app';

@@ -121,14 +121,8 @@
 </template>
 
 <script setup lang="ts">
-// import {
-//   queryCBookServPage,
-//   updateFinishBookServ,
-// } from '@/api/reservation-service';
-import {
-  queryServiceBookPageFront,
-  updateFinishBookingFront,
-} from '../api/api';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
+import { updateFinishBookingFront } from '../api/api';
 import { onShow } from '@dcloudio/uni-app';
 import { Ref, ref } from 'vue';
 import { staticUrl } from '@/utils/config';
