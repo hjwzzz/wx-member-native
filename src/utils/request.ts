@@ -8,10 +8,6 @@ import { BaseRequestRes } from './request.type';
 
 // const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
 const BASEURL = `${devBaseUrl}/commonFront/getWxAppidInfo`;
-// 网络错误的页面
-// "/no-wifi/disabled-serve"
-// "/no-wifi/index"
-
 // 默认
 const defaultParam = {
   cliVersion: '',
@@ -22,20 +18,8 @@ const defaultParam = {
   version: '',
 };
 
-// 加载
+// 加载数记录
 let requestCount = 0;
-// const loading = debounce(() => {
-//   if (requestCount) {
-//     uni.showLoading({
-//       title: '加载中',
-//       mask: true,
-//     });
-//   } else {
-//     uni.hideLoading();
-//   }
-// }, 500);
-//
-
 // 等待有epid阻塞请求
 let waitGetEpidIndex = 0;
 const waitGetEpid = () => new Promise(resolve => {
