@@ -463,7 +463,7 @@ const handleStep = async () => {
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
     inviteMid: uni.getStorageSync('inviteMid') || undefined,
-    birthKind: birthKind || 'S',
+    birthKind: birthKind === 'U' ? 'S' : birthKind,
     birthLunar: '',
     birthSolar,
   };
