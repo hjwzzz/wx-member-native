@@ -127,7 +127,7 @@ watch(
 onMounted(async () => {
   const { data } = await getAdressList();
   // TODO 接口修改未生效，先测试使用
-  const d = data.find((i: any) => ['Y', 'true', 'false'].includes(i.isDefault));
+  const d = data.find((i: any) => ['Y', 'true'].includes(i.isDefault));
   if (d) {
     address.value = d;
     const { receiver, phone } = d;
