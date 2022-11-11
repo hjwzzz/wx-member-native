@@ -155,9 +155,7 @@ const getCouponList = async () => {
 
 const onCouponDetail = (item: any) => {
   uni.setStorageSync('ticketInfo', item);
-  // coupon_detail
   Router.goCodePage('coupon_detail');
-  // uni.navigateTo({ url: '/my-assets-pages/my-coupon/detail' });
 };
 </script>
 
