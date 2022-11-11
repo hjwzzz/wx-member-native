@@ -136,7 +136,8 @@ import { onShareAppMessage, onLoad } from '@dcloudio/uni-app';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import { computed, onMounted, ref, Ref } from 'vue';
 import { richImage, onShareCoupon } from '@/utils/util';
-import { queryMyCouponList } from '@/api/coupon-center';
+// import { queryMyCouponList } from '@/api/coupon-center';
+import { queryCouponPageFront } from '@/my-assets-pages/api/coupon';
 import { useBasicsData } from '@/store/basicsData';
 import qrCode from '@/utils/qrcode.js';
 import BrCode128 from '@/utils/barcode.js';
@@ -180,7 +181,7 @@ const createdtatus = async () => {
         sort: '',
       },
     };
-    const res = await queryMyCouponList(params);
+    const res = await queryCouponPageFront(params);
     // console.log('res', res);
     const { records = [] } = res.data;
     if (records.length > 0) ticketData.value = records[0];
@@ -303,8 +304,10 @@ const moreDetail = (item: any) => {
   .title {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     .more-text {
       color: #b7b8c4;
+      font-size: 24rpx;
       // margin-right: 10rpx;
     }
     .letter {

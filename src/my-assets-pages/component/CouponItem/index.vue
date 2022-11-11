@@ -65,7 +65,10 @@ const props = defineProps<{
 
 const emits = defineEmits(['event']);
 
-const couponItem = computed(() => {
+const couponItem: any = computed(() => {
+  if (!props.item?.style?.watermarkImgUrl) {
+    return {};
+  }
   const {
     watermarkImgUrl: url,
     topBgColorBottom,

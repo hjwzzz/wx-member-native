@@ -71,44 +71,44 @@ export const queryCBookServPage = async (data: unknown) => {
   return res;
 };
 
-// 立即预约
-export const saveImmeBookServ = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/saveImmeBookServ`;
-  const res = await request(url, data);
-  return res;
-};
+// // 立即预约
+// export const saveImmeBookServ = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/saveImmeBookServ`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
-// 取消预约
-export const updateCancelBookServ = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/updateCancelBookServ`;
-  const res = await request(url, data);
-  return res;
-};
+// // 取消预约
+// export const updateCancelBookServ = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/updateCancelBookServ`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
-// 获取取消原因
-export const queryCancelReasonList = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/queryCancelReasonList`;
-  const res = await request(url, data);
-  return res;
-};
+// // 获取取消原因
+// export const queryCancelReasonList = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/queryCancelReasonList`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
-// 完成预约
-export const updateFinishBookServ = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/updateFinishBookServ`;
-  const res = await request(url, data);
-  return res;
-};
+// // 完成预约
+// export const updateFinishBookServ = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/updateFinishBookServ`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
-// 根据星数返回评价标签
-export const queryCommTagList = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/queryCommTagList`;
-  const res = await request(url, data);
-  return res;
-};
+// // 根据星数返回评价标签
+// export const queryCommTagList = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/queryCommTagList`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
-// 用户提交评价信息
-export const saveSubmitComm = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/usr/bookservFront/saveSubmitComm`;
-  const res = await request(url, data);
-  return res;
-};
+// // 用户提交评价信息
+// export const saveSubmitComm = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/usr/bookservFront/saveSubmitComm`;
+//   const res = await request(url, data);
+//   return res;
+// };

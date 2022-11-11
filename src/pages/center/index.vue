@@ -163,8 +163,11 @@
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
 import { ref, reactive, Ref } from 'vue';
-import { memberCentertIndex, getIndexAdBannerList } from '@/api/center';
-import { getMemberCenterIndex } from '@/pages/api/center';
+import { getIndexAdBannerList } from '@/api/center';
+import {
+  getMemberCenterIndex,
+  queryMemberCenterBannerListFront,
+} from '@/pages/api/center';
 //
 // import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
@@ -240,7 +243,7 @@ const getMemberCentertIndex = async () => {
 
 // 获取广告
 const getBannerData = async () => {
-  const res = await getIndexAdBannerList('');
+  const res = await queryMemberCenterBannerListFront('');
   if (res.code === 0 && res.data) {
     const result: any = [];
     res.data.map((item: any) => {

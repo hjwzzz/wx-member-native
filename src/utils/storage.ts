@@ -46,6 +46,16 @@ class Storage {
   static removeEpid() {
     return uni.removeStorageSync('epid');
   }
+  // opsid
+  static setOpsId(value: string) {
+    uni.setStorageSync('opsid', value);
+  }
+  static getOpsId() {
+    return uni.getStorageSync('opsid');
+  }
+  static removeOpsId() {
+    return uni.removeStorageSync('opsid');
+  }
 
   // pages
   static setPages(value: string) {

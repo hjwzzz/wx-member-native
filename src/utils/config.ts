@@ -3,7 +3,7 @@ const baseUrl = import.meta.env.VITE_APP_BASEURL;
 const h5Url = import.meta.env.VITE_APP_WXURL;
 const imgUrl = import.meta.env.VITE_APP_IMGBASEURL;
 
-// 线上地址
+// 线上mini地址
 const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 
 // 本地开发地址
@@ -21,6 +21,7 @@ const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 // const h5Path = 'https://wx.fat.jqzplat.com';
 // const h5Path =  "https://wx.uat.jqzplat.com";
 // const h5Path =  "https://wx.jqzplat.com";
+// console.log('devBaseUrl', devBaseUrl);
 
 // 图片的地址-到时可以换线上图片
 const staticUrl = 'https://static.jqzplat.com/wx_%20applet/';

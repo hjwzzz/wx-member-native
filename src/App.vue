@@ -3,7 +3,7 @@ import { onLaunch } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
-// import Storage from '@/utils/storage';
+import Storage from '@/utils/storage';
 const initBasicsData = useBasicsData();
 
 // 获取基础数据
@@ -25,7 +25,7 @@ const initData = async () => {
 };
 
 onLaunch(() => {
-  // Storage.removeEpid();
+  Storage.removeEpid();
   initData();
 });
 // onShow(() => {

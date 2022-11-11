@@ -135,13 +135,8 @@ const getCouponList = async () => {
     couponStatus: couponStatus.value,
     pageSize: pageSize.value,
   };
-  uni.showLoading({
-    title: '加载中',
-    mask: true,
-  });
   // this.loading = true;
   const res = await queryCouponPageFront(params);
-  uni.hideLoading();
   if (res.code === 0 && res.data) {
     const { curPage, totalPage, records } = res.data;
 
