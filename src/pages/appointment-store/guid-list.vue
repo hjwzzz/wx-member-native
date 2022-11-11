@@ -1,5 +1,5 @@
 <template>
-  <CustomPage>
+  <CustomPage bottom>
     <view class="search-bar-bg">
       <uni-search-bar
         class="search-bar"
@@ -123,6 +123,9 @@ const handleSelectedGuid = () => {
   align-items: center;
   position: fixed;
   bottom: 0;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+
   .btn {
     width: 686rpx;
     height: 80rpx;
@@ -157,7 +160,8 @@ const handleSelectedGuid = () => {
   }
 }
 .empty-view {
-  height: calc(100vh - 300rpx);
+  height: calc(100vh - 310rpx - constant(safe-area-inset-bottom));
+  height: calc(100vh - 310rpx - env(safe-area-inset-bottom));
   display: flex;
   justify-content: center;
   align-items: center;
