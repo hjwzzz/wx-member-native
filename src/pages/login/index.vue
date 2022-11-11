@@ -83,9 +83,9 @@ const protocol = reactive<Protocol>({});
  * 自动登录
  */
 const jsCodeLogin = async () => {
-  const jscode = await getWxLoginCode();
-  if (!jscode) return;
-  const { code, data } = await jsCodeLoginRequest({ jscode });
+  const jsCode = await getWxLoginCode();
+  if (!jsCode) return;
+  const { code, data } = await jsCodeLoginRequest(jsCode);
   if (code !== 0) return;
   const { token = '', mid = '' } = data;
   Storage.setToken(token);
@@ -241,8 +241,8 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   }
 };
 
-// const back = () => Router.fromLoginBack();
-const back = () => [];
+const back = () => Router.fromLoginBack();
+// const back = () => [];
 
 onLoad(opstion => {
   // 邀请信息

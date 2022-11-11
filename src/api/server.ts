@@ -128,11 +128,12 @@ export const query = async (data: any) => {
 export const queryProfessionAsCate = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/queryProfessionAsCate`, data);
 
 // 查询注册管理设置(新)
-export const queryRegistRequiredSettingNew = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSettingNew`;
-  const res = await request(url, data);
-  return res;
-};
+export const queryRegistRequiredSettingNew = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/getRegisterRequiredSetting`, data);
+// export const queryRegistRequiredSettingNew = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSettingNew`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 更新头像昵称信息
 export const updateMemberBaseInfo = async (data: any) => {
