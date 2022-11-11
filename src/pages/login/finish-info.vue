@@ -558,7 +558,7 @@ const handleStep = async () => {
   if (verifyData) return;
   const { code, data } = await completeInfo(params);
   if (code === 0) {
-    data && initBasicsData.setUseMid(data.mid);
+    data && initBasicsData.setUseMid(data);
     router.fromLoginBack();
     uni.removeStorageSync('c');
     uni.removeStorageSync('num');

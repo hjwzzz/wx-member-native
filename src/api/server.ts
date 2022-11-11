@@ -111,11 +111,11 @@ export const updatePhone = (data: any) => request(`${devBaseUrl}/usr/memberInfoF
 //   return res;
 // };
 // 查询注册管理设置
-export const queryRegistRequiredSetting = async (data: any) => {
-  const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSetting`;
-  const res = await request(url, data);
-  return res;
-};
+// export const queryRegistRequiredSetting = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/usr/member/info/Front/queryRegistRequiredSetting`;
+//   const res = await request(url, data);
+//   return res;
+// };
 
 // 公共枚举查询类
 export const query = async (data: any) => {
