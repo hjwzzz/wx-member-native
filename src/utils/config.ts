@@ -6,8 +6,8 @@ const imgUrl = import.meta.env.VITE_APP_IMGBASEURL;
 // const devBaseUrl = import.meta.env.VITE_APP_BASEURLDEV;
 // const devBaseUrl = 'http://192.168.20.116:10301';//陈凯旋
 // const devBaseUrl = 'http://192.168.20.93:10301'; // 李文杰
-const devBaseUrl = 'http://192.168.20.83:10301'; // 伍玄
-// const devBaseUrl = `${baseUrl}/jwx-mini-program`;
+// const devBaseUrl = 'http://192.168.20.83:10301'; // 伍玄
+const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 
 // const basePath = 'https://backend.dev.jqzplat.com';
 // const basePath = 'https://backend.fat.jqzplat.com';

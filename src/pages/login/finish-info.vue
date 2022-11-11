@@ -3,7 +3,7 @@
     <view class="info">
       <view v-for="(info, index) in showList" :key="index" class="list">
         <view
-          v-if="info.code.code !== hardCode && info.show == 'Y'"
+          v-if="info.code !== hardCode && info.show == 'Y'"
           :key="index"
           class="list-item"
           @click="handle(index)"
@@ -13,10 +13,10 @@
             <view class="left">
               <view v-show="info.required == 'Y'" class="left-icon"> * </view>
               <view class="left-text">
-                {{ info.code.name }}
+                {{ info.name }}
               </view>
               <!--						生日-->
-              <view v-show="info.code.code == BIRTH_DAY" class="radio">
+              <view v-show="info.code == BIRTH_DAY" class="radio">
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
                     v-for="(item, index) in items"
@@ -36,7 +36,7 @@
                 </radio-group>
               </view>
               <!--						婚姻-->
-              <view v-show="info.code.code === maritalCode" class="radio">
+              <view v-show="info.code === maritalCode" class="radio">
                 <radio-group class="selecte-redio" @change="maritalChange">
                   <label
                     v-for="item in maritalStatusList"
@@ -57,7 +57,7 @@
               </view>
             </view>
             <view class="right">
-              <view v-show="info.code.code == BIRTH_DAY" class="date-format">
+              <view v-show="info.code == BIRTH_DAY" class="date-format">
                 <view class="wrapper">
                   <text v-if="memberInfo.birthKind === 'L'">
                     {{ memberInfo.birthLunar || '' }}
@@ -68,14 +68,14 @@
                 </view>
               </view>
               <view
-                v-show="info.code.code === MDAY && memberInfo.annday"
+                v-show="info.code === MDAY && memberInfo.annday"
                 class="guid"
               >
                 <text>{{ showAnnday || memberInfo.annday }}</text>
               </view>
               <view
                 v-show="
-                  info.code.code === 'REGIST_REQUIRED_SELLER' &&
+                  info.code === 'REGIST_REQUIRED_SELLER' &&
                   memberInfo.belongUser
                 "
                 class="guid"
@@ -84,8 +84,7 @@
               </view>
               <view
                 v-show="
-                  info.code.code === 'REGIST_REQUIRED_ADDRESS' &&
-                  memberInfo.address
+                  info.code === 'REGIST_REQUIRED_ADDRESS' && memberInfo.address
                 "
                 class="guid"
               >
@@ -94,7 +93,7 @@
                 </text>
               </view>
               <!-- 性别 -->
-              <view v-show="info.code.code === GENDER" class="guid">
+              <view v-show="info.code === GENDER" class="guid">
                 <picker
                   @change="bindPickerChangeGender"
                   :value="showSex"
@@ -109,8 +108,7 @@
               </view>
               <view
                 v-show="
-                  info.code.code === 'REGIST_REQUIRED_AREA' &&
-                  memberInfoAddressDet
+                  info.code === 'REGIST_REQUIRED_AREA' && memberInfoAddressDet
                 "
                 class="guid"
               >
@@ -120,7 +118,7 @@
             </view>
           </view>
           <view
-            v-show="info.code.code == shop"
+            v-show="info.code == shop"
             v-if="
               selectedShop.tel ||
               selectedShop.storeName ||
@@ -167,7 +165,7 @@
           <view class="input-left">
             <text v-show="info.required == 'Y'" class="input-icon"> * </text>
             <text class="input-name">
-              {{ info.code.name }}
+              {{ info.name }}
             </text>
           </view>
           <view class="input-right">
@@ -175,7 +173,7 @@
               v-model="memberInfo.name"
               type="text"
               maxlength="20"
-              :placeholder="'请输入' + info.code.name"
+              :placeholder="'请输入' + info.name"
             />
           </view>
         </view>
@@ -319,14 +317,12 @@ const queryWriteInfo = async (p = {}) => {
       distId,
       distName: storeName,
     } = data;
-    const index = l.findIndex((item: any) => item.code.code === MDAY);
+    const index = l.findIndex((item: any) => item.code === MDAY);
     l.splice(index, 0, {
       show: 'Y',
       required: 'N',
-      code: {
-        code: maritalCode,
-        name: '婚姻',
-      },
+      code: maritalCode,
+      name: '婚姻',
     });
 
     list.value = l;
@@ -353,14 +349,14 @@ const queryWriteInfo = async (p = {}) => {
 const handle = (index: number) => {
   const item = list.value[index];
   if (isActivity.value) {
-    if (item.code.code === shop && !activeData.value.canModifyDist) {
+    if (item.code === shop && !activeData.value.canModifyDist) {
       return;
     }
-    if (item.code.code === saler && !activeData.value.canModifySaler) {
+    if (item.code === saler && !activeData.value.canModifySaler) {
       return;
     }
   }
-  switch (item.code.code) {
+  switch (item.code) {
     case 'REGIST_REQUIRED_STORE': {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
@@ -423,7 +419,7 @@ const handle = (index: number) => {
       break;
   }
 };
-const showList = computed(() => list.value.filter((item: any) => !(maritalValue.value === 'N' && item.code.code === MDAY)));
+const showList = computed(() => list.value.filter((item: any) => !(maritalValue.value === 'N' && item.code === MDAY)));
 const radioChange = (e: any) => {
   memberInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
@@ -471,11 +467,9 @@ const handleStep = async () => {
     birthLunar: '',
     birthSolar,
   };
-  console.log(params);
-
   const verifyData = list.value.some((i: any) => {
     if (i.required !== 'Y') return;
-    switch (i.code.code) {
+    switch (i.code) {
       case 'REGIST_REQUIRED_STORE': {
         if (!params.activeDistId) {
           uni.showModal({
