@@ -72,6 +72,9 @@ const toDetail = () => {
 };
 
 const getPolicyList = async () => {
+  if (!initBasicsData.checkLogin) {
+    return;
+  }
   const res = await queryWarrantyListPageFront({
     mid: initBasicsData.useMid,
     curPage: 1,
