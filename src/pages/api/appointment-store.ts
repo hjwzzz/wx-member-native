@@ -3,7 +3,7 @@ import request from '@/utils/request';
 
 // 根据分销商ID获取对应导购列表
 export const getSalerByDistId = (data: any) => request(
-  `${devBaseUrl}/usr/operationDistributorInfoFront/querySalerListByDistId`,
+  `${devBaseUrl}/usr/operationDistributorInfoFront/querySalerListByDistIdFront`,
   data
 );
 
