@@ -11,6 +11,6 @@ export const jsCodeLoginRequest = (data: any) => request<login.JsCodeLoginReques
 // 小程序授权登录
 export const wxMiniAuthRequest = (data: login.WxMiniAuthRequestParams) => request<login.WxMiniAuthRequestRes>(
   // `${baseUrl}/emp-base/member/login/Front/wxMiniAuth`,
-  `${devBaseUrl}/memberLoginFront/loginByPhone`,
+  `${devBaseUrl}/memberLoginFront/loginByMini`,
   data
 );

@@ -5,7 +5,7 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <view class="btn wx-auth" @click="showWxMiniAuthModal"> 微信授权登录 </view>
-    <view class="btn no-login" @click="back"> 暂不登录 </view>
+    <view class="btn no-login" @click="Router.fromLoginBack"> 暂不登录 </view>
     <view
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
@@ -61,10 +61,9 @@
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
 import {
   getMemberEulaRequest,
-  queryRegistRequiredSetting,
+  queryRegistRequiredSettingNew,
   completeInfo,
 } from '@/api/server';
-import type { login } from '@/typings/api';
 import Storage from '@/utils/storage';
 import { onMounted, reactive, ref } from 'vue';
 import type { Protocol } from './index.type';
@@ -92,9 +91,7 @@ const jsCodeLogin = async () => {
   initBasicsData.setUseMid(mid);
 
   uni.showToast({ title: '登录成功！' });
-  setTimeout(() => {
-    back();
-  }, 1000);
+  setTimeout(Router.fromLoginBack, 1000);
 };
 
 const getMemberEula = async () => {
@@ -119,7 +116,7 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } 
     await wxMiniAuth({
       iv,
       sex: (['F', 'M'] as const)[sex] ?? 'U',
-      jsCode,
+      jscode: jsCode, // J
       code,
       nickName,
       avatarUrl,
@@ -170,7 +167,7 @@ const hideWxMiniAuthModal = () => {
   PopupRef.value.close();
 };
 
-const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
+const wxMiniAuth = async (params: any) => {
   const { data, code, msg } = (await wxMiniAuthRequest(params)) as any;
   if (code !== 0 || !data.token) {
     uni.showModal({
@@ -197,10 +194,10 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
   if (data.mid) {
     Router.fromLoginBack();
   } else {
-    const { data: { list, openRegist } } = await queryRegistRequiredSetting('');
+    const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
     if (openRegist === 'Y') {
       if (list.length) {
-        uni.redirectTo({ url: '/pages/login/finish-info/index' });
+        uni.redirectTo({ url: '/pages/login/finish-info' });
       } else {
         // 不用填写
         const { phone, wmid } = data;
@@ -229,7 +226,7 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
           uni.removeStorageSync('pages');
           uni.removeStorageSync('inviteMid');
           initBasicsData.setUseMid(d);
-          back();
+          Router.fromLoginBack();
         }
       }
     } else {
@@ -240,9 +237,6 @@ const wxMiniAuth = async (params: login.WxMiniAuthRequestParams) => {
     }
   }
 };
-
-const back = () => Router.fromLoginBack();
-// const back = () => [];
 
 onLoad(opstion => {
   // 邀请信息
