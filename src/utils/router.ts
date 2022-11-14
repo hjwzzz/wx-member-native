@@ -10,6 +10,7 @@ const configRouterAuth = [
   'point_mall_commodity',
   'point_mall_index',
   'sign',
+  'reservation',
 ];
 // 配置switchTab切换页面
 const switchTabUrl = [

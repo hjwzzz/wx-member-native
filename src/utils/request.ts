@@ -139,13 +139,11 @@ const request = async <T = any>(
 
     // 系统开小差处理
     if (res.code === 500 || res.statusCode === 500 || res.data.status === 500) {
-      setTimeout(() => {
-        uni.showToast({
-          icon: 'none',
-          title: res?.data?.msg || '系统开小差了!',
-          duration: 3000,
-        });
-      }, 500);
+      uni.showToast({
+        icon: 'none',
+        title: '系统开小差了!',
+        duration: 3000,
+      });
       return Promise.resolve(res.data as BaseRequestRes<T>);
     }
     // 服务过期处理
