@@ -184,7 +184,7 @@ watch(
         width: 30rpx;
         height: 30rpx;
         margin-right: 5rpx;
-        overflow: hidden;
+        // overflow: hidden;
 
         .image {
           width: 100%;
@@ -208,12 +208,12 @@ watch(
     .orderTime {
       display: flex;
       align-items: center;
-
+      // height: 50rpx;
       .icon {
         width: 30rpx;
         height: 30rpx;
         margin-right: 5rpx;
-        overflow: hidden;
+        // overflow: hidden;
 
         .image {
           width: 100%;

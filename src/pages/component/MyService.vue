@@ -14,6 +14,7 @@
         class="grid-serve-item"
         v-for="(serve, index) in srvProList"
         :key="index"
+        @click="handleDetailUrl(serve)"
       >
         <image class="grid-serve-item-img" :src="serve.imgUrl" alt="" />
         <view class="grid-serve-item-wrapper">
@@ -70,7 +71,9 @@ const getMemberRecommend = async () => {
 const handleSysUrl = () => {
   uni.navigateTo({ url: '/reservation-service-pages/myAppointment/index' });
 };
-
+const handleDetailUrl = ({ id }: any) => {
+  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/detail?id=${id}` });
+};
 // srvProshowNum有值再去请求
 watch(
   () => props.srvProshowNum,
@@ -94,7 +97,7 @@ watch(
 <style lang="scss" scoped>
 .grid-serve {
   // width: 690rpx;
-  min-height: 300rpx;
+  min-height: 180rpx;
   padding: 30rpx;
   margin: 30rpx 0rpx;
   background: #fff;
