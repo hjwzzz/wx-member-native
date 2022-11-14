@@ -9,6 +9,7 @@ export function shareHold(data: any) {
   } else {
     uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] });
   }
+
   if (hideShareItems.length > 0) {
     uni.hideShareMenu({ hideShareItems });
   }

@@ -10,6 +10,7 @@ const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 // const devBaseUrl = 'http://192.168.20.116:10301';
 // const devBaseUrl = 'http://192.168.20.83:10301';
 // const devBaseUrl = 'http://192.168.20.93:10301';
+
 //
 // const devBaseUrl = import.meta.env.VITE_APP_BASEURLDEV;
 // const devBaseUrl = 'http://192.168.20.116:10301';//陈凯旋

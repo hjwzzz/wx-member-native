@@ -3,10 +3,12 @@
 </template>
 
 <script setup lang="ts">
-import { onLoad, onShow } from '@dcloudio/uni-app';
+import { onLoad, onShow, onShareAppMessage } from '@dcloudio/uni-app';
 import Storage from '@/utils/storage';
 import { h5Url } from '@/utils/config';
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
+import { shareHold, shareAppMessage } from '@/utils/shareHold';
+import { queryShareSett } from '@/api/index';
 
 const mid = Storage.getMid();
 const jqzAppid = Storage.getJqzAppId();
@@ -41,7 +43,23 @@ onShow(() => {
       console.log('...');
     },
   });
+  getShareSet();
 });
+
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WMGFT_INDEX' });
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '积分商城',
+    path: '/my-assets-pages/point-mall/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
+// webview 不支持分享到朋友圈
+// onShareTimeline(() => shareTimeline(shareData.value));
 </script>
 
 <style lang="scss" scoped></style>

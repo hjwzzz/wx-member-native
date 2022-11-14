@@ -10,6 +10,7 @@ const configRouterAuth = [
   'point_mall_commodity',
   'point_mall_index',
   'sign',
+  'reservation',
   'gold_price',
   'warranty',
   'warranty_list',
