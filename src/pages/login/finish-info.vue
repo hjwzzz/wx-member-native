@@ -282,6 +282,8 @@ onLoad(() => {
 });
 const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
+  data.sex ??= 'M';
+  data.birthKind ??= 'S';
   if (data) {
     memberInfo.value = data;
     selectedShop.value.storeName = data.belongDistName;
