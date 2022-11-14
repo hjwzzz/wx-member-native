@@ -26,7 +26,7 @@ const initData = async () => {
 };
 
 onLaunch(() => {
-  Storage.removeEpid();
+  // Storage.removeEpid();
   initData();
 });
 
