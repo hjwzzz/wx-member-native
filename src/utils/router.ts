@@ -102,8 +102,15 @@ class Router {
     uni.reLaunch({ url });
   }
   // 根据code来跳转页面
-  static goCodePage(code: string, urlQueryParams = '', type = '') {
-    urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
+  static goCodePage(code: string, urlQueryParams: unknown = '', type = '') {
+    // 处理页面参数
+    if (urlQueryParams && typeof urlQueryParams === 'object') {
+      urlQueryParams = `?${Object.entries(urlQueryParams)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('&')}`;
+    } else if (typeof urlQueryParams === 'string') {
+      urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
+    }
     console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     const url = pageCode[code];
@@ -127,13 +134,7 @@ class Router {
     uni.navigateTo({ url: url + urlQueryParams });
   }
   static compatibilityOldPage(e: any) {
-    let query = '';
-    if (e.query) {
-      query = `?${Object.entries(e.query)
-        .map(([k, v]) => `${k}=${v}`)
-        .join('&')}`;
-    }
-    Router.goCodePage(oldPage[e.path] ?? 'wm_index', query, 'reLaunch');
+    Router.goCodePage(oldPage[e.path] ?? 'wm_index', e.query, 'reLaunch');
   }
 }
 export default Router;
