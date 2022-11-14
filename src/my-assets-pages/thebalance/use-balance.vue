@@ -240,8 +240,8 @@ const queryDepDetailPageFun = async () => {
   dataList.value = [];
   const res: any = await queryDepositHistoryPageFront(body);
   if (res.data) {
-    const { detailList, totalData: totalList } = res.data;
-    totalPage.value = detailList.totalPage;
+    const { detailList, totalData: totalList, totalPage } = res.data;
+    totalPage.value = totalPage;
     totalData.value = totalList;
     if (totalList.time) {
       timeValue.value = totalList.time;

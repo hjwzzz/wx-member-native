@@ -246,8 +246,8 @@ const queryPointDetailPagFun = async (setMIn?: any) => {
     pageSize: 5000,
   };
   const res: any = await queryPointDetailPageFront(body);
-  const { detailList, totalData: totalList } = res.data;
-  totalPage.value = detailList.totalPage;
+  const { detailList, totalData: totalList, totalPage } = res.data;
+  totalPage.value = totalPage;
   totalData.value = totalList;
   timeValue.value = totalList.time;
   dataList.value = [...dataList.value, ...detailList.records];
