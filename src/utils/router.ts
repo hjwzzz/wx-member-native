@@ -56,6 +56,29 @@ const pageCode: any = {
   popularity: '/activity-pages/popularity/index', // 活动-人气值千金
 };
 
+const oldPage = {
+  warranty_details:
+    '/pages/center/quality/custom?n={BILL_ID}&t={WX_TOKEN}&a={APPID}&e={EPID}', // 质保单详情
+  reg: '/pages/login/index', // 注册登录
+  point_mall_order: '/pointsMallGages/tabber/index?name=point_mall_order', // 订单积分
+  point_mall_commodity:
+    '/pointsMallGages/tabber/index?name=point_mall_commodity', // 商品积分
+  point_mall_index: '/pointsMallGages/tabber/index?name=point_mall_index', // 首页(积分)
+  invite_courteous: '/pages/center/invite-courteous/index', // 邀请有礼
+  my_prize: '/pages/center/user-theprize/index', // 我的奖品
+  reservation: '/reservationService/reservationService/index', // 预约服务
+  point_mall: '/pointsMallGages/tabber/index', // 积分商城
+  warranty: '/pages/center/quality/index', // 质保单列表
+  point: '/pages/center/integral/index', // 我的积分
+  get_coupon: '/pages/center/coupon-center/index', // 领券中心
+  gold_price: '/pages/center/gold-price/index', // 今日金价
+  wm_center: '/pages/center/index', // 个人中心
+  wm_index: '/pages/tabbar/index', // 首页
+  sign: '/signInGift/giftPage/index', // 签到
+  balance: '/pages/center/thebalance/index', // 我的余额
+  coupon: '/pages/center/ticket/index', // 我的优惠券
+  nearby_store: '/pages/center/nearby-store/index', // 附近门店
+};
 // 路由控制
 class Router {
   static go(url: string): void {
@@ -103,5 +126,7 @@ class Router {
     }
     uni.navigateTo({ url: url + urlQueryParams });
   }
+  static pageMap = pageCode;
+  static pageOldMap = oldPage;
 }
 export default Router;

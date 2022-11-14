@@ -4,6 +4,7 @@ import { onLaunch } from '@dcloudio/uni-app';
 import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
 import Storage from '@/utils/storage';
+import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
 
 // 获取基础数据
@@ -28,6 +29,8 @@ onLaunch(() => {
   Storage.removeEpid();
   initData();
 });
+console.log(Router.pageMap);
+
 // onShow(() => {
 //   console.log('App Show');
 // });
