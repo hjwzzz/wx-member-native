@@ -130,6 +130,7 @@ import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/tab2.vue';
 import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
+import Storage from '@/utils/storage';
 
 const initBasicsData = useBasicsData();
 const list = [
@@ -217,7 +218,7 @@ const querySubscribeList = async () => {
   const res = await queryServiceBookPageFront({
     curPage,
     pageSize,
-    mid: uni.getStorageSync(`mid${uni.getStorageSync('jqzAppid')}`),
+    mid: Storage.getMid(),
     status: tabKey,
   });
   subscribeList.value = [...subscribeList.value, ...res.data.records];

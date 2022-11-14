@@ -150,6 +150,7 @@ import router from '@/utils/router';
 // import { imgBaseUrl } from '@/api/quality';
 import { staticUrl, imgUrl } from '@/utils/config';
 import { saveBookingFront } from '../api/api';
+import Storage from '@/utils/storage';
 
 const alertDialogRef = ref();
 const data: Ref<any> = ref({});
@@ -253,8 +254,8 @@ const uploadImg1 = () => {
           formData: { user: 'test' },
           header: {
             category: 'COMM',
-            epid: uni.getStorageSync('epid'),
-            token: uni.getStorageSync('token'),
+            epid: Storage.getEpid(),
+            token: Storage.getToken(),
           },
           success: uploadFileRes => {
             const upload = JSON.parse(uploadFileRes.data);

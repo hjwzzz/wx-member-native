@@ -106,6 +106,7 @@ import { compress } from '@/utils/util';
 import { onLoad } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
 import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
+import Storage from '@/utils/storage';
 
 interface Form {
   level: number;
@@ -201,8 +202,8 @@ const uploadImg1 = () => {
           formData: { user: 'test' },
           header: {
             category: 'COMM',
-            epid: uni.getStorageSync(`epid${uni.getStorageSync('jqzAppid')}`),
-            token: uni.getStorageSync(`token${uni.getStorageSync('jqzAppid')}`),
+            epid: Storage.getEpid(),
+            token: Storage.getToken(),
           },
           success: uploadFileRes => {
             const upload = JSON.parse(uploadFileRes.data);
@@ -278,9 +279,9 @@ const uploadImg = () => {
         // #endif
         uni.request({
           header: {
-            epid: uni.getStorageSync(`epid${uni.getStorageSync('jqzAppid')}`),
             category: 'COMM',
-            token: uni.getStorageSync(`token${uni.getStorageSync('jqzAppid')}`),
+            epid: Storage.getEpid(),
+            token: Storage.getToken(),
           },
           url: `${imgBaseUrl}/upload/uploadBase64File`,
           data: {
