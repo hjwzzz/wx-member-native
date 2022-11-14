@@ -91,7 +91,8 @@ class Router {
     }
     uni.navigateTo({ url });
   }
-  // 去登录关闭所有页面
+  // 去登陆，跳转页面前判断时候，保存from 地址，登录完成后重定向
+  // 当前页面登录 则直接重定向过去，避免未登录状态重新返回本页
   static goLogin(url = '') {
     const page: any = getCurrentPages()
       .pop();
