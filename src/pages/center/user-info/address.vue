@@ -71,7 +71,7 @@ const handleSaveAddress = async () => {
     province,
     city,
     district,
-    address: detail,
+    address: detail.value,
   };
   const { code } = await updateMemberInfo(params);
   if (code === 0) {
