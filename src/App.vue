@@ -41,6 +41,12 @@ page {
   background: #f5f5f5;
 }
 
+.text-break {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
 .uni-searchbar__cancel {
   color: var(--main-color) !important;
 }

@@ -155,9 +155,7 @@ const getCouponList = async () => {
 
 const onCouponDetail = (item: any) => {
   uni.setStorageSync('ticketInfo', item);
-  // coupon_detail
   Router.goCodePage('coupon_detail');
-  // uni.navigateTo({ url: '/my-assets-pages/my-coupon/detail' });
 };
 </script>
 
@@ -166,8 +164,8 @@ const onCouponDetail = (item: any) => {
   height: calc(100vh - 90rpx);
 }
 .coupon-list {
-  min-height: calc(100vh - 232rpx - constant(safe-area-inset-bottom));
-  min-height: calc(100vh - 232rpx - env(safe-area-inset-bottom));
+  min-height: calc(100vh - 236rpx - constant(safe-area-inset-bottom));
+  min-height: calc(100vh - 236rpx - env(safe-area-inset-bottom));
   padding-top: 35rpx;
   // padding-bottom: 60rpx;
   padding-left: 30rpx;

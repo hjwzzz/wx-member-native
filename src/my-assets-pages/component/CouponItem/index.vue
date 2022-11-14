@@ -114,7 +114,9 @@ const showStatus = computed(() => props.showStatus);
 const prodCode = computed(() => props.item.prodCode?.code || props.item.prod || props.item.prodCode || '');
 const showCondition = computed(() => {
   const code = prodCode.value;
-  const { laborChargesType: labor, threshold } = props.item.paramVo;
+  // laborChargesType
+  const threshold = props.item.paramVo?.threshold || '';
+  const labor = props.item.paramVo?.laborChargesType || '';
   if (condition1.includes(code)) {
     return threshold ? `满${threshold}可用` : '满任意金额可用';
   } else if (condition2.includes(code)) {
@@ -184,6 +186,10 @@ const showCondition = computed(() => {
       align-self: start;
       font-size: 28rpx;
       font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
     .handle {
       display: flex;

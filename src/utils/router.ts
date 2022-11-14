@@ -13,7 +13,7 @@ const configRouterAuth = [
 ];
 // 配置switchTab切换页面
 const switchTabUrl = [
-  '/pages/index/index',
+  '/pages/tabbar/index',
   '/pages/center/index',
   '/pages/nearby-store/index',
 ];
@@ -35,7 +35,7 @@ const pageCode: any = {
   get_coupon: '/my-assets-pages/coupon-center/index', // 领券中心
   gold_price: '/my-assets-pages/gold-price/index', // 今日金价
   wm_center: '/pages/center/index', // 个人中心
-  wm_index: '/pages/index/index', //  首页
+  wm_index: '/pages/tabbar/index', //  首页
   sign: '/activity-pages/sign-in/index', // 签到
   balance: '/my-assets-pages/thebalance/index', // 我的余额
   coupon: '/my-assets-pages/my-coupon/index', // 我的优惠券

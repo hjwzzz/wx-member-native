@@ -110,12 +110,16 @@
           </view>
         </view>
         <view class="content" v-if="shopNames.length <= 10">
-          <view v-for="(item, i) in shopNames" :key="i">
+          <view class="content-text" v-for="(item, i) in shopNames" :key="i">
             {{ item }}
           </view>
         </view>
         <view class="content" v-if="shopNames.length > 10">
-          <view v-for="(item, i) in shopNames.slice(0, 10)" :key="i">
+          <view
+            class="content-text"
+            v-for="(item, i) in shopNames.slice(0, 10)"
+            :key="i"
+          >
             {{ item }}
           </view>
         </view>
@@ -137,7 +141,7 @@ import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import { computed, onMounted, ref, Ref } from 'vue';
 import { richImage, onShareCoupon } from '@/utils/util';
 // import { queryMyCouponList } from '@/api/coupon-center';
-import { queryCouponPageFront } from '@/my-assets-pages/api/coupon';
+// import { queryCouponPageFront } from '@/my-assets-pages/api/coupon';
 import { useBasicsData } from '@/store/basicsData';
 import qrCode from '@/utils/qrcode.js';
 import BrCode128 from '@/utils/barcode.js';
@@ -170,27 +174,27 @@ onMounted(() => {
 });
 //
 const createdtatus = async () => {
-  if (couponId.value) {
-    const params = {
-      id: couponId.value,
-      curPage: 1,
-      mid: initBasicsData.useMid,
-      pageSize: 1,
-      sort: {
-        field: '',
-        sort: '',
-      },
-    };
-    const res = await queryCouponPageFront(params);
-    // console.log('res', res);
-    const { records = [] } = res.data;
-    if (records.length > 0) ticketData.value = records[0];
-    vcode.value = ticketData.value.vcode;
-  } else {
-    ticketData.value = uni.getStorageSync('ticketInfo');
-    vcode.value = ticketData.value.vcode;
-  }
+  // if (couponId.value) {
+  //   const params = {
+  //     id: couponId.value,
+  //     curPage: 1,
+  //     mid: initBasicsData.useMid,
+  //     pageSize: 1,
+  //     sort: {
+  //       field: '',
+  //       sort: '',
+  //     },
+  //   };
+  //   const res = await queryCouponPageFront(params);
+  //   // console.log('res', res);
+  //   const { records = [] } = res.data;
+  //   if (records.length > 0) ticketData.value = records[0];
+  //   vcode.value = ticketData.value.vcode;
+  // } else {
 
+  // }
+  ticketData.value = uni.getStorageSync('ticketInfo');
+  vcode.value = ticketData.value.vcode;
   qrCode.draw(vcode.value, 'myGiftQrcode', 155, 155);
   BrCode128(uni.createCanvasContext('Brcode'), vcode.value, '300', '64');
 };
@@ -203,6 +207,12 @@ const moreDetail = (item: any) => {
 </script>
 
 <style lang="scss" scoped>
+.content-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
 .share-btn {
   font-size: 24rpx;
   padding: 0 30rpx;
