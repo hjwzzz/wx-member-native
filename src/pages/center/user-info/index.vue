@@ -346,7 +346,10 @@ const updateInfo = ({ code, update }: { code: string; update: string }) => {
       // 更新导购
       uni.$once('updateGuide', e => {
         if (!e.uid) return;
+        const { belongDistId, belongDistName } = userInfo.value;
         updateUserIno({
+          belongDistId,
+          belongDistName,
           belongUid: e.uid,
           belongUser: e.name,
         });

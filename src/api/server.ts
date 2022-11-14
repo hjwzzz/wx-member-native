@@ -81,6 +81,8 @@ export const updateMemberInfo = (data: any) => request(`${devBaseUrl}/usr/member
 //   const res = await request(url, data);
 //   return res;
 // };
+// 小程序退出登录
+export const logout = () => request(`${devBaseUrl}/usr/memberInfoFront/logout`, '');
 
 // 获取会员个人资料
 // export const getMemberInfo = async (data: any) => {
