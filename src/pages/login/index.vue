@@ -68,7 +68,7 @@ import Storage from '@/utils/storage';
 import { onMounted, reactive, ref } from 'vue';
 import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onUnload } from '@dcloudio/uni-app';
 import Router from '@/utils/router';
 
 const initBasicsData = useBasicsData();
@@ -247,6 +247,14 @@ onLoad(opstion => {
 const navBack = async () => {
   uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/tabbar/index' }) });
 };
+// 离开登录页面，清空保存的需要前往的页面数据
+onUnload(() => {
+  Storage.setPages('');
+  uni.setStorage({
+    data: '',
+    key: 'backPage',
+  });
+});
 onMounted(() => {
   getMemberEula();
   jsCodeLogin();

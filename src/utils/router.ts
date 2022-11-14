@@ -11,6 +11,8 @@ const configRouterAuth = [
   'point_mall_index',
   'sign',
   'gold_price',
+  'warranty',
+  'warranty_list',
 ];
 // 配置switchTab切换页面
 const switchTabUrl = [
@@ -95,12 +97,19 @@ class Router {
     const route = page ? page.route.split('?')[0] : '';
     Storage.setPages(url || `/${route}`);
 
-    Storage.setPages(url || `/${route}`);
-    uni.redirectTo({ url: pageCode.login });
+    if (url) {
+      uni.navigateTo({ url: pageCode.login });
+    } else {
+      uni.redirectTo({ url: pageCode.login });
+    }
   }
   // 从登录返回之前保存的页面
   static fromLoginBack() {
-    const url = Storage.getPages() || pageCode.wm_index;
+    const url = Storage.getPages();
+    if (!url || url.includes('/pages/login/index')) {
+      uni.navigateBack();
+      return;
+    }
     uni.redirectTo({ url: decodeURIComponent(url) ?? url });
   }
   // 根据code来跳转页面

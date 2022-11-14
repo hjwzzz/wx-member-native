@@ -21,7 +21,9 @@
             <view v-if="initBasicsData.checkLogin" class="use-info">
               <text>{{ userInfo.nickName || '' }}</text>
             </view>
-            <view v-else class="info-btn">请先登录</view>
+            <view v-else class="info-btn" @click.stop="Router.goCodePage('reg')"
+              >请先登录</view
+            >
           </view>
           <view
             class="info-right"
@@ -292,7 +294,9 @@ const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
 const handleQuickUrl = (item: any) => {
-  Router.goCodePage(item.code);
+  if (initBasicsData.checkLogin) {
+    Router.goCodePage(item.code);
+  }
 };
 </script>
 
