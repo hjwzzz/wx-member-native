@@ -78,7 +78,7 @@ const props = withDefaults(defineProps<Props>(), {
   // goldPrice: [],
 });
 const more = () => {
-  Router.goCodePage('goldPrice', `?distId=${distId.value}`);
+  Router.goCodePage('gold_price', `?distId=${distId.value}`);
 };
 
 const showed = ref(false);

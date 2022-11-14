@@ -5,7 +5,7 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <view class="btn wx-auth" @click="showWxMiniAuthModal"> 微信授权登录 </view>
-    <view class="btn no-login" @click="Router.fromLoginBack"> 暂不登录 </view>
+    <view class="btn no-login" @click="navBack"> 暂不登录 </view>
     <view
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
@@ -89,7 +89,7 @@ const jsCodeLogin = async () => {
   const { token = '', mid = '' } = data;
   Storage.setToken(token);
   initBasicsData.setUseMid(mid);
-
+  if (!mid) return;
   uni.showToast({ title: '登录成功！' });
   setTimeout(Router.fromLoginBack, 1000);
 };
@@ -244,6 +244,9 @@ onLoad(opstion => {
   opstion?.num && uni.setStorageSync('num', opstion?.num);
   opstion?.inviteMid && uni.setStorageSync('inviteMid', opstion?.inviteMid);
 });
+const navBack = async () => {
+  uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/tabbar/index' }) });
+};
 onMounted(() => {
   getMemberEula();
   jsCodeLogin();
