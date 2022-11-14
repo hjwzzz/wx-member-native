@@ -2,7 +2,10 @@
   "name": "uni-preset-vue",
   "version": "0.0.0",
   "scripts": {
-    "dev": "uni -p mp-weixin",
+    "dev": "uni -p mp-weixin --mode dev",
+    "fat": "uni -p mp-weixin --mode fat",
+    "uat": "uni -p mp-weixin --mode uat",
+    "prod": "uni -p mp-weixin --mode prod",
     "build": "uni build -p mp-weixin",
     "dev:h5": "uni",
     "dev:h5:ssr": "uni --ssr",
