@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onLaunch } from '@dcloudio/uni-app';
+import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
@@ -29,7 +29,8 @@ onLaunch(() => {
   Storage.removeEpid();
   initData();
 });
-console.log(Router.pageMap);
+
+onPageNotFound(Router.compatibilityOldPage);
 
 // onShow(() => {
 //   console.log('App Show');
