@@ -10,6 +10,7 @@ const configRouterAuth = [
   'point_mall_commodity',
   'point_mall_index',
   'sign',
+  'gold_price',
 ];
 // 配置switchTab切换页面
 const switchTabUrl = [
@@ -51,7 +52,6 @@ const pageCode: any = {
   updatePhone: '/pages/center/user-info/update-phone', // 修改手机号
   cert: '/pages/center/user-info/cert', // 修改证件
   location: '/pages/center/user-info/address', // 修改地址
-  goldPrice: '/my-assets-pages/gold-price/index', // 今日金价
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
   popularity: '/activity-pages/popularity/index', // 活动-人气值千金
 };
@@ -89,20 +89,32 @@ class Router {
     uni.navigateTo({ url });
   }
   // 去登录关闭所有页面
-  static goLogin() {
+  static goLogin(url = '') {
     const page: any = getCurrentPages()
       .pop();
     const route = page ? page.route.split('?')[0] : '';
-    Storage.setPages(`/${route}`);
-    uni.reLaunch({ url: pageCode.login });
+    Storage.setPages(url || `/${route}`);
+
+    Storage.setPages(url || `/${route}`);
+    uni.redirectTo({ url: pageCode.login });
   }
   // 从登录返回之前保存的页面
   static fromLoginBack() {
     const url = Storage.getPages() || pageCode.wm_index;
-    uni.reLaunch({ url });
+    uni.redirectTo({ url: decodeURIComponent(url) ?? url });
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams: unknown = '', type = '') {
+    console.log('goCodePage', code);
+    const initBasicsData = useBasicsData();
+    let url = pageCode[code];
+    if (!url) {
+      return;
+    }
+    if (switchTabUrl.includes(url)) {
+      uni.switchTab({ url });
+      return;
+    }
     // 处理页面参数
     if (urlQueryParams && typeof urlQueryParams === 'object') {
       urlQueryParams = `?${Object.entries(urlQueryParams)
@@ -111,27 +123,18 @@ class Router {
     } else if (typeof urlQueryParams === 'string') {
       urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
     }
-    console.log('goCodePage', code);
-    const initBasicsData = useBasicsData();
-    const url = pageCode[code];
-    if (!url) {
-      return;
-    }
-    console.log('url', url + urlQueryParams);
-    if (switchTabUrl.includes(url)) {
-      uni.switchTab({ url });
-      return;
-    }
+    url += urlQueryParams;
+    console.log('url', url);
 
     // 如果没有登录，需要登录的页面-就去登录
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
-      return this.goLogin();
+      return this.goLogin(url);
     }
     // 关闭所有页面，打开指定页面
     if (type === 'reLaunch') {
-      return uni.reLaunch({ url: url + urlQueryParams });
+      return uni.reLaunch({ url });
     }
-    uni.navigateTo({ url: url + urlQueryParams });
+    uni.navigateTo({ url });
   }
   static compatibilityOldPage(e: any) {
     Router.goCodePage(oldPage[e.path] ?? 'wm_index', e.query, 'reLaunch');
