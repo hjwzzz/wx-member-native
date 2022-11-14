@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { getMemberInfo, updateMemberBaseInfo } from '@/api/server';
+import { getMemberInfo, logout, updateMemberBaseInfo } from '@/api/server';
 import Router from '@/utils/router';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
@@ -82,7 +82,9 @@ const queryUserInfo = async () => {
   }
 };
 queryUserInfo();
-const handleLogout = () => {
+const handleLogout = async () => {
+  const { code } = await logout();
+  if (code !== 0) return;
   initBasicsData.setUseMid('');
   uni.showToast({
     title: '退出成功',
