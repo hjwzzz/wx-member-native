@@ -5,7 +5,7 @@
         <text class="letter">适用门店</text>
       </view>
       <view class="content">
-        <view v-for="(item, i) in shopInfoData" :key="i">
+        <view v-for="(item, i) in shopInfoData" :key="i" class="content-text">
           {{ item }}
         </view>
       </view>
@@ -50,6 +50,13 @@ onMounted(() => {
     color: #9697a2;
     line-height: 52rpx;
     margin-top: 20rpx;
+
+    .content-text {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
+    }
   }
 }
 </style>

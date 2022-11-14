@@ -186,6 +186,10 @@ const showCondition = computed(() => {
       align-self: start;
       font-size: 28rpx;
       font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
     }
     .handle {
       display: flex;

@@ -110,12 +110,16 @@
           </view>
         </view>
         <view class="content" v-if="shopNames.length <= 10">
-          <view v-for="(item, i) in shopNames" :key="i">
+          <view class="content-text" v-for="(item, i) in shopNames" :key="i">
             {{ item }}
           </view>
         </view>
         <view class="content" v-if="shopNames.length > 10">
-          <view v-for="(item, i) in shopNames.slice(0, 10)" :key="i">
+          <view
+            class="content-text"
+            v-for="(item, i) in shopNames.slice(0, 10)"
+            :key="i"
+          >
             {{ item }}
           </view>
         </view>
@@ -203,6 +207,12 @@ const moreDetail = (item: any) => {
 </script>
 
 <style lang="scss" scoped>
+.content-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
 .share-btn {
   font-size: 24rpx;
   padding: 0 30rpx;

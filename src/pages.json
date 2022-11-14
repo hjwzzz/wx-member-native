@@ -8,7 +8,7 @@
   },
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/tabbar/index",
       "style": {
         "navigationBarTitleText": "首页"
       }
@@ -127,7 +127,7 @@
     "custom": true,
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/tabbar/index",
         "text": "首页"
       },
       {
@@ -389,7 +389,7 @@
     }
   ],
   "preloadRule": {
-    "pages/index/index": {
+    "pages/tabbar/index": {
       "network": "all",
       "packages": ["my-assets-pages"]
     }
