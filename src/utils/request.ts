@@ -129,6 +129,7 @@ const request = async <T = any>(
         ...defaultParam,
       },
     });
+
     // console.log('res', res);
     // 加载提示完成处理
     if (isLoading) requestCount--;
@@ -136,16 +137,28 @@ const request = async <T = any>(
     if (isLoading && requestCount === 0) {
       uni.hideLoading();
     }
-
-    // 系统开小差处理
-    if (res.code === 500 || res.statusCode === 500 || res.data.status === 500) {
+    if (res.statusCode !== 200 || res.data.code === 500) {
       uni.showToast({
         icon: 'none',
-        title: '系统开小差了!',
+        title: res?.data?.msg || '系统开小差了!',
         duration: 3000,
       });
       return Promise.resolve(res.data as BaseRequestRes<T>);
     }
+
+    // // 系统开小差处理
+    // if (
+    //   res.data.code === 500 ||
+    //   res.statusCode === 500 ||
+    //   res.data.status === 500
+    // ) {
+    //   uni.showToast({
+    //     icon: 'none',
+    //     title: res?.data?.msg || '系统开小差了!',
+    //     duration: 3000,
+    //   });
+    //   return Promise.resolve(res.data as BaseRequestRes<T>);
+    // }
     // 服务过期处理
     if (res.data.code === 610) {
       uni.redirectTo({ url: '/my-assets-pages/no-wifi/invalid-serve' });
