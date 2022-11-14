@@ -126,7 +126,7 @@ const couponListData: Ref<any> = ref([]);
 // 我的优惠券列表
 const getCouponList = async () => {
   if (!initBasicsData.checkLogin) {
-    uni.redirectTo({ url: '/pages/login/index' });
+    Router.goLogin();
     return;
   }
   const params = {
