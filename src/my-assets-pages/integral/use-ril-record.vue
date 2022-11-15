@@ -1,115 +1,111 @@
 <template>
   <CustomPage>
     <view class="useRbalance">
-      <scroll-view
-        class="content"
-        :refresher-triggered="loadingTop"
-        refresher-default-style="black"
-        :scroll-y="false"
-      >
-        <!-- :refresher-enabled="true" -->
-        <view>
-          <view
-            class="yuer"
-            :style="{
-              background: indexBackgroundImage,
-            }"
-          >
-            <view class="top-title">
-              <view class="bottom">{{ totalObj.value || 0 }}</view>
-            </view>
-            <view class="foolt">
-              {{ totalObj.clearTip || '' }}
-            </view>
+      <view>
+        <view
+          class="yuer"
+          :style="{
+            background: indexBackgroundImage,
+          }"
+        >
+          <view class="top-title">
+            <view class="bottom">{{ totalObj.value || 0 }}</view>
           </view>
+          <view class="foolt">
+            {{ totalObj.clearTip || '' }}
+          </view>
+        </view>
 
-          <IncExpDetail
-            :title="`${totalObj.name}明细`"
-            v-model:time="timeValue"
-            :tabList="[
-              { key: 0, name: '全部' },
-              { key: 1, name: '收入' },
-              { key: 2, name: '支出' },
-            ]"
-            v-model:current="current"
-            @changeDate="changeDate"
-            @changeTabs="changeTabs"
-          >
-            <view class="boxList">
-              <view class="title">
-                <view class="tit">
-                  <view class="item">
-                    <view class="left">
-                      {{ totalData.time }}
-                    </view>
-                    <view class="right">
-                      <view class="r1" v-if="current === 0 || current === 1">
-                        收入：<text class="yuan">{{
-                          totalData.totalInOfMonth || 0
-                        }}</text>
-                      </view>
-                      <view class="r2" v-if="current === 0 || current === 2">
-                        支出：<text class="yuan">{{
-                          setTotalOutOfMonth(totalData.totalOutOfMonth) || 0
-                        }}</text>
-                      </view>
-                    </view>
-                  </view>
+        <IncExpDetail
+          :title="`${totalObj.name}明细`"
+          v-model:time="timeValue"
+          :tabList="[
+            { key: 0, name: '全部' },
+            { key: 1, name: '收入' },
+            { key: 2, name: '支出' },
+          ]"
+          v-model:current="current"
+          @changeDate="changeDate"
+          @changeTabs="changeTabs"
+        >
+          <view class="tit-info">
+            <view class="item">
+              <view class="left">
+                {{ timeValue }}
+              </view>
+              <view class="right">
+                <view class="r1" v-if="current === 0 || current === 1">
+                  <text> 收入：</text>
+                  <text class="yuan">
+                    {{ totalInOfMonth }}
+                  </text>
                 </view>
-                <view class="jifei" v-if="dataList.length">
-                  <view
-                    class="item"
-                    v-for="(item, index) in dataList"
-                    :key="index"
-                  >
-                    <view class="top">
-                      <view class="left">
-                        <text v-if="item.remark">{{
-                          getText(item.remark) || ''
-                        }}</text>
-                      </view>
-                      <view
-                        class="bott"
-                        :style="{
-                          color:
-                            Number(item.realPoint) < 0 ? '#f33030' : '#000',
-                        }"
-                      >
-                        {{ incomeFun(item.opKind) }}{{ item.realPoint }}
-                      </view>
-                    </view>
-                    <view class="bottom">
-                      <view class="left left-time">
-                        {{ item.createTime }}
-                      </view>
-                    </view>
-                  </view>
-                </view>
-                <view class="imagewu" v-else>
-                  <image
-                    :src="staticUrl + 'img/noIntegral.png'"
-                    mode=""
-                  ></image>
-                  <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
+                <view class="r2" v-if="current === 0 || current === 2">
+                  <text> 支出：</text>
+                  <text class="yuan">
+                    {{ setTotalOutOfMonth(totalOutOfMonth) }}
+                  </text>
                 </view>
               </view>
             </view>
-          </IncExpDetail>
-        </view>
-      </scroll-view>
-
-      <!-- 加载更多 -->
-      <!-- <u-loadmore
-        v-show="totalPage > 1"
-        :status="status"
-        :icon-type="iconType"
-        :load-text="loadText"
-        :icon-color="iconColor"
-        :font-size="fontSize"
-        margin-top="30"
-        color="#D8D9E0"
-      /> -->
-      <!-- 底部信息 -->
+          </view>
+          <view class="content-box">
+            <scroll-view
+              class="content"
+              :refresher-triggered="loadingTop"
+              refresher-default-style="black"
+              scroll-y
+              @scrolltolower="onLoadMore"
+            >
+              <view class="boxList">
+                <view class="title">
+                  <view class="jifei" v-if="dataList.length">
+                    <view
+                      class="item"
+                      v-for="(item, index) in dataList"
+                      :key="index"
+                    >
+                      <view class="top">
+                        <view class="left">
+                          <text v-if="item.remark">{{
+                            getText(item.remark) || ''
+                          }}</text>
+                        </view>
+                        <view
+                          class="bott"
+                          :style="{
+                            color:
+                              Number(item.realPoint) < 0 ? '#f33030' : '#000',
+                          }"
+                        >
+                          {{ incomeFun(item.opKind) }}{{ item.realPoint }}
+                        </view>
+                      </view>
+                      <view class="bottom">
+                        <view class="left left-time">
+                          {{ item.createTime }}
+                        </view>
+                      </view>
+                    </view>
+                    <uni-load-more
+                      :status="status"
+                      color="#D8D9E0"
+                    ></uni-load-more>
+                  </view>
+                  <view class="imagewu" v-else>
+                    <image
+                      class="image"
+                      :src="staticUrl + 'img/noIntegral.png'"
+                      mode=""
+                    ></image>
+                    <view class="wujilu"> 暂无{{ totalObj.name }}记录 </view>
+                  </view>
+                </view>
+              </view>
+            </scroll-view>
+          </view>
+        </IncExpDetail>
+      </view>
     </view>
   </CustomPage>
 </template>
@@ -117,7 +113,10 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
 // import { queryPointDetailPage } from '@/api/center';
-import { queryPointDetailPageFront } from '@/my-assets-pages/api/integral';
+import {
+  queryPointDetailPageFront,
+  getPointHistoryTotalFront,
+} from '@/my-assets-pages/api/integral';
 import { staticUrl } from '@/utils/config';
 import { onMounted, ref, Ref } from 'vue';
 import IncExpDetail from '../component/IncomeExpenditureDetail/index.vue';
@@ -131,41 +130,28 @@ const loadingTop = ref(true);
 const current = ref(0); // 0表示 全部页面， 1 表示 收入页面 ， 2 表示支出页面
 const timeValue = ref('');
 const opKind = ref('');
-// const show = ref(false);
-const status = ref('loadmore');
-// const iconType = ref('circle');
-// const iconColor = ref('#FF547B');
-// const fontSize = ref('24');
+const status = ref('loading');
 const page = ref(1);
 const totalPage = ref(0);
-// 日期
-// const params = {
-//   year: true,
-//   month: true,
-//   day: false,
-// };
-// tabs页面参数
-// const list = [{ name: '全部' }, { name: '收入' }, { name: '支出' }];
-// const loadText = {
-//   loadmore: '轻轻上拉',
-//   loading: '加载中...',
-//   nomore: '已经到底了',
-// };
-//
 const totalObj: Ref<any> = ref({
   clearTip: '',
   id: '',
 });
-const totalData: Ref<any> = ref({
-  time: '',
-  totalInOfMonth: '',
-  totalOutOfMonth: '',
-});
+const pageSize = ref(50);
+const totalData: Ref<any> = ref({ time: '' });
+const totalInOfMonth = ref(0);
+const totalOutOfMonth = ref(0);
 const dataList: Ref<any> = ref([]);
 
 onLoad((options: any) => {
-  const data = JSON.parse(options.item);
+  // const data = JSON.parse(options.item);
+  // totalObj.value = data;
+  let data = uni.getStorageSync('integral-record-item');
+  if (!data) {
+    data = JSON.parse(options.item);
+  }
   totalObj.value = data;
+  console.log(data);
   uni.setNavigationBarTitle({ title: `我的${data.name}` || '积分' });
 });
 
@@ -173,7 +159,18 @@ onMounted(() => {
   // get_time();
   timeValue.value = current_time();
   queryPointDetailPagFun();
+  getPointHistoryTotal();
 });
+
+// 加载更多
+const onLoadMore = () => {
+  if (status.value === 'no-more') {
+    return;
+  }
+  page.value += 1;
+  queryPointDetailPagFun();
+  console.log('加载更多');
+};
 
 const setTotalOutOfMonth = (num: any) => {
   const text = Number(num);
@@ -183,37 +180,6 @@ const setTotalOutOfMonth = (num: any) => {
   return text;
 };
 
-// const onRefresh = () => {
-//   if (_freshing.value) return;
-//   _freshing.value = true;
-//   refreshPointListFun();
-//   dataList.value = [];
-//   queryPointDetailPagFun();
-// };
-
-// const onRestore = () => {
-//   triggered.value = true; // 需要重置
-// };
-
-// 刷新接口
-// const refreshPointListFun = async () => {
-//   const res = await queryPointList('');
-//   const arr = res?.data.filter((item: any) => item.id === totalObj.value.id);
-//   totalObj.value.value = arr[0].value;
-//   totalObj.value.clearTip = arr[0].clearTip;
-//   setTimeout(() => {
-//     triggered.value = false;
-//     _freshing.value = false;
-//   }, 2000);
-// };
-
-// const get_time = () => {
-//   const date = new Date();
-//   const year = date.getFullYear();
-//   const month = add_zero(date.getMonth() + 1);
-//   timeValue.value = `${year}-${month}`;
-//   return `${year}-${month}`;
-// };
 const current_time = () => {
   const date = new Date();
   const year = date.getFullYear();
@@ -243,35 +209,47 @@ const queryPointDetailPagFun = async (setMIn?: any) => {
     curPage: page.value,
     startTime: timeValue.value,
     opKind: opKind.value,
-    pageSize: 5000,
+    pageSize: pageSize.value,
   };
+
   const res: any = await queryPointDetailPageFront(body);
-  const { detailList, totalData: totalList, totalPage } = res.data;
-  totalPage.value = totalPage;
+  const {
+    // detailList,
+    totalData: totalList,
+    totalPage: total,
+    records,
+  } = res.data;
+  totalPage.value = total;
   totalData.value = totalList;
-  timeValue.value = totalList.time;
-  dataList.value = [...dataList.value, ...detailList.records];
-  if (page.value >= totalPage.value) {
-    status.value = 'nomore';
+  // timeValue.value = totalList.time;
+  if (page.value === 1) {
+    dataList.value = records;
+  } else {
+    dataList.value.push(...records);
+  }
+  // console.log('records.lengt  ', records.length);
+  // console.log('total.value ', total);
+  // console.log('page.value >= totalPage.value ', page.value >= totalPage.value);
+  // console.log(' records.length < total ', records.length < total);
+  if (pageSize.value >= totalPage.value) {
+    status.value = 'no-more';
   } else {
     status.value = 'loading';
   }
   clearTimeout(setMIn);
 };
 
-// 上拉
-// const refresherpulling = () => {
-//   loadingTop.value = true;
-//   page.value = 1;
-//   let setMIn: any = null;
-//   if (setMIn) {
-//     clearTimeout(setMIn);
-//   }
-//   setMIn = setTimeout(() => {
-//     queryPointDetailPagFun(setMIn);
-//     loadingTop.value = false;
-//   }, 1500);
-// };
+const getPointHistoryTotal = async () => {
+  const body = {
+    acctId: totalObj.value.id,
+    curPage: page.value,
+    startTime: timeValue.value,
+    opKind: opKind.value,
+  };
+  const res: any = await getPointHistoryTotalFront(body);
+  totalInOfMonth.value = res.data.totalInOfMonth || 0;
+  totalOutOfMonth.value = res.data.totalOutOfMonth || 0;
+};
 
 // 收入还是支出
 const incomeFun = (opKind: any) => {
@@ -281,30 +259,15 @@ const incomeFun = (opKind: any) => {
   return '';
 };
 
-// const picker = () => {
-//   show.value = true;
-// };
-
-// // 日期确认返回值
-// const confirm = res => {
-//   dataList.value = [];
-//   timeValue.value = `${res.year}-${res.month}`;
-//   queryPointDetailPagFun();
-//   // compareMonth(current_time(), timeValue.value);
-//   // this.getPassYearFormatDate();
-// };
-
 // 日期确认返回值
 const changeDate = (date: string) => {
+  console.log('changeDate', date);
+  page.value = 1;
   dataList.value = [];
   timeValue.value = date;
+  getPointHistoryTotal();
   queryPointDetailPagFun();
 };
-// const changeData = (event: any) => {
-//   dataList.value = [];
-//   timeValue.value = event.detail.value;
-//   queryPointDetailPagFun();
-// };
 
 // 切换页面
 const changeTabs = (obj: any) => {
@@ -322,61 +285,63 @@ const changeTabs = (obj: any) => {
       opKind.value = 'OUT';
       break;
   }
-  dataList.value = [];
   queryPointDetailPagFun();
 };
-// const change = (index: any) => {
-//   current.value = index;
-//   page.value = 1;
-//   dataList.value = [];
-//   switch (index) {
-//     case 0:
-//       opKind.value = '';
-//       break;
-//     case 1:
-//       opKind.value = 'IN';
-//       break;
-//     case 2:
-//       opKind.value = 'OUT';
-//       break;
-//   }
-//   dataList.value = [];
-//   queryPointDetailPagFun();
-// };
-
-// 分页加载更多
-// const onReachBottom = () => {
-//   if (page.value >= totalPage.value) return;
-//   status.value = 'loading';
-//   page.value = ++page.value;
-//   queryPointDetailPagFun();
-// };
-
-// const compareMonth = (d1: any, d2: any) => {
-//   if (d2 > d1) {
-//   } else if (getPassYearFormatDate() < d2) {
-//   }
-//   return d1 > d2;
-// };
-
-// 去年
-// const getPassYearFormatDate = () => {
-//   const nowDate = new Date();
-//   nowDate.setDate(nowDate.getDate() - 365);
-//   const year = nowDate.getFullYear();
-//   let month: any = nowDate.getMonth() + 1;
-//   if (month >= 1 && month <= 9) {
-//     month = `0${month}`;
-//   }
-//   const currentdate = `${year}-${month}`;
-//   return currentdate;
-// };
 </script>
 
 <style lang="scss" scoped>
+.content-box {
+  border-bottom-left-radius: 30rpx;
+  border-bottom-right-radius: 30rpx;
+  overflow: hidden;
+}
 .content {
-  min-height: calc(100vh - (150rpx + constant(safe-area-inset-bottom)));
-  min-height: calc(100vh - (150rpx + env(safe-area-inset-bottom)));
+  height: calc(100vh - (755rpx + constant(safe-area-inset-bottom)));
+  height: calc(100vh - (755rpx + env(safe-area-inset-bottom)));
+}
+scroll-view::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background-color: transparent;
+}
+.tit-info {
+  height: 88rpx;
+  padding: 20rpx 15rpx 0 15rpx;
+  background-color: white;
+  border-top: 1rpx solid #f6f7f8;
+  .item {
+    font-size: 24rpx;
+    // margin-top: 28rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20rpx;
+    .left {
+      font-weight: 400;
+      font-size: 28rpx;
+      color: #323338;
+      .left-time {
+        color: #b7b8c4;
+      }
+    }
+    .right {
+      display: flex;
+      .r1 {
+        .yuan {
+          color: #71d8a1;
+        }
+      }
+      .r2 {
+        margin-left: 20rpx;
+        .yuan {
+          color: #fa7777;
+        }
+      }
+    }
+  }
 }
 
 .useRbalance {
@@ -414,60 +379,6 @@ const changeTabs = (obj: any) => {
     }
   }
 
-  .rqi-cell-item {
-    height: 100rpx;
-    background-color: #ffffff;
-    border-radius: 16rpx;
-    position: relative;
-    padding: 0 40rpx 0 40rpx;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .rqi-cell-item-left {
-      font-weight: 800;
-      font-size: 28rpx;
-      color: #323338;
-    }
-    .rqi-cell-item-right {
-      color: #909399;
-      font-size: 26rpx;
-    }
-  }
-
-  .allList {
-    background-color: #ffffff;
-    margin-top: 30rpx;
-    border-radius: 30rpx;
-    overflow: hidden;
-    padding-bottom: 60rpx;
-    .tabs-list {
-      display: flex;
-      justify-content: space-around;
-      .tabs-list-item {
-        min-width: 180rpx;
-        height: 100rpx;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #aaabb5;
-        font-size: 28rpx;
-      }
-      .tabs-list-item-action {
-        position: relative;
-        font-weight: bold;
-        color: var(--main-color);
-        &::after {
-          position: absolute;
-          bottom: 0px;
-          content: '';
-          height: 6rpx;
-          width: 40rpx;
-          background-color: var(--main-color);
-        }
-      }
-    }
-  }
   :deep(.income-expenditure-detail) {
     .tabs-list {
       border-top-left-radius: 30rpx;
@@ -476,66 +387,24 @@ const changeTabs = (obj: any) => {
   }
 
   .boxList {
-    margin-top: -4rpx;
+    // margin-top: -4rpx;
     border-top: 1rpx solid #f6f7f8;
-    min-height: calc(100vh - 650rpx);
+    min-height: calc(100vh - 850rpx);
     background-color: #fff;
-    border-bottom-left-radius: 30rpx;
-    border-bottom-right-radius: 30rpx;
-    .tit {
-      height: 88rpx;
-      padding: 0 15rpx 0 15rpx;
-
-      .item {
-        font-size: 24rpx;
-        margin-top: 28rpx;
-        height: 60rpx;
-        line-height: 60rpx;
-        background-color: #fafafa;
-        display: flex;
-        justify-content: space-between;
-        padding: 0 20rpx;
-        .left {
-          font-weight: 400;
-          font-size: 28rpx;
-          color: #323338;
-          &.left-time {
-            color: #b7b8c4;
-          }
-        }
-        .right {
-          display: flex;
-
-          .r1 {
-            .yuan {
-              color: #71d8a1;
-            }
-          }
-
-          .r2 {
-            margin-left: 20rpx;
-
-            .yuan {
-              color: #fa7777;
-            }
-          }
-        }
-      }
-    }
+    // border-bottom-left-radius: 30rpx;
+    // border-bottom-right-radius: 30rpx;
+    margin-bottom: 50rpx;
 
     .jifei {
       margin-top: -24rpx;
-
       .item:nth-child(1) {
         border-top: 0 solid #007aff;
       }
-
       .item {
         padding: 30rpx;
         // height: 131rpx;
         border-top: 2rpx solid #f7f8f9;
         color: #323338;
-
         .top {
           font-size: 28rpx;
           // font-weight: 800;
@@ -563,7 +432,7 @@ const changeTabs = (obj: any) => {
       margin-top: 80rpx;
 
       /* margin-bottom: ; */
-      image {
+      .image {
         width: 320rpx;
         height: 320rpx;
       }
@@ -575,33 +444,5 @@ const changeTabs = (obj: any) => {
       }
     }
   }
-
-  .bottwo {
-    padding-top: 8rpx;
-    color: #f33030;
-  }
 }
-
-scroll-view ::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-  background-color: transparent;
-}
-
-// /deep/::-webkit-scrollbar {
-//   display: none;
-//   width: 0;
-//   height: 0;
-//   color: transparent;
-//   background: transparent;
-// }
-
-// /deep/.uni-scroll-view ::-webkit-scrollbar {
-//   display: none;
-//   width: 0;
-//   height: 0;
-//   color: transparent;
-//   background: transparent;
-// }
 </style>

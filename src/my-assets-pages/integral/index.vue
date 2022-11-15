@@ -17,9 +17,9 @@
             </view>
           </view>
         </view>
-        <!-- <view class="integral-item-detail" @click="userintegral(item)">
+        <view class="integral-item-detail" @click="userintegral(item)">
           明细
-        </view> -->
+        </view>
       </view>
       <view class="none-data" v-if="!dataList.length">
         <NoneData icon="noIntegral" text="暂无积分记录" />
@@ -51,6 +51,7 @@ onMounted(() => {
 
 const userintegral = (item: any, type = '') => {
   const data = JSON.stringify(item);
+  uni.setStorageSync('integral-record-item', item);
   const url = `/my-assets-pages/integral/use-ril-record?item=${data}`;
   if (type === 'redirectTo') {
     uni.redirectTo({ url });

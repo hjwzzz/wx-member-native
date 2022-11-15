@@ -89,6 +89,8 @@ watch(
   (bool: boolean) => {
     if (bool) {
       getMemberRecommend();
+    } else {
+      srvProList.value = [];
     }
   }
 );
