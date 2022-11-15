@@ -135,8 +135,7 @@ const handleSubmit = async () => {
 <style scoped lang="scss">
 .cert {
   width: 100%;
-  // height: 100%;
-  // min-height: 100vh;
+  font-size: 28rpx;
   background: #f5f5f5;
   overflow: auto;
 
@@ -165,6 +164,7 @@ const handleSubmit = async () => {
       .text {
         display: flex;
         .uni-input {
+          font-size: 28rpx;
           color: #9697a2;
         }
       }
