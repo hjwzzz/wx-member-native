@@ -64,17 +64,17 @@
                 <view class="tit">
                   <view class="item">
                     <view class="left">
-                      {{ totalData.time || timeValue }}
+                      {{ timeValue }}
                     </view>
                     <view class="right">
                       <view class="r1" v-if="current === 0 || current === 1">
                         收入：<text class="yuan">
-                          {{ totalData.totalInOfMonth }}
+                          {{ totalInOfMonth }}
                         </text>
                       </view>
                       <view class="r2" v-if="current === 0 || current === 2">
                         支出：<text class="yuan">
-                          {{ totalData.totalOutOfMonth }}
+                          {{ totalOutOfMonth }}
                         </text>
                       </view>
                     </view>
@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 // import { onLoad } from '@dcloudio/uni-app';
-import { queryDepDetailPage, queryDepList } from '@/api/center';
+import { queryDepList } from '@/api/center';
 import {
   getDepositHistoryTotalFront,
   queryDepositHistoryPageFront,
@@ -158,8 +158,12 @@ const opKind = ref('');
 // const iconType = ref('circle');
 // const iconColor = ref('#FF547B');
 // const fontSize = ref('24');
+const status = ref('loading');
+const pageSize = ref(50);
 const page = ref(1);
 const totalPage = ref(0);
+const totalInOfMonth = ref(0);
+const totalOutOfMonth = ref(0);
 // 日期
 // const params = {
 //   year: true,
@@ -203,6 +207,7 @@ onMounted(() => {
   const res = uni.getStorageSync('balance');
   styleObj.value = res || {};
   queryDepDetailPageFun();
+  getPointHistoryTotal();
 });
 
 const onRefresh = () => {
@@ -239,20 +244,42 @@ const queryDepDetailPageFun = async () => {
   };
   dataList.value = [];
   const res: any = await queryDepositHistoryPageFront(body);
-  if (res.data) {
-    const { detailList, totalData: totalList, totalPage } = res.data;
-    totalPage.value = totalPage;
-    totalData.value = totalList;
-    if (totalList.time) {
-      timeValue.value = totalList.time;
-    }
-    dataList.value = dataList.value.concat(detailList.records);
-    // if (page.value >= totalPage.value) {
-    //   status.value = 'nomore';
-    // } else {
-    //   status.value = 'loading';
-    // }
+  const {
+    // detailList,
+    totalData: totalList,
+    totalPage: total,
+    records,
+  } = res.data;
+  totalPage.value = total;
+  totalData.value = totalList;
+  // timeValue.value = totalList.time;
+  if (page.value === 1) {
+    dataList.value = records;
+  } else {
+    dataList.value.push(...records);
   }
+  // console.log('records.lengt  ', records.length);
+  // console.log('total.value ', total);
+  // console.log('page.value >= totalPage.value ', page.value >= totalPage.value);
+  // console.log(' records.length < total ', records.length < total);
+  if (pageSize.value >= totalPage.value) {
+    status.value = 'no-more';
+  } else {
+    status.value = 'loading';
+  }
+};
+
+//
+const getPointHistoryTotal = async () => {
+  const body = {
+    acctId: styleObj.value.id,
+    curPage: page.value,
+    startTime: timeValue.value,
+    opKind: opKind.value,
+  };
+  const res: any = await getDepositHistoryTotalFront(body);
+  totalInOfMonth.value = res.data.totalInOfMonth || 0;
+  totalOutOfMonth.value = res.data.totalOutOfMonth || 0;
 };
 
 // 截取字符串
@@ -600,9 +627,8 @@ const detail = (item: any) => {
 
         .item {
           padding: 30rpx;
-          height: 131rpx;
+          // height: 131rpx;
           border-top: 2rpx solid #f7f8f9;
-
           .top {
             font-size: 28rpx;
             font-weight: 800;

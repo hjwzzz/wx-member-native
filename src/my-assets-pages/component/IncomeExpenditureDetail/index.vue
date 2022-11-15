@@ -3,17 +3,15 @@
     <picker
       mode="date"
       fields="month"
-      :value="time"
+      :value="timeValue"
       :start="start || getPassYearFormatDate()"
-      :end="end || current_time()"
+      :end="current_time()"
       @change="changeDate"
     >
       <view class="picker-wrapper">
         <view class="picker-left">{{ title }}</view>
         <view class="picker-right">
-          <text>
-            {{ time }}
-          </text>
+          <text> {{ time }} </text>
           <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
         </view>
       </view>
@@ -30,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import Tabs from '@/components/Tabs/index.vue';
 
 interface Props {
@@ -52,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   fixed: false,
 });
 
+const timeValue = computed(() => `${props.time}-10`);
 // console.log('props', props);
 
 const emits = defineEmits([

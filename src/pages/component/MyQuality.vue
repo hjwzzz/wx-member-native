@@ -98,6 +98,9 @@ watch(
   (bool: boolean) => {
     if (bool) {
       getPolicyList();
+    } else {
+      policyList.records = [];
+      policyList.totalRecord = 0;
     }
   }
 );

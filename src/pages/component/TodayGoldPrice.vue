@@ -58,7 +58,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import { getGoldPriceByPage } from '@/pages/api/server';
 import Router from '@/utils/router';
-import { ref, Ref, onMounted } from 'vue';
+import { ref, Ref, onMounted, watch } from 'vue';
 import NoneData from './NoneData.vue';
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -89,6 +89,7 @@ onMounted(() => {
 
 const _getGoldPriceByPage = async () => {
   if (!initBasicsData.checkLogin) {
+    goldPrice.value = [];
     return;
   }
   const res = await getGoldPriceByPage(props.type);
@@ -114,6 +115,17 @@ const _getGoldPriceByPage = async () => {
     // console.log('goldPrice', result);
   }
 };
+
+watch(
+  () => initBasicsData.checkLogin,
+  (bool: boolean) => {
+    if (bool) {
+      _getGoldPriceByPage();
+    } else {
+      goldPrice.value = [];
+    }
+  }
+);
 </script>
 
 <style lang="scss" scoped>

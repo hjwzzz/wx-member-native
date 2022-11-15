@@ -134,7 +134,7 @@
           </view>
         </view>
       </view>
-      <ScrollViewFooter></ScrollViewFooter>
+      <!-- <ScrollViewFooter></ScrollViewFooter> -->
 
       <view
         v-if="
@@ -173,7 +173,7 @@
 <script lang="ts" setup>
 import { ref, Ref, computed } from 'vue';
 import cancelReason from './component/cancel-reason.vue';
-import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
+// import ScrollViewFooter from '@/components/ScrollViewFooter/index.vue';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { updateFinishBookingFront } from '../api/api';
 import { onLoad, onShow } from '@dcloudio/uni-app';
