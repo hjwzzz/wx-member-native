@@ -184,8 +184,6 @@ const editAddress = async () => {
 
   .enter-adress {
     margin-top: 30rpx;
-    // min-height: calc(100vh - 250rpx - constant(safe-area-inset-bottom));
-    // min-height: calc(100vh - 250rpx - env(safe-area-inset-bottom));
     flex: 1;
     .code {
       width: 690rpx;

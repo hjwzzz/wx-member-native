@@ -146,7 +146,6 @@ const handleCert = () => [];
 .phone {
   width: 100%;
   height: 100%;
-  min-height: 100vh;
   background: #f5f5f5;
   overflow: auto;
 

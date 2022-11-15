@@ -201,8 +201,6 @@ onShareTimeline(() => shareTimeline(shareData.value));
 }
 .gold-price {
   padding: 30rpx;
-  // min-height: calc(100vh - constant(safe-area-inset-bottom));
-  // min-height: calc(100vh - env(safe-area-inset-bottom));
   background: #f5f5f5;
 }
 .shop {

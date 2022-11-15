@@ -566,7 +566,6 @@ const queryUserInfo = async () => {
   width: 100%;
   height: 100%;
   color: #323338;
-  min-height: 100vh;
   background: #f5f5f5;
   padding: 30rpx 30rpx 0 30rpx;
   font-size: 28rpx;
