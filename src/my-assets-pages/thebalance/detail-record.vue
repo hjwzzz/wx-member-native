@@ -1,6 +1,6 @@
 <template>
-  <CustomPage
-    ><view class="Detail_record">
+  <CustomPage>
+    <view class="Detail_record">
       <view class="mcDetail">
         <view class="top">
           <view class="image">
@@ -60,7 +60,7 @@ onMounted(() => {
 
 // 收入还是支出
 const incomeFun = (opKind: any) => {
-  if (opKind.code === 'BON_IN') {
+  if (opKind === 'BON_IN') {
     return '+';
   }
   return '-';
@@ -71,7 +71,7 @@ const incomeFun = (opKind: any) => {
 .Detail_record {
   padding: 30rpx;
   background-color: #f5f5f5;
-  height: 100vh;
+  // height: 100vh;
   .mcDetail {
     height: 590rpx;
     background-color: #ffffff;

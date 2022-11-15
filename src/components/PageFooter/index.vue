@@ -3,7 +3,7 @@
     class="page-footer"
     :class="props.bottom ? 'page-bottom2' : 'page-bottom1'"
   >
-    技术支持：金千枝数字云
+    技术支持：金千枝数智云
   </view>
 </template>
 <script lang="ts" setup>
