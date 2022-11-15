@@ -16,19 +16,19 @@ const props = withDefaults(defineProps<Props>(), { bottom: false });
 <style lang="scss" scoped>
 .page-footer {
   width: 100%;
-  padding: 40rpx 0;
+  line-height: 110rpx;
   font-size: 24rpx;
   color: #d8d9e0;
   text-align: center;
 }
 
 .page-bottom1 {
-  padding-bottom: calc(40rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(constant(safe-area-inset-bottom));
+  padding-bottom: calc(env(safe-area-inset-bottom));
 }
 
 .page-bottom2 {
-  padding-bottom: calc(145rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(145rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(105rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(105rpx + env(safe-area-inset-bottom));
 }
 </style>

@@ -112,6 +112,10 @@ class Router {
       uni.navigateBack();
       return;
     }
+    if (switchTabUrl.includes(url)) {
+      uni.switchTab({ url });
+      return;
+    }
     uni.redirectTo({ url: decodeURIComponent(url) ?? url });
   }
   // 根据code来跳转页面

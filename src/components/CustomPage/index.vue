@@ -34,12 +34,12 @@ const backgroundColor = computed(() => props.backgroundColor);
 <style lang="scss" scoped>
 .custom-page {
   .custom-page-box1 {
-    min-height: calc(100vh - 109rpx - constant(safe-area-inset-bottom));
-    min-height: calc(100vh - 109rpx - env(safe-area-inset-bottom));
+    min-height: calc(100vh - 110rpx - constant(safe-area-inset-bottom));
+    min-height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
   }
   .custom-page-box2 {
-    min-height: calc(100vh - 199rpx - constant(safe-area-inset-bottom));
-    min-height: calc(100vh - 199rpx - env(safe-area-inset-bottom));
+    min-height: calc(100vh - 215rpx - constant(safe-area-inset-bottom));
+    min-height: calc(100vh - 215rpx - env(safe-area-inset-bottom));
   }
 }
 </style>

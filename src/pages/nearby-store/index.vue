@@ -76,7 +76,7 @@
               bindtap="phoneLogin"
               @click="openLocation(item)"
             >
-              <text> 地图 </text>
+              <text class="clM"> 地图 </text>
             </view>
           </view>
         </view>

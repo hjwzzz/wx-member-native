@@ -47,7 +47,7 @@
                 >
               </view>
               <view class="right">
-                <view class="t mC">¥{{ item.price }}</view>
+                <view class="t">¥{{ item.price }}</view>
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
@@ -178,9 +178,6 @@ onShareTimeline(() => shareTimeline(shareData.value));
 </script>
 
 <style scoped lang="scss">
-.mC {
-  color: var(--main-color);
-}
 .banner {
   position: unset;
 }
@@ -279,7 +276,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
         .t {
           font-size: 28rpx;
           font-weight: 800;
-          color: #ff547b;
+          color: var(--main-color);
         }
       }
       .b {
