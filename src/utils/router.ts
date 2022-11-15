@@ -68,7 +68,7 @@ const oldPage: {
   // 'pointsMallGages/tabber/index': 'point_mall_commodity', // 商品积分
   // 'pointsMallGages/tabber/index': 'point_mall_index', // 首页(积分)
   // 'pointsMallGages/tabber/index': 'point_mall', // 积分商城
-  'pages/center/invite-courteous/index': 'invite_courteous', // 邀请有礼
+  'activity/inviteGift/index': 'invite_courteous', // 邀请有礼
   'pages/center/user-theprize/index': 'my_prize', // 我的奖品
   'reservationService/reservationService/index': 'reservation', // 预约服务
   'pages/center/quality/index': 'warranty', // 质保单列表
@@ -81,6 +81,7 @@ const oldPage: {
   'pages/center/thebalance/index': 'balance', // 我的余额
   'pages/center/ticket/index': 'coupon', // 我的优惠券
   'pages/center/nearby-store/index': 'nearby_store', // 附近门店
+  'activity/popularity/index': 'popularity', // 活动-人气值千金
 };
 // 路由控制
 class Router {
