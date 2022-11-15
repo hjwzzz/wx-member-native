@@ -1,6 +1,6 @@
 <template>
   <view class="page-footer" :class="props.bottom ? 'show-bottom' : ''">
-    技术支持：金千枝数字云
+    技术支持：金千枝数智云
   </view>
 </template>
 <script lang="ts" setup>

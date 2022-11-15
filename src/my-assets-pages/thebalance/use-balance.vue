@@ -60,57 +60,59 @@
           >
             <!-- 全部页面 -->
             <view class="boxList">
-              <view class="title">
-                <view class="tit">
-                  <view class="item">
+              <view class="tit">
+                <view class="item">
+                  <view class="left">
+                    {{ timeValue }}
+                  </view>
+                  <view class="right">
+                    <view class="r1" v-if="current === 0 || current === 1">
+                      收入：<text class="yuan">
+                        {{ totalInOfMonth }}
+                      </text>
+                    </view>
+                    <view class="r2" v-if="current === 0 || current === 2">
+                      支出：<text class="yuan">
+                        {{ totalOutOfMonth }}
+                      </text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <view v-if="dataList.length" class="xiaofei">
+                <view
+                  v-for="(item, index) in dataList"
+                  :key="index"
+                  class="item"
+                  @click="detail(item)"
+                >
+                  <view class="top">
                     <view class="left">
-                      {{ timeValue }}
+                      <text v-if="item.remark">
+                        {{ getText(item.remark) || '' }}
+                      </text>
                     </view>
-                    <view class="right">
-                      <view class="r1" v-if="current === 0 || current === 1">
-                        收入：<text class="yuan">
-                          {{ totalInOfMonth }}
-                        </text>
-                      </view>
-                      <view class="r2" v-if="current === 0 || current === 2">
-                        支出：<text class="yuan">
-                          {{ totalOutOfMonth }}
-                        </text>
-                      </view>
+                    <view
+                      class="bottwo"
+                      :class="{
+                        income: item.opKind && item.opKind.code === 'BON_IN',
+                      }"
+                    >
+                      {{ incomeFun(item.opKind) }}{{ item.realValue }}
                     </view>
                   </view>
-                </view>
-                <view v-if="dataList.length" class="xiaofei">
-                  <view
-                    v-for="(item, index) in dataList"
-                    :key="index"
-                    class="item"
-                    @click="detail(item)"
-                  >
-                    <view class="top">
-                      <view class="left">
-                        <text v-if="item.remark">
-                          {{ getText(item.remark) || '' }}
-                        </text>
-                      </view>
-                      <view
-                        class="bottwo"
-                        :class="{
-                          income: item.opKind && item.opKind.code === 'BON_IN',
-                        }"
-                      >
-                        {{ incomeFun(item.opKind) }}{{ item.realValue }}
-                      </view>
-                    </view>
-                    <view class="bottom">
-                      {{ item.createTime }}
-                    </view>
+                  <view class="bottom">
+                    {{ item.createTime }}
                   </view>
                 </view>
-                <view v-else class="imagewu">
-                  <image :src="`${staticUrl}img/wuyuer.png`" mode="aspectFit" />
-                  <view class="wujilu"> 暂无交易记录 </view>
-                </view>
+              </view>
+              <view v-else class="imagewu">
+                <image
+                  class="image"
+                  :src="`${staticUrl}img/wuyuer.png`"
+                  mode="aspectFit"
+                />
+                <view class="wujilu"> 暂无交易记录 </view>
               </view>
             </view>
           </IncExpDetail>
@@ -235,6 +237,7 @@ const add_zero = (temp: string | number) => {
 
 // 列表明细
 const queryDepDetailPageFun = async () => {
+  // console.log('queryDepDetailPageFun timeValue.value', timeValue.value);
   const body = {
     acctId: styleObj.value.id,
     curPage: page.value,
@@ -271,6 +274,7 @@ const queryDepDetailPageFun = async () => {
 
 //
 const getPointHistoryTotal = async () => {
+  // console.log('getPointHistoryTotal timeValue.value', timeValue.value);
   const body = {
     acctId: styleObj.value.id,
     curPage: page.value,
@@ -306,69 +310,20 @@ const refreshDepListFun = async () => {
   }, 2000);
 };
 
-// 列表明细
-// const queryPointDetailPagFun = async (setMIn?: any) => {
-//   const body = {
-//     acctId: totalObj.value.id,
-//     curPage: page.value,
-//     startTime: timeValue.value,
-//     opKind: opKind.value,
-//     pageSize: 5000,
-//   };
-//   const res: any = await queryPointDetailPage(body);
-//   const { detailList, totalData: totalList } = res?.data;
-//   totalPage.value = detailList.totalPage;
-//   totalData.value = totalList;
-//   timeValue.value = totalList.time;
-//   dataList.value = [...dataList.value, ...detailList.records];
-//   if (page.value >= totalPage.value) {
-//     status.value = 'nomore';
-//   } else {
-//     status.value = 'loading';
-//   }
-//   clearTimeout(setMIn);
-// };
-
-// 上拉
-// const refresherpulling = () => {
-//   loadingTop.value = true;
-//   page.value = 1;
-//   let setMIn: any = null;
-//   if (setMIn) {
-//     clearTimeout(setMIn);
-//   }
-//   setMIn = setTimeout(() => {
-//     queryPointDetailPagFun(setMIn);
-//     loadingTop.value = false;
-//   }, 1500);
-// };
-
 // 收入还是支出
 const incomeFun = (opKind: any) => {
-  if (opKind.code === 'BON_IN') {
+  if (opKind === 'BON_IN') {
     return '+';
   }
   return '-';
 };
-
-// const picker = () => {
-//   show.value = true;
-// };
-
-// // 日期确认返回值
-// const confirm = res => {
-//   dataList.value = [];
-//   timeValue.value = `${res.year}-${res.month}`;
-//   queryPointDetailPagFun();
-//   // compareMonth(current_time(), timeValue.value);
-//   // this.getPassYearFormatDate();
-// };
 
 // 日期确认返回值
 const changeDate = (time: string) => {
   // dataList.value = [];
   timeValue.value = time;
   queryDepDetailPageFun();
+  getPointHistoryTotal();
 };
 const changeTabs = ({ index }: any) => {
   current.value = index;
@@ -378,55 +333,12 @@ const changeTabs = ({ index }: any) => {
   dataList.value = [];
   queryDepDetailPageFun();
 };
-// const changeData = (event: any) => {
-//   dataList.value = [];
-//   timeValue.value = event.detail.value;
-//   queryDepDetailPageFun();
-// };
-
-// 切换页面
-// const change = (index: any) => {
-//   current.value = index;
-//   page.value = 1;
-//   dataList.value = [];
-//   opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
-//   dataList.value = [];
-//   queryDepDetailPageFun();
-// };
 
 // 跳转到 明细记录页面
 const detail = (item: any) => {
   uni.setStorageSync('balanceRecord', item);
   uni.navigateTo({ url: '/my-assets-pages/thebalance/detail-record' });
 };
-
-// 分页加载更多
-// const onReachBottom = () => {
-//   if (page.value >= totalPage.value) return;
-//   status.value = 'loading';
-//   page.value = ++page.value;
-//   queryDepDetailPageFun();
-// };
-
-// const compareMonth = (d1: any, d2: any) => {
-//   if (d2 > d1) {
-//   } else if (getPassYearFormatDate() < d2) {
-//   }
-//   return d1 > d2;
-// };
-
-// 去年
-// const getPassYearFormatDate = () => {
-//   const nowDate = new Date();
-//   nowDate.setDate(nowDate.getDate() - 365);
-//   const year = nowDate.getFullYear();
-//   let month: any = nowDate.getMonth() + 1;
-//   if (month >= 1 && month <= 9) {
-//     month = `0${month}`;
-//   }
-//   const currentdate = `${year}-${month}`;
-//   return currentdate;
-// };
 </script>
 
 <style lang="scss" scoped>
@@ -576,7 +488,7 @@ const detail = (item: any) => {
     .boxList {
       margin-top: -4rpx;
       border-top: 1rpx solid #f6f7f8;
-      min-height: calc(100vh - 650rpx);
+      min-height: calc(100vh - 800rpx);
       background-color: #fff;
       border-bottom-left-radius: 30rpx;
       border-bottom-right-radius: 30rpx;
@@ -655,7 +567,7 @@ const detail = (item: any) => {
         margin-top: 80rpx;
 
         /* margin-bottom: ; */
-        image {
+        .image {
           width: 320rpx;
           height: 320rpx;
         }
