@@ -1,5 +1,5 @@
 <template>
-  <CustomPage>
+  <CustomPage bottom>
     <view class="adress-list">
       <view class="list-item" v-for="(item, i) in adressList" :key="i">
         <view class="top" @click="handleSelectedAddress(item)">
@@ -176,8 +176,8 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
 }
 .adress-list {
   display: flow-root;
-  min-height: calc(100vh - (200rpx + constant(safe-area-inset-bottom)));
-  min-height: calc(100vh - (200rpx + env(safe-area-inset-bottom)));
+  min-height: calc(100vh - (215rpx + constant(safe-area-inset-bottom)));
+  min-height: calc(100vh - (215rpx + env(safe-area-inset-bottom)));
   .list-item {
     display: flex;
     flex-direction: column;
@@ -254,16 +254,6 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
   }
 }
 
-.footer {
-  height: 64rpx;
-  font-size: 24rpx;
-  font-weight: 400;
-  color: #d8d9e0;
-  line-height: 64rpx;
-  text-align: center;
-  margin-bottom: calc(110rpx + constant(safe-area-inset-bottom));
-  margin-bottom: calc(110rpx + env(safe-area-inset-bottom));
-}
 .submit {
   width: 100%;
   padding-top: 10rpx;

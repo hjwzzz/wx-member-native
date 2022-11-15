@@ -143,8 +143,7 @@ const nextStep = async (num: number, item?: any) => {
   line-height: 40rpx;
   overflow: auto;
   &.full {
-    padding: 0 30rpx;
-    min-height: 100vh;
+    padding: 0 30rpx 30rpx 30rpx;
     color: #1d0800;
     font-weight: 500;
     background-color: #fff;

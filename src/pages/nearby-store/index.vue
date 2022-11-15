@@ -82,7 +82,7 @@
         </view>
       </view>
       <view class="empty-view" v-else>
-        <NoneData icon="shop" text="暂未门店信息"></NoneData>
+        <NoneData icon="shop" text="暂无门店信息"></NoneData>
       </view>
     </view>
     <Tabbar code="nearby_store"> </Tabbar>
@@ -278,8 +278,6 @@ const goDetail = (e: storeType) => {
     color: #ff6f90;
   }
   .themap {
-    min-height: calc(100vh - 330rpx - constant(safe-area-inset-bottom));
-    min-height: calc(100vh - 330rpx - env(safe-area-inset-bottom));
     padding-left: 30rpx;
     padding-right: 30rpx;
     padding-top: 30rpx;
@@ -391,7 +389,7 @@ const goDetail = (e: storeType) => {
   }
 }
 .empty-view {
-  height: calc(100vh - 300rpx);
+  height: calc(100vh - 330rpx);
   display: flex;
   justify-content: center;
   align-items: center;
