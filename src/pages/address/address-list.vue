@@ -122,7 +122,7 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
   color: var(--main-color);
 }
 .icon-weigouxuan {
-  color: #ff547b;
+  color: var(--main-color);
 }
 .address-tip-show {
   display: flex;
@@ -175,10 +175,9 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
   color: #f86262;
 }
 .adress-list {
+  display: flow-root;
   min-height: calc(100vh - (200rpx + constant(safe-area-inset-bottom)));
   min-height: calc(100vh - (200rpx + env(safe-area-inset-bottom)));
-  // padding: 30rpx;
-  flex: 1;
   .list-item {
     display: flex;
     flex-direction: column;

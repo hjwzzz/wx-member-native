@@ -562,6 +562,7 @@ const queryUserInfo = async () => {
 
 <style scoped lang="scss">
 .user-info {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   color: #323338;

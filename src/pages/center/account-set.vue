@@ -91,7 +91,7 @@ const handleLogout = async () => {
     icon: 'none',
   });
   setTimeout(() => {
-    Router.goCodePage('wm_index');
+    Router.goCodePage('wm_center');
   }, 500);
 };
 </script>
@@ -101,7 +101,6 @@ const handleLogout = async () => {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  min-height: 90vh;
   background: #f5f5f5;
   padding: 30rpx 30rpx 0 30rpx;
   display: flex;
