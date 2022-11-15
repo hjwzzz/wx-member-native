@@ -294,9 +294,9 @@ const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
 const handleQuickUrl = (item: any) => {
-  if (initBasicsData.checkLogin) {
-    Router.goCodePage(item.code);
-  }
+  // if (initBasicsData.checkLogin) {
+  Router.goCodePage(item.code);
+  // }
 };
 </script>
 
