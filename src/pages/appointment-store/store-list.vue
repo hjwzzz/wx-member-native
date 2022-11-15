@@ -4,6 +4,7 @@
       <view class="search-bar-bg">
         <uni-search-bar
           class="search-bar"
+          :focus="true"
           v-model="keyward"
           @input="searchChange"
           radius="100"
@@ -74,7 +75,7 @@
         </view>
       </view>
       <view class="empty-view" v-else>
-        <NoneData icon="shop" text="暂未门店信息"></NoneData>
+        <NoneData icon="shop" text="暂无门店信息"></NoneData>
       </view>
     </view>
   </CustomPage>

@@ -82,7 +82,7 @@
         </view>
       </view>
       <view class="empty-view" v-else>
-        <NoneData icon="shop" text="暂未门店信息"></NoneData>
+        <NoneData icon="shop" text="暂无门店信息"></NoneData>
       </view>
     </view>
     <Tabbar code="nearby_store"> </Tabbar>
