@@ -32,16 +32,16 @@
                     class="flagship"
                     :style="{
                       maxWidth:
-                        item.gsResult.code === 'Y'
+                        item.gsResult === 'Y'
                           ? 'calc(100% - 100rpx)'
                           : 'calc(100% - 28rpx)',
                     }"
                   >
                     {{ item.storeName || '--' }}
                   </view>
-                  <view v-if="item.gsResult.code === 'Y'" class="attribution">
+                  <view v-if="item.gsResult === 'Y'" class="attribution">
                     <text style="font-size: 20rpx">
-                      {{ item.gsResult.name }}
+                      {{ item.gsResultName }}
                     </text>
                   </view>
                 </view>
@@ -113,10 +113,8 @@ interface storeType {
   tel: string;
   coord: string;
   fullAddress: string;
-  gsResult: {
-    code: string;
-    name: string;
-  };
+  gsResult: string;
+  gsResultName: string;
 }
 const list = ref<storeType[]>([]);
 

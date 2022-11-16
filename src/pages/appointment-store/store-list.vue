@@ -258,6 +258,9 @@ const confimStore = () => {
       .top {
         display: flex;
         justify-content: space-between;
+        .left {
+          font-size: 28rpx;
+        }
         .left-info {
           margin-left: 10rpx;
           flex-shrink: 0;
