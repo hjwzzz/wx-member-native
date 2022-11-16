@@ -5,20 +5,22 @@
         <swiper
           style="height: 300rpx"
           :indicator-dots="bannerList?.length > 1"
-          indicator-color
+          indicator-color="#D8D9E0"
           indicator-active-color="#FF547B"
           autoplay
         >
-          <block v-for="(item, index) in bannerList" :key="index">
-            <swiper-item @click.stop="bannerClick(item)">
-              <image
-                class=""
-                style="height: 300rpx; width: 690rpx"
-                :src="item.imgUrl"
-                mode="aspectFill"
-              ></image>
-            </swiper-item>
-          </block>
+          <swiper-item
+            v-for="(item, index) in bannerList"
+            :key="index"
+            @click.stop="bannerClick(item)"
+          >
+            <image
+              class=""
+              style="height: 300rpx; width: 690rpx"
+              :src="item.imgUrl"
+              mode="aspectFill"
+            ></image>
+          </swiper-item>
         </swiper>
       </view>
 

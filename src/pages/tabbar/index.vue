@@ -247,6 +247,7 @@ const getPageDate = async () => {
 };
 
 const bannerIndexFun = (item: any) => {
+  console.log('bannerIndexFun', item);
   const url = JSON.parse(item.url || {});
   Router.goCodePage(url.code || url.systemUrl);
 };
