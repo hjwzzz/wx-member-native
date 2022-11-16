@@ -329,6 +329,12 @@
           }
         },
         {
+          "path": "point-mall/poster",
+          "style": {
+            "navigationBarTitleText": "商品详情"
+          }
+        },
+        {
           "path": "gold-price/index",
           "style": {
             "navigationBarTitleText": "今日金价"
