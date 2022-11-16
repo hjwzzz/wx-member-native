@@ -9,7 +9,7 @@
         ></view>
       </view>
       <view class="content">
-        <view v-html="richImage(obj.content)"></view>
+        <view v-html="refRichImage(obj.content)"></view>
       </view>
     </view>
   </CustomPage>
@@ -19,6 +19,19 @@
 import { richImage } from '@/utils/util';
 const obj = uni.getStorageSync('notic');
 const noticTime = uni.getStorageSync('noticTime');
+
+const refRichImage = (item: any) => {
+  if (!item) {
+    return '';
+  }
+  let content = richImage(item);
+  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+  content = content.replace(
+    reg,
+    '<img style="max-width: 100%;border-radius: 8px; margin-top:10px;margin-bottom: 10px;" src="$1" />'
+  );
+  return content;
+};
 </script>
 
 <style lang="scss" scoped>

@@ -19,8 +19,9 @@
           style="height: 300rpx"
           :indicator-dots="bannerList.length > 1"
           indicator-color="#D8D9E0"
-          indicator-active-color="#FF547B"
+          :indicator-active-color="initBasicsData.mainColor"
           autoplay
+          circular
         >
           <block v-for="(item, index) in bannerList" :key="index">
             <swiper-item class="swiper-item" @click.stop="bannerIndexFun(item)">
@@ -63,8 +64,9 @@
             class="banner"
             :indicator-dots="adBannerList.length > 1"
             indicator-color="#D8D9E0"
-            indicator-active-color="#FF547B"
+            :indicator-active-color="initBasicsData.mainColor"
             autoplay
+            circular
           >
             <block v-for="(item, index) in adBannerList" :key="index">
               <swiper-item class="swiper-item">
@@ -89,7 +91,8 @@
             class=""
             :indicator-dots="swiperVav.length > 1"
             indicator-color="#D8D9E0"
-            indicator-active-color="#FF547B"
+            :indicator-active-color="initBasicsData.mainColor"
+            circular
           >
             <swiper-item
               class="swiper-item"
@@ -144,7 +147,8 @@
             class=""
             :indicator-dots="floatAdsPopup.length > 1"
             indicator-color="#D8D9E0"
-            indicator-active-color="#FF547B"
+            :indicator-active-color="initBasicsData.mainColor"
+            circular
           >
             <swiper-item
               class="swiper-item"
@@ -172,8 +176,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref, computed } from 'vue';
-import { onShareTimeline, onShareAppMessage } from '@dcloudio/uni-app';
+import { ref, Ref, computed } from 'vue';
+import { onShareTimeline, onShareAppMessage, onShow } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
@@ -182,8 +186,6 @@ import {
   queryHomBannerListFront,
   queryPopup,
 } from '@/pages/api/index';
-
-// import { useBasicsData } from '@/store/basicsData';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -192,17 +194,19 @@ import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
-//  shareAppMessage  shareTimeline
-// const initBasicsData = useBasicsData();
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 
-onMounted(() => {
+// onMounted(() => {
+// });
+onShow(() => {
   getPageDate();
   getAdBannerList();
   // getGoldPriceByPage();
   queryPopupFun();
   getWmAlertAdBannerListFun();
-
   getShareSet();
 });
 

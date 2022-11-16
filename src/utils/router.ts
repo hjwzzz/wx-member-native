@@ -16,11 +16,7 @@ const configRouterAuth = [
   'warranty_list',
 ];
 // 配置switchTab切换页面
-const switchTabUrl = [
-  '/pages/tabbar/index',
-  '/pages/center/index',
-  '/pages/nearby-store/index',
-];
+const switchTabUrl = ['/pages/tabbar/index', '/pages/center/index'];
 
 // 配置page的code代码
 const pageCode: any = {

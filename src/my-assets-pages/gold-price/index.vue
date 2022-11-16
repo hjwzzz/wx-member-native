@@ -6,8 +6,9 @@
           style="height: 300rpx"
           :indicator-dots="bannerList?.length > 1"
           indicator-color="#D8D9E0"
-          indicator-active-color="#FF547B"
+          :indicator-active-color="initBasicsData.mainColor"
           autoplay
+          circular
         >
           <swiper-item
             v-for="(item, index) in bannerList"
@@ -111,6 +112,10 @@ import {
 import router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import Tabs from '@/components/Tabs/index.vue';
+
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
 
 onLoad((e: any) => {
   console.log('onLoad((e: any) ', e);

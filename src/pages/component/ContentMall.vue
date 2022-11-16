@@ -86,8 +86,8 @@ const onMallDetail = (id: string) => {
       border-radius: 16rpx;
 
       .image {
-        width: 192rpx;
-        height: 192rpx;
+        width: 100%;
+        height: 100%;
         border-radius: 16rpx;
       }
     }

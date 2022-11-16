@@ -112,8 +112,9 @@
             style="height: 180rpx"
             :indicator-dots="bannerList.length > 1"
             indicator-color="#D8D9E0"
-            indicator-active-color="#FF547B"
+            :indicator-active-color="initBasicsData.mainColor"
             autoplay
+            circular
           >
             <block v-for="(entry, index) in bannerList" :key="index">
               <swiper-item>
@@ -165,7 +166,7 @@
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
 import { ref, reactive, Ref } from 'vue';
-import { getIndexAdBannerList } from '@/api/center';
+// import { getIndexAdBannerList } from '@/api/center';
 import {
   getMemberCenterIndex,
   queryMemberCenterBannerListFront,

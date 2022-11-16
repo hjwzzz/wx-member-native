@@ -73,7 +73,7 @@
           ></view>
         </view>
         <view class="gift-ad" v-if="hasAd">
-          <swiper>
+          <swiper circular>
             <swiper-item
               v-for="(v, i) in data.wxappActivityAdvertList"
               :key="v.id"

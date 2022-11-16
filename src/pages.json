@@ -133,10 +133,6 @@
       {
         "pagePath": "pages/center/index",
         "text": "个人中心"
-      },
-      {
-        "pagePath": "pages/nearby-store/index",
-        "text": "附近门店"
       }
     ]
   },
@@ -212,7 +208,7 @@
         {
           "path": "coupon-center/index",
           "style": {
-            "navigationBarTitleText": "优惠券"
+            "navigationBarTitleText": "领券中心"
           }
         },
         {
