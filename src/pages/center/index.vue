@@ -263,7 +263,13 @@ const getBannerData = async () => {
 };
 const bannerListClick = (item: any) => {
   const url = JSON.parse(item.url || {});
-  Router.goCodePage(url.code || url.systemUrl);
+  let param = item.miniUrl.split('?')[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(url.code || url.systemUrl, param);
 };
 
 // 获取今日金价
@@ -296,7 +302,13 @@ const handleMyPrizes = (index: number) => {
 };
 const handleQuickUrl = (item: any) => {
   // if (initBasicsData.checkLogin) {
-  Router.goCodePage(item.code);
+  let param = item.miniUrl.split('?')[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(item.code, param);
   // }
 };
 </script>

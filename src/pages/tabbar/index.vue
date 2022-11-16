@@ -251,9 +251,15 @@ const getPageDate = async () => {
 };
 
 const bannerIndexFun = (item: any) => {
-  console.log('bannerIndexFun', item);
+  // console.log('bannerIndexFun', item);
   const url = JSON.parse(item.url || {});
-  Router.goCodePage(url.code || url.systemUrl);
+  let param = item.miniUrl.split('?')[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(url.code || url.systemUrl, param);
 };
 // QUICK_NAV
 const getPanelList = () => {
@@ -331,7 +337,13 @@ const topBgImageUrl = computed(() => {
 });
 
 const handleEntryUrl = (item: any) => {
-  Router.goCodePage(item.code);
+  let param = item.miniUrl.split('?')[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(item.code, param);
 };
 
 // 设置广告弹窗
