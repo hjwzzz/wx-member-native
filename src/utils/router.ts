@@ -53,6 +53,8 @@ const pageCode: any = {
   location: '/pages/center/user-info/address', // 修改地址
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
   popularity: '/activity-pages/popularity/index', // 活动-人气值千金
+  reservation_detail: '/reservation-service-pages/myAppointment/detail', // 预约服务-详情
+  member_equity: '/pages/member-equity/index', // 会员权益
 };
 
 const oldPage: {
@@ -69,16 +71,18 @@ const oldPage: {
   'pages/center/user-theprize/index': 'my_prize', // 我的奖品
   'reservationService/reservationService/index': 'reservation', // 预约服务
   'pages/center/quality/index': 'warranty', // 质保单列表
-  'pages/center/integral/index': 'point', // 我的积分
+  'myAssets/integral/index': 'point', // 我的积分
   'pages/center/coupon-center/index': 'get_coupon', // 领券中心
   'pages/center/gold-price/index': 'gold_price', // 今日金价
   // 'pages/center/index': 'wm_center', // 个人中心
   // 'pages/tabbar/index': 'wm_index', // 首页
   'signInGift/giftPage/index': 'sign', // 签到
-  'pages/center/thebalance/index': 'balance', // 我的余额
+  'myAssets/thebalance/index': 'balance', // 我的余额
   'pages/center/ticket/index': 'coupon', // 我的优惠券
   'pages/center/nearby-store/index': 'nearby_store', // 附近门店
   'activity/popularity/index': 'popularity', // 活动-人气值千金
+  'reservationService/myAppointment/detail': 'reservation_detail', // 预约服务-详情
+  'pages/center/member-benefits/index': 'member_equity', // 会员权益
 };
 // 路由控制
 class Router {
