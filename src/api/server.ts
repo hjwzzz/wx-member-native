@@ -16,7 +16,6 @@ export const queryWarrantyListPageFront = async (data: any) => {
   return request(url, data);
 };
 
-// 以下-------------------
 // 获取主题色系
 // export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
 
