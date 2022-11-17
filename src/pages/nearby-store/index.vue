@@ -85,12 +85,12 @@
         <NoneData icon="shop" text="暂无门店信息"></NoneData>
       </view>
     </view>
-    <Tabbar code="nearby_store"> </Tabbar>
+    <!-- <Tabbar code="nearby_store"> </Tabbar> -->
   </CustomPage>
 </template>
 
 <script setup lang="ts">
-import Tabbar from '@/components/Tabbar/index.vue';
+// import Tabbar from '@/components/Tabbar/index.vue';
 import NoneData from '@/pages/component/NoneData.vue';
 import { computed, ref } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';

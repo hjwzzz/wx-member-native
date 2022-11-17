@@ -1,6 +1,6 @@
 <template>
   <CustomPage>
-    <swiper class="advert-list" v-if="advertList.length">
+    <swiper class="advert-list" v-if="advertList.length" circular>
       <swiper-item
         v-for="item in advertList"
         :key="item.imgUrl"

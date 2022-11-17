@@ -18,7 +18,8 @@
         :interval="2000"
         :duration="500"
         :indicator-dots="goldPrice?.length > 1"
-        indicator-active-color="#FF547B"
+        indicator-color="#D8D9E0"
+        :indicator-active-color="initBasicsData.mainColor"
         style="height: 280rpx"
       >
         <swiper-item v-for="(price, index) in goldPrice" :key="index">

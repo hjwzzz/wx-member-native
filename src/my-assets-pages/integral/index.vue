@@ -17,9 +17,9 @@
             </view>
           </view>
         </view>
-        <view class="integral-item-detail" @click="userintegral(item)">
+        <!-- <view class="integral-item-detail" @click="userintegral(item)">
           明细
-        </view>
+        </view> -->
       </view>
       <view class="none-data" v-if="!dataList.length">
         <NoneData icon="noIntegral" text="暂无积分记录" />

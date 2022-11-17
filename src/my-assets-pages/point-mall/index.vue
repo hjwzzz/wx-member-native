@@ -19,12 +19,12 @@ const param = `?appId=${jqzAppid}&appType=mini&epid=${epid}&token=${token}&mid=$
 const lastUrl = `${h5Url}/#/pointsMallGages/tabber/index${param}`;
 const webViewUrl = ref(lastUrl);
 onLoad((option: any) => {
-  // console.log(option);
   if (option.productId) {
     webViewUrl.value = `${h5Url}/#/pointsMallGages/productDetails/index${param}&productId=${option.productId}`;
   }
-  // /pointsMallGages/productDetails/index?id=${id}
-  // productId
+  if (option.name) {
+    webViewUrl.value = `${lastUrl}&name=${option.name}`;
+  }
 });
 
 onShow(() => {

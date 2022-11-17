@@ -16,11 +16,7 @@ const configRouterAuth = [
   'warranty_list',
 ];
 // 配置switchTab切换页面
-const switchTabUrl = [
-  '/pages/tabbar/index',
-  '/pages/center/index',
-  '/pages/nearby-store/index',
-];
+const switchTabUrl = ['/pages/tabbar/index', '/pages/center/index'];
 
 // 配置page的code代码
 const pageCode: any = {
@@ -65,6 +61,7 @@ const oldPage: {
   'pages/center/quality/custom': 'warranty_details', // 质保单详情
   // 'pages/login/index': 'reg', // 注册登录
   'pointsMallGages/tabber/index': 'point_mall', // 订单积分
+  'pointsMallGages/productDetails/index': 'point_mall', // 积分商品详情
   // 'pointsMallGages/tabber/index': 'point_mall_commodity', // 商品积分
   // 'pointsMallGages/tabber/index': 'point_mall_index', // 首页(积分)
   // 'pointsMallGages/tabber/index': 'point_mall', // 积分商城
