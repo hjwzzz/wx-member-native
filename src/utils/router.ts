@@ -96,7 +96,6 @@ class Router {
       .pop();
     const route = page ? page.route.split('?')[0] : '';
     Storage.setPages(url || `/${route}`);
-
     if (url) {
       uni.navigateTo({ url: pageCode.login });
     } else {
@@ -104,8 +103,7 @@ class Router {
     }
   }
   // 从登录返回之前保存的页面
-  static fromLoginBack() {
-    const url = Storage.getPages();
+  static fromLoginBack(url = Storage.getPages()) {
     if (!url || url.includes('/pages/login/index')) {
       uni.navigateBack();
       return;
