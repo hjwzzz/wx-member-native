@@ -106,7 +106,7 @@ import {
 } from '@/api/gold-price';
 import {
   queryGoldPriceBannerListFront,
-  getSaleMetalPrice,
+  // getSaleMetalPrice,
 } from '@/my-assets-pages/api/gold-price';
 
 import router from '@/utils/router';
