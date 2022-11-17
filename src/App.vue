@@ -3,7 +3,7 @@ import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
-import Storage from '@/utils/storage';
+// import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
 

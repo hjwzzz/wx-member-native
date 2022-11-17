@@ -1,5 +1,5 @@
 <template>
-  <web-view :src="webViewUrl" />
+  <web-view :src="webViewUrl" @message="onMiniMessage" />
 </template>
 
 <script setup lang="ts">
@@ -46,9 +46,11 @@ onShow(() => {
   getShareSet();
 });
 
+const shareSettData: Ref<any> = ref([]);
 const shareData: Ref<any> = ref([]);
 const getShareSet = async () => {
   const res = await queryShareSett({ pageName: 'WMGFT_INDEX' });
+  shareSettData.value = res.data;
   // 控住分享
   shareHold(res.data);
   shareData.value = {
@@ -57,7 +59,36 @@ const getShareSet = async () => {
     shareObj: res.data,
   };
 };
-onShareAppMessage(() => shareAppMessage(shareData.value));
+
+const messageType = ref('null');
+const messageData: Ref<any> = ref({});
+const shareName = ref('');
+const shareImage = ref('');
+const onMiniMessage = (message: any) => {
+  const data = message.detail.data;
+  const lastData = data[data.length - 1];
+  messageType.value = lastData.showType;
+  if (messageType.value === 'product-details') {
+    shareName.value = lastData.title;
+    shareImage.value = lastData.imageUrl;
+    messageData.value = {
+      title: lastData.title,
+      path: `/my-assets-pages/point-mall/index?productId=${lastData.id}`,
+      shareObj: shareSettData.value,
+    };
+  }
+};
+
+onShareAppMessage(() => {
+  if (messageType.value === 'product-details') {
+    return shareAppMessage(
+      messageData.value,
+      shareName.value,
+      shareImage.value
+    );
+  }
+  return shareAppMessage(shareData.value);
+});
 // webview 不支持分享到朋友圈
 // onShareTimeline(() => shareTimeline(shareData.value));
 </script>

@@ -18,7 +18,11 @@ export function shareHold(data: any) {
   }
 }
 // shareAppMessage
-export function shareAppMessage({ title, path, shareObj }: any) {
+export function shareAppMessage(
+  { title, path, shareObj }: any,
+  name = '',
+  image = ''
+) {
   const {
     shareChumTitle,
     miniProgramName,
@@ -27,10 +31,10 @@ export function shareAppMessage({ title, path, shareObj }: any) {
     miniAvatarUrl,
   } = shareObj;
   return {
-    title: shareChumTitle || `${miniProgramName}-${title}`,
+    title: name || shareChumTitle || `${miniProgramName}-${title}`,
     desc: shareChumDescribe || `${miniProgramName}-${title}`,
     path,
-    imageUrl: shareChumImage || miniAvatarUrl,
+    imageUrl: image || shareChumImage || miniAvatarUrl,
   };
 }
 // shareTimeline
