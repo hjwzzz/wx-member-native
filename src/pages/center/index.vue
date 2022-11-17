@@ -263,7 +263,7 @@ const getBannerData = async () => {
 };
 const bannerListClick = (item: any) => {
   const url = JSON.parse(item.url || {});
-  let param = item.miniUrl.split('?')[1];
+  let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
   } else {
@@ -302,7 +302,7 @@ const handleMyPrizes = (index: number) => {
 };
 const handleQuickUrl = (item: any) => {
   // if (initBasicsData.checkLogin) {
-  let param = item.miniUrl.split('?')[1];
+  let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
   } else {

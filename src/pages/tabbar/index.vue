@@ -253,7 +253,7 @@ const getPageDate = async () => {
 const bannerIndexFun = (item: any) => {
   // console.log('bannerIndexFun', item);
   const url = JSON.parse(item.url || {});
-  let param = item.miniUrl.split('?')[1];
+  let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
   } else {
@@ -337,7 +337,7 @@ const topBgImageUrl = computed(() => {
 });
 
 const handleEntryUrl = (item: any) => {
-  let param = item.miniUrl.split('?')[1];
+  let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
   } else {
