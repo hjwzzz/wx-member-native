@@ -85,6 +85,7 @@ const animation = uni.requireNativePlugin('animation');
 const dom = uni.requireNativePlugin('dom');
 // #endif
 import props from './props.js';
+import _u from './unit.js';
 
 /**
 	 * Tabs 标签
@@ -137,17 +138,31 @@ export default {
       return index => {
         const style = {};
         // 取当期是否激活的样式
-        const customeStyle = index === this.innerCurrent ? uni.$u.addStyle(this.activeStyle) : uni.$u
+        const customeStyle = index === this.innerCurrent ? _u.addStyle(this.activeStyle) : _u
           .addStyle(this.inactiveStyle);
         // 如果当前菜单被禁用，则加上对应颜色，需要在此做处理，是因为nvue下，无法在style样式中通过!import覆盖标签的内联样式
         if (this.list[index].disabled) {
           style.color = '#c8c9cc';
         }
-        return uni.$u.deepMerge(customeStyle, style);
+        return _u.deepMerge(customeStyle, style);
       };
     },
     propsBadge() {
-      return uni.$u.props.badge;
+      return {
+        isDot: false,
+        value: '',
+        show: true,
+        max: 999,
+        type: 'error',
+        showZero: false,
+        bgColor: null,
+        color: null,
+        shape: 'circle',
+        numberType: 'overflow',
+        offset: () => [],
+        inverted: false,
+        absolute: false
+      };
     }
   },
   async mounted() {
@@ -180,7 +195,7 @@ export default {
         .slice(0, this.innerCurrent)
         .reduce((total, curr) => total + curr.rect.width, 0);
       // 获取下划线的数值px表示法
-      const lineWidth = uni.$u.getPx(this.lineWidth);
+      const lineWidth = _u.getPx(this.lineWidth);
       this.lineOffsetLeft = lineOffsetLeft + (tabItem.rect.width - lineWidth) / 2;
       // #ifdef APP-NVUE
       // 第一次移动滑块，无需过渡时间
@@ -222,7 +237,7 @@ export default {
       });
     },
     init() {
-      uni.$u.sleep()
+      _u.sleep()
         .then(() => {
           this.resize();
         });
@@ -235,7 +250,7 @@ export default {
         .slice(0, this.innerCurrent)
         .reduce((total, curr) => total + curr.rect.width, 0);
       // 此处为屏幕宽度
-      const windowWidth = uni.$u.sys().windowWidth;
+      const windowWidth = _u.sys().windowWidth;
       // 将活动的tabs-item移动到屏幕正中间，实际上是对scroll-view的移动
       let scrollLeft = offsetLeft - (this.tabsRect.width - tabRect.rect.width) / 2 - (windowWidth - this.tabsRect
         .right) / 2 + this.tabsRect.left / 2;
@@ -307,8 +322,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	@import "../../libs/css/components.scss";
-
+ @mixin flex($direction: row) {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: $direction;
+}
 	.u-tabs {
 
 		&__wrapper {
