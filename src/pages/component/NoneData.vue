@@ -1,18 +1,17 @@
 <template>
   <view class="empty-wrapper">
-    <view class="content-empty">
-      <image
-        class="image"
-        :src="`${staticUrl}img/empty/${props.icon}.png`"
-        mode=""
-      ></image>
-    </view>
+    <image
+      class="image"
+      :src="`${staticUrl}img/empty/${props.icon}.png`"
+      :style="imgSize"
+    ></image>
     <view class="empty">{{ props.text }}</view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { staticUrl } from '@/utils/config';
+import { computed, ref } from 'vue';
 
 interface Props {
 
@@ -38,6 +37,17 @@ const props = withDefaults(defineProps<Props>(), {
   icon: 'status',
   text: '暂无相关信息',
 });
+const imgInfo = ref({
+  width: 100,
+  height: 100,
+});
+const imgSize = computed(() => `width: ${imgInfo.value.width}px;height: ${imgInfo.value.height}px;`);
+uni.getImageInfo({
+  src: `${staticUrl}img/empty/${props.icon}.png`,
+  success: e => {
+    imgInfo.value = e;
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -48,16 +58,10 @@ const props = withDefaults(defineProps<Props>(), {
   width: 100%;
   height: 100%;
 
-  .content-empty {
+  .image {
+    line-height: 0;
     width: 200rpx;
     height: 200rpx;
-    margin: 0 auto;
-    overflow: hidden;
-
-    .image {
-      width: 100%;
-      height: 100%;
-    }
   }
 
   .empty {
