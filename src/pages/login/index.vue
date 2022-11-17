@@ -248,13 +248,7 @@ const navBack = async () => {
   uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/tabbar/index' }) });
 };
 // 离开登录页面，清空保存的需要前往的页面数据
-onUnload(() => {
-  Storage.setPages('');
-  uni.setStorage({
-    data: '',
-    key: 'backPage',
-  });
-});
+onUnload(() => Storage.setPages(''));
 onMounted(() => {
   getMemberEula();
   jsCodeLogin();

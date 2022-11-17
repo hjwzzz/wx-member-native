@@ -212,12 +212,18 @@
         >
         </uni-calendar>
       </view>
-      <uni-popup ref="popup" @maskClick="popup?.close" type="dialog">
+      <uni-popup
+        ref="popup"
+        v-if="dialogTitle"
+        @maskClick="popup?.close"
+        type="dialog"
+      >
         <uni-popup-dialog
           mode="input"
           :value="dialogValue"
           :title="dialogTitle"
           placeholder="请输入"
+          :nickname="true"
           is-mask-click
           confirmText="确认"
           :before-close="true"
@@ -242,7 +248,7 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
@@ -320,7 +326,13 @@ const popup = ref();
 const dialogTitle = ref('');
 const dialogValue = ref('');
 const dialogKey = ref('');
-const updateInfo = ({ code, update }: { code: string; update: string }) => {
+const updateInfo = async ({
+  code,
+  update,
+}: {
+  code: string;
+  update: string;
+}) => {
   if (update !== 'Y') return;
   switch (code) {
     case 'PRIVATE_FIELD_BELONG_STORE': {
@@ -387,6 +399,7 @@ const updateInfo = ({ code, update }: { code: string; update: string }) => {
       dialogTitle.value = '修改邮箱';
       dialogKey.value = 'email';
       dialogValue.value = userInfo.value.email;
+      await nextTick();
       popup.value.open();
       break;
     }
@@ -394,6 +407,7 @@ const updateInfo = ({ code, update }: { code: string; update: string }) => {
       dialogKey.value = 'name';
       dialogTitle.value = '修改姓名';
       dialogValue.value = userInfo.value.name;
+      await nextTick();
       popup.value.open();
       break;
     }
@@ -416,6 +430,7 @@ const dialogConfirm = (e: string) => {
   } else {
     updateUserIno({ [dialogKey.value]: e });
     popup.value.close();
+    dialogTitle.value = '';
     return;
   }
   uni.showToast({
