@@ -70,6 +70,7 @@
                     <view>
                       <radio
                         :value="radio.value"
+                        :disabled="item.update === 'N'"
                         :checked="radio.value === userInfo.birthKind"
                         :color="initBasicsData.mainColor"
                       />
@@ -133,6 +134,7 @@
                   mode="multiSelector"
                   :range="showProfession"
                   range-key="name"
+                  :disabled="item.update === 'N'"
                   @change="professionChange"
                   @columnchange="(e: any) => professionsIdx[e.detail.column] = e.detail.value"
                 >
