@@ -39,17 +39,29 @@
           </template>
           <template #image>
             <image
-              v-if="item.couponStatus === 'EXPIRED'"
-              :src="staticUrl + 'img/overTime.png'"
+              v-if="showStatusImage(item)"
+              :src="showStatusImage(item)"
               class="status-image"
               mode=""
             ></image>
-            <image
+            <!-- <image
               v-else-if="item.couponStatus === 'USED'"
               :src="staticUrl + 'img/over.png'"
               class="status-image"
               mode=""
             ></image>
+            <image
+              v-else-if="item.couponStatus === 'INVALID'"
+              :src="staticUrl + 'img/overTime-2.png'"
+              class="status-image"
+              mode=""
+            ></image>
+            <image
+              v-else-if="item.couponStatus === 'GIFTED'"
+              :src="staticUrl + 'img/overTime-3.png'"
+              class="status-image"
+              mode=""
+            ></image> -->
           </template>
           <template #bottom-left>
             <text>
@@ -151,6 +163,19 @@ const getCouponList = async () => {
       couponListData.value.push(...records);
     }
   }
+};
+
+const showStatusImage = (item: any) => {
+  if (item.couponStatus === 'EXPIRED') {
+    return `${staticUrl}img/overTime.png`;
+  } else if (item.couponStatus === 'USED') {
+    return `${staticUrl}img/over.png`;
+  } else if (item.couponStatus === 'INVALID') {
+    return `${staticUrl}img/overTime-2.png`;
+  } else if (item.couponStatus === 'GIFTED') {
+    return `${staticUrl}img/overTime-3.png`;
+  }
+  return '';
 };
 
 const onCouponDetail = (item: any) => {
