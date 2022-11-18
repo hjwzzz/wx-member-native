@@ -29,70 +29,74 @@
         :scroll-y="true"
         @scrolltolower="loadMore"
       >
-        <template v-if="serveProList.length > 0">
-          <view class="scroll-box">
-            <view class="wrapper-header">
-              <text>
-                {{
-                  data.mode ? `${data.storeName}的预约服务` : '选择要预约的服务'
-                }}
-              </text>
-              <view v-if="!data.mode" class="btn" @click="goStore">
-                <image
-                  class="img"
-                  :src="staticUrl + 'reservation-service/toggle.png'"
-                  mode="aspectFit"
-                />
-                门店模式
-              </view>
-            </view>
-            <view class="serve-list">
-              <view
-                v-for="item in serveProList"
-                :key="item.id"
-                class="serve-item"
-                @click="goDetail(item)"
-              >
-                <view class="container">
-                  <image
-                    class="image"
-                    type="image"
-                    mode="aspectFill"
-                    :src="item.imgUrl"
-                  />
-                  <view class="container-right">
-                    <view class="view">{{ item.name }}</view>
-                    <text class="integral">
-                      {{
-                        item.cost === 'FREE'
-                          ? '免费预约'
-                          : parseInt(item.value) + item.acctName
-                      }}
-                    </text>
-                  </view>
-                </view>
-                <view class="tip">
+        <view class="body_view">
+          <template v-if="serveProList.length > 0">
+            <view class="scroll-box">
+              <view class="wrapper-header">
+                <text>
+                  {{
+                    data.mode
+                      ? `${data.storeName}的预约服务`
+                      : '选择要预约的服务'
+                  }}
+                </text>
+                <view v-if="!data.mode" class="btn" @click="goStore">
                   <image
                     class="img"
-                    type="image"
-                    mode="aspectFill"
-                    :src="codeImage(item)"
+                    :src="staticUrl + 'reservation-service/toggle.png'"
+                    mode="aspectFit"
                   />
-                  {{ item.tips }}
+                  门店模式
                 </view>
               </view>
+              <view class="serve-list">
+                <view
+                  v-for="item in serveProList"
+                  :key="item.id"
+                  class="serve-item"
+                  @click="goDetail(item)"
+                >
+                  <view class="container">
+                    <image
+                      class="image"
+                      type="image"
+                      mode="aspectFill"
+                      :src="item.imgUrl"
+                    />
+                    <view class="container-right">
+                      <view class="view">{{ item.name }}</view>
+                      <text class="integral">
+                        {{
+                          item.cost === 'FREE'
+                            ? '免费预约'
+                            : parseInt(item.value) + item.acctName
+                        }}
+                      </text>
+                    </view>
+                  </view>
+                  <view class="tip">
+                    <image
+                      class="img"
+                      type="image"
+                      mode="aspectFill"
+                      :src="codeImage(item)"
+                    />
+                    {{ item.tips }}
+                  </view>
+                </view>
+              </view>
+              <!-- <uni-load-more status="moreStatus" color="#D8D9E0"></uni-load-more> -->
             </view>
-            <!-- <uni-load-more status="moreStatus" color="#D8D9E0"></uni-load-more> -->
-          </view>
-        </template>
-        <view v-else class="no-data">
-          <view class="view">
-            <image
-              class="image"
-              mode="aspectFit"
-              :src="staticUrl + 'img/Noprize.png'"
-            />
-            <view class="view">暂无数据</view>
+          </template>
+          <view v-else class="no-data">
+            <view class="view">
+              <image
+                class="image"
+                mode="aspectFit"
+                :src="staticUrl + 'img/Noprize.png'"
+              />
+              <view class="view">暂无数据</view>
+            </view>
           </view>
         </view>
         <ScrollViewFooter> </ScrollViewFooter>
@@ -222,6 +226,12 @@ const handleInput = debounce(() => {
       // height: 100%;
       height: calc(100vh - 250rpx - constant(safe-area-inset-bottom));
       height: calc(100vh - 250rpx - env(safe-area-inset-bottom));
+      .body_view {
+        min-height: calc(
+          100vh - 250rpx - 112rpx - constant(safe-area-inset-bottom)
+        );
+        min-height: calc(100vh - 250rpx - 112rpx - env(safe-area-inset-bottom));
+      }
       .scroll-box {
         padding-bottom: 50rpx;
       }

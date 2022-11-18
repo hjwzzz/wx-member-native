@@ -23,7 +23,7 @@
           show-location
           @markertap="markertap"
         ></map>
-        <view class="store" v-if="Object.keys(storeObj).length">
+        <view class="store" v-if="storeObj && Object.keys(storeObj).length">
           <view class="store-main">
             <view class="title">
               <!--						{{ storeObj.title }}-->
@@ -158,6 +158,8 @@ const queryStoreList = async () => {
       height: 30,
     };
   });
+  console.log(markers.value[0]);
+
   storeObj.value = markers.value[0];
 };
 

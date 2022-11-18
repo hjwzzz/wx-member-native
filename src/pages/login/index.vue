@@ -10,6 +10,7 @@
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
     >
+      <uni-icons type="checkbox" style="margin-bottom: 10rpx" size="14" />
       <view class="protocol">
         <text>登录代表阅读并同意</text>
         <text
@@ -17,7 +18,7 @@
           @click="agreement('REG')"
           v-if="protocol.regAgreementShowed"
         >
-          《注册协议》
+          《用户协议》
         </text>
         <text
           class="eula-name"
@@ -84,7 +85,7 @@ const protocol = reactive<Protocol>({});
 const jsCodeLogin = async () => {
   const jsCode = await getWxLoginCode();
   if (!jsCode) return;
-  const { code, data } = await jsCodeLoginRequest(jsCode);
+  const { code, data } = await jsCodeLoginRequest({ jscode: jsCode });
   if (code !== 0) return;
   const { token = '', mid = '' } = data;
   Storage.setToken(token);
@@ -307,7 +308,10 @@ onMounted(() => {
     justify-content: center;
     width: 100%;
     padding-bottom: env(safe-area-inset-bottom);
-
+    align-items: center;
+    :deep(.uniui-checkbox) {
+      vertical-align: text-bottom;
+    }
     .protocol {
       height: 34rpx;
       margin-left: 10rpx;
