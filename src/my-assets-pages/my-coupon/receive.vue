@@ -102,6 +102,7 @@ onLoad((option: any) => {
   //   uni.setStorageSync('onload_receive', ops);
   // }
   curParam.value = ops;
+
   getSiteLogo();
 });
 
@@ -110,6 +111,9 @@ const onConfirm = () => {
 };
 
 const onGetCouponHandle = async () => {
+  if (!initBasicsData.checkLogin) {
+    return Router.goCodePage('login');
+  }
   if (handleFlag.value) return;
   handleFlag.value = true;
   const params = {
