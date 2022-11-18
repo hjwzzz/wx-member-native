@@ -30,7 +30,7 @@
             class="info"
             :key="item.code"
             @click="updateInfo(item)"
-            v-if="item.code == 'PRIVATE_FIELD_MDAY' && userInfo.annday"
+            v-if="item.code == IInfoField.Mday && userInfo.annday"
           >
             <view class="left">
               {{ item.codeName }}
@@ -254,7 +254,7 @@ import { computed, nextTick, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
-import type { IPrivateFieldItem } from '@/api/types/server';
+import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 const initBasicsData = useBasicsData();
 
 const header = ref();
@@ -313,13 +313,10 @@ onShow(() => {
 });
 
 const userInfo = ref<any>({});
-
+const FieldObj = ref<{ [key: string]: string }>({});
 const current = ref();
-const phoneSet = ref<IPrivateFieldItem>({} as IPrivateFieldItem);
-const handleUpdate = (item: any) => {
-  const mark = phoneSet.value.update === 'Y';
-  if (item.code === 'phone' && mark) {
-    const { value } = item;
+const handleUpdate = ({ code, value }: any) => {
+  if (code === 'phone' && FieldObj.value['phone'] === 'Y') {
     router.goCodePage('updatePhone', `?phone=${value}`);
   }
 };
@@ -337,7 +334,7 @@ const updateInfo = async ({
 }) => {
   if (update !== 'Y') return;
   switch (code) {
-    case 'PRIVATE_FIELD_BELONG_STORE': {
+    case IInfoField.Store: {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
         updateUserIno({
@@ -356,7 +353,7 @@ const updateInfo = async ({
       );
       break;
     }
-    case 'PRIVATE_FIELD_BELONG_SELLER': {
+    case IInfoField.Seller: {
       // 更新导购
       uni.$once('updateGuide', e => {
         if (!e.uid) return;
@@ -378,26 +375,26 @@ const updateInfo = async ({
       });
       break;
     }
-    case 'PRIVATE_FIELD_LOCATION': {
+    case IInfoField.Location: {
       router.goCodePage('location');
       break;
     }
-    case 'PRIVATE_FIELD_CRED_NO': {
+    case IInfoField.CredNo: {
       router.goCodePage('cert');
       break;
     }
-    case 'PRIVATE_FIELD_MDAY': {
+    case IInfoField.Mday: {
       handleOpen({ name: 'mday' });
       break;
     }
-    case 'PRIVATE_FIELD_BIRTH': {
+    case IInfoField.BirthDay: {
       handleOpen({ name: 'birth' });
       break;
     }
-    case 'PRIVATE_FIELD_EDUCATION': {
+    case IInfoField.Education: {
       break;
     }
-    case 'PRIVATE_FIELD_EMAIL': {
+    case IInfoField.Email: {
       dialogTitle.value = '修改邮箱';
       dialogKey.value = 'email';
       dialogValue.value = userInfo.value.email;
@@ -405,7 +402,7 @@ const updateInfo = async ({
       popup.value.open();
       break;
     }
-    case 'PRIVATE_FIELD_NAME': {
+    case IInfoField.Name: {
       dialogKey.value = 'name';
       dialogTitle.value = '修改姓名';
       dialogValue.value = userInfo.value.name;
@@ -495,10 +492,10 @@ const querySetting = async () => {
   const { code, data } = await queryPrivateFieldSetting('');
   if (code === 0 && data) {
     // 分离出电话号码栏
-    const mark = 'PRIVATE_FIELD_PHONE';
+
     setList.value = data.filter(i => {
-      if (i.code !== mark) return true;
-      phoneSet.value = i;
+      FieldObj.value[i.code] = i.update;
+      if (i.code !== IInfoField.Phone) return true;
     });
   }
 };

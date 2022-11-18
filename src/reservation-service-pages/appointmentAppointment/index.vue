@@ -124,7 +124,12 @@
             </text>
           </template>
         </view>
-        <button class="btn bgCM" :loading="loading" @click="appointment">
+        <button
+          hover-class="none"
+          class="btn bgCM"
+          :loading="loading"
+          @click="appointment"
+        >
           立即预约
         </button>
       </view>
