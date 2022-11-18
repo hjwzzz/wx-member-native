@@ -1,64 +1,79 @@
+const tabs = {
+  duration: 300,
+  list: () => [],
+  lineColor: '#3c9cff',
+  activeStyle: () => ({ color: '#303133' }),
+  inactiveStyle: () => ({ color: '#606266' }),
+  lineWidth: 20,
+  lineHeight: 3,
+  lineBgSize: 'cover',
+  itemStyle: () => ({ height: '44px' }),
+  scrollable: true,
+  current: 0,
+  keyName: 'name'
+};
+
 export default {
   props: {
     // 滑块的移动过渡时间，单位ms
     duration: {
       type: Number,
-      default: uni.$u.props.tabs.duration
+      default: tabs.duration
     },
     // tabs标签数组
     list: {
       type: Array,
-      default: uni.$u.props.tabs.list
+      default: tabs.list
     },
     // 滑块颜色
     lineColor: {
       type: String,
-      default: uni.$u.props.tabs.lineColor
+      default: tabs.lineColor
     },
     // 菜单选择中时的样式
     activeStyle: {
       type: [String, Object],
-      default: uni.$u.props.tabs.activeStyle
+      default: tabs.activeStyle
     },
     // 菜单非选中时的样式
     inactiveStyle: {
       type: [String, Object],
-      default: uni.$u.props.tabs.inactiveStyle
+      default: tabs.inactiveStyle
     },
     // 滑块长度
     lineWidth: {
       type: [String, Number],
-      default: uni.$u.props.tabs.lineWidth
+      default: tabs.lineWidth
     },
     // 滑块高度
     lineHeight: {
       type: [String, Number],
-      default: uni.$u.props.tabs.lineHeight
+      default: tabs.lineHeight
     },
     // 滑块背景显示大小，当滑块背景设置为图片时使用
     lineBgSize: {
       type: String,
-      default: uni.$u.props.tabs.lineBgSize
+      default: tabs.lineBgSize
     },
     // 菜单item的样式
     itemStyle: {
       type: [String, Object],
-      default: uni.$u.props.tabs.itemStyle
+      default: tabs.itemStyle
     },
     // 菜单是否可滚动
     scrollable: {
       type: Boolean,
-      default: uni.$u.props.tabs.scrollable
+      default: tabs.scrollable
     },
     // 当前选中标签的索引
     current: {
       type: [Number, String],
-      default: uni.$u.props.tabs.current
+      default: tabs.current
     },
     // 默认读取的键名
     keyName: {
       type: String,
-      default: uni.$u.props.tabs.keyName
+      default: tabs.keyName
     }
   }
 };
