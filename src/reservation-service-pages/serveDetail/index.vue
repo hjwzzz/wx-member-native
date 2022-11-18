@@ -1,5 +1,5 @@
 <template>
-  <CustomPage bottom>
+  <CustomPage bottom backgroundColor="#FFFFFF">
     <view class="serveDetail">
       <view class="wrapper">
         <view class="top">
@@ -56,7 +56,7 @@
           </view>
           <view class="main">
             <view v-show="current === 0" class="serve-introduce">
-              <template v-if="detail.description">
+              <template v-if="!detail.description">
                 <view v-html="richImage(detail.description)" />
               </template>
               <view v-else class="no-data">
@@ -345,10 +345,10 @@ const appointment = async () => {
 }
 .serveDetail {
   position: relative;
-  padding-bottom: calc(100rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
+  display: flow-root;
   .wrapper {
-    height: 100%;
+    background-color: #f5f5f5;
+    display: flow-root;
     .top {
       margin: 30rpx;
       padding: 24rpx;
@@ -407,14 +407,13 @@ const appointment = async () => {
       }
     }
     .detail {
-      height: calc(100% - 260rpx);
       .bgW {
         position: sticky;
         top: 0;
         z-index: 1;
       }
       .main {
-        min-height: calc(100% - 82rpx);
+        box-sizing: border-box;
         background: #fff;
         padding: 30rpx;
         .store-list {
@@ -581,5 +580,8 @@ const appointment = async () => {
       }
     }
   }
+}
+:deep(.page-bottom2) {
+  background-color: white;
 }
 </style>

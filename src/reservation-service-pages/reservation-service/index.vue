@@ -1,5 +1,5 @@
 <template>
-  <CustomPage>
+  <CustomPage hide>
     <view class="reservation-service">
       <SearchServe :data="data" />
     </view>

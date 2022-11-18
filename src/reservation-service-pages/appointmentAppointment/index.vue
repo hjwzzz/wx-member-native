@@ -68,6 +68,7 @@
                 type="textarea"
                 placeholder="请输入"
                 :maxlength="200"
+                placeholderStyle="font-size:28rpx;text-align:justify;"
                 :input-border="false"
                 :styles="{ textAlign: 'justify' }"
               />
