@@ -156,9 +156,10 @@
               :key="index"
             >
               <image
+                class="alert-box-image"
                 @click="bannerIndexFun(item)"
                 :src="item.image"
-                mode="aspectFill"
+                mode="aspectFit"
               ></image>
             </swiper-item>
           </swiper>
@@ -560,6 +561,10 @@ const goMoreNotice = (item: any, noticTime: any) => {
   }
   .alert-box {
     flex: 1;
+    .alert-box-image {
+      width: 100%;
+      height: 100%;
+    }
   }
   .alert-icon {
     width: 80rpx;
