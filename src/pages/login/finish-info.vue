@@ -128,7 +128,7 @@
             class="item-shop"
           >
             <view class="shop-name">
-              <view class="name-left">
+              <view class="name-left text-break">
                 {{ selectedShop.storeName || '' }}
               </view>
               <view class="name-right">
@@ -365,10 +365,7 @@ const handle = (index: number) => {
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
-      router.goCodePage(
-        'chooseStore',
-        `?belong=true&id=${memberInfo.value.belongDistId}`
-      );
+      router.goCodePage('chooseStore', `?id=${memberInfo.value.belongDistId}`);
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
@@ -428,6 +425,7 @@ const radioChange = (e: any) => {
 };
 const maritalChange = (e: any) => {
   maritalValue.value = e.detail.value;
+
   if (e.detail.value === 'N') {
     memberInfo.value.annday = '';
     showAnnday.value = '';
@@ -513,7 +511,9 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_MDAY': {
-        if (!params.annday) {
+        console.log(maritalValue.value);
+
+        if (maritalValue.value === 'Y' && !params.annday) {
           uni.showModal({
             content: '请选择纪念日',
             showCancel: false,
@@ -682,7 +682,7 @@ const confirmDate = (e: any) => {
         .shop-name {
           display: flex;
           justify-content: space-between;
-
+          align-items: center;
           .name-left {
             font-size: 28rpx;
             font-weight: 400;
@@ -690,6 +690,7 @@ const confirmDate = (e: any) => {
           }
 
           .name-right {
+            flex: none;
             font-size: 20rpx;
             font-weight: 400;
             color: #9697a2;
@@ -698,7 +699,6 @@ const confirmDate = (e: any) => {
 
         .shop-address {
           display: flex;
-
           .address-icon {
             display: inline-block;
             width: 16rpx;
