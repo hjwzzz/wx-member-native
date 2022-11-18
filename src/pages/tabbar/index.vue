@@ -149,6 +149,7 @@
             indicator-color="#D8D9E0"
             :indicator-active-color="initBasicsData.mainColor"
             circular
+            autoplay
           >
             <swiper-item
               class="swiper-item"
@@ -564,6 +565,7 @@ const goMoreNotice = (item: any, noticTime: any) => {
     .alert-box-image {
       width: 100%;
       height: 100%;
+      border-radius: 8rpx;
     }
   }
   .alert-icon {
