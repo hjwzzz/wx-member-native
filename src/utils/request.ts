@@ -7,7 +7,7 @@ import { devBaseUrl } from '@/utils/config';
 import { BaseRequestRes } from './request.type';
 
 // const BASEURL = `${baseUrl}/gshld-platform/enterprise/enterpriseApplicationParameter/getEAppIdByWAppId`;
-const BASEURL = `${devBaseUrl}/commonFront/getWxAppidInfo`;
+const BASEURL = `${devBaseUrl}/commonFront/getWxMiniAppAppInfoByWxAppid`;
 // 默认
 const defaultParam = {
   cliVersion: '',
