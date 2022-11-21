@@ -99,8 +99,8 @@
                   :value="showSex"
                   range-key="label"
                   :range="selecteList"
-                  :disabled="info.update === 'N'"
                 >
+                  <!-- :disabled="info.update === 'N'" -->
                   <view class="uni-input">{{
                     selecteList[showSex].label
                   }}</view>

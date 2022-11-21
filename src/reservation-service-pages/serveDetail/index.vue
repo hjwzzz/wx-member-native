@@ -175,13 +175,13 @@
           </template>
         </view>
 
-        <button
+        <view
           :class="['btn', { isActive: detail.boolBookServ === 'Y' }]"
           size="mini"
           @click="appointment"
         >
           立即预约
-        </button>
+        </view>
       </view>
     </view>
   </CustomPage>
@@ -575,6 +575,7 @@ const appointment = async () => {
       font-size: 28rpx;
       background: #adadad;
       color: white;
+      text-align: center;
       &.isActive {
         background: var(--main-color);
       }
