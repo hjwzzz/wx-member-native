@@ -4,7 +4,6 @@
       <view class="search-bar-bg">
         <uni-search-bar
           class="search-bar"
-          :focus="true"
           v-model="keyward"
           @input="searchChange"
           radius="100"
