@@ -6,7 +6,11 @@
       @change="changeTabs"
       fixed
     />
-    <scroll-view class="coupon-scroll-view" scroll-y>
+    <scroll-view
+      class="coupon-scroll-view"
+      scroll-y
+      @scrolltolower="onLoadMore"
+    >
       <view class="coupon-list">
         <CouponItem
           class="coupon-item"
@@ -75,6 +79,10 @@
             </view>
           </template>
         </CouponItem>
+        <uni-load-more
+          :status="status"
+          color="#D8D9E0"
+        ></uni-load-more>
         <!-- couponListData  loadingTop && !loadingTop-->
         <view v-if="couponListData.length == 0" class="preferential">
           <view>
@@ -95,7 +103,7 @@
 
 <script lang="ts" setup>
 import { onShareAppMessage, onLoad } from '@dcloudio/uni-app';
-import { onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import Tabs from '@/components/Tabs/index.vue';
 // import { queryMyCouponList } from '@/api/coupon-center';
@@ -128,11 +136,14 @@ onMounted(() => {
 // 分享或者转赠优惠券
 onShareAppMessage((res: any) => onShareCoupon(res));
 
-const status = ref('');
-const page = ref(1);
-const pageSize = ref(10000);
+const params = reactive({
+  curPage: 1,
+  pageSize: 15
+})
+
+const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 const couponStatus = ref('EFFECTIVE');
-const couponListData: Ref<any> = ref([]);
+const couponListData = ref<any[]>([]);
 
 //  INEFFEC:待使用 EFFECTIVE:未使用 USING:使用中 USED:已使用 GIFTED:已赠送 INVALID:已失效 EXPIRED:已过期
 // 我的优惠券列表
@@ -141,29 +152,36 @@ const getCouponList = async () => {
     Router.goLogin();
     return;
   }
-  const params = {
-    curPage: page.value,
+  // this.loading = true;
+  const res = await queryCouponPageFront({
+    curPage: params.curPage,
+    pageSize: params.pageSize,
     mid: initBasicsData.useMid,
     couponStatus: couponStatus.value,
-    pageSize: pageSize.value,
-  };
-  // this.loading = true;
-  const res = await queryCouponPageFront(params);
+  });
   if (res.code === 0 && res.data) {
-    const { curPage, totalPage, records } = res.data;
+    const { records, totalRecord } = res.data;
 
-    if (pageSize.value > totalPage) {
-      status.value = 'nomore';
-    }
+    couponListData.value = params.curPage === 1 ? records : [...couponListData.value, ...records]
 
-    if (curPage) {
-      couponListData.value = records;
+    if (couponListData.value.length >= totalRecord) {
+      status.value = 'no-more';
     } else {
-      // couponListData.value = [...couponListData.value, ...records];
-      couponListData.value.push(...records);
+      status.value = 'more';
     }
-  }
+
+    }
 };
+
+// 加载更多
+const onLoadMore = () => {
+  if (status.value === 'no-more') {
+    return;
+  }
+  params.curPage += 1;
+  getCouponList();
+};
+
 
 const showStatusImage = (item: any) => {
   if (item.couponStatus === 'EXPIRED') {
