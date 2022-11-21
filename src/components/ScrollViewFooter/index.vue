@@ -12,14 +12,14 @@ const props = withDefaults(defineProps<Props>(), { bottom: false });
 <style lang="scss" scoped>
 .page-footer {
   width: 100%;
-  padding: 40rpx 0;
+  height: 110rpx;
   font-size: 24rpx;
   color: #d8d9e0;
   text-align: center;
 }
 
 .show-bottom {
-  padding-bottom: calc(40rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 </style>

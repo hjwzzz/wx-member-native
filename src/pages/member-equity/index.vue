@@ -185,7 +185,7 @@ const getAllBenefits = async () => {
       if (curLevelId.value === item.levelId) {
         currentIndex.value = index;
       }
-      if (item.levelId) {
+      if (item.levelId && item.curLeveled === 'Y') {
         hasLevelPage++;
       }
     });

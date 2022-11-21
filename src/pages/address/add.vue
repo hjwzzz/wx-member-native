@@ -10,6 +10,7 @@
                 :focus="true"
                 maxlength="20"
                 placeholder="请输入收货人姓名"
+                placeholder-style="color: #d8d9e0;"
                 type="text"
                 v-model.trim="params.receiver"
               />
@@ -25,6 +26,7 @@
                 type="tel"
                 maxlength="11"
                 placeholder="请输入手机号码"
+                placeholder-style="color: #d8d9e0;"
                 v-model.trim="params.phone"
               />
             </view>
@@ -57,7 +59,7 @@
                 disable-default-padding="true"
                 maxlength="50"
                 placeholder="街道,楼牌号等"
-                placeholder-style="color: #9697a2;"
+                placeholder-style="color: #d8d9e0;"
                 style="color: #9697a2"
                 v-model="params.address"
               />
@@ -170,6 +172,9 @@ const editAddress = async () => {
 </script>
 
 <style scoped lang="scss">
+.placeholder-input {
+  color: #d8d9e0;
+}
 .deliver-adress {
   font-size: 28rpx;
   width: 100%;

@@ -1,23 +1,19 @@
 <template>
   <CustomPage>
-    <view
-      class="receive"
-      style="
-        background-image: url('https://static.dev.jqzplat.com/img/receive.png');
-      "
-    >
+    <view class="receive">
       <view class="split"></view>
       <view class="receive-hd">
         <text class="title" v-if="curParam">
           {{ curParam.couponName }}
         </text>
         <view class="info xxxx" v-if="curParam">
-          <text
-            class="numb"
-            v-if="curParam.prodCode === 'random_money_coupon'"
-            >{{ curParam.randomAmount }}</text
-          >
-          <text class="numb" v-else>{{ curParam.discount }}</text>
+          <text class="numb" v-if="curParam.prodCode === 'random_money_coupon'">
+            {{ curParam.randomAmount }}
+          </text>
+          <text class="numb" v-else-if="curParam.discount !== 'undefined'">
+            {{ curParam.discount }}
+          </text>
+          <text class="numb" v-else>随机券</text>
           <text
             class="sub"
             v-if="
@@ -61,6 +57,7 @@
         :visible="modelShow"
         :type="getResult"
         @ok="onConfirm"
+        @cancel="modelShow = false"
       />
     </view>
   </CustomPage>
@@ -179,6 +176,7 @@ const getSiteLogo = async () => {
   background-position: 0 0;
   background-repeat: no-repeat;
   background-color: #fff8d7;
+  background-image: url('https://static.dev.jqzplat.com/img/receive.png');
   .split {
     height: 220rpx;
   }

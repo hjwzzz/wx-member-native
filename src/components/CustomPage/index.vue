@@ -3,10 +3,13 @@
     class="custom-page"
     :style="{ backgroundColor: backgroundColor, '--main-color': mainColor }"
   >
-    <view :class="props.bottom ? 'custom-page-box2' : 'custom-page-box1'">
-      <slot></slot>
-    </view>
-    <PageFooter :bottom="props.bottom" v-if="!hide"> </PageFooter>
+    <block v-if="!hide">
+      <view :class="props.bottom ? 'custom-page-box2' : 'custom-page-box1'">
+        <slot></slot>
+      </view>
+      <PageFooter :bottom="props.bottom"> </PageFooter>
+    </block>
+    <block v-else><slot></slot> </block>
   </view>
 </template>
 
