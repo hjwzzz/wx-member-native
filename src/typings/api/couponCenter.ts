@@ -267,6 +267,8 @@ export interface QueryReceiveCenterListFrontRequestResDataItem {
   /** 产品代码 */
   prodCode?: any;
 
+  memberCouponParam?: any;
+
   /**
    * 1已领取 0 未领取
    * @format int32

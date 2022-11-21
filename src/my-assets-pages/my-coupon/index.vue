@@ -29,7 +29,7 @@
                 :data-couponMemberId="item.couponMemberId"
                 :data-donateId="initBasicsData.useMid"
                 :data-couponName="item.couponName"
-                :data-prodCode="item.prodCode.code"
+                :data-prodCode="item.prodCode || item.prodCode?.code"
                 :data-discount="item.paramVo.discount"
                 :data-randomAmount="item.memberCouponParam?.randomAmount"
               >
