@@ -13,12 +13,12 @@
       scroll-y
       @scrolltolower="onLoadMore"
       :style="{
-        height: `height: calc(100vh - ${viewHeight}rpx ) `,
+        height: `calc(100vh - ${viewHeight}rpx ) `,
       }"
     >
       <view
         :style="{
-          minHeight: `height: calc(100vh - ${viewHeight}rpx  - 110rpx - env(safe-area-inset-bottom) ) `,
+          minHeight: `calc(100vh - ${viewHeight}rpx  - 110rpx - env(safe-area-inset-bottom) ) `,
         }"
       >
         <slot></slot>

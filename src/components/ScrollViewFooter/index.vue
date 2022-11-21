@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<Props>(), { bottom: false });
 .page-footer {
   width: 100%;
   height: 110rpx;
+  line-height: 110rpx;
   font-size: 24rpx;
   color: #d8d9e0;
   text-align: center;
