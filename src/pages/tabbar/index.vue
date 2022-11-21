@@ -179,7 +179,12 @@
 
 <script setup lang="ts">
 import { ref, Ref, computed } from 'vue';
-import { onShareTimeline, onShareAppMessage, onShow } from '@dcloudio/uni-app';
+import {
+  onShareTimeline,
+  onShareAppMessage,
+  onShow,
+  onLoad,
+} from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
@@ -200,14 +205,15 @@ import { useBasicsData } from '@/store/basicsData';
 
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
-
 // onMounted(() => {
 // });
+onLoad(() => {
+  queryPopupFun();
+});
 onShow(() => {
   getPageDate();
   getAdBannerList();
   // getGoldPriceByPage();
-  queryPopupFun();
   getWmAlertAdBannerListFun();
   getShareSet();
 });
