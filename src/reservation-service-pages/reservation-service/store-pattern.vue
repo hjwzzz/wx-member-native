@@ -22,6 +22,7 @@
           :markers="markers"
           show-location
           @markertap="markertap"
+          @labeltap="markertap"
         ></map>
         <view class="store" v-if="storeObj && Object.keys(storeObj).length">
           <view class="store-main">
@@ -37,7 +38,7 @@
                 class="img"
                 type="image"
                 mode="aspectFill"
-                :src="staticUrl + 'img/address.png'"
+                :src="staticUrl + 'prize/store/address.png'"
               ></image>
               {{ address(storeObj) }}
             </view>
@@ -68,7 +69,7 @@ import { staticUrl } from '@/utils/config';
 const searchValue = ref('');
 const longitude: Ref<number> = ref(-99);
 const latitude: Ref<number> = ref(90);
-const markers: Ref<any> = ref([{}]);
+const markers: Ref<any[]> = ref([]);
 const storeObj: Ref<any> = ref({});
 
 onLoad(() => {
@@ -135,18 +136,33 @@ const queryStoreList = async () => {
     }, 500);
   }
   const list = data.filter((item: any) => item.coord);
+  // list = [...list, ...list, ...list, ...list, ...list];
+  const mapSize: { [key: string]: number } = {};
   markers.value = list.map((item: any, index: number) => {
-    const arr = item.coord?.split(',');
+    const [longitude, latitude] = item.coord?.split(',') ?? [];
+    const latKey = `${longitude}_${latitude}`;
+    mapSize[latKey] ??= -1;
+    mapSize[latKey]++;
+    const isSingle = mapSize[latKey] % 2;
+    const anchorY =
+      mapSize[latKey] * 15 * (isSingle ? -1 : 1) + (isSingle ? -15 : 0);
     return {
       id: Number(index) + 1,
       label: {
         content: item.storeName,
         color: '#323338',
+        bgColor: '#FFF',
+        // borderColor: '#eee',
+        // borderWidth: 1,
+        borderRadius: 4,
+        padding: 5,
         fontSize: 12,
         textAlign: 'right',
+        anchorX: 10,
+        anchorY,
       },
-      longitude: arr[0],
-      latitude: arr[1],
+      longitude,
+      latitude,
       distId: item.distId,
       province: item.province,
       city: item.city,
@@ -158,8 +174,6 @@ const queryStoreList = async () => {
       height: 30,
     };
   });
-  console.log(markers.value[0]);
-
   storeObj.value = markers.value[0];
 };
 
@@ -234,7 +248,7 @@ const seeServe = () => {
           font-size: 24rpx;
           color: #9697a2;
           .img {
-            width: 28rpx;
+            width: 26rpx;
             height: 28rpx;
             margin-right: 20rpx;
             position: relative;

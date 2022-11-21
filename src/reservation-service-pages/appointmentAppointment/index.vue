@@ -190,7 +190,7 @@ const selectStore = () => {
   });
   router.goCodePage(
     'chooseStore',
-    `?id=${data.value.id ?? ''}&type=getServiceStore`
+    `?id=${data.value.id ?? ''}&type=getServiceStore&showBelong=true`
   );
 };
 const selectDateTime = () => {

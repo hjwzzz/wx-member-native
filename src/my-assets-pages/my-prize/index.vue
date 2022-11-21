@@ -136,7 +136,7 @@ const showSureButton = (item: IPrizeItem) => {
   return (
     ['待领取', '已发货'].includes(statusName) &&
     ['1', '2'].includes(recvManner) &&
-    JSON.parse(param)?.allowGet === 'Y'
+    JSON.parse(param || '{}')?.allowGet === 'Y'
   );
 };
 // 截至日期显示内容
