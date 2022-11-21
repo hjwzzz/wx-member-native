@@ -151,7 +151,7 @@ const queryStoreList = async () => {
       label: {
         content: item.storeName,
         color: '#323338',
-        bgColor: '#FFF',
+        bgColor: '#FFFFFF',
         // borderColor: '#eee',
         // borderWidth: 1,
         borderRadius: 4,
