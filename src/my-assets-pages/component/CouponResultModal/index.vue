@@ -1,5 +1,10 @@
 <template>
-  <uni-popup ref="alertDialog" type="dialog">
+  <uni-popup
+    ref="alertDialog"
+    type="dialog"
+    is-mask-click
+    @maskClick="onMaskClick"
+  >
     <view class="dialog-box">
       <view class="dialog-show">
         <image class="modelimg" :src="showImg"></image>
@@ -72,6 +77,10 @@ const onCancel = () => {
 const onConfirm = () => {
   alertDialog.value.close();
   emits('ok');
+  emits('cancel');
+};
+const onMaskClick = () => {
+  emits('cancel');
 };
 </script>
 
