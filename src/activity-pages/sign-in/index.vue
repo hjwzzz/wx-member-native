@@ -73,7 +73,12 @@
           ></view>
         </view>
         <view class="gift-ad" v-if="hasAd">
-          <swiper circular>
+          <swiper
+            circular
+            :indicator-dots="data.wxappActivityAdvertList.length > 1"
+            indicator-color="#D8D9E0"
+            :indicator-active-color="initBasicsData.mainColor"
+          >
             <swiper-item
               v-for="(v, i) in data.wxappActivityAdvertList"
               :key="v.id"
