@@ -38,11 +38,14 @@
 import NoneData from './NoneData.vue';
 import { queryMemberRecommend } from '@/api/points-mall';
 import { onMounted, ref, Ref } from 'vue';
+import Router from '@/utils/router';
+import { useBasicsData } from '@/store/basicsData';
 
 interface Props {
   title?: string;
 }
 const props = withDefaults(defineProps<Props>(), { title: '推荐礼品' });
+const initBasicsData = useBasicsData();
 
 onMounted(() => {
   getMemberRecommend();
@@ -56,10 +59,18 @@ const getMemberRecommend = async () => {
 
 const mallUrl = '/my-assets-pages/point-mall/index';
 const onMall = () => {
+  // Router
+  if (!initBasicsData.checkLogin) {
+    return Router.goLogin(mallUrl);
+  }
   uni.navigateTo({ url: mallUrl });
 };
 const onMallDetail = (id: string) => {
-  uni.navigateTo({ url: `${mallUrl}?productId=${id}` });
+  const url = `${mallUrl}?productId=${id}`;
+  if (!initBasicsData.checkLogin) {
+    return Router.goLogin(url);
+  }
+  uni.navigateTo({ url });
 };
 </script>
 
