@@ -1,5 +1,9 @@
 <template>
-  <CustomPage :backgroundColor="currentStyle.bgColor">
+  <CustomPage
+    :backgroundColor="
+      benefitsDataFlag === 'nodata' ? '#FFFFFFF' : currentStyle.bgColor
+    "
+  >
     <view class="benefits">
       <view
         class="containner"
