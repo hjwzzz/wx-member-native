@@ -1,5 +1,5 @@
 <template>
-  <CustomPage>
+  <CustomScrollViewPage @scrolltolower="onLoadMore">
     <view class="quality-box" v-if="dataList.length > 0">
       <view
         class="quality-cell"
@@ -28,17 +28,11 @@
           </view>
         </view>
       </view>
-      <!-- 加载更多 -->
-      <!-- <u-loadmore
-        v-show="this.totalPage >= 1"
+
+      <uni-load-more
         :status="status"
-        :icon-type="iconType"
-        :load-text="loadText"
-        :icon-color="iconColor"
-        :font-size="fontSize"
-        margin-top="30"
         color="#D8D9E0"
-      /> -->
+      ></uni-load-more>
     </view>
     <view class="imagewu" v-else>
       <view class="view-image">
@@ -61,30 +55,26 @@
         <view class="slot-content-btn" @click="closePopupModal"> 关闭 </view>
       </view>
     </uni-popup>
-  </CustomPage>
+  </CustomScrollViewPage>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
-// import { warrantyList } from '@/api/quality';
+import { onMounted, ref, reactive } from 'vue';
 import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
-// const showModal = ref(false);
-// 分页所需参数配置
-const status = ref('loadmore');
-// const iconType = 'circle';
-// const iconColor = '#FF547B';
-// const fontSize = ref('24');
-// const loadText = {
-//   loadmore: '轻轻上拉',
-//   loading: '加载中...',
-//   nomore: '已经到底了',
-// };
-const page = ref(1);
+
+
+const status = ref<'more' | 'loading' | 'no-more'>('no-more');
+
+const params = reactive({
+  curPage: 1,
+  pageSize: 20
+})
+
 const totalPage = ref(0);
-const dataList: Ref<any> = ref([]);
-const popupModalRef: Ref<any> = ref(null);
+const dataList = ref<any[]>([]);
+const popupModalRef = ref<any>(null);
 
 onMounted(() => {
   getWarrantyList();
@@ -105,29 +95,27 @@ const goDetail = (type: any, item: any) => {
 
 // 查询列表
 const getWarrantyList = async () => {
-  const body = {
-    curPage: 1,
-    pageSize: 1000,
-  };
-  const res = await queryWarrantyListPageFront(body);
-  dataList.value = [];
-  const { records, totalPage: total } = res.data;
+  const res = await queryWarrantyListPageFront(params);
+  const { records, totalPage: total, totalRecord } = res.data;
   totalPage.value = total;
-  dataList.value = dataList.value.concat(records);
-  if (page.value >= totalPage.value) {
-    status.value = 'nomore';
+  dataList.value = params.curPage === 1 ? records : [...dataList.value, ...records]
+
+  if (dataList.value.length >= totalRecord) {
+    status.value = 'no-more';
   } else {
-    status.value = 'loading';
+    status.value = 'more';
   }
 };
 
-// 分页加载更多
-// const onReachBottom = () => {
-//   if (page.value >= totalPage.value) return;
-//   status.value = 'loading';
-//   page.value = ++page.value;
-//   getWarrantyList();
-// };
+// 加载更多
+const onLoadMore = () => {
+  if (status.value === 'no-more') {
+    return;
+  }
+  params.curPage += 1;
+  getWarrantyList();
+};
+
 </script>
 
 <style lang="scss" scoped>

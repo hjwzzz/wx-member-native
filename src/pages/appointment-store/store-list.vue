@@ -28,7 +28,9 @@
               </view>
               <view
                 class="left-info"
-                v-if="props.belong && item.gsResult.code == 'Y'"
+                v-if="
+                  (props.belong || props.showBelong) && item.gsResult == 'Y'
+                "
                 >归属</view
               >
               <view class="right">
@@ -93,6 +95,7 @@ const props = defineProps({
   id: { type: String },
   belong: { type: Boolean }, // 修改归属门店
   relatedId: { type: String },
+  showBelong: { type: Boolean }, // 显示归属门店
   type: { type: String, defaulet: 'getNearStore' }, // 接口类型
 });
 if (props.belong) {
@@ -108,9 +111,7 @@ interface storeType {
   address: string;
   distId: string;
   tel: string;
-  gsResult: {
-    code: string;
-  };
+  gsResult: string;
 }
 const list = ref<storeType[]>([]);
 const selected = ref<storeType>();
@@ -291,8 +292,8 @@ const confimStore = () => {
         margin-top: 12rpx;
 
         image {
-          width: 16rpx;
-          height: 18rpx;
+          width: 20rpx;
+          height: 21rpx;
           margin-right: 16rpx;
         }
 
@@ -306,8 +307,8 @@ const confimStore = () => {
         margin-top: 12rpx;
 
         image {
-          width: 16rpx;
-          height: 18rpx;
+          width: 20rpx;
+          height: 21rpx;
           margin-right: 16rpx;
         }
 

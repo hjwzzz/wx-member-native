@@ -190,7 +190,7 @@ const selectStore = () => {
   });
   router.goCodePage(
     'chooseStore',
-    `?id=${data.value.id ?? ''}&type=getServiceStore`
+    `?id=${data.value.id ?? ''}&type=getServiceStore&showBelong=true`
   );
 };
 const selectDateTime = () => {
@@ -541,6 +541,9 @@ const previewImage = (index: any) => {
       line-height: 80rpx;
       border-radius: 40rpx;
       font-size: 28rpx;
+      &::after {
+        border: none;
+      }
     }
   }
 }
