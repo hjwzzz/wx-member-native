@@ -145,7 +145,7 @@ const queryStoreList = async () => {
     mapSize[latKey]++;
     const isSingle = mapSize[latKey] % 2;
     const anchorY =
-      mapSize[latKey] * 15 * (isSingle ? -1 : 1) + (isSingle ? -15 : 0);
+      mapSize[latKey] * 17 * (isSingle ? -1 : 1) + (isSingle ? -17 : 0);
     return {
       id: Number(index) + 1,
       label: {
@@ -158,7 +158,7 @@ const queryStoreList = async () => {
         padding: 5,
         fontSize: 12,
         textAlign: 'right',
-        anchorX: 10,
+        anchorX: 12,
         anchorY,
       },
       longitude,

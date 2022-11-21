@@ -541,6 +541,9 @@ const previewImage = (index: any) => {
       line-height: 80rpx;
       border-radius: 40rpx;
       font-size: 28rpx;
+      &::after {
+        border: none;
+      }
     }
   }
 }
