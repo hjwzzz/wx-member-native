@@ -33,7 +33,7 @@
           <template v-if="serveProList.length > 0">
             <view class="scroll-box">
               <view class="wrapper-header">
-                <text>
+                <text class="break-word">
                   {{
                     data.mode
                       ? `${data.storeName}的预约服务`

@@ -51,6 +51,12 @@ page {
   overflow: hidden;
   word-break: break-all;
 }
+.break-word {
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-warp;
+}
+
 .uni-searchbar__cancel {
   color: var(--main-color) !important;
 }

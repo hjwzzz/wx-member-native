@@ -1,7 +1,7 @@
 <template>
   <CustomPage>
     <view class="post">
-      <view v-html="content"></view>
+      <view v-html="richImage(content)"></view>
     </view>
   </CustomPage>
 </template>
@@ -17,6 +17,10 @@ onLoad(async e => {
   content.value = c;
   uni.setNavigationBarTitle({ title });
 });
+const richImage = (item: string) => {
+  const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
+  return item.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+};
 </script>
 
 <style scoped>
