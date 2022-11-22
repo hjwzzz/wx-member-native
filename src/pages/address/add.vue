@@ -45,10 +45,14 @@
                   <view class="uni-input">{{ areaList?.join(' / ') }}</view>
                 </picker>
               </view>
-              <span @click="showMap" style="color: #9697a2; white-space: nowrap"
-                ><u-icon name="map" size="28" color="#9697a2"></u-icon
-                >定位</span
+              <view
+                @click="showMap"
+                style="color: #9697a2; white-space: nowrap"
+                class="location-text"
               >
+                <uni-icons type="location" size="16" color="#9697a2" />
+                定位
+              </view>
             </view>
           </view>
           <view class="detail">
@@ -58,7 +62,7 @@
                 class="address-detail"
                 disable-default-padding="true"
                 maxlength="50"
-                placeholder="街道,楼牌号等"
+                placeholder="街道，楼牌号等"
                 placeholder-style="color: #d8d9e0;"
                 style="color: #9697a2"
                 v-model="params.address"
@@ -188,6 +192,11 @@ const editAddress = async () => {
   flex-direction: column;
   justify-content: space-between;
 
+  .location-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .enter-adress {
     margin-top: 30rpx;
     flex: 1;
