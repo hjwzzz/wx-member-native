@@ -8,19 +8,35 @@
           :key="item.code"
           @click="handleUpdate(item)"
         >
-          <view class="left"> {{ item.name }} </view>
-          <view class="right userImg" v-if="item.code === 'img'">
-            <image :src="item.value" mode="aspectFit"></image>
-          </view>
-          <view class="right" v-else>
-            <text>{{ item.value || '' }}</text>
+          <view class="left" style="flex: 1"> {{ item.name }} </view>
+          <UserIcon
+            :disabled="!FieldObj[IInfoField.avatar]"
+            style="height: 80rpx"
+            :modelValue="userInfo.avatarUrl"
+            @update:modelValue="(e: any) =>updateUserIno({ avatarUrl: e })"
+            v-if="item.key === 'avatarUrl'"
+          >
+            <image
+              class="userImg"
+              :src="userInfo.avatarUrl"
+              mode="aspectFill"
+            ></image>
             <uni-icons
+              v-if="FieldObj[IInfoField.avatar]"
               type="arrowright"
               size="14"
               color="#B7B8C4"
-              v-if="item.code == 'phone' && FieldObj[IInfoField.Phone] === 'Y'"
             ></uni-icons>
+          </UserIcon>
+          <view class="right" v-else>
+            <text>{{ userInfo[item.key] || '' }}</text>
           </view>
+          <uni-icons
+            type="arrowright"
+            size="14"
+            v-if="FieldObj[item.code] && item.code !== IInfoField.avatar"
+            color="#B7B8C4"
+          ></uni-icons>
         </view>
       </view>
       <view class="wrapper-info">
@@ -214,18 +230,15 @@
         >
         </uni-calendar>
       </view>
-      <uni-popup
-        ref="popup"
-        v-if="dialogTitle"
-        @maskClick="popup?.close"
-        type="dialog"
-      >
+      <uni-popup ref="popup" @maskClick="popup?.close" type="dialog">
         <uni-popup-dialog
+          v-if="dialogTitle"
+          :key="dialogKey"
           mode="input"
           :value="dialogValue"
           :title="dialogTitle"
           placeholder="请输入"
-          :nickname="true"
+          :nickname="dialogKey === 'nickName'"
           is-mask-click
           confirmText="确认"
           :before-close="true"
@@ -250,14 +263,31 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
+import UserIcon from '@/pages/login/UserIcon.vue';
 const initBasicsData = useBasicsData();
 
-const header = ref();
+const header = [
+  {
+    name: '个人头像',
+    code: IInfoField.avatar,
+    key: 'avatarUrl',
+  },
+  {
+    name: '昵称',
+    code: IInfoField.nickName,
+    key: 'nickName',
+  },
+  {
+    name: '手机号',
+    code: IInfoField.Phone,
+    key: 'phone',
+  },
+];
 const setList = ref<IPrivateFieldItem[]>([]);
 const items = [
   {
@@ -313,14 +343,26 @@ onShow(() => {
 });
 
 const userInfo = ref<any>({});
-const FieldObj = ref<{ [key: string]: string }>({});
+const FieldObj = ref<{ [key: string]: boolean }>({
+  [IInfoField.avatar]: true,
+  [IInfoField.nickName]: true,
+});
 const current = ref();
-const handleUpdate = ({ code, value }: any) => {
-  if (code === 'phone' && FieldObj.value['phone'] === 'Y') {
+const handleUpdate = async ({ code, key }: any) => {
+  if (!FieldObj.value[code]) return;
+  const value = userInfo.value[key];
+  if (key === 'phone') {
     router.goCodePage('updatePhone', `?phone=${value}`);
+  } else if (key === 'nickName') {
+    openPopupInput('nickName', '修改昵称', value);
   }
 };
-
+const openPopupInput = (key: string, title: string, value: string) => {
+  dialogKey.value = key;
+  dialogTitle.value = title;
+  dialogValue.value = value;
+  setTimeout(popup.value.open, 0);
+};
 const popup = ref();
 const dialogTitle = ref('');
 const dialogValue = ref('');
@@ -395,19 +437,13 @@ const updateInfo = async ({
       break;
     }
     case IInfoField.Email: {
-      dialogTitle.value = '修改邮箱';
-      dialogKey.value = 'email';
-      dialogValue.value = userInfo.value.email;
-      await nextTick();
-      popup.value.open();
+      openPopupInput('email', '修改邮箱', userInfo.value.email);
+
       break;
     }
     case IInfoField.Name: {
-      dialogKey.value = 'name';
-      dialogTitle.value = '修改姓名';
-      dialogValue.value = userInfo.value.name;
-      await nextTick();
-      popup.value.open();
+      openPopupInput('name', '修改姓名', userInfo.value.name);
+
       break;
     }
 
@@ -491,11 +527,12 @@ const bindPickerChangeGender = (e: any) => {
 const querySetting = async () => {
   const { code, data } = await queryPrivateFieldSetting('');
   if (code === 0 && data) {
-    // 分离出电话号码栏
-
     setList.value = data.filter(i => {
-      FieldObj.value[i.code] = i.update;
-      if (i.code !== IInfoField.Phone) return true;
+      FieldObj.value[i.code] = i.update === 'Y';
+      // 分离出电话号码、头像、昵称等三栏
+      if (
+        ![IInfoField.Phone, IInfoField.nickName, IInfoField.avatar].includes(i.code as IInfoField)
+      ) return true;
     });
   }
 };
@@ -529,6 +566,7 @@ const professionChange = (e: any) => {
 const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
+    data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png',
     userInfo.value = data;
     // 计算农历生日
     if (data.birthSolar) {
@@ -536,26 +574,8 @@ const queryUserInfo = async () => {
       const r = Lunar.toLunar(a, b, c);
       data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
     }
-    const { phone, avatarUrl, nickName, proId, sex, birthKind, education } =
-      data;
+    const { proId, sex, birthKind, education } = data;
     edcIndex.value = educations.findIndex(i => i.value === education);
-    header.value = [
-      {
-        name: '个人头像',
-        value: avatarUrl || 'https://static.jqzplat.com/img/person.png',
-        code: 'img',
-      },
-      {
-        name: '昵称',
-        value: nickName,
-        code: 'nickName',
-      },
-      {
-        name: '手机号',
-        value: phone,
-        code: 'phone',
-      },
-    ];
 
     // 日期类型（公历/农历）
     const formatDateType = (i: string) => ({ S: 0, L: 1, U: null }[i] ?? null);
