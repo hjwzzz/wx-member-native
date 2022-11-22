@@ -527,6 +527,8 @@ const goMoreNotice = (item: any, noticTime: any) => {
 
 .bulletin-box {
   width: 550rpx;
+  display: flex;
+  align-items: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
