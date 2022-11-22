@@ -222,14 +222,14 @@ const handleCert = () => [];
     height: 88rpx;
     line-height: 88rpx;
     border-radius: 44rpx;
-    border: 2rpx solid #ff547b;
+    border: 2rpx solid var(--main-color);
     margin: 0 auto;
     text-align: center;
     margin-top: 40rpx;
 
     font-size: 32rpx;
     font-weight: 400;
-    color: #ff547b;
+    color: var(--main-color);
   }
 }
 </style>
