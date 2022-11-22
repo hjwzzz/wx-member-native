@@ -169,6 +169,10 @@ onMounted(() => {
 const onChangeSwp = (e: any) => {
   currentIndex.value = e.detail.current;
   currentBenefitsData.value = levelList.value[e.detail.current];
+  console.log(
+    'levelList.value[e.detail.current]',
+    levelList.value[e.detail.current]
+  );
 };
 
 const getAllBenefits = async () => {
@@ -176,13 +180,14 @@ const getAllBenefits = async () => {
   const params = '';
   const res = await getMemberLevelRights(params);
   benefitsData.value = res.data;
+
   if (benefitsData.value) {
     curLevelId.value = benefitsData.value.curLevelId;
     curLevelName.value = benefitsData.value.curLevelName;
     growth.value = benefitsData.value.growth;
     nextUpgradeGrowth.value = benefitsData.value.nextUpgradeGrowth;
-    levelList.value = benefitsData.value.levelList;
-
+    levelList.value =
+      res.data.levelList?.filter?.((item: any) => item.param) || [];
     let hasLevelPage = 0;
 
     levelList.value.forEach((item: any, index: number) => {
@@ -211,19 +216,10 @@ const goGrowthDetails = () => {
   uni.navigateTo({ url: '/pages/member-equity/growth-details' });
 };
 
-const currentStyle = computed(() => {
-  if (currentBenefitsData.value) {
-    const { fontColor, bgColor } = currentBenefitsData.value.style;
-    return {
-      fontColor,
-      bgColor,
-    };
-  }
-  return {
-    fontColor: '#333',
-    bgColor: '#FFF',
-  };
-});
+const currentStyle = computed(() => ({
+  fontColor: currentBenefitsData.value?.style?.fontColor || '#333',
+  bgColor: currentBenefitsData.value?.style?.bgColor || '#FFF',
+}));
 </script>
 
 <style lang="scss" scoped>

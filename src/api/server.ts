@@ -15,6 +15,11 @@ export const queryWarrantyListPageFront = async (data: any) => {
   const url = `${devBaseUrl}/warranty/usr/queryWarrantyListPageFront`;
   return request(url, data);
 };
+// 获取企业LOGO
+export const getLogo = async (data: any) => {
+  const url = `${devBaseUrl}/sysUiFront/getLogo`;
+  return request(url, data);
+};
 
 // 获取主题色系
 // export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');

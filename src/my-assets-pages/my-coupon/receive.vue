@@ -67,7 +67,7 @@
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, Ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
-import { getLogo } from '@/api/coupon-center';
+import { getLogo } from '@/api/server';
 import { getUserCoupon } from '@/my-assets-pages/api/coupon';
 // getUserCoupon
 import Router from '@/utils/router';

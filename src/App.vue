@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
-import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
+import {
+  queryWmColorThemeFront,
+  getWeMemberNavFront,
+  // getLogo,
+} from '@/api/server';
+
 import { useBasicsData } from '@/store/basicsData';
 // import Storage from '@/utils/storage';
 import Router from '@/utils/router';
