@@ -263,6 +263,10 @@ const getBannerData = async () => {
 };
 const bannerListClick = (item: any) => {
   const url = JSON.parse(item.url || {});
+  if (!url.code && !url.systemUrl && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
+    return
+  }
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;

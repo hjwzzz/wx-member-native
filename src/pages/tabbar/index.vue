@@ -259,8 +259,11 @@ const getPageDate = async () => {
 };
 
 const bannerIndexFun = (item: any) => {
-  // console.log('bannerIndexFun', item);
   const url = JSON.parse(item.url || {});
+  if (!url.code && !url.systemUrl && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
+    return
+  }
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
@@ -345,6 +348,11 @@ const topBgImageUrl = computed(() => {
 });
 
 const handleEntryUrl = (item: any) => {
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` })
+    return
+  }
+
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
