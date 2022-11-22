@@ -4,8 +4,15 @@
     <view class="logo">
       <image :src="logo" mode="aspectFit" />
     </view>
-    <view class="btn wx-auth" @click="showWxMiniAuthModal"> 微信授权登录 </view>
-    <view class="btn no-login" @click="navBack"> 暂不登录 </view>
+    <button
+      class="btn popup-btn-reslove"
+      open-type="getPhoneNumber"
+      @getphonenumber="decryptPhoneNumber"
+    >
+      微信授权登录
+    </button>
+
+    <view class="btn no-login mT40" @click="navBack"> 暂不登录 </view>
     <view
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
@@ -30,33 +37,6 @@
       </view>
     </view>
   </view>
-
-  <uni-popup ref="PopupRef" type="center">
-    <view class="popup">
-      <view class="popup-content">
-        <view class="popup-content-title"> 授权申请 </view>
-        <view class="popup-content-box">
-          为了您更好的体验，请先绑定手机号才能登录噢！
-        </view>
-      </view>
-      <view class="popup-btn">
-        <button
-          @click="hideWxMiniAuthModal"
-          class="popup-btn-btn popup-btn-reject"
-        >
-          拒绝
-        </button>
-        <button
-          class="popup-btn-btn popup-btn-reslove"
-          open-type="getPhoneNumber"
-          @getphonenumber="decryptPhoneNumber"
-        >
-          允许
-        </button>
-      </view>
-    </view>
-  </uni-popup>
-  <!-- </page-meta> -->
 </template>
 <script lang="ts" setup>
 import { jsCodeLoginRequest, wxMiniAuthRequest } from '@/api/login';
@@ -73,33 +53,42 @@ import { onLoad, onUnload } from '@dcloudio/uni-app';
 import Router from '@/utils/router';
 
 const initBasicsData = useBasicsData();
-
 const logo = ref('');
-const PopupRef = ref<any>(null);
-
 const protocol = reactive<Protocol>({});
+
+onLoad(({ c, num, inviteMid }) => {
+  // 邀请信息
+  c && uni.setStorageSync('c', c);
+  num && uni.setStorageSync('num', num);
+  inviteMid && uni.setStorageSync('inviteMid', inviteMid);
+});
+onMounted(() => {
+  getMemberEula();
+  jsCodeLogin();
+});
 
 /**
  * 自动登录
  */
 const jsCodeLogin = async () => {
-  const jsCode = await getWxLoginCode();
-  if (!jsCode) return;
-  const { code, data } = await jsCodeLoginRequest({ jscode: jsCode });
+  const { code: jscode }: any = await uni.login({});
+  const { code, data } = await jsCodeLoginRequest({ jscode });
   if (code !== 0) return;
   const { token = '', mid = '' } = data;
   Storage.setToken(token);
   initBasicsData.setUseMid(mid);
+
   if (!mid) return;
   // uni.showToast({ title: '登录成功！' });
   Router.fromLoginBack();
   // setTimeout(Router.fromLoginBack, 1000);
 };
 
+// 用户协议
 const getMemberEula = async () => {
   const { data } = await getMemberEulaRequest();
   logo.value = data.logo;
-  data && Object.assign(protocol, data);
+  Object.assign(protocol, data);
 };
 const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);
@@ -108,71 +97,27 @@ const agreement = (i: string) => {
     success: ({ eventChannel }) => eventChannel.emit('data', [{ ...agreementDetail }]),
   });
 };
-let waitPhoneAuth = false;
 
+let waitPhoneAuth = false;
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } }: any) => {
-  if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') {
-    return;
-  }
+  if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') return;
   waitPhoneAuth = true;
-  const jsCode = await getWxLoginCode();
-  const { avatarUrl, nickName, sex } = userInfo.value;
-  if (jsCode && encryptedData && iv) {
-    await wxMiniAuth({
+  const { code: jscode }: any = await uni.login({});
+  if (code && encryptedData && iv) {
+    await wxPhoneLogin({
       iv,
-      sex: (['F', 'M'] as const)[sex] ?? 'U',
-      jscode: jsCode, // J
+      sex: 'U',
       code,
-      nickName,
-      avatarUrl,
+      jscode,
+      nickName: '',
+      avatarUrl: '',
       encryptedData,
     });
   }
   waitPhoneAuth = false;
 };
 
-const getWxLoginCode = () => new Promise<string>((resolve, reject) => {
-  uni.login({
-    success: res => {
-      if (res.code) {
-        resolve(res.code);
-        return;
-      }
-      reject(`登录失败！${res.errMsg}`);
-    },
-    fail: err => {
-      reject(err);
-    },
-  });
-});
-
-const userInfo = ref();
-let waitWxMiniAuth = false;
-const showWxMiniAuthModal = async () => {
-  if (waitWxMiniAuth) return;
-
-  waitWxMiniAuth = true;
-  try {
-    const { userInfo: u, errMsg }: any = await uni.getUserProfile({ desc: '微信授权登录' }); // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-    waitWxMiniAuth = false;
-    if (errMsg === 'getUserProfile:ok') {
-      userInfo.value = u;
-      PopupRef.value.open();
-    }
-  } catch (error) {
-    waitWxMiniAuth = false;
-    uni.showModal({
-      content: '需要授权用户信息才能使用',
-      showCancel: false,
-    });
-  }
-};
-
-const hideWxMiniAuthModal = () => {
-  PopupRef.value.close();
-};
-
-const wxMiniAuth = async (params: any) => {
+const wxPhoneLogin = async (params: any) => {
   const { data, code, msg } = (await wxMiniAuthRequest(params)) as any;
   if (code !== 0 || !data.token) {
     uni.showModal({
@@ -181,22 +126,10 @@ const wxMiniAuth = async (params: any) => {
     });
     return;
   }
-
   const list = Object.keys(data);
-  list.map(item => {
-    if (data[item]) {
-      if (item === 'token') {
-        Storage.setToken(data[item]);
-      } else if (item === 'mid') {
-        initBasicsData.setUseMid(data[item]);
-      } else if (item === 'epid') {
-        Storage.setEpid(data[item]);
-      } else {
-        uni.setStorageSync(item, data[item]);
-      }
-    }
-  });
+  list.map(item => uni.setStorageSync(item, data[item]));
   if (data.mid) {
+    initBasicsData.setUseMid(data.mid);
     Router.fromLoginBack();
   } else {
     const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
@@ -205,7 +138,7 @@ const wxMiniAuth = async (params: any) => {
         uni.redirectTo({ url: '/pages/login/finish-info' });
       } else {
         // 不用填写
-        const { phone, wmid } = data;
+        const phone = data.phone || uni.getStorageSync('phone');
         const { code, data: d } = await completeInfo({
           activeDistId: '',
           activeUid: '',
@@ -215,11 +148,14 @@ const wxMiniAuth = async (params: any) => {
           birthLunar: '',
           birthSolar: '',
           inviteCode: '',
-          nickName: params.nickName ?? '',
-          phone: phone || uni.getStorageSync('phone'),
-          sex: params.sex,
-          wmid: wmid || uni.getStorageSync('wmid'),
           name: '',
+          sex: 'U',
+          phone,
+          nickName: `${phone.substr(0, 4)}***${phone.substr()
+            .substr(-3, 3)}`,
+          avatarUrl:
+            'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+          wmid: data.wmid || uni.getStorageSync('wmid'),
           relateKind: uni.getStorageSync('c') || undefined,
           relateNumber: uni.getStorageSync('num') || undefined,
           inviteMid: uni.getStorageSync('inviteMid') || undefined,
@@ -243,21 +179,10 @@ const wxMiniAuth = async (params: any) => {
   }
 };
 
-onLoad(opstion => {
-  // 邀请信息
-  opstion?.c && uni.setStorageSync('c', opstion?.c);
-  opstion?.num && uni.setStorageSync('num', opstion?.num);
-  opstion?.inviteMid && uni.setStorageSync('inviteMid', opstion?.inviteMid);
-});
-const navBack = async () => {
-  uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/tabbar/index' }) });
-};
+const navBack = async () => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/tabbar/index' }) });
+
 // 离开登录页面，清空保存的需要前往的页面数据
 onUnload(() => Storage.setPages(''));
-onMounted(() => {
-  getMemberEula();
-  jsCodeLogin();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -369,7 +294,13 @@ onMounted(() => {
     &-reslove {
       color: #fff;
       background-color: v-bind('initBasicsData.mainColor');
+      &::after {
+        border: none;
+      }
     }
   }
+}
+.mT40 {
+  margin-top: 40rpx;
 }
 </style>

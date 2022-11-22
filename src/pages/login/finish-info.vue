@@ -3,7 +3,13 @@
     <view class="info">
       <view v-for="(info, index) in showList" :key="index" class="list">
         <view
-          v-if="info.code !== hardCode && info.show == 'Y'"
+          v-if="
+            ![
+              IRegistField.Name,
+              IRegistField.nickName,
+              IRegistField.avatar,
+            ].includes(info.code)
+          "
           :key="index"
           class="list-item"
           @click="handle(index)"
@@ -161,7 +167,7 @@
             </view>
           </view>
         </view>
-        <view v-else-if="info.show == 'Y'" class="inpu-item">
+        <view v-else-if="info.code === IRegistField.Name" class="inpu-item">
           <view class="input-left">
             <text v-show="info.required == 'Y'" class="input-icon"> * </text>
             <text class="input-name">
@@ -173,6 +179,31 @@
               v-model="memberInfo.name"
               type="text"
               maxlength="20"
+              placeholder-style="color:#d8d9e0;font-size:28rpx;"
+              :placeholder="'请输入' + info.name"
+            />
+          </view>
+        </view>
+
+        <userIcon
+          v-else-if="info.code === IRegistField.avatar"
+          :name="info.name"
+          :required="info.required"
+          v-model="memberInfo.avatarUrl"
+        ></userIcon>
+
+        <view v-else-if="info.code === IRegistField.nickName" class="inpu-item">
+          <view class="input-left">
+            <text v-show="info.required == 'Y'" class="input-icon">*</text>
+            <text class="input-name">{{ info.name }}</text>
+          </view>
+          <view class="input-right">
+            <input
+              v-model="memberInfo.nickName"
+              @input="changeNickName"
+              type="nickname"
+              maxlength="32"
+              placeholder-style="color:#d8d9e0;font-size:28rpx;"
               :placeholder="'请输入' + info.name"
             />
           </view>
@@ -194,9 +225,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
+import { IRegistField } from '@/api/types/server';
 import {
   completeInfo,
   getMemberInfo,
@@ -207,6 +239,7 @@ import { getNearStore } from '@/pages/api/nearby-store';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
+import userIcon from './UserIcon.vue';
 
 const initBasicsData = useBasicsData();
 
@@ -241,7 +274,7 @@ const selecteList = [
     value: 'F',
   },
 ];
-const hardCode = 'REGIST_REQUIRED_NAME';
+
 const shop = 'REGIST_REQUIRED_STORE';
 const saler = 'REGIST_REQUIRED_SELLER';
 const MDAY = 'REGIST_REQUIRED_MDAY';
@@ -282,12 +315,13 @@ onLoad(() => {
 });
 const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
-  data.sex ??= 'M';
-  data.birthKind ??= 'S';
+  data.sex ||= 'M';
+  data.birthKind ||= 'S';
+  data.nickName === '微信用户' && (data.nickName = '');
   if (data) {
     memberInfo.value = data;
-    selectedShop.value.storeName = data.belongDistName;
-    selectedShop.value.distId = data.belongDistId;
+    selectedShop.value.storeName = data.belongDistName || '';
+    selectedShop.value.distId = data.belongDistId || '';
   }
 };
 // 获取附近门店
@@ -365,7 +399,10 @@ const handle = (index: number) => {
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
-      router.goCodePage('chooseStore', `?id=${memberInfo.value.belongDistId}`);
+      router.goCodePage(
+        'chooseStore',
+        `?id=${memberInfo.value.belongDistId || ''}`
+      );
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
@@ -418,7 +455,12 @@ const handle = (index: number) => {
       break;
   }
 };
-const showList = computed(() => list.value.filter((item: any) => !(maritalValue.value === 'N' && item.code === MDAY)));
+// 过滤不显示和未婚的纪念日
+const showList = computed(() => list.value.filter((item: any) => {
+  if (item.show === 'N') return false;
+  if (item.code === MDAY && maritalValue.value === 'N') return false;
+  return true;
+}));
 const radioChange = (e: any) => {
   memberInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
@@ -434,7 +476,7 @@ const maritalChange = (e: any) => {
 const handleStep = async () => {
   const {
     name,
-    phone,
+
     nickName,
     province,
     city,
@@ -445,14 +487,21 @@ const handleStep = async () => {
     birthKind,
     birthSolar,
     sex,
+    avatarUrl,
   } = memberInfo.value;
+  const phone = memberInfo.value.phone || uni.getStorageSync('phone');
   const params = {
     name,
-    nickName,
-    activeDistId: selectedShop.value.distId,
+    nickName:
+      nickName || `${phone.substr(0, 4)}***${phone.substr()
+        .substr(-3, 3)}`,
+    activeDistId: selectedShop.value.distId || null,
     activeUid,
     province,
     city,
+    avatarUrl:
+      avatarUrl ||
+      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
     district,
     address,
     inviteCode: name, // 验证码，已废弃
@@ -511,8 +560,6 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_MDAY': {
-        console.log(maritalValue.value);
-
         if (maritalValue.value === 'Y' && !params.annday) {
           uni.showModal({
             content: '请选择纪念日',
@@ -602,6 +649,22 @@ const confirmDate = (e: any) => {
     memberInfo.value.birthLunar = nl;
     memberInfo.value.birthKind = items[current.value].value;
     memberInfo.value.birthSolar = e.fulldate;
+  }
+};
+
+const changeNickName = (e: any) => {
+  const value = e.detail.value;
+  let len = 0;
+  let result = '';
+  for (let i = 0; i < value.length; i++) {
+    if (value.charCodeAt(i) > 127 || value.charCodeAt(i) === 94) {
+      len++;
+    }
+    len++;
+    result += value.charAt(i);
+    if (len >= 32) {
+      return nextTick(() => memberInfo.value.nickName = result);
+    }
   }
 };
 </script>
