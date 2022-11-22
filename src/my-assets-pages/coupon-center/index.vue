@@ -13,8 +13,12 @@
         v-for="item in advertList"
         :key="item.imgUrl"
         class="advert-list-item"
-      >
-        <image mode="aspectFill" :src="item.imgUrl"></image>
+        >
+        <image
+          mode="aspectFill"
+          :src="item.imgUrl"
+          @click.stop="bannerListClick(item)"
+        ></image>
       </swiper-item>
     </swiper>
 
@@ -204,6 +208,21 @@ const onConfirm = () => {
   }
 };
 const onCancel = () => modelShow.value = false;
+
+const bannerListClick = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  if (!url.code && !url.systemUrl && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
+    return
+  }
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(url.code || url.systemUrl, param);
+};
 
 // 加载更多
 const onLoadMore = () => {
