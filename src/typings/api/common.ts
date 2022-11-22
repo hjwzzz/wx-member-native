@@ -12,8 +12,8 @@ export enum COMMON_PAGINATION_SORT {
 }
 
 export type CommonPaginationRequestParams<P = Record<string, unknown>> = P & {
-  curPage?: number;
-  pageSize?: number;
+  curPage: number;
+  pageSize: number;
   sort?: {
 
     /** 排序字段(返回的字段排序) */

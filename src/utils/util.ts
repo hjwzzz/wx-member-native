@@ -60,12 +60,20 @@ export const richImage = (item: any) => {
   }
   let content = item;
   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  content = content.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+  content = content.replace(
+    reg,
+    '<img style="max-width: 100%; vertical-align: bottom;" src="$1" />'
+  );
   //
   const regP = /<p.*?>/g;
   content = content.replace(
     regP,
     '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
+  );
+  const regBlockquote = /<blockquote.*?>/g;
+  content = content.replace(
+    regBlockquote,
+    '<blockquote style="display: block; border-left: 8px solid #d0e5f2; padding: 5px 10px; margin: 10px 0; line-height: 1.4; font-size: 100%; background-color: #f1f1f1;" >'
   );
   return content;
 };

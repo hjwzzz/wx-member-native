@@ -12,80 +12,81 @@
       @scrolltolower="onLoadMore"
     >
       <view class="coupon-list">
-        <CouponItem
-          class="coupon-item"
-          v-for="(item, index) in couponListData"
-          :item="item"
-          :key="index"
-          :showStatus="item.couponStatus === 'EFFECTIVE'"
-          @event="onCouponDetail(item)"
-        >
-          <template #btn>
-            <view @click.stop="">
-              <button
-                v-if="item.couponStatus === 'EFFECTIVE' && item.present === 'Y'"
-                class="share-btn"
-                :style="{
-                  color: item.style.topBgColorTop,
-                  background: item.style.mainColor,
-                }"
-                open-type="share"
-                :data-couponMemberId="item.couponMemberId"
-                :data-donateId="initBasicsData.useMid"
-                :data-couponName="item.couponName"
-                :data-prodCode="item.prodCode || item.prodCode?.code"
-                :data-discount="item.paramVo.discount"
-                :data-randomAmount="item.memberCouponParam?.randomAmount"
-              >
-                转赠
-              </button>
-            </view>
-          </template>
-          <template #image>
-            <image
-              v-if="showStatusImage(item)"
-              :src="showStatusImage(item)"
-              class="status-image"
-              mode=""
-            ></image>
-            <!-- <image
-              v-else-if="item.couponStatus === 'USED'"
-              :src="staticUrl + 'img/over.png'"
-              class="status-image"
-              mode=""
-            ></image>
-            <image
-              v-else-if="item.couponStatus === 'INVALID'"
-              :src="staticUrl + 'img/overTime-2.png'"
-              class="status-image"
-              mode=""
-            ></image>
-            <image
-              v-else-if="item.couponStatus === 'GIFTED'"
-              :src="staticUrl + 'img/overTime-3.png'"
-              class="status-image"
-              mode=""
-            ></image> -->
-          </template>
-          <template #bottom-left>
-            <text>
-              有效期：{{ item.cutValidTime }}至{{ item.cutExpireTime }}
-            </text>
-          </template>
-          <template #bottom-rigth>
-            <view class="arrow-right">
-              <text> 详情 </text>
-              <uni-icons type="arrowright" size="14" color="#B7B8C4" />
-            </view>
-          </template>
-        </CouponItem>
-        <uni-load-more
-          v-if="couponListData.length"
-          :status="status"
-          color="#D8D9E0"
-        ></uni-load-more>
+        <template v-if="couponListData.length">
+          <CouponItem
+            class="coupon-item"
+            v-for="(item, index) in couponListData"
+            :item="item"
+            :key="index"
+            :showStatus="item.couponStatus === 'EFFECTIVE'"
+            @event="onCouponDetail(item)"
+          >
+            <template #btn>
+              <view @click.stop="">
+                <button
+                  v-if="item.couponStatus === 'EFFECTIVE' && item.present === 'Y'"
+                  class="share-btn"
+                  :style="{
+                    color: item.style.topBgColorTop,
+                    background: item.style.mainColor,
+                  }"
+                  open-type="share"
+                  :data-couponMemberId="item.couponMemberId"
+                  :data-donateId="initBasicsData.useMid"
+                  :data-couponName="item.couponName"
+                  :data-prodCode="item.prodCode.code"
+                  :data-discount="item.paramVo.discount"
+                  :data-randomAmount="item.memberCouponParam?.randomAmount"
+                >
+                  转赠
+                </button>
+              </view>
+            </template>
+            <template #image>
+              <image
+                v-if="showStatusImage(item)"
+                :src="showStatusImage(item)"
+                class="status-image"
+                mode=""
+              ></image>
+              <!-- <image
+                v-else-if="item.couponStatus === 'USED'"
+                :src="staticUrl + 'img/over.png'"
+                class="status-image"
+                mode=""
+              ></image>
+              <image
+                v-else-if="item.couponStatus === 'INVALID'"
+                :src="staticUrl + 'img/overTime-2.png'"
+                class="status-image"
+                mode=""
+              ></image>
+              <image
+                v-else-if="item.couponStatus === 'GIFTED'"
+                :src="staticUrl + 'img/overTime-3.png'"
+                class="status-image"
+                mode=""
+              ></image> -->
+            </template>
+            <template #bottom-left>
+              <text>
+                有效期：{{ item.cutValidTime }}至{{ item.cutExpireTime }}
+              </text>
+            </template>
+            <template #bottom-rigth>
+              <view class="arrow-right">
+                <text> 详情 </text>
+                <uni-icons type="arrowright" size="14" color="#B7B8C4" />
+              </view>
+            </template>
+          </CouponItem>
+          <uni-load-more
+            :status="status"
+            color="#D8D9E0"
+          ></uni-load-more>
+        </template>
         <!-- couponListData  loadingTop && !loadingTop-->
-        <view v-if="couponListData.length == 0" class="preferential">
+        <view v-if="couponListData.length === 0" class="preferential">
           <view>
             <view style="flex: 1" />
             <image
