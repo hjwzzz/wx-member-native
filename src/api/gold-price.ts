@@ -22,8 +22,8 @@ export const queryGoldPriceByDist = async (data: any) => {
 };
 
 // 今日金价--获取金价门店
-export const queryMemViewDist = async (data: any) => {
-  const url = `${baseUrl}/emp-base/priceFront/usr/queryMemViewDist`;
-  const res = await request(url, data);
-  return res;
-};
+// export const queryMemViewDist = async (data: any) => {
+//   const url = `${baseUrl}/emp-base/priceFront/usr/queryMemViewDist`;
+//   const res = await request(url, data);
+//   return res;
+// };
