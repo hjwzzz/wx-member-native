@@ -102,7 +102,10 @@ const getMemberEula = async () => {
 };
 const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);
-  uni.navigateTo({ url: `agreement?eula=${JSON.stringify(agreementDetail)}` });
+  uni.navigateTo({
+    url: 'agreement',
+    success: ({ eventChannel }) => eventChannel.emit('data', [{ ...agreementDetail }]),
+  });
 };
 let waitPhoneAuth = false;
 

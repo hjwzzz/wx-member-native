@@ -67,12 +67,7 @@
           </view>
           <view class="t5">
             <view class="item1" @click="thephone(item)"> 电话 </view>
-            <view
-              class="item"
-              style="color: #ff547b"
-              bindtap="phoneLogin"
-              @click="openLocation(item)"
-            >
+            <view class="item" bindtap="phoneLogin" @click="openLocation(item)">
               <text class="clM"> 地图 </text>
             </view>
           </view>
@@ -236,7 +231,7 @@ const goDetail = (e: storeType) => {
   align-items: flex-end;
 
   &.active {
-    background-color: #ff547b;
+    background-color: var(--main-color);
   }
 }
 .radio_box_none {
@@ -316,7 +311,7 @@ const goDetail = (e: storeType) => {
             .attribution {
               margin-left: 8rpx;
               padding: 2rpx 6rpx 2rpx 6rpx;
-              background: #ff547b;
+              background: var(--main-color);
               border-radius: 4rpx;
               color: #ffffff;
               font-size: 20rpx;
