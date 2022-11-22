@@ -130,6 +130,10 @@ const current = ref(0);
 
 const bannerClick = (item: any) => {
   const url = JSON.parse(item.url || {});
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` })
+    return
+  }
   router.goCodePage(url.code || url.systemUrl);
 };
 const onChooseStore = () => {
