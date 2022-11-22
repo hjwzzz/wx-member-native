@@ -58,7 +58,7 @@
         v-if="initBasicsData.checkLogin"
         @click="handleFixedSysUrl()"
       >
-        <view class="left">
+        <view class="left boot-equity-left">
           <view class="icon">
             <image
               class="image"
@@ -70,7 +70,7 @@
         </view>
         <view class="boot-equity-right">
           <text class="text">查看权益</text>
-          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+          <uni-icons type="arrowright" size="14" color="#975d17"></uni-icons>
         </view>
       </view>
     </view>
@@ -419,16 +419,16 @@ const handleQuickUrl = (item: any) => {
   align-items: center;
   justify-content: space-between;
   width: 630rpx;
-  height: calc(400rpx - 296rpx);
+  height: 104rpx;
   padding: 0 30rpx;
   margin: 0 auto;
   background: linear-gradient(90deg, #ffefd2 0%, #ffddad 100%);
   border-radius: 16rpx 16rpx 0rpx 0rpx;
 
-  .left {
+  .boot-equity-left {
     display: flex;
     align-items: center;
-
+    height: 104rpx;
     .icon {
       display: inline-block;
       width: 37rpx;
@@ -454,7 +454,10 @@ const handleQuickUrl = (item: any) => {
   .boot-equity-right {
     display: flex;
     align-items: center;
-
+    height: 104rpx;
+    // :deep(.uni-icons) {
+    //   margin-top: -8rpx;
+    // }
     .text {
       width: 96rpx;
       height: 32rpx;
@@ -463,6 +466,7 @@ const handleQuickUrl = (item: any) => {
       font-weight: 400;
       line-height: 32rpx;
       color: #975d17;
+      margin-top: 2rpx;
     }
   }
 }

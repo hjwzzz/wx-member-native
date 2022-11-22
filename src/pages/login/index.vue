@@ -91,8 +91,9 @@ const jsCodeLogin = async () => {
   Storage.setToken(token);
   initBasicsData.setUseMid(mid);
   if (!mid) return;
-  uni.showToast({ title: '登录成功！' });
-  setTimeout(Router.fromLoginBack, 1000);
+  // uni.showToast({ title: '登录成功！' });
+  Router.fromLoginBack();
+  // setTimeout(Router.fromLoginBack, 1000);
 };
 
 const getMemberEula = async () => {
