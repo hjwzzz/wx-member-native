@@ -58,7 +58,7 @@
         v-if="initBasicsData.checkLogin"
         @click="handleFixedSysUrl()"
       >
-        <view class="left boot-equity-left">
+        <view class="boot-equity-left">
           <view class="icon">
             <image
               class="image"
@@ -430,11 +430,10 @@ const handleQuickUrl = (item: any) => {
     align-items: center;
     height: 104rpx;
     .icon {
-      display: inline-block;
-      width: 37rpx;
+      // display: inline-block;
+      width: 32rpx;
       height: 32rpx;
-      overflow: hidden;
-
+      // overflow: hidden;
       .image {
         width: 100%;
         height: 100%;
