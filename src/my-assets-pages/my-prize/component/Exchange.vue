@@ -173,7 +173,8 @@ const getPrize = async () => {
   } else if (exchangeCode.value === 1) {
     const phoneReg =
       /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
-    !phoneReg.test(params.recverPhone) && (str = '请输入手机号');
+    !phoneReg.test(params.recverPhone) && (str = '手机号格式错误');
+    !params.recverPhone && (str = '请输入手机号');
     !params.recver && (str = '请输入领取人');
   } else if (exchangeCode.value === 2) {
     if (!address.value.phone) {
