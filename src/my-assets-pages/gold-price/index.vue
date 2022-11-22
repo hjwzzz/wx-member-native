@@ -73,7 +73,20 @@
           </view>
         </view>
       </view>
+      <view class="content-page" v-else>
+        <view class="empty empty-page">
+          <image
+            width="250rpx"
+            height="250rpx"
+            class="emptyIcon"
+            mode="aspectFill"
+            :src="`${staticUrl}img/themoney.png`"
+          ></image>
 
+          <view class="stopText">暂无金价信息</view>
+        </view>
+      </view>
+      <!-- wuyuer.png -->
       <view
         class="remark-box"
         v-if="goldPriceDatas?.param?.remarkShowed === 'Y'"
@@ -99,14 +112,16 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
-import {
-  // getGoldPriceAdBannerList,
-  queryDefShowGoldPrice,
-  queryGoldPriceByDist,
-} from '@/api/gold-price';
+import // getGoldPriceAdBannerList,
+// queryDefShowGoldPrice,
+// queryGoldPriceByDist,
+'@/api/gold-price';
+import { getDefaultDistributorInfoByOpsIdFront } from '@/api/server';
+
+//
 import {
   queryGoldPriceBannerListFront,
-  // getSaleMetalPrice,
+  getSaleMetalPrice,
 } from '@/my-assets-pages/api/gold-price';
 
 import router from '@/utils/router';
@@ -118,7 +133,7 @@ import { useBasicsData } from '@/store/basicsData';
 const initBasicsData = useBasicsData();
 
 onLoad((e: any) => {
-  console.log('onLoad((e: any) ', e);
+  // console.log('onLoad((e: any) ', e);
   isShare();
   getBannerList();
   getGoldPrice(e.distId);
@@ -156,19 +171,35 @@ const getBannerList = async () => {
   bannerList.value = res.data;
 };
 
+// const getDefaultOpsId = async () => {
+//   const res = await getDefaultDistributorInfoByOpsIdFront('');
+//   const distId = res.data.distId;
+//   if (distId) {
+//     getGoldPrice(distId);
+//   }
+//   console.log('getDefaultDistributorInfoByOpsIdFront', ddd.data.distId);
+// };
+
 const getGoldPrice = async (id = '') => {
-  const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
-  const { code, data } = await url(id);
-  // const { code, data } = await getSaleMetalPrice(id);
+  let distId = id;
+  if (!distId || distId === 'undefined') {
+    const res = await getDefaultDistributorInfoByOpsIdFront('');
+    distId = res.data.distId;
+  }
+  // const url = id ? getSaleMetalPrice : queryDefShowGoldPrice;
+  // const { code, data } = await url({ distId: id });
+  const { code, data } = await getSaleMetalPrice({ distId });
 
   if (code === 0) {
     list.value = [];
     goldPriceDatas.value = data;
-    if (data.param.todayGoldPriceShowed === 'Y') {
-      list.value.push({ name: '今日金价' });
-    }
-    if (data.param.recoveryGoldPriceShowed === 'Y') {
-      list.value.push({ name: '回收金价' });
+    if (data.param) {
+      if (data.param.todayGoldPriceShowed === 'Y') {
+        list.value.push({ name: '今日金价' });
+      }
+      if (data.param.recoveryGoldPriceShowed === 'Y') {
+        list.value.push({ name: '回收金价' });
+      }
     }
   }
 };
@@ -191,6 +222,12 @@ onShareTimeline(() => shareTimeline(shareData.value));
 <style scoped lang="scss">
 .banner {
   position: unset;
+}
+
+.content-page {
+  height: 60vh;
+  display: flex;
+  align-items: center;
 }
 .ttt {
   width: calc(100vw - 350rpx);
