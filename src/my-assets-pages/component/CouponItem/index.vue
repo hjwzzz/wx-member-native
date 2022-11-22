@@ -31,10 +31,17 @@
         </block>
         <!-- 随机券  -->
         <block v-if="coupon2.includes(prodCode)">
-          <view class="currency-symbol">￥</view>
+          <!-- <view class="currency-symbol">￥</view>
           <view class="num">
             {{ item.memberCouponParam?.randomAmount || '随机金额' }}
+          </view> -->
+          <view v-if="item.memberCouponParam?.randomAmount">
+            <view class="currency-symbol">￥</view>
+            <view class="num">
+              {{ item.memberCouponParam?.randomAmount }}
+            </view>
           </view>
+          <view class="currency-symbol"> 随机金额 </view>
         </block>
         <!-- 折扣券 || 工费折扣券 -->
         <block v-if="coupon3.includes(prodCode)">

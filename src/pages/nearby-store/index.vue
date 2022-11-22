@@ -19,7 +19,7 @@
           <view class="t1-box" @click="goDetail(item)">
             <image
               class="image left"
-              :src="item.url || `${staticUrl}prize/store/address.png`"
+              :src="item.url || `${staticUrl}img/store/store-avatar-default.png`"
               mode="aspectFit"
             />
             <view class="right">

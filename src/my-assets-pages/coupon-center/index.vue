@@ -1,5 +1,5 @@
 <template>
-  <CustomPage>
+  <CustomScrollViewPage @scrolltolower="onLoadMore">
     <swiper
       class="advert-list"
       v-if="advertList.length"
@@ -7,6 +7,7 @@
       :indicator-dots="advertList.length > 1"
       indicator-color="#D8D9E0"
       :indicator-active-color="initBasicsData.mainColor"
+      autoplay
     >
       <swiper-item
         v-for="item in advertList"
@@ -61,6 +62,10 @@
           <text> 已领取 {{ item.percentage }} </text>
         </template>
       </CouponItem>
+      <uni-load-more
+        :status="status"
+        color="#D8D9E0"
+      ></uni-load-more>
     </view>
     <view class="preferential" v-else>
       <image :src="staticUrl + 'img/Salesperson.png'" mode=""></image>
@@ -72,7 +77,7 @@
       @ok="onConfirm"
       @cancel="onCancel"
     />
-  </CustomPage>
+  </CustomScrollViewPage>
 </template>
 
 <script lang="ts" setup>
@@ -98,13 +103,15 @@ import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
 import { shareAppMessage } from '@/utils/shareHold';
 
+const status = ref<'more' | 'loading' | 'no-more'>('no-more');
+
 const initBasicsData = useBasicsData();
 const advertList = ref<AdvertList>([]);
 const receiveCenterList = ref<ReceiveCenterList>([]);
 const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   createTime: '',
   opsId: '',
-  pageSize: 10000,
+  pageSize: 15,
   curPage: 1,
 });
 
@@ -120,7 +127,13 @@ const queryReceiveCenterListFront = async () => {
   if (!data) {
     return;
   }
-  receiveCenterList.value = data.records;
+  receiveCenterList.value = queryReceiveCenterListForm.curPage === 1 ? data.records : [...receiveCenterList.value, ...data.records];
+
+  if (receiveCenterList.value.length >= data.totalRecord) {
+    status.value = 'no-more';
+  } else {
+    status.value = 'more';
+  }
 };
 
 onMounted(() => {
@@ -191,6 +204,15 @@ const onConfirm = () => {
   }
 };
 const onCancel = () => modelShow.value = false;
+
+// 加载更多
+const onLoadMore = () => {
+  if (status.value === 'no-more') {
+    return;
+  }
+  queryReceiveCenterListForm.curPage += 1;
+  queryReceiveCenterListFront();
+};
 </script>
 
 <style lang="scss" scoped>
