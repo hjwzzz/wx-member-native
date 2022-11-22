@@ -128,6 +128,7 @@ const tabList = [
 ];
 const currentIndex = ref(0);
 const changeTabs = ({ item }: any) => {
+  params.curPage = 1;
   couponStatus.value = item.status;
   getCouponList();
 };
@@ -140,8 +141,8 @@ onShareAppMessage((res: any) => onShareCoupon(res));
 
 const params = reactive({
   curPage: 1,
-  pageSize: 15
-})
+  pageSize: 15,
+});
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 const couponStatus = ref('EFFECTIVE');
@@ -164,15 +165,15 @@ const getCouponList = async () => {
   if (res.code === 0 && res.data) {
     const { records, totalRecord } = res.data;
 
-    couponListData.value = params.curPage === 1 ? records : [...couponListData.value, ...records]
+    couponListData.value =
+      params.curPage === 1 ? records : [...couponListData.value, ...records];
 
     if (couponListData.value.length >= totalRecord) {
       status.value = 'no-more';
     } else {
       status.value = 'more';
     }
-
-    }
+  }
 };
 
 // 加载更多
@@ -183,7 +184,6 @@ const onLoadMore = () => {
   params.curPage += 1;
   getCouponList();
 };
-
 
 const showStatusImage = (item: any) => {
   if (item.couponStatus === 'EXPIRED') {

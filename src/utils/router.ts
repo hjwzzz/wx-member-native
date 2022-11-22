@@ -95,11 +95,14 @@ class Router {
   }
   // 去登陆，跳转页面前判断时候，保存from 地址，登录完成后重定向
   // 当前页面登录 则直接重定向过去，避免未登录状态重新返回本页
-  static goLogin(url = '') {
+  static goLogin(url = '', redirect = false) {
     const page: any = getCurrentPages()
       .pop();
     const route = page ? page.route.split('?')[0] : '';
     Storage.setPages(url || `/${route}`);
+    if (redirect) {
+      return uni.redirectTo({ url: pageCode.login });
+    }
     if (url) {
       uni.navigateTo({ url: pageCode.login });
     } else {

@@ -56,7 +56,7 @@
           </view>
           <view class="main">
             <view v-show="current === 0" class="serve-introduce">
-              <template v-if="!detail.description">
+              <template v-if="detail.description">
                 <view v-html="richImage(detail.description)" />
               </template>
               <view v-else class="no-data">
@@ -218,7 +218,7 @@ onLoad(({ id: i = '', distId, storeName }) => {
 });
 const richImage = (s: string) => {
   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  return s.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+  return s?.replace?.(reg, '<img style="max-width: 100%;" src="$1" />') ?? '';
 };
 
 const cost = computed(() => {

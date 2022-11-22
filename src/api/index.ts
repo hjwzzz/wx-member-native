@@ -24,11 +24,11 @@ export const queryShareSett = async (data: any) => {
 // };
 
 // 查询弹窗设置
-export const queryPopup = async (data: unknown) => {
-  const url = `${baseUrl}/emp-base/wxmeberFront/queryPopup`;
-  const res = await request(url, data);
-  return res;
-};
+// export const queryPopup = async (data: unknown) => {
+//   const url = `${baseUrl}/emp-base/wxmeberFront/queryPopup`;
+//   const res = await request(url, data);
+//   return res;
+// };
 // // 微会员弹窗广告图
 // export const getWmAlertAdBannerList = async (data: unknown) => {
 //   const url = `${baseUrl}/emp-base/wxmeberFront/getWmAlertAdBannerList`;

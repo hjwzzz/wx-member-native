@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
-import { queryWmColorThemeFront, getWeMemberNavFront } from '@/api/server';
+import {
+  queryWmColorThemeFront,
+  getWeMemberNavFront,
+  // getLogo,
+} from '@/api/server';
+
 import { useBasicsData } from '@/store/basicsData';
 // import Storage from '@/utils/storage';
 import Router from '@/utils/router';
@@ -51,6 +56,12 @@ page {
   overflow: hidden;
   word-break: break-all;
 }
+.break-word {
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-warp;
+}
+
 .uni-searchbar__cancel {
   color: var(--main-color) !important;
 }

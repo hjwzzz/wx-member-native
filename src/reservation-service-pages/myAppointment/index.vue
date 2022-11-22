@@ -60,7 +60,7 @@
               <view class="item-body">
                 <view class="body-item">
                   <view class="label"> 预约门店： </view>
-                  <view class="value">
+                  <view class="value break-word">
                     {{ item.storeName }}
                   </view>
                 </view>

@@ -5,7 +5,6 @@
         <uni-search-bar
           class="search-bar"
           v-model="keyward"
-          :focus="true"
           @input="searchChange"
           radius="100"
           placeholder="搜索"
@@ -20,9 +19,7 @@
           <view class="t1-box" @click="goDetail(item)">
             <image
               class="image left"
-              :src="
-                item.url || `${staticUrl}img/store/store-avatar-default.png`
-              "
+              :src="item.url || `${staticUrl}prize/store/address.png`"
               mode="aspectFit"
             />
             <view class="right">
@@ -70,12 +67,7 @@
           </view>
           <view class="t5">
             <view class="item1" @click="thephone(item)"> 电话 </view>
-            <view
-              class="item"
-              style="color: #ff547b"
-              bindtap="phoneLogin"
-              @click="openLocation(item)"
-            >
+            <view class="item" bindtap="phoneLogin" @click="openLocation(item)">
               <text class="clM"> 地图 </text>
             </view>
           </view>
@@ -239,7 +231,7 @@ const goDetail = (e: storeType) => {
   align-items: flex-end;
 
   &.active {
-    background-color: #ff547b;
+    background-color: var(--main-color);
   }
 }
 .radio_box_none {
@@ -319,7 +311,7 @@ const goDetail = (e: storeType) => {
             .attribution {
               margin-left: 8rpx;
               padding: 2rpx 6rpx 2rpx 6rpx;
-              background: #ff547b;
+              background: var(--main-color);
               border-radius: 4rpx;
               color: #ffffff;
               font-size: 20rpx;

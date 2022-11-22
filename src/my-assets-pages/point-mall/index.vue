@@ -9,13 +9,18 @@ import { h5Url } from '@/utils/config';
 import { ref, Ref } from 'vue';
 import { shareHold, shareAppMessage } from '@/utils/shareHold';
 import { queryShareSett } from '@/api/index';
+import Router from '@/utils/router';
+import { useBasicsData } from '@/store/basicsData';
 
-const mid = Storage.getMid();
+// const mid = Storage.getMid();
 const jqzAppid = Storage.getJqzAppId();
 const epid = Storage.getEpid();
-const token = Storage.getToken();
+// const token = Storage.getToken();
+const mid = ref(Storage.getMid());
+const token = ref(Storage.getToken());
+const initBasicsData = useBasicsData();
 
-const param = `?appId=${jqzAppid}&appType=mini&epid=${epid}&token=${token}&mid=${mid}`;
+const param = `?appId=${jqzAppid}&appType=mini&epid=${epid}&token=${token.value}&mid=${mid.value}`;
 const lastUrl = `${h5Url}/#/pointsMallGages/tabber/index${param}`;
 const webViewUrl = ref(lastUrl);
 onLoad((option: any) => {
@@ -25,7 +30,18 @@ onLoad((option: any) => {
   if (option.name) {
     webViewUrl.value = `${lastUrl}&name=${option.name}`;
   }
+
+  if (!initBasicsData.checkLogin) {
+    Router.goLogin(
+      `/my-assets-pages/point-mall/index${getParams(option)}`,
+      true
+    );
+  }
 });
+
+const getParams = (Params: any) => `?${Object.entries(Params)
+  .map(([k, v]) => `${k}=${v}`)
+  .join('&')}`;
 
 onShow(() => {
   uni.getStorage({

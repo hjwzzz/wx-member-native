@@ -18,7 +18,7 @@
               type="arrowright"
               size="14"
               color="#B7B8C4"
-              v-if="item.code == 'phone'"
+              v-if="item.code == 'phone' && FieldObj[IInfoField.Phone] === 'Y'"
             ></uni-icons>
           </view>
         </view>
@@ -349,7 +349,7 @@ const updateInfo = async ({
       });
       router.goCodePage(
         'chooseStore',
-        `?belong=true&id=${userInfo.value.belongDistId}`
+        `?belong=true&id=${userInfo.value.belongDistId || ''}`
       );
       break;
     }

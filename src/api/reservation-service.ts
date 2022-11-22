@@ -1,4 +1,4 @@
-import { baseUrl, devBaseUrl } from '@/utils/config';
+import { devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
 
 // // C端查询我的预约信息列表

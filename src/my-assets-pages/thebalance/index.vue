@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { queryDepositListFront } from '@/my-assets-pages/api/thebalance';
-import { queryDepList } from '@/api/center';
+// import { queryDepList } from '@/api/center';
 //
 
 import { onLoad } from '@dcloudio/uni-app';

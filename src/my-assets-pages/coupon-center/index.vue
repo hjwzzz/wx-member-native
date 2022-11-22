@@ -1,6 +1,14 @@
 <template>
   <CustomScrollViewPage @scrolltolower="onLoadMore">
-    <swiper class="advert-list" v-if="advertList.length" circular>
+    <swiper
+      class="advert-list"
+      v-if="advertList.length"
+      circular
+      :indicator-dots="advertList.length > 1"
+      indicator-color="#D8D9E0"
+      :indicator-active-color="initBasicsData.mainColor"
+      autoplay
+    >
       <swiper-item
         v-for="item in advertList"
         :key="item.imgUrl"

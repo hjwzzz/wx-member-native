@@ -10,7 +10,7 @@
                 :focus="true"
                 maxlength="20"
                 placeholder="请输入收货人姓名"
-                placeholder-style="color: #d8d9e0;"
+                placeholder-style="color: #d8d9e0;font-size:28rpx"
                 type="text"
                 v-model.trim="params.receiver"
               />
@@ -26,7 +26,7 @@
                 type="tel"
                 maxlength="11"
                 placeholder="请输入手机号码"
-                placeholder-style="color: #d8d9e0;"
+                placeholder-style="color: #d8d9e0;font-size:28rpx"
                 v-model.trim="params.phone"
               />
             </view>
@@ -45,10 +45,14 @@
                   <view class="uni-input">{{ areaList?.join(' / ') }}</view>
                 </picker>
               </view>
-              <span @click="showMap" style="color: #9697a2; white-space: nowrap"
-                ><u-icon name="map" size="28" color="#9697a2"></u-icon
-                >定位</span
+              <view
+                @click="showMap"
+                style="color: #9697a2; white-space: nowrap"
+                class="location-text"
               >
+                <uni-icons type="location" size="16" color="#9697a2" />
+                定位
+              </view>
             </view>
           </view>
           <view class="detail">
@@ -58,7 +62,7 @@
                 class="address-detail"
                 disable-default-padding="true"
                 maxlength="50"
-                placeholder="街道,楼牌号等"
+                placeholder="街道，楼牌号等"
                 placeholder-style="color: #d8d9e0;"
                 style="color: #9697a2"
                 v-model="params.address"
@@ -75,6 +79,7 @@
               :checked="params.isDefault === 'Y'"
               :color="initBasicsData.mainColor"
               @change="(e:any) => (params.isDefault = e.detail.value?'Y':'N')"
+              style="transform: scale(0.85)"
             ></switch>
           </view>
         </view>
@@ -187,6 +192,11 @@ const editAddress = async () => {
   flex-direction: column;
   justify-content: space-between;
 
+  .location-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .enter-adress {
     margin-top: 30rpx;
     flex: 1;
