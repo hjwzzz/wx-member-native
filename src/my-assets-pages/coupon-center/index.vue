@@ -7,6 +7,7 @@
       :indicator-dots="advertList.length > 1"
       indicator-color="#D8D9E0"
       :indicator-active-color="initBasicsData.mainColor"
+      autoplay
     >
       <swiper-item
         v-for="item in advertList"
