@@ -10,7 +10,7 @@
                 :focus="true"
                 maxlength="20"
                 placeholder="请输入收货人姓名"
-                placeholder-style="color: #d8d9e0;"
+                placeholder-style="color: #d8d9e0;font-size:28rpx"
                 type="text"
                 v-model.trim="params.receiver"
               />
@@ -26,7 +26,7 @@
                 type="tel"
                 maxlength="11"
                 placeholder="请输入手机号码"
-                placeholder-style="color: #d8d9e0;"
+                placeholder-style="color: #d8d9e0;font-size:28rpx"
                 v-model.trim="params.phone"
               />
             </view>
@@ -75,6 +75,7 @@
               :checked="params.isDefault === 'Y'"
               :color="initBasicsData.mainColor"
               @change="(e:any) => (params.isDefault = e.detail.value?'Y':'N')"
+              style="transform: scale(0.85)"
             ></switch>
           </view>
         </view>
