@@ -59,13 +59,18 @@
         @click="handleFixedSysUrl()"
       >
         <view class="boot-equity-left">
-          <view class="icon">
+          <!-- <view class="icon">
             <image
               class="image"
               :src="staticUrl + 'img/level.png'"
               mode="aspectFit"
             />
-          </view>
+          </view> -->
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/level.png'"
+            mode="aspectFit"
+          />
           <view class="text">{{ userInfo.curLevelName || '' }}</view>
         </view>
         <view class="boot-equity-right">
@@ -439,17 +444,22 @@ const handleQuickUrl = (item: any) => {
     display: flex;
     align-items: center;
     height: 104rpx;
-    .icon {
-      // display: inline-block;
+
+    .icon-image {
       width: 32rpx;
       height: 32rpx;
-      // overflow: hidden;
-      margin-top: -4 + rpx;
-      .image {
-        width: 100%;
-        height: 100%;
-      }
     }
+    // .icon {
+    //   // display: inline-block;
+    //   width: 32rpx;
+    //   height: 32rpx;
+    //   // overflow: hidden;
+    //   margin-top: -4 + rpx;
+    //   .image {
+    //     width: 100%;
+    //     height: 100%;
+    //   }
+    // }
 
     .text {
       height: 40rpx;
