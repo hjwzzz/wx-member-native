@@ -19,7 +19,9 @@
           <view class="t1-box" @click="goDetail(item)">
             <image
               class="image left"
-              :src="item.url || `${staticUrl}img/store/store-avatar-default.png`"
+              :src="
+                item.url || `${staticUrl}img/store/store-avatar-default.png`
+              "
               mode="aspectFit"
             />
             <view class="right">
@@ -111,6 +113,10 @@ interface storeType {
 const list = ref<storeType[]>([]);
 
 onLoad(() => {
+  uni.showLoading({
+    title: '加载中',
+    mask: true,
+  });
   uni.getLocation({
     type: 'wgs84',
     success: ({ latitude: lat, longitude: lng }) => {
@@ -147,6 +153,7 @@ const updateNearStorePost = async () => {
     storeName: keyward.value,
     coordCur: coordCur.value,
   });
+  uni.hideLoading();
   if (code === 0) {
     data.forEach((i: storeType) => {
       // 详细地址

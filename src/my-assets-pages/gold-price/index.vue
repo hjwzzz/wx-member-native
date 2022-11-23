@@ -26,7 +26,7 @@
       </view>
 
       <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
-        <view class="name">{{
+        <view class="name text-break">{{
           goldPriceDatas.store.name || goldPriceDatas.store.storeName
         }}</view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
@@ -47,16 +47,15 @@
                   >{{ item.met }} {{ item.metCtn || '' }}</view
                 >
                 <view class="b bbb">
-                  {{ item.brandName ? '品牌：' : '' }}
-                  {{ item.brandName || '' }}</view
-                >
+                  {{ item.brandName ? '品牌：' + item.brandName : '' }}
+                </view>
               </view>
               <view class="right">
                 <view class="t">¥{{ item.price }}</view>
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
-                  >工费：¥{{ item.laborFee || item.laborPrice }}</view
+                  >工费：¥{{ item.laborFee || item.laborPrice || 0 }}</view
                 >
               </view>
             </view>
