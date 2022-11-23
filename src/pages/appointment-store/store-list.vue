@@ -44,9 +44,10 @@
               <view class="left">
                 <image
                   :src="`${staticUrl}prize/store/address.png`"
+                  class="img"
                   mode=""
                 ></image>
-                <text style="font-size: 24rpx" class="address">
+                <text style="font-size: 24rpx" class="address break-word">
                   {{ mergeFullAddress(item) || '--' }}
                 </text>
               </view>
@@ -291,13 +292,21 @@ const confimStore = () => {
         justify-content: space-between;
         margin-top: 12rpx;
 
-        image {
+        .img {
+          flex: none;
           width: 20rpx;
           height: 21rpx;
           margin-right: 16rpx;
+          margin-top: 10rpx;
         }
-
+        .left {
+          display: flex;
+        }
         .address {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
           font-size: 20rpx;
           color: #bbbcc3;
         }
