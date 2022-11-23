@@ -45,7 +45,9 @@
                 </view>
                 <view class="right">元/克</view>
               </view>
-              <view class="detail-footer _text1">{{ price.distName }}</view>
+              <view class="detail-footer _text1 text-break">{{
+                price.distName
+              }}</view>
             </view>
           </view>
         </swiper-item>
@@ -261,13 +263,14 @@ watch(
       }
     }
 
-    // ._text1 {
-    //   display: box;
-    //   overflow: hidden;
-    //   text-overflow: ellipsis;
-    //   -webkit-line-clamp: 1;
-    //   -webkit-box-orient: vertical;
-    // }
+    ._text1 {
+      // overflow: hidden;
+      // text-overflow: ellipsis;
+      // -webkit-line-clamp: 1;
+      // -webkit-box-orient: vertical;
+      font-size: 24rpx;
+      color: #b7b8c4;
+    }
   }
 
   .swiper-item {

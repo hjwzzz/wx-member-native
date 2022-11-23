@@ -78,6 +78,7 @@ const oldPage: {
   // 'pages/tabbar/index': 'wm_index', // 首页
   'signInGift/giftPage/index': 'sign', // 签到
   'myAssets/thebalance/index': 'balance', // 我的余额
+  'pages/center/thebalance/index': 'balance', // 我的余额
   'pages/center/ticket/index': 'coupon', // 我的优惠券
   'pages/center/nearby-store/index': 'nearby_store', // 附近门店
   'activity/popularity/index': 'popularity', // 活动-人气值千金
