@@ -612,6 +612,7 @@ const onExchange = (item: any) => {
 };
 const checkPrize = (info: any, params: any) => {
   const { memberPrizeId: id, recvManner } = info;
+  const color = styleObj.page.topImgBgColor;
   checkChgAward(params)
     .then(res => {
       if (res.code === 0) {
@@ -629,6 +630,9 @@ const checkPrize = (info: any, params: any) => {
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
         // uni.setStorageSync('pages', url);
         Router.go(url);
+      } else {
+        showToast(res.msg);
+        Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
       }
     });
 };
@@ -652,6 +656,8 @@ const onReceivePrize = (item: any) => {
         // Router.go(url);
           Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
         }
+      } else {
+        showToast(res.msg);
       }
     });
 };
