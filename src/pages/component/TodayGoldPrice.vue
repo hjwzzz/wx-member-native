@@ -45,9 +45,9 @@
                 </view>
                 <view class="right">元/克</view>
               </view>
-              <view class="detail-footer _text1 text-break">{{
-                price.distName
-              }}</view>
+              <view class="detail-footer _text1 text-break">
+                {{ price.name || price.distName }}
+              </view>
             </view>
           </view>
         </swiper-item>
