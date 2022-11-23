@@ -106,7 +106,11 @@ import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
 import router from '@/utils/router';
 
-const props = defineProps<{ item: any }>();
+interface DistInit {
+  distId: string;
+  storeName: string;
+}
+const props = defineProps<{ item: any; distInit: DistInit }>();
 const form = reactive({ name: '', phone: '' });
 
 const exchangeCode = ref(0);
@@ -144,7 +148,7 @@ const goAdress = () => {
 };
 
 // 选择店铺
-const storeInfo = ref<any>({});
+const storeInfo = ref<any>(props.distInit || {});
 const goStore = () => {
   uni.$once('chooseStore', e => storeInfo.value = e);
   router.goCodePage(
