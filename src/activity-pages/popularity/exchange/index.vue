@@ -97,6 +97,10 @@
       @onChange="onChangeShowAddress"
       @onCheck="onCheck"
     />
+    <toast-template
+      v-model:visible="toastVisible"
+      :message="toastMsg"
+    ></toast-template>
   </view>
 </template>
 
@@ -115,6 +119,7 @@ import { richImage } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 import { useBasicsData } from '@/store/basicsData';
+import ToastTemplate from '../../component/Toast/index.vue';
 
 const initBasicsData = useBasicsData();
 const actId = ref('');
@@ -282,6 +287,8 @@ const onSumbit = () => {
             'reLaunch'
           );
         }
+      } else {
+        showToast(res.msg);
       }
     });
 };
@@ -301,8 +308,18 @@ const checkPrize = (info: any) => {
         }
         let url = '/my-assets-pages/my-prize/prize-detail';
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+        if (form.distId) {
+          url += `&storeName=${form.distName}&storage_id=${form.distId}`;
+        }
         // uni.setStorageSync('pages', url);
         uni.reLaunch({ url });
+      } else {
+        showToast(res.msg);
+        Router.goCodePage(
+          'activiy_prize',
+          `?actId=${actId.value}&c=${color.value}`,
+          'reLaunch'
+        );
       }
     });
 };
@@ -317,6 +334,13 @@ const onChangeShowAddress = (val: boolean) => {
 };
 
 const richImageFun = (item: any) => richImage(item);
+// 提示
+const toastVisible = ref(false);
+const toastMsg = ref('');
+const showToast = (str: string) => {
+  toastMsg.value = str;
+  toastVisible.value = true;
+};
 </script>
 <style lang="scss" scoped>
 .popularity-exchange-page {
