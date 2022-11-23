@@ -14,7 +14,8 @@
         <view class="sure-btn" @click="updateNearStorePost">搜索</view>
       </view>
 
-      <view v-if="list.length > 0" class="themap">
+      <u-loadmore v-if="loading" :status="`loading`" color="#D8D9E0" margin-top="20" />
+      <view v-else-if="list.length > 0" class="themap">
         <view v-for="(item, index) in list" :key="index" class="t1">
           <view class="t1-box" @click="goDetail(item)">
             <image
@@ -110,6 +111,8 @@ interface storeType {
 }
 const list = ref<storeType[]>([]);
 
+const loading = ref(false)
+
 onLoad(() => {
   uni.getLocation({
     type: 'wgs84',
@@ -142,11 +145,13 @@ const coordCur = computed(() => {
 });
 // 刷新列表
 const updateNearStorePost = async () => {
+  loading.value = true
   const { code, data } = await getNearStore({
     distId: '',
     storeName: keyward.value,
     coordCur: coordCur.value,
   });
+  loading.value = false
   if (code === 0) {
     data.forEach((i: storeType) => {
       // 详细地址
