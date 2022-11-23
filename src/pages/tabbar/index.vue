@@ -106,7 +106,13 @@
                 @click="handleEntryUrl(item)"
               >
                 <view class="item-header">
-                  <image :src="item.icoUrl" mode=""></image>
+                  <image
+                    class="item-header-image"
+                    :src="
+                      item.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                    "
+                    mode=""
+                  ></image>
                 </view>
                 <view class="item-text">{{ item.title }}</view>
               </view>
@@ -261,8 +267,8 @@ const getPageDate = async () => {
 const bannerIndexFun = (item: any) => {
   const url = JSON.parse(item.url || {});
   if (!url.code && !url.systemUrl && url.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
-    return
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
   }
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
@@ -349,8 +355,8 @@ const topBgImageUrl = computed(() => {
 
 const handleEntryUrl = (item: any) => {
   if (!item.code && item.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` })
-    return
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
   }
 
   let param = item.miniUrl?.split('?')?.[1];
@@ -480,7 +486,7 @@ const goMoreNotice = (item: any, noticTime: any) => {
       border-radius: 22rpx;
     }
 
-    .item-header image {
+    .item-header-image {
       width: 100%;
       height: 100%;
       overflow: hidden;

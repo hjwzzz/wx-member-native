@@ -20,23 +20,19 @@
         <view class="text">{{ policy.number }}</view>
       </view>
       <view class="shopName">
-        <view class="icon">
-          <image
-            class="image"
-            :src="staticUrl + 'img/store.png'"
-            mode="aspectFill"
-          />
-        </view>
+        <image
+          class="image icon-image"
+          :src="staticUrl + 'img/store.png'"
+          mode="aspectFill"
+        />
         <view class="name">{{ policy.storeName }}</view>
       </view>
       <view class="orderTime">
-        <view class="icon">
-          <image
-            class="image"
-            :src="staticUrl + 'img/time.png'"
-            mode="aspectFill"
-          />
-        </view>
+        <image
+          class="image icon-image"
+          :src="staticUrl + 'img/time.png'"
+          mode="aspectFill"
+        />
         <view class="time">{{ policy.bizTime }}</view>
       </view>
     </view>
@@ -114,6 +110,11 @@ watch(
   background: #fff;
   border-radius: 16rpx;
 
+  .icon-image {
+    height: 24rpx;
+    width: 24rpx;
+  }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -160,10 +161,10 @@ watch(
   }
 
   .content {
-    padding-top: 20rpx;
+    padding-bottom: 20rpx;
     // padding: 30rpx 0;
-    margin-top: 10rpx;
-    margin-bottom: 20rpx;
+    margin-top: 20rpx;
+    margin-bottom: 10rpx;
 
     .orderId {
       display: flex;
@@ -182,18 +183,18 @@ watch(
       text-overflow: ellipsis;
       white-space: nowrap;
 
-      .icon {
-        flex-shrink: 0;
-        width: 30rpx;
-        height: 30rpx;
-        margin-right: 5rpx;
-        // overflow: hidden;
+      // .icon {
+      //   flex-shrink: 0;
+      //   width: 30rpx;
+      //   height: 30rpx;
+      //   margin-right: 5rpx;
+      //   // overflow: hidden;
 
-        .image {
-          width: 100%;
-          height: 100%;
-        }
-      }
+      //   .image {
+      //     width: 100%;
+      //     height: 100%;
+      //   }
+      // }
 
       .name {
         height: 40rpx;
@@ -212,17 +213,17 @@ watch(
       display: flex;
       align-items: center;
       // height: 50rpx;
-      .icon {
-        width: 30rpx;
-        height: 30rpx;
-        margin-right: 5rpx;
-        // overflow: hidden;
+      // .icon {
+      //   width: 30rpx;
+      //   height: 30rpx;
+      //   margin-right: 5rpx;
+      //   // overflow: hidden;
 
-        .image {
-          width: 100%;
-          height: 100%;
-        }
-      }
+      //   .image {
+      //     width: 100%;
+      //     height: 100%;
+      //   }
+      // }
 
       .time {
         height: 40rpx;
@@ -235,8 +236,11 @@ watch(
     }
   }
 
-  .content:nth-child(odd) {
-    border-top: solid 2rpx #f8f8f8;
+  .content {
+    border-bottom: solid 2rpx #f8f8f8;
+  }
+  .content:last-child {
+    border-bottom: solid 0rpx white;
   }
 }
 </style>
