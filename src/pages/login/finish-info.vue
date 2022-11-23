@@ -1,7 +1,7 @@
 <template>
   <CustomPage>
     <view class="info">
-      <view v-for="(info, index) in showList" :key="index" class="list">
+      <view v-for="(info, index) in showList" :key="info.code" class="list">
         <view
           v-if="
             ![
@@ -12,7 +12,7 @@
           "
           :key="index"
           class="list-item"
-          @click="handle(index)"
+          @click="handle(info)"
         >
           <!-- 生日 农历 阴历    -->
           <view class="selected-item">
@@ -382,8 +382,7 @@ const queryWriteInfo = async (p = {}) => {
   }
 };
 
-const handle = (index: number) => {
-  const item = list.value[index];
+const handle = (item: any) => {
   if (isActivity.value) {
     if (item.code === shop && !activeData.value.canModifyDist) {
       return;
