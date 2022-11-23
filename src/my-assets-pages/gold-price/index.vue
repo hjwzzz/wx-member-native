@@ -27,7 +27,7 @@
 
       <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
         <view class="name text-break">{{
-          goldPriceDatas.store.name || goldPriceDatas.store.storeName
+          goldPriceDatas.store.name || goldPriceDatas.store.distName
         }}</view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
