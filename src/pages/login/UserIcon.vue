@@ -12,15 +12,14 @@
         <text class="input-name">{{ props.name }}</text>
       </view>
       <image
-        class="user-avatar"
+        class="user-avatar mR30"
         v-if="props.modelValue"
         :src="props.modelValue"
         mode="scaleToFill"
       />
-      <view v-else class="input-right">
-        {{ props.modelValue ? '' : '请选择头像' }}
+      <view v-else class="input-right mR30">
+        {{ props.modelValue ? '' : '设置头像' }}
       </view>
-      <uni-icons class="pR30" type="arrowright" size="14" />
     </slot>
   </button>
 </template>
@@ -118,11 +117,11 @@ const upImg = (url: any) => {
   }
 
   .input-right {
-    color: #808080;
+    color: var(--main-color);
     font-size: 28rpx;
   }
-  .pR30 {
-    padding-right: 30rpx;
+  .mR30 {
+    margin-right: 30rpx;
   }
 }
 .user-avatar {

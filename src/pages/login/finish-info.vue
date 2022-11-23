@@ -1,7 +1,12 @@
 <template>
   <CustomPage>
     <view class="info">
-      <view v-for="(info, index) in showList" :key="info.code" class="list">
+      <view
+        v-for="(info, index) in showList"
+        :key="info.code"
+        class="list"
+        :class="{ last: index === list.length - 1, first: index === 0 }"
+      >
         <view
           v-if="
             ![
@@ -203,8 +208,8 @@
               @input="changeNickName"
               type="nickname"
               maxlength="32"
-              placeholder-style="color:#d8d9e0;font-size:28rpx;"
-              :placeholder="'请输入' + info.name"
+              placeholder-style="color:var(--main-color);font-size:28rpx;"
+              placeholder="设置昵称"
             />
           </view>
         </view>
@@ -677,7 +682,16 @@ const changeNickName = (e: any) => {
 
   .list {
     background: #ffffff;
-
+    border-bottom: 1rpx solid #ebedf0;
+    &.last {
+      border-bottom: none;
+      border-bottom-left-radius: 16rpx;
+      border-bottom-right-radius: 16rpx;
+    }
+    &.first {
+      border-top-right-radius: 16rpx;
+      border-top-left-radius: 16rpx;
+    }
     .list-item {
       .selected-item {
         display: flex;
