@@ -212,7 +212,14 @@ const getPrize = async () => {
     popup.value.open('center');
   }
 };
-const navBack = () => uni.navigateBack({ delta: 1 });
+const navBack = () => {
+  uni.navigateBack({
+    delta: 1,
+    fail() {
+      router.goCodePage('my_prize');
+    },
+  });
+};
 </script>
 
 <style scoped lang="scss">

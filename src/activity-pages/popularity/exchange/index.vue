@@ -284,7 +284,7 @@ const onSumbit = () => {
           Router.goCodePage(
             'activiy_prize',
             `?actId=${actId.value}&c=${color.value}`,
-            'reLaunch'
+            'redirectTo'
           );
         }
       } else {
@@ -312,13 +312,13 @@ const checkPrize = (info: any) => {
           url += `&storeName=${form.distName}&storage_id=${form.distId}`;
         }
         // uni.setStorageSync('pages', url);
-        uni.reLaunch({ url });
+        uni.redirectTo({ url });
       } else {
         showToast(res.msg);
         Router.goCodePage(
           'activiy_prize',
           `?actId=${actId.value}&c=${color.value}`,
-          'reLaunch'
+          'redirectTo'
         );
       }
     });
