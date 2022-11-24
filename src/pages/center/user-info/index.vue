@@ -230,7 +230,13 @@
         >
         </uni-calendar>
       </view>
-      <uni-popup ref="popup" @maskClick="popup?.close" type="dialog">
+      <uni-popup
+        ref="popup"
+        input
+        :nickname="dialogKey === 'nickName'"
+        @maskClick="popup?.close"
+        type="dialog"
+      >
         <uni-popup-dialog
           v-if="dialogTitle"
           :key="dialogKey"
@@ -271,7 +277,7 @@ import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
 const initBasicsData = useBasicsData();
 
-const header = [
+const header = computed(() => [
   {
     name: '个人头像',
     code: IInfoField.avatar,
@@ -287,7 +293,8 @@ const header = [
     code: IInfoField.Phone,
     key: 'phone',
   },
-];
+].filter(({ code }) => showObj.value[code]));
+
 const setList = ref<IPrivateFieldItem[]>([]);
 const items = [
   {
@@ -343,10 +350,8 @@ onShow(() => {
 });
 
 const userInfo = ref<any>({});
-const FieldObj = ref<{ [key: string]: boolean }>({
-  [IInfoField.avatar]: true,
-  [IInfoField.nickName]: true,
-});
+const FieldObj = ref<{ [key: string]: boolean }>({});
+const showObj = ref<{ [key: string]: boolean }>({});
 const current = ref();
 const handleUpdate = async ({ code, key }: any) => {
   if (!FieldObj.value[code]) return;
@@ -501,6 +506,7 @@ const updateUserIno = async (item: any, refresh = false) => {
   if (code === 0) {
     Object.assign(userInfo.value, item);
     refresh && querySetting();
+    uni.showToast({ title: '更新成功' });
   }
 };
 const confirmDate = (e: any) => {
@@ -529,6 +535,7 @@ const querySetting = async () => {
   if (code === 0 && data) {
     setList.value = data.filter(i => {
       FieldObj.value[i.code] = i.update === 'Y';
+      showObj.value[i.code] = i.show === 'Y';
       // 分离出电话号码、头像、昵称等三栏
       if (
         ![IInfoField.Phone, IInfoField.nickName, IInfoField.avatar].includes(i.code as IInfoField)
@@ -566,7 +573,7 @@ const professionChange = (e: any) => {
 const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
-    data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png',
+    data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png';
     userInfo.value = data;
     // 计算农历生日
     if (data.birthSolar) {
@@ -574,12 +581,11 @@ const queryUserInfo = async () => {
       const r = Lunar.toLunar(a, b, c);
       data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
     }
+    // 日期类型（公历/农历） 默认公历
+    if (!data.birthKind || data.birthKind === 'U') data.birthKind = 'S';
     const { proId, sex, birthKind, education } = data;
     edcIndex.value = educations.findIndex(i => i.value === education);
-
-    // 日期类型（公历/农历）
-    const formatDateType = (i: string) => ({ S: 0, L: 1, U: null }[i] ?? null);
-    current.value = formatDateType(birthKind);
+    current.value = birthKind === 'S' ? 0 : 1;
 
     // 性别
     const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] ?? 2);

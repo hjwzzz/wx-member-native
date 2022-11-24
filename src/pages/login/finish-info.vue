@@ -342,7 +342,7 @@ const queryNearShop = async (distId: any) => {
   if (!res.code && res.data?.length) {
     selectedShop.value = res.data[0];
   } else {
-    selectedShop.value.distId = undefined;
+    selectedShop.value.distId = '';
   }
 };
 const queryWriteInfo = async (p = {}) => {
@@ -445,14 +445,7 @@ const handle = (item: any) => {
       );
       break;
     }
-    case GENDER: {
-      break;
-    }
     case 'REGIST_REQUIRED_AREA': {
-      uni.$once('chooseAddress', e => {
-        selectedShop.value = e;
-      });
-      router.goCodePage('finishAddress');
       break;
     }
     default:

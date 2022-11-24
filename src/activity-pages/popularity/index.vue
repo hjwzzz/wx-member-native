@@ -630,7 +630,7 @@ const checkPrize = (info: any, params: any) => {
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
         // uni.setStorageSync('pages', url);
         Router.go(url);
-      } else {
+      } else if (res.code !== 500) {
         showToast(res.msg);
         Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
       }
@@ -656,7 +656,7 @@ const onReceivePrize = (item: any) => {
         // Router.go(url);
           Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
         }
-      } else {
+      } else if (res.code !== 500) {
         showToast(res.msg);
       }
     });

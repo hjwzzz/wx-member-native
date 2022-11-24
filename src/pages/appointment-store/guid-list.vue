@@ -93,7 +93,6 @@ const handleSelectedGuid = () => {
     height: 98rpx;
     display: flex;
     box-sizing: border-box;
-    justify-content: space-between;
     padding: 30rpx;
     align-items: center;
     border-bottom: solid 1rpx #ebedf0;
@@ -154,6 +153,8 @@ const handleSelectedGuid = () => {
 }
 :deep(.selected) {
   color: var(--main-color);
+  flex: 1;
+  text-align: right;
 }
 .search-bar-bg {
   background-color: #fff;

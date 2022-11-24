@@ -218,7 +218,7 @@ const onSumbit = () => {
   // console.log('formArr', formArr.value);
   for (let i = 0; i < formArr.value.length; i++) {
     const item = formArr.value[i];
-    if (item.type === 'DIST_NAME' && !form.distId && form.notNull === 'Y') {
+    if (item.type === 'DIST_NAME' && !form.distId && item.notNull === 'Y') {
       uni.showToast({
         title: `请选择${item.propertyName}`,
         duration: 3000,
@@ -226,7 +226,7 @@ const onSumbit = () => {
       });
       return;
     }
-    if (item.type === 'NAME' && !form.name && form.notNull === 'Y') {
+    if (item.type === 'NAME' && !form.name && item.notNull === 'Y') {
       uni.showToast({
         title: `请输入${item.propertyName}`,
         duration: 3000,
@@ -234,7 +234,7 @@ const onSumbit = () => {
       });
       return;
     }
-    if (item.type === 'PHONE' && !form.phone && form.notNull === 'Y') {
+    if (item.type === 'PHONE' && !form.phone && item.notNull === 'Y') {
       uni.showToast({
         title: `请授权${item.propertyName}`,
         duration: 3000,
@@ -284,10 +284,10 @@ const onSumbit = () => {
           Router.goCodePage(
             'activiy_prize',
             `?actId=${actId.value}&c=${color.value}`,
-            'reLaunch'
+            'redirectTo'
           );
         }
-      } else {
+      } else if (res.code !== 500) {
         showToast(res.msg);
       }
     });
@@ -312,13 +312,13 @@ const checkPrize = (info: any) => {
           url += `&storeName=${form.distName}&storage_id=${form.distId}`;
         }
         // uni.setStorageSync('pages', url);
-        uni.reLaunch({ url });
+        uni.redirectTo({ url });
       } else {
         showToast(res.msg);
         Router.goCodePage(
           'activiy_prize',
           `?actId=${actId.value}&c=${color.value}`,
-          'reLaunch'
+          'redirectTo'
         );
       }
     });

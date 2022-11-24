@@ -57,14 +57,12 @@ const queryCardList = async () => {
   queryInfo();
 };
 let selidentKind = '';
-let seidentNo = '';
 const queryInfo = async () => {
   const { code: c, data } = await getMemberInfo('');
 
   if (c === 0 && data) {
     const { identKind, identNo } = data;
     selidentKind = identKind;
-    seidentNo = identNo;
     code.value = identNo;
 
     list.map((item, num) => {
@@ -76,7 +74,7 @@ const queryInfo = async () => {
 };
 
 const handleSubmit = async () => {
-  let identNo = seidentNo || code.value;
+  let identNo = code.value;
   const type = list[index.value].value || selidentKind;
 
   const tastShow = () => {
@@ -185,6 +183,7 @@ const handleSubmit = async () => {
       }
 
       .verCode {
+        flex: 1;
         text-align: right;
         &-input {
           color: #9697a2 !important;

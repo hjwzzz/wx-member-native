@@ -88,10 +88,7 @@
         class="remark-box"
         v-if="goldPriceDatas?.param?.remarkShowed === 'Y'"
       >
-        <view
-          v-if="goldPriceDatas.param.remark"
-          v-html="richImage(goldPriceDatas.param.remark)"
-        ></view>
+        <mp-html v-if="goldPriceDatas.param.remark" :copy-link="false" :content="richImage(goldPriceDatas.param.remark)" @linktap="linktap" />
         <view class="content" v-else>
           <view class="empty-wrapper">
             <view class="empty"> 暂无数据 </view>
@@ -153,6 +150,10 @@ const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
   router.goCodePage('chooseStore');
 };
+
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+}
 
 // const richImage = (e: any) => {
 //   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;

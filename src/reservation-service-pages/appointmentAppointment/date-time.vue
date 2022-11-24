@@ -168,6 +168,9 @@ const confirm = () => {
                   display: none;
                 }
               }
+              .uni-calendar-item--isDay-text {
+                color: var(--main-color);
+              }
               .uni-calendar-item--isDay {
                 background: var(--main-color);
                 color: #fff;
