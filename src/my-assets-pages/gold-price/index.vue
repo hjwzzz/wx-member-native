@@ -26,7 +26,9 @@
       </view>
 
       <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
-        <view class="name">{{ goldPriceDatas.store.storeName || '--' }}</view>
+        <view class="name text-break">{{
+          goldPriceDatas.store.name || goldPriceDatas.store.distName
+        }}</view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
 
@@ -45,16 +47,15 @@
                   >{{ item.met }} {{ item.metCtn || '' }}</view
                 >
                 <view class="b bbb">
-                  {{ item.brandName ? '品牌：' : '' }}
-                  {{ item.brandName || '' }}</view
-                >
+                  {{ item.brandName ? '品牌：' + item.brandName : '' }}
+                </view>
               </view>
               <view class="right">
                 <view class="t">¥{{ item.price }}</view>
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
-                  >工费：¥{{ item.laborFee || item.laborPrice }}</view
+                  >工费：¥{{ item.laborFee || item.laborPrice || 0 }}</view
                 >
               </view>
             </view>
@@ -112,10 +113,11 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
-import // getGoldPriceAdBannerList,
-// queryDefShowGoldPrice,
-// queryGoldPriceByDist,
-'@/api/gold-price';
+import {
+  // getGoldPriceAdBannerList,
+  queryDefShowGoldPrice,
+  queryGoldPriceByDist,
+} from '@/api/gold-price';
 import { getDefaultDistributorInfoByOpsIdFront } from '@/api/server';
 
 //
@@ -133,7 +135,7 @@ import { useBasicsData } from '@/store/basicsData';
 const initBasicsData = useBasicsData();
 
 onLoad((e: any) => {
-  // console.log('onLoad((e: any) ', e);
+  console.log('onLoad((e: any) ', e);
   isShare();
   getBannerList();
   getGoldPrice(e.distId);
@@ -146,8 +148,8 @@ const current = ref(0);
 const bannerClick = (item: any) => {
   const url = JSON.parse(item.url || {});
   if (!item.code && item.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` })
-    return
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
   }
   router.goCodePage(url.code || url.systemUrl);
 };
@@ -163,8 +165,10 @@ const onChooseStore = () => {
 // };
 // const shareObj: any = {};
 // const defaultObj: any = {};
+// 'brandOldPrice' : 'brandPrice'
+// metalPrices  oldmatMetalPrices
 const showTabs = computed(() => list.value.map(i => i.name));
-const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
+const showData = computed(() => goldPriceDatas.value[current.value ? 'oldmatMetalPrices' : 'metalPrices']);
 
 const getBannerList = async () => {
   const res = await queryGoldPriceBannerListFront('');
@@ -181,12 +185,16 @@ const getBannerList = async () => {
 // };
 
 const getGoldPrice = async (id = '') => {
+  console.log('getGoldPrice id=', id);
   let distId = id;
   if (!distId || distId === 'undefined') {
     const res = await getDefaultDistributorInfoByOpsIdFront('');
     distId = res.data.distId;
   }
-  // const url = id ? getSaleMetalPrice : queryDefShowGoldPrice;
+  console.log('getGoldPrice distId=', distId);
+  // queryDefShowGoldPrice,
+  // queryGoldPriceByDist,
+  // const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
   // const { code, data } = await url({ distId: id });
   const { code, data } = await getSaleMetalPrice({ distId });
 

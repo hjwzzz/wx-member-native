@@ -130,8 +130,7 @@ watch(
 // 默认地址
 onMounted(async () => {
   const { data } = await getAdressList();
-  // TODO 接口修改未生效，先测试使用
-  const d = data.find((i: any) => ['Y', 'true'].includes(i.isDefault));
+  const d = data.find((i: any) => i.isDefault === 'Y');
   if (d) {
     address.value = d;
     const { receiver, phone } = d;
@@ -156,7 +155,6 @@ const goStore = () => {
     `id=${storeInfo.value.distId ?? ''}&relatedId=${props.item.relatedId}`
   );
 };
-
 // 确认兑换
 const popup = ref();
 const getPrize = async () => {
@@ -175,8 +173,7 @@ const getPrize = async () => {
   } else if (!params.recvStoreId) {
     str = '请选择领取门店';
   } else if (exchangeCode.value === 1) {
-    const phoneReg =
-      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+    const phoneReg =/^1\d{10}$/;
     !phoneReg.test(params.recverPhone) && (str = '手机号格式错误');
     !params.recverPhone && (str = '请输入手机号');
     !params.recver && (str = '请输入领取人');

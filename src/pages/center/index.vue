@@ -47,7 +47,7 @@
               <view class="item-num">{{
                 item.accountValue !== ' ' ? item.accountValue : 0
               }}</view>
-              <view class="item-name">{{ item.title }}</view>
+              <view class="login-list-item-name">{{ item.title }}</view>
             </view>
           </block>
         </view>
@@ -59,13 +59,18 @@
         @click="handleFixedSysUrl()"
       >
         <view class="boot-equity-left">
-          <view class="icon">
+          <!-- <view class="icon">
             <image
               class="image"
               :src="staticUrl + 'img/level.png'"
               mode="aspectFit"
             />
-          </view>
+          </view> -->
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/level.png'"
+            mode="aspectFit"
+          />
           <view class="text">{{ userInfo.curLevelName || '' }}</view>
         </view>
         <view class="boot-equity-right">
@@ -91,7 +96,13 @@
                 v-if="entry.showed"
               >
                 <view class="item-icon">
-                  <image class="image" :src="entry.icoUrl" mode="aspectFit" />
+                  <image
+                    class="image"
+                    :src="
+                      entry.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                    "
+                    mode="aspectFit"
+                  />
                 </view>
                 <view class="item-name">{{ entry.title }}</view>
                 <uni-icons
@@ -264,8 +275,8 @@ const getBannerData = async () => {
 const bannerListClick = (item: any) => {
   const url = JSON.parse(item.url || {});
   if (!url.code && !url.systemUrl && url.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
-    return
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
   }
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
@@ -407,7 +418,7 @@ const handleQuickUrl = (item: any) => {
         color: #323338;
       }
 
-      .item-name {
+      .login-list-item-name {
         height: 28rpx;
         font-size: 20rpx;
         font-weight: 400;
@@ -433,16 +444,22 @@ const handleQuickUrl = (item: any) => {
     display: flex;
     align-items: center;
     height: 104rpx;
-    .icon {
-      // display: inline-block;
+
+    .icon-image {
       width: 32rpx;
       height: 32rpx;
-      // overflow: hidden;
-      .image {
-        width: 100%;
-        height: 100%;
-      }
     }
+    // .icon {
+    //   // display: inline-block;
+    //   width: 32rpx;
+    //   height: 32rpx;
+    //   // overflow: hidden;
+    //   margin-top: -4 + rpx;
+    //   .image {
+    //     width: 100%;
+    //     height: 100%;
+    //   }
+    // }
 
     .text {
       height: 40rpx;
@@ -527,7 +544,7 @@ const handleQuickUrl = (item: any) => {
         align-items: center;
         justify-content: space-between;
         padding-right: 12rpx;
-
+        font-size: 28rpx;
         .badge {
           width: 20rpx;
           height: 20rpx;
