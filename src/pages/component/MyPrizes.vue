@@ -85,7 +85,7 @@ const prizeList = [
 
 <style lang="scss" scoped>
 .grid-prize {
-  height: 240rpx;
+  min-height: 190rpx;
   padding: 30rpx;
   margin: 30rpx 0rpx;
   background: #fff;

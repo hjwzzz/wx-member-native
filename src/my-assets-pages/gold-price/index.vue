@@ -33,13 +33,9 @@
       </view>
 
       <view class="price-box" v-if="goldPriceDatas?.param">
-        <Tabs
-          :tabList="list"
-          v-model:current="current"
-          @change="(e: any) => current = e.index"
-        />
-
-        <view class="tab-bd" v-if="showTabs?.length > 1">
+        <!--  @change="(e: any) => current = e.index" -->
+        <Tabs :tabList="list" v-model:current="current" @change="setItemKey" />
+        <view class="tab-bd" v-if="showTabs.length > 0">
           <view class="inner">
             <view class="item" v-for="item in showData" :key="item.brandId">
               <view class="left">
@@ -113,11 +109,11 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
-import {
-  // getGoldPriceAdBannerList,
-  queryDefShowGoldPrice,
-  queryGoldPriceByDist,
-} from '@/api/gold-price';
+// import {
+//   // getGoldPriceAdBannerList,
+//   queryDefShowGoldPrice,
+//   queryGoldPriceByDist,
+// } from '@/api/gold-price';
 import { getDefaultDistributorInfoByOpsIdFront } from '@/api/server';
 
 //
@@ -167,12 +163,19 @@ const onChooseStore = () => {
 // const defaultObj: any = {};
 // 'brandOldPrice' : 'brandPrice'
 // metalPrices  oldmatMetalPrices
+
+const showText = ref('metalPrices');
 const showTabs = computed(() => list.value.map(i => i.name));
-const showData = computed(() => goldPriceDatas.value[current.value ? 'oldmatMetalPrices' : 'metalPrices']);
+const showData = computed(() => goldPriceDatas.value[showText.value]);
 
 const getBannerList = async () => {
   const res = await queryGoldPriceBannerListFront('');
   bannerList.value = res.data;
+};
+
+const setItemKey = ({ item }: any) => {
+  showText.value = item.key;
+  // showText.value
 };
 
 // const getDefaultOpsId = async () => {
@@ -185,13 +188,13 @@ const getBannerList = async () => {
 // };
 
 const getGoldPrice = async (id = '') => {
-  console.log('getGoldPrice id=', id);
+  // console.log('getGoldPrice id=', id);
   let distId = id;
   if (!distId || distId === 'undefined') {
     const res = await getDefaultDistributorInfoByOpsIdFront('');
     distId = res.data.distId;
   }
-  console.log('getGoldPrice distId=', distId);
+  // console.log('getGoldPrice distId=', distId);
   // queryDefShowGoldPrice,
   // queryGoldPriceByDist,
   // const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
@@ -203,10 +206,13 @@ const getGoldPrice = async (id = '') => {
     goldPriceDatas.value = data;
     if (data.param) {
       if (data.param.todayGoldPriceShowed === 'Y') {
-        list.value.push({ name: '今日金价' });
+        list.value.push({ name: '今日金价', key: 'metalPrices' });
       }
       if (data.param.recoveryGoldPriceShowed === 'Y') {
-        list.value.push({ name: '回收金价' });
+        list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+      }
+      if (list.value.length) {
+        showText.value = list.value[0].key;
       }
     }
   }
