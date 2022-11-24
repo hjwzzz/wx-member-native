@@ -49,6 +49,7 @@ provide('reState', ref(false));
 page {
   --main-color: #ff547b;
   background: #f5f5f5;
+  word-break: break-all;
 }
 
 .text-break {
@@ -61,6 +62,13 @@ page {
   word-break: break-all;
   word-wrap: break-word;
   white-space: pre-warp;
+}
+
+.text-line-two {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .uni-searchbar__cancel {
