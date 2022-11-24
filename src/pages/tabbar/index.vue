@@ -121,11 +121,7 @@
         </view>
         <!-- 富文本 -->
         <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
-          <view
-            v-if="items.param.content"
-            v-html="richImage(items.param.content)"
-          >
-          </view>
+          <mp-html v-if="items.param.content" :copy-link="false" :content="richImage(items.param.content)" @linktap="linktap" />
           <NoneData v-else> </NoneData>
         </view>
         <!-- 今日金价 -->
@@ -223,6 +219,10 @@ onShow(() => {
   getWmAlertAdBannerListFun();
   getShareSet();
 });
+
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+}
 
 // const shareObj: Ref<any> = ref({});
 const shareData: Ref<any> = ref([]);
