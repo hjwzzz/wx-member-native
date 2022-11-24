@@ -176,7 +176,7 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, reactive, Ref } from 'vue';
+import { ref, reactive, Ref, inject } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
   getMemberCenterIndex,
@@ -228,10 +228,17 @@ const policyListNum = ref(0);
 //   uni.navigateTo({ url: '/pages/login/index' });
 // };
 
+// onMounted(() => {
+//   console.log('onMounted-onShow');
+// });
+
+const reState: any = inject('reState');
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
   // getGoldPriceByPage();
+  // uni.$emit('refreshComponent');
+  reState.value = !reState.value;
 });
 
 const getMemberCentertIndex = async () => {

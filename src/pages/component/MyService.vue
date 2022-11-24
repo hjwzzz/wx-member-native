@@ -38,10 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch } from 'vue';
+import { ref, Ref, watch, inject } from 'vue';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { useBasicsData } from '@/store/basicsData';
 import NoneData from './NoneData.vue';
+import { debounce } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 
@@ -74,25 +75,32 @@ const handleSysUrl = () => {
 const handleDetailUrl = ({ id }: any) => {
   uni.navigateTo({ url: `/reservation-service-pages/myAppointment/detail?id=${id}` });
 };
+
+const refreshState = inject('reState') as Ref<boolean>;
+
+const initInfo = debounce(() => {
+  if (initBasicsData.checkLogin) {
+    getMemberRecommend();
+  } else {
+    srvProList.value = [];
+  }
+}, 1000);
 // srvProshowNum有值再去请求
 watch(
   () => props.srvProshowNum,
   () => {
-    getMemberRecommend();
+    initInfo();
   },
   { immediate: true }
 );
-
-// 登录请求
+// 刷新
+watch(refreshState, () => {
+  initInfo();
+});
+// 登录请求-刷新
 watch(
   () => initBasicsData.checkLogin,
-  (bool: boolean) => {
-    if (bool) {
-      getMemberRecommend();
-    } else {
-      srvProList.value = [];
-    }
-  }
+  () => initInfo()
 );
 </script>
 

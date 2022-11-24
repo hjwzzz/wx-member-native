@@ -24,14 +24,19 @@ export const useBasicsData = defineStore(
     const setLevitationNavList = (item: any[]) => {
       levitationNavList.value = item || [];
     };
-
+    // 登录状态-MID
     const useMid = ref('');
     const setUseMid = (login: string) => {
       useMid.value = login;
       Storage.setMid(login);
     };
-
     const checkLogin = computed(() => !!useMid.value);
+
+    // 刷新数据
+    // const useRefreshState = ref(false);
+    // const setUseRefreshState = () => {
+    //   useRefreshState.value = !useRefreshState.value;
+    // };
 
     return {
       useMid,

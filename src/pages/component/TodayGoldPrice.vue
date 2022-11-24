@@ -90,6 +90,17 @@ onMounted(() => {
   _getGoldPriceByPage();
 });
 
+watch(
+  () => initBasicsData.checkLogin,
+  (bool: boolean) => {
+    if (bool) {
+      _getGoldPriceByPage();
+    } else {
+      goldPrice.value = [];
+    }
+  }
+);
+
 const _getGoldPriceByPage = async () => {
   if (!initBasicsData.checkLogin) {
     goldPrice.value = [];
@@ -118,17 +129,6 @@ const _getGoldPriceByPage = async () => {
     // console.log('goldPrice', result);
   }
 };
-
-watch(
-  () => initBasicsData.checkLogin,
-  (bool: boolean) => {
-    if (bool) {
-      _getGoldPriceByPage();
-    } else {
-      goldPrice.value = [];
-    }
-  }
-);
 </script>
 
 <style lang="scss" scoped>
