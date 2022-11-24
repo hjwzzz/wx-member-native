@@ -24,7 +24,9 @@
             <template #btn>
               <view @click.stop="">
                 <button
-                  v-if="item.couponStatus === 'EFFECTIVE' && item.present === 'Y'"
+                  v-if="
+                    item.couponStatus === 'EFFECTIVE' && item.present === 'Y'
+                  "
                   class="share-btn"
                   :style="{
                     color: item.style.topBgColorTop,
@@ -80,10 +82,7 @@
               </view>
             </template>
           </CouponItem>
-          <uni-load-more
-            :status="status"
-            color="#D8D9E0"
-          ></uni-load-more>
+          <uni-load-more :status="status" color="#D8D9E0"></uni-load-more>
         </template>
         <!-- couponListData  loadingTop && !loadingTop-->
         <view v-if="couponListData.length === 0" class="preferential">
@@ -200,7 +199,7 @@ const showStatusImage = (item: any) => {
 
 const onCouponDetail = (item: any) => {
   uni.setStorageSync('ticketInfo', item);
-  Router.goCodePage('coupon_detail');
+  Router.goCodePage('coupon_detail', `?id=${item.couponMemberId}`);
 };
 </script>
 
