@@ -6,7 +6,7 @@
         <view class="time">{{ noticTime }}</view>
       </view>
       <view class="content">
-        <view v-html="refRichImage(obj.content)"></view>
+        <mp-html :copy-link="false" :content="refRichImage(obj.content)" @linktap="linktap" />
       </view>
     </view>
   </CustomPage>
@@ -16,6 +16,10 @@
 import { richImage } from '@/utils/util';
 const obj = uni.getStorageSync('notic');
 const noticTime = uni.getStorageSync('noticTime');
+
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+}
 
 const refRichImage = (item: any) => {
   if (!item) {
