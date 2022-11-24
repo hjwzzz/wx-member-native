@@ -8,7 +8,7 @@ export const addMemberSignActivity = async (data: any) => {
 };
 // 获取用户签到页面数据
 export const getUserSignActivityById = async (data: any) => {
-  const url = `${devBaseUrl}/signActivityFront/usr/getUserSignActivityById`;
+  const url = `${baseUrl}/emp-base/signActivityFront/usr/getUserSignActivityById`;
   const res = await request(url, data);
   return res;
 };
