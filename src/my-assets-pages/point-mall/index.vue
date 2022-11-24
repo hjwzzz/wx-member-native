@@ -27,6 +27,9 @@ onLoad((option: any) => {
   if (option.productId) {
     webViewUrl.value = `${h5Url}/#/pointsMallGages/productDetails/index${param}&productId=${option.productId}`;
   }
+  if (option.scene) {
+    webViewUrl.value = `${h5Url}/#/pointsMallGages/productDetails/index${param}&scene=${option.scene}`;
+  }
   if (option.name) {
     webViewUrl.value = `${lastUrl}&name=${option.name}`;
   }
@@ -53,6 +56,12 @@ onShow(() => {
       if (type === 'success') {
         // webViewUrl.value = `${h5Url}/#/pointsMallGages/paySuccess/index?payState=${1}&page=${page}&id=${id}`
         webViewUrl.value = `${h5Url}/#/pointsMallGages/paySuccess/index${param}&payState=${1}&page=${page}&id=${id}`;
+      } else {
+        uni.showToast({
+          title: '支付失败',
+          duration: 3000,
+          icon: 'none',
+        });
       }
     },
     fail: () => {
