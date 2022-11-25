@@ -191,6 +191,7 @@ export default {
   width: 300px;
   border-radius: 11px;
   background-color: #fff;
+  margin-bottom: 120rpx;
 }
 
 .uni-dialog-title {

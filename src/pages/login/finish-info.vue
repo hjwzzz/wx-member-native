@@ -754,6 +754,7 @@ const changeNickName = (e: any) => {
 
         .shop-address {
           display: flex;
+          margin-top: 12rpx;
           .address-icon {
             width: 17rpx;
             height: 18rpx;
@@ -772,7 +773,7 @@ const changeNickName = (e: any) => {
 
         .shop-phone {
           display: flex;
-
+          margin-top: 12rpx;
           .phone-icon {
             width: 17rpx;
             height: 18rpx;
