@@ -7,7 +7,7 @@
             <view class="info-img">
               <image
                 class="image"
-                v-if="initBasicsData.checkLogin"
+                v-if="initBasicsData.checkLogin && userInfo.avatarUrl"
                 :src="userInfo.avatarUrl"
                 mode="scaleToFill"
               />
