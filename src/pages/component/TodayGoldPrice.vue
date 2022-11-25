@@ -20,7 +20,7 @@
         :indicator-dots="goldPrice?.length > 1"
         indicator-color="#D8D9E0"
         :indicator-active-color="initBasicsData.mainColor"
-        style="height: 280rpx"
+        style="height: 250rpx"
       >
         <swiper-item v-for="(price, index) in goldPrice" :key="index">
           <view class="swiper-item uni-bg-red">
@@ -135,6 +135,7 @@ const _getGoldPriceByPage = async () => {
 .grid-price {
   // width: 630rpx;
   padding: 30rpx;
+  padding-bottom: 0rpx;
   // margin-top: 30rpx;
   margin-bottom: 30rpx;
   background: #fff;

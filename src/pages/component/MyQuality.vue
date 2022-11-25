@@ -106,6 +106,7 @@ watch(
 .grid-policy-act {
   // width: 690rpx;
   padding: 30rpx;
+  padding-bottom: 10rpx;
   margin: 30rpx 0rpx;
   background: #fff;
   border-radius: 16rpx;

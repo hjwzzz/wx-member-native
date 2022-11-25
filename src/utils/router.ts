@@ -72,6 +72,7 @@ const oldPage: {
   'reservationService/reservationService/index': 'reservation', // 预约服务
   'pages/center/quality/index': 'warranty', // 质保单列表
   'myAssets/integral/index': 'point', // 我的积分
+  'pages/center/integral/index': 'point', // 我的积分
   'pages/center/coupon-center/index': 'get_coupon', // 领券中心
   'pages/center/gold-price/index': 'gold_price', // 今日金价
   // 'pages/center/index': 'wm_center', // 个人中心
