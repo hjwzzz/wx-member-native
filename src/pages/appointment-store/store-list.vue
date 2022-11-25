@@ -51,7 +51,7 @@
                   {{ mergeFullAddress(item) || '--' }}
                 </text>
               </view>
-              <view class="right">
+              <view class="right mL10">
                 <view
                   :class="['radio_box', { radio_box_none: isActive(item) }]"
                 >
@@ -309,13 +309,11 @@ const confimStore = () => {
           -webkit-box-orient: vertical;
           overflow: hidden;
           font-size: 20rpx;
-          color: #bbbcc3;
+          color: #9697a2;
         }
       }
 
       .item-four {
-        margin-top: 12rpx;
-
         image {
           width: 20rpx;
           height: 21rpx;
@@ -324,7 +322,7 @@ const confimStore = () => {
 
         .address {
           font-size: 20rpx;
-          color: #bbbcc3;
+          color: #9697a2;
         }
       }
     }
@@ -338,5 +336,8 @@ const confimStore = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.mL10 {
+  margin-left: 10rpx;
 }
 </style>

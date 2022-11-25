@@ -345,7 +345,7 @@ const goDetail = (e: storeType) => {
             margin: 12rpx 0;
 
             .address {
-              color: #bbbcc3;
+              color: #9697a2;
               font-size: 24rpx;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -381,10 +381,12 @@ const goDetail = (e: storeType) => {
 
       .item1 {
         border-right: 1px solid #f0f1f4;
+        font-size: 28rpx;
       }
 
       .item {
         color: var(--main-color);
+        font-size: 28rpx;
       }
 
       .item,

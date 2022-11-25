@@ -15,7 +15,7 @@
               IRegistField.avatar,
             ].includes(info.code)
           "
-          :key="index"
+          :key="info.code"
           class="list-item"
           @click="handle(info)"
         >
@@ -47,25 +47,6 @@
                 </radio-group>
               </view>
               <!--						婚姻-->
-              <view v-show="info.code === maritalCode" class="radio">
-                <radio-group class="selecte-redio" @change="maritalChange">
-                  <label
-                    v-for="item in maritalStatusList"
-                    :key="item.value"
-                    class="selecte-redio"
-                    style="transform: scale(0.7)"
-                  >
-                    <view>
-                      <radio
-                        :value="item.value"
-                        :checked="item.value === maritalValue"
-                        :color="initBasicsData.mainColor"
-                      />
-                    </view>
-                    <view>{{ item.name }}</view>
-                  </label>
-                </radio-group>
-              </view>
             </view>
             <view class="right">
               <view v-show="info.code == BIRTH_DAY" class="date-format">
@@ -117,6 +98,18 @@
                   }}</view>
                 </picker>
               </view>
+              <!--						婚姻-->
+              <view v-show="info.code === maritalCode" class="guid">
+                <picker
+                  @change="maritalChange"
+                  :value="maritalValue"
+                  :range="['已婚', '未婚']"
+                >
+                  <view class="uni-input">{{
+                    ['已婚', '未婚'][parseInt(maritalValue)]
+                  }}</view>
+                </picker>
+              </view>
               <view
                 v-show="
                   info.code === 'REGIST_REQUIRED_AREA' && memberInfoAddressDet
@@ -125,7 +118,7 @@
               >
                 <text>{{ memberInfoAddressDet }}</text>
               </view>
-              <uni-icons type="arrowright" size="14" />
+              <uni-icons color="#B7B8C4" type="arrowright" size="14" />
             </view>
           </view>
           <view
@@ -149,23 +142,23 @@
               </view>
             </view>
             <view v-if="selectedShop.fullAddress" class="shop-address">
-              <view class="address-icon">
-                <image
-                  :src="`${staticUrl}prize/store/address.png`"
-                  mode="scaleToFill"
-                />
-              </view>
+              <image
+                class="address-icon"
+                :src="`${staticUrl}prize/store/address.png`"
+                mode="scaleToFill"
+              />
+
               <view class="address-text">
                 {{ selectedShop.fullAddress }}
               </view>
             </view>
             <view v-if="selectedShop.tel" class="shop-phone">
-              <view class="phone-icon">
-                <image
-                  :src="`${staticUrl}prize/store/phone.png`"
-                  mode="scaleToFill"
-                />
-              </view>
+              <image
+                class="phone-icon"
+                :src="`${staticUrl}prize/store/phone.png`"
+                mode="scaleToFill"
+              />
+
               <view class="phone-code">
                 {{ selectedShop.tel }}
               </view>
@@ -181,6 +174,7 @@
           </view>
           <view class="input-right">
             <input
+              class="cR"
               v-model="memberInfo.name"
               type="text"
               maxlength="20"
@@ -204,6 +198,7 @@
           </view>
           <view class="input-right">
             <input
+              class="cR"
               v-model="memberInfo.nickName"
               @input="changeNickName"
               type="nickname"
@@ -259,16 +254,7 @@ const items = [
     name: '农历',
   },
 ];
-const maritalStatusList = [
-  {
-    value: 'Y',
-    name: '已婚',
-  },
-  {
-    value: 'N',
-    name: '未婚',
-  },
-];
+
 const selecteList = [
   {
     label: '男',
@@ -287,7 +273,7 @@ const BIRTH_DAY = 'REGIST_REQUIRED_BIRTH';
 const GENDER = 'REGIST_REQUIRED_GENDER';
 const maritalCode = 'REGIST_MARITAL_STATUS';
 const current = ref(0);
-const maritalValue = ref('Y');
+const maritalValue = ref('0');
 const memberInfo = ref<any>({});
 const selectedShop = ref<any>({});
 const memberInfoAddressDet = computed(() => {
@@ -322,6 +308,7 @@ const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
   data.sex ||= 'M';
   data.birthKind ||= 'S';
+  data.birthLunar = '';
   data.nickName === '微信用户' && (data.nickName = '');
   if (data) {
     memberInfo.value = data;
@@ -464,8 +451,7 @@ const radioChange = (e: any) => {
 };
 const maritalChange = (e: any) => {
   maritalValue.value = e.detail.value;
-
-  if (e.detail.value === 'N') {
+  if (e.detail.value === '1') {
     memberInfo.value.annday = '';
     showAnnday.value = '';
   }
@@ -557,7 +543,7 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_MDAY': {
-        if (maritalValue.value === 'Y' && !params.annday) {
+        if (maritalValue.value === '0' && !params.annday) {
           uni.showModal({
             content: '请选择纪念日',
             showCancel: false,
@@ -718,8 +704,8 @@ const changeNickName = (e: any) => {
         .right {
           display: flex;
           height: 18rpx;
-          color: #b7b8c4;
-
+          color: #9697a2;
+          font-size: 28rpx;
           .letter {
             width: 500rpx;
             text-align: right;
@@ -769,22 +755,17 @@ const changeNickName = (e: any) => {
         .shop-address {
           display: flex;
           .address-icon {
-            display: inline-block;
-            width: 16rpx;
-            height: 19rpx;
+            width: 17rpx;
+            height: 18rpx;
             margin-right: 10rpx;
-
-            image {
-              width: 100%;
-              height: 100%;
-            }
+            margin-top: 8rpx;
           }
 
           .address-text {
             flex: 1;
             font-size: 24rpx;
-            font-weight: 400;
             color: #9697a2;
+            font-weight: 400;
             line-height: 34rpx;
           }
         }
@@ -793,15 +774,10 @@ const changeNickName = (e: any) => {
           display: flex;
 
           .phone-icon {
-            display: inline-block;
             width: 17rpx;
-            height: 19rpx;
+            height: 18rpx;
             margin-right: 10rpx;
-
-            image {
-              width: 100%;
-              height: 100%;
-            }
+            margin-top: 9rpx;
           }
 
           .phone-code {
@@ -861,5 +837,9 @@ const changeNickName = (e: any) => {
 
     margin-top: 60rpx;
   }
+}
+.cR {
+  color: #9697a2;
+  font-size: 28rpx;
 }
 </style>

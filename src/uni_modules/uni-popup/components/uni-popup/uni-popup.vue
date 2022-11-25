@@ -412,7 +412,7 @@ export default {
     center(type) {
       this.popupstyle = 'center';
       this.ani = ['zoom-out', 'fade'];
-      const bottom = this.input ? '45px' : 0;
+      const bottom = this.input ? '60px' : 0;
       this.transClass = {
         position: 'fixed',
 
