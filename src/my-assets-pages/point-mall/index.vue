@@ -58,7 +58,7 @@ onShow(() => {
         webViewUrl.value = `${h5Url}/#/pointsMallGages/paySuccess/index${param}&payState=${1}&page=${page}&id=${id}`;
       } else {
         uni.showToast({
-          title: '支付失败',
+          title: '支付失败!',
           duration: 3000,
           icon: 'none',
         });
@@ -68,7 +68,9 @@ onShow(() => {
       console.log('...');
     },
   });
-  getShareSet();
+  setTimeout(() => {
+    getShareSet();
+  }, 2500);
 });
 
 const shareSettData: Ref<any> = ref([]);

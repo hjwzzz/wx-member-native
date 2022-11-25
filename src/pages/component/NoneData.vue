@@ -57,11 +57,12 @@ uni.getImageInfo({
   align-items: center;
   width: 100%;
   height: 100%;
+  padding-bottom: 10rpx;
 
   .image {
     line-height: 0;
-    width: 200rpx;
-    height: 200rpx;
+    width: 180rpx;
+    height: 180rpx;
   }
 
   .empty {
@@ -72,6 +73,7 @@ uni.getImageInfo({
     font-weight: 400;
     line-height: 34rpx;
     color: #b7b8c4;
+    margin-bottom: 20rpx;
   }
 }
 </style>
