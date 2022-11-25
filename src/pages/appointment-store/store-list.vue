@@ -276,7 +276,8 @@ const confimStore = () => {
           color: white;
         }
         .right {
-          flex: 1;
+          flex-shrink: 0;
+          flex-grow: 1;
           text-align: right;
           font-size: 20rpx;
           font-family: PingFangSC-Regular, PingFang SC;
