@@ -341,9 +341,9 @@ const submitAppointment = () => {
             uni.navigateBack({
               delta: 2,
               complete: () => {
-                setTimeout(() => {
-                  uni.navigateTo({ url: '/reservationService/myAppointment/index' });
-                }, 500);
+                // setTimeout(() => {
+                //   uni.navigateTo({ url: '/reservationService/myAppointment/index' });
+                // }, 500);
               },
             });
           }, 3000);

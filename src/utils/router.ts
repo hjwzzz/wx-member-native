@@ -53,6 +53,7 @@ const pageCode: any = {
   location: '/pages/center/user-info/address', // 修改地址
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
   popularity: '/activity-pages/popularity/index', // 活动-人气值千金
+  my_reservation_detail: '/reservation-service-pages/myAppointment/index', // 我的预约服务
   reservation_detail: '/reservation-service-pages/myAppointment/detail', // 预约服务-详情
   member_equity: '/pages/member-equity/index', // 会员权益
 };

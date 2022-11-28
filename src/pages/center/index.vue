@@ -160,6 +160,7 @@
           v-else-if="item.kind === entryType.RES"
           :title="item.param.title"
           :srvProshowNum="srvProshowNum"
+          :srvProList="srvProList"
         />
         <!-- 质保单 -->
         <MyQuality
@@ -176,12 +177,13 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, reactive, Ref, inject } from 'vue';
+import { ref, reactive, Ref } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
   getMemberCenterIndex,
   queryMemberCenterBannerListFront,
 } from '@/pages/api/center';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
 //
 // import { queryGoldPriceByPage } from '@/api/server';
 import { staticUrl } from '@/utils/config';
@@ -232,13 +234,13 @@ const policyListNum = ref(0);
 //   console.log('onMounted-onShow');
 // });
 
-const reState: any = inject('reState');
+// const reState: any = inject('reState');
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
   // getGoldPriceByPage();
   // uni.$emit('refreshComponent');
-  reState.value = !reState.value;
+  // reState.value = !reState.value;
 });
 
 const getMemberCentertIndex = async () => {
@@ -259,6 +261,23 @@ const getMemberCentertIndex = async () => {
     userInfo.curLevelName = curLevelName;
     loginList.value = quickNavList;
     panelList.value = panelListItem;
+    getMemberRecommend();
+  }
+};
+
+// 预约服务
+const srvProList: Ref<any> = ref([]);
+const getMemberRecommend = async () => {
+  if (initBasicsData.checkLogin) {
+    const servPage = await queryServiceBookPageFront({
+      mid: initBasicsData.useMid,
+      curPage: 1,
+      pageSize: srvProshowNum.value,
+      status: '',
+    });
+    srvProList.value = servPage.data?.records || [];
+  } else {
+    srvProList.value = [];
   }
 };
 

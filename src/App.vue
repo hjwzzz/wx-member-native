@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
-import { provide, ref } from 'vue';
+// import { provide, ref } from 'vue';
 import {
   queryWmColorThemeFront,
   getWeMemberNavFront,
@@ -43,7 +43,7 @@ onPageNotFound(Router.compatibilityOldPage);
 // onHide(() => {
 //   console.log('App Hide');
 // });
-provide('reState', ref(false));
+// provide('reState', ref(false));
 </script>
 <style lang="scss">
 page {
