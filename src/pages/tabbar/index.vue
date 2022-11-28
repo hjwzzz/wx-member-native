@@ -106,7 +106,13 @@
                 @click="handleEntryUrl(item)"
               >
                 <view class="item-header">
-                  <image :src="item.icoUrl" mode=""></image>
+                  <image
+                    class="item-header-image"
+                    :src="
+                      item.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                    "
+                    mode=""
+                  ></image>
                 </view>
                 <view class="item-text">{{ item.title }}</view>
               </view>
@@ -115,11 +121,7 @@
         </view>
         <!-- 富文本 -->
         <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
-          <view
-            v-if="items.param.content"
-            v-html="richImage(items.param.content)"
-          >
-          </view>
+          <mp-html v-if="items.param.content" :copy-link="false" :content="richImage(items.param.content)" @linktap="linktap" />
           <NoneData v-else> </NoneData>
         </view>
         <!-- 今日金价 -->
@@ -218,6 +220,10 @@ onShow(() => {
   getShareSet();
 });
 
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+}
+
 // const shareObj: Ref<any> = ref({});
 const shareData: Ref<any> = ref([]);
 const getShareSet = async () => {
@@ -259,8 +265,11 @@ const getPageDate = async () => {
 };
 
 const bannerIndexFun = (item: any) => {
-  // console.log('bannerIndexFun', item);
   const url = JSON.parse(item.url || {});
+  if (!url.code && !url.systemUrl && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
+  }
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
@@ -345,6 +354,11 @@ const topBgImageUrl = computed(() => {
 });
 
 const handleEntryUrl = (item: any) => {
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
+
   let param = item.miniUrl?.split('?')?.[1];
   if (param) {
     param = `?${param}`;
@@ -472,7 +486,7 @@ const goMoreNotice = (item: any, noticTime: any) => {
       border-radius: 22rpx;
     }
 
-    .item-header image {
+    .item-header-image {
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -527,6 +541,8 @@ const goMoreNotice = (item: any, noticTime: any) => {
 
 .bulletin-box {
   width: 550rpx;
+  display: flex;
+  align-items: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

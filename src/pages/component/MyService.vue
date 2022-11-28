@@ -12,7 +12,7 @@
     <view class="content">
       <view
         class="grid-serve-item"
-        v-for="(serve, index) in srvProList"
+        v-for="(serve, index) in props.srvProList"
         :key="index"
         @click="handleDetailUrl(serve)"
       >
@@ -32,68 +32,79 @@
           ></uni-icons>
         </view>
       </view>
-      <NoneData v-if="srvProList.length === 0" />
+      <NoneData v-if="props.srvProList.length === 0" />
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch } from 'vue';
-import { queryServiceBookPageFront } from '@/api/reservation-service';
-import { useBasicsData } from '@/store/basicsData';
+// import { Ref, inject } from 'vue';
+// import { queryServiceBookPageFront } from '@/api/reservation-service';
+// import { useBasicsData } from '@/store/basicsData';
 import NoneData from './NoneData.vue';
+import Router from '@/utils/router';
+// import { debounce } from '@/utils/util';
 
-const initBasicsData = useBasicsData();
+// const initBasicsData = useBasicsData();
 
 interface Props {
   title?: string;
   item?: any;
-  srvProshowNum?: number;
+  // srvProshowNum?: number;
+  srvProList: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '预约服务',
   item: () => ({}),
-  srvProshowNum: 0,
+  srvProList: () => ({}),
+  // srvProshowNum: 0,
 });
 
-const srvProList: Ref<any> = ref([]);
-const getMemberRecommend = async () => {
-  if (initBasicsData.checkLogin) {
-    const servPage = await queryServiceBookPageFront({
-      mid: initBasicsData.useMid,
-      curPage: 1,
-      pageSize: props.srvProshowNum,
-      status: '',
-    });
-    srvProList.value = servPage.data?.records || [];
-  }
-};
+// const srvProList: Ref<any> = ref([]);
+// const getMemberRecommend = async () => {
+//   if (initBasicsData.checkLogin) {
+//     const servPage = await queryServiceBookPageFront({
+//       mid: initBasicsData.useMid,
+//       curPage: 1,
+//       pageSize: props.srvProshowNum,
+//       status: '',
+//     });
+//     srvProList.value = servPage.data?.records || [];
+//   }
+// };
 const handleSysUrl = () => {
-  uni.navigateTo({ url: '/reservation-service-pages/myAppointment/index' });
+  Router.goCodePage('my_reservation_detail');
 };
 const handleDetailUrl = ({ id }: any) => {
-  uni.navigateTo({ url: `/reservation-service-pages/myAppointment/detail?id=${id}` });
+  Router.goCodePage('reservation_detail', `?id=${id}`);
 };
-// srvProshowNum有值再去请求
-watch(
-  () => props.srvProshowNum,
-  () => {
-    getMemberRecommend();
-  },
-  { immediate: true }
-);
 
-// 登录请求
-watch(
-  () => initBasicsData.checkLogin,
-  (bool: boolean) => {
-    if (bool) {
-      getMemberRecommend();
-    } else {
-      srvProList.value = [];
-    }
-  }
-);
+// const refreshState = inject('reState') as Ref<boolean>;
+
+// const initInfo = debounce(() => {
+//   if (initBasicsData.checkLogin) {
+//     getMemberRecommend();
+//   } else {
+//     srvProList.value = [];
+//   }
+// }, 1000);
+// srvProshowNum有值再去请求
+// watch(
+//   () => props.srvProshowNum,
+//   () => {
+//     initInfo();
+//   },
+//   { immediate: true }
+// );
+// 刷新
+// watch(refreshState, () => {
+//   initInfo();
+// });
+// 登录请求-刷新
+// watch(
+//   () => initBasicsData.checkLogin,
+//   () => initInfo()
+// );
 </script>
 
 <style lang="scss" scoped>

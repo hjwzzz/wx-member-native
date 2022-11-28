@@ -72,7 +72,11 @@
       </Goods>
       <!-- 兑奖方式 -->
 
-      <Exchange :item="detail" v-if="detail.statusName === '待兑换'"></Exchange>
+      <Exchange
+        :item="detail"
+        :distInit="distInitInfo"
+        v-if="detail.statusName === '待兑换'"
+      ></Exchange>
       <!-- 门店信息 -->
       <view
         class="information"
@@ -285,7 +289,16 @@ const getPrize = async () => {
     uni.navigateBack({ delta: 1 });
   }, 1000);
 };
-onLoad(() => {
+const distInitInfo = ref({
+  distId: '',
+  storeName: '',
+});
+onLoad(options => {
+  if (options?.distId && options?.storeName) {
+    // 传参携带门店信息时，初始选中该门店
+    distInitInfo.value.distId = options.distId;
+    distInitInfo.value.storeName = options.storeName;
+  }
   getData();
 });
 </script>

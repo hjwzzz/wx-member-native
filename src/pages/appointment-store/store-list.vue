@@ -44,13 +44,14 @@
               <view class="left">
                 <image
                   :src="`${staticUrl}prize/store/address.png`"
+                  class="img"
                   mode=""
                 ></image>
-                <text style="font-size: 24rpx" class="address">
+                <text style="font-size: 24rpx" class="address break-word">
                   {{ mergeFullAddress(item) || '--' }}
                 </text>
               </view>
-              <view class="right">
+              <view class="right mL10">
                 <view
                   :class="['radio_box', { radio_box_none: isActive(item) }]"
                 >
@@ -275,7 +276,8 @@ const confimStore = () => {
           color: white;
         }
         .right {
-          flex: 1;
+          flex-shrink: 0;
+          flex-grow: 1;
           text-align: right;
           font-size: 20rpx;
           font-family: PingFangSC-Regular, PingFang SC;
@@ -291,21 +293,27 @@ const confimStore = () => {
         justify-content: space-between;
         margin-top: 12rpx;
 
-        image {
+        .img {
+          flex: none;
           width: 20rpx;
           height: 21rpx;
           margin-right: 16rpx;
+          margin-top: 10rpx;
         }
-
+        .left {
+          display: flex;
+        }
         .address {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
           font-size: 20rpx;
-          color: #bbbcc3;
+          color: #9697a2;
         }
       }
 
       .item-four {
-        margin-top: 12rpx;
-
         image {
           width: 20rpx;
           height: 21rpx;
@@ -314,7 +322,7 @@ const confimStore = () => {
 
         .address {
           font-size: 20rpx;
-          color: #bbbcc3;
+          color: #9697a2;
         }
       }
     }
@@ -328,5 +336,8 @@ const confimStore = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.mL10 {
+  margin-left: 10rpx;
 }
 </style>

@@ -26,18 +26,16 @@
       </view>
 
       <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
-        <view class="name">{{ goldPriceDatas.store.storeName || '--' }}</view>
+        <view class="name text-break">{{
+          goldPriceDatas.store.name || goldPriceDatas.store.distName
+        }}</view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
 
       <view class="price-box" v-if="goldPriceDatas?.param">
-        <Tabs
-          :tabList="list"
-          v-model:current="current"
-          @change="(e: any) => current = e.index"
-        />
-
-        <view class="tab-bd" v-if="showTabs?.length > 1">
+        <!--  @change="(e: any) => current = e.index" -->
+        <Tabs :tabList="list" v-model:current="current" @change="setItemKey" />
+        <view class="tab-bd" v-if="showTabs.length > 0">
           <view class="inner">
             <view class="item" v-for="item in showData" :key="item.brandId">
               <view class="left">
@@ -45,16 +43,15 @@
                   >{{ item.met }} {{ item.metCtn || '' }}</view
                 >
                 <view class="b bbb">
-                  {{ item.brandName ? '品牌：' : '' }}
-                  {{ item.brandName || '' }}</view
-                >
+                  {{ item.brandName ? '品牌：' + item.brandName : '' }}
+                </view>
               </view>
               <view class="right">
                 <view class="t">¥{{ item.price }}</view>
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
-                  >工费：¥{{ item.laborFee || item.laborPrice }}</view
+                  >工费：¥{{ item.laborFee || item.laborPrice || 0 }}</view
                 >
               </view>
             </view>
@@ -73,15 +70,25 @@
           </view>
         </view>
       </view>
+      <view class="content-page" v-else>
+        <view class="empty empty-page">
+          <image
+            width="250rpx"
+            height="250rpx"
+            class="emptyIcon"
+            mode="aspectFill"
+            :src="`${staticUrl}img/themoney.png`"
+          ></image>
 
+          <view class="stopText">暂无金价信息</view>
+        </view>
+      </view>
+      <!-- wuyuer.png -->
       <view
         class="remark-box"
         v-if="goldPriceDatas?.param?.remarkShowed === 'Y'"
       >
-        <view
-          v-if="goldPriceDatas.param.remark"
-          v-html="richImage(goldPriceDatas.param.remark)"
-        ></view>
+        <mp-html v-if="goldPriceDatas.param.remark" :copy-link="false" :content="richImage(goldPriceDatas.param.remark)" @linktap="linktap" />
         <view class="content" v-else>
           <view class="empty-wrapper">
             <view class="empty"> 暂无数据 </view>
@@ -99,14 +106,17 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
-import {
-  // getGoldPriceAdBannerList,
-  queryDefShowGoldPrice,
-  queryGoldPriceByDist,
-} from '@/api/gold-price';
+// import {
+//   // getGoldPriceAdBannerList,
+//   queryDefShowGoldPrice,
+//   queryGoldPriceByDist,
+// } from '@/api/gold-price';
+import { getDefaultDistributorInfoByOpsIdFront } from '@/api/server';
+
+//
 import {
   queryGoldPriceBannerListFront,
-  // getSaleMetalPrice,
+  getSaleMetalPrice,
 } from '@/my-assets-pages/api/gold-price';
 
 import router from '@/utils/router';
@@ -130,12 +140,20 @@ const current = ref(0);
 
 const bannerClick = (item: any) => {
   const url = JSON.parse(item.url || {});
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
   router.goCodePage(url.code || url.systemUrl);
 };
 const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
   router.goCodePage('chooseStore');
 };
+
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+}
 
 // const richImage = (e: any) => {
 //   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
@@ -144,27 +162,59 @@ const onChooseStore = () => {
 // };
 // const shareObj: any = {};
 // const defaultObj: any = {};
+// 'brandOldPrice' : 'brandPrice'
+// metalPrices  oldmatMetalPrices
+
+const showText = ref('metalPrices');
 const showTabs = computed(() => list.value.map(i => i.name));
-const showData = computed(() => goldPriceDatas.value[current.value ? 'brandOldPrice' : 'brandPrice']);
+const showData = computed(() => goldPriceDatas.value[showText.value]);
 
 const getBannerList = async () => {
   const res = await queryGoldPriceBannerListFront('');
   bannerList.value = res.data;
 };
 
+const setItemKey = ({ item }: any) => {
+  showText.value = item.key;
+  // showText.value
+};
+
+// const getDefaultOpsId = async () => {
+//   const res = await getDefaultDistributorInfoByOpsIdFront('');
+//   const distId = res.data.distId;
+//   if (distId) {
+//     getGoldPrice(distId);
+//   }
+//   console.log('getDefaultDistributorInfoByOpsIdFront', ddd.data.distId);
+// };
+
 const getGoldPrice = async (id = '') => {
-  const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
-  const { code, data } = await url(id);
-  // const { code, data } = await getSaleMetalPrice(id);
+  // console.log('getGoldPrice id=', id);
+  let distId = id;
+  if (!distId || distId === 'undefined') {
+    const res = await getDefaultDistributorInfoByOpsIdFront('');
+    distId = res.data.distId;
+  }
+  // console.log('getGoldPrice distId=', distId);
+  // queryDefShowGoldPrice,
+  // queryGoldPriceByDist,
+  // const url = id ? queryGoldPriceByDist : queryDefShowGoldPrice;
+  // const { code, data } = await url({ distId: id });
+  const { code, data } = await getSaleMetalPrice({ distId });
 
   if (code === 0) {
     list.value = [];
     goldPriceDatas.value = data;
-    if (data.param.todayGoldPriceShowed === 'Y') {
-      list.value.push({ name: '今日金价' });
-    }
-    if (data.param.recoveryGoldPriceShowed === 'Y') {
-      list.value.push({ name: '回收金价' });
+    if (data.param) {
+      if (data.param.todayGoldPriceShowed === 'Y') {
+        list.value.push({ name: '今日金价', key: 'metalPrices' });
+      }
+      if (data.param.recoveryGoldPriceShowed === 'Y') {
+        list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+      }
+      if (list.value.length) {
+        showText.value = list.value[0].key;
+      }
     }
   }
 };
@@ -187,6 +237,12 @@ onShareTimeline(() => shareTimeline(shareData.value));
 <style scoped lang="scss">
 .banner {
   position: unset;
+}
+
+.content-page {
+  height: 60vh;
+  display: flex;
+  align-items: center;
 }
 .ttt {
   width: calc(100vw - 350rpx);

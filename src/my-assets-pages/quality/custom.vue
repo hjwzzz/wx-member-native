@@ -9,13 +9,26 @@ import { getMemberWarrantyUrlFront } from '@/my-assets-pages/api/quality';
 
 const url = ref('');
 onLoad(async (options: any) => {
-  if (options.url) {
-    const res = await queryMemberWarrantyUrl(options);
+  const res = await queryMemberWarrantyUrl(options);
+  if (res.data.url) {
     url.value = `${res.data.url}?n=${options.n}&t=${options.t}&a=${options.a}&e=${options.e}`;
+  } else {
+    uni.showToast({
+      title: '暂无在EMP配置门店',
+      duration: 3000,
+      icon: 'none',
+    });
+  }
+
+  if (options.url) {
+    // const res = await queryMemberWarrantyUrl(options);
+    // console.log('res', res);
+    // url.value = `${res.data.url}?n=${options.n}&t=${options.t}&a=${options.a}&e=${options.e}`;
     uni.setNavigationBarTitle({ title: options.kind === 'BAS' ? '质保单详情' : '质保单' });
   } else {
-    const res = await queryMemberWarrantyUrl(options);
-    url.value = `${res.data.url}?n=${options.n}&t=${options.t}&a=${options.a}&e=${options.e}`;
+    // const res = await queryMemberWarrantyUrl(options);
+    // console.log('res', res);
+    // url.value = `${res.data.url}?n=${options.n}&t=${options.t}&a=${options.a}&e=${options.e}`;
     uni.setNavigationBarTitle({ title: res.data.kind === 'CUST' ? '质保单' : '质保单详情' });
   }
 });

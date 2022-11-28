@@ -14,12 +14,20 @@
         <view class="sure-btn" @click="updateNearStorePost">搜索</view>
       </view>
 
-      <view v-if="list.length > 0" class="themap">
+      <u-loadmore
+        v-if="loading"
+        :status="`loading`"
+        color="#D8D9E0"
+        margin-top="20"
+      />
+      <view v-else-if="list.length > 0" class="themap">
         <view v-for="(item, index) in list" :key="index" class="t1">
           <view class="t1-box" @click="goDetail(item)">
             <image
               class="image left"
-              :src="item.url || `${staticUrl}prize/store/address.png`"
+              :src="
+                item.url || `${staticUrl}img/store/store-avatar-default.png`
+              "
               mode="aspectFit"
             />
             <view class="right">
@@ -110,7 +118,13 @@ interface storeType {
 }
 const list = ref<storeType[]>([]);
 
+const loading = ref(false);
+
 onLoad(() => {
+  uni.showLoading({
+    title: '加载中',
+    mask: true,
+  });
   uni.getLocation({
     type: 'wgs84',
     success: ({ latitude: lat, longitude: lng }) => {
@@ -142,11 +156,13 @@ const coordCur = computed(() => {
 });
 // 刷新列表
 const updateNearStorePost = async () => {
+  loading.value = true;
   const { code, data } = await getNearStore({
     distId: '',
     storeName: keyward.value,
     coordCur: coordCur.value,
   });
+  loading.value = false;
   if (code === 0) {
     data.forEach((i: storeType) => {
       // 详细地址
@@ -329,7 +345,7 @@ const goDetail = (e: storeType) => {
             margin: 12rpx 0;
 
             .address {
-              color: #bbbcc3;
+              color: #9697a2;
               font-size: 24rpx;
               overflow: hidden;
               text-overflow: ellipsis;
@@ -365,10 +381,12 @@ const goDetail = (e: storeType) => {
 
       .item1 {
         border-right: 1px solid #f0f1f4;
+        font-size: 28rpx;
       }
 
       .item {
         color: var(--main-color);
+        font-size: 28rpx;
       }
 
       .item,

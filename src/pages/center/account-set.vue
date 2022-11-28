@@ -35,17 +35,6 @@
             <uni-icons type="arrowright" size="14" color="#B7B8C4" />
           </view>
         </view>
-        <view class="text-info" @click="againAuth">
-          <view
-            class="avatarInfo"
-            style="color: #323338; font-weight: 400; font-size: 28rpx"
-          >
-            重新授权个人信息
-          </view>
-          <view class="text">
-            <uni-icons type="arrowright" size="14" color="#B7B8C4" />
-          </view>
-        </view>
       </view>
       <view class="logout" @click="handleLogout"> 退出登录 </view>
     </view>
@@ -58,30 +47,20 @@ import Router from '@/utils/router';
 import { ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
+import { onShow } from '@dcloudio/uni-app';
 const initBasicsData = useBasicsData();
 const accountInfo = ref<any>({});
 const gotoPage = (code: string) => Router.goCodePage(code);
 
-const againAuth = async () => {
-  const { userInfo }: any = await uni.getUserProfile({ desc: 'weixin' });
-
-  accountInfo.value.avatarUrl = userInfo.avatarUrl;
-  accountInfo.value.nickName = userInfo.nickName;
-  updateMemberBaseInfo({
-    avatarUrl: userInfo.avatarUrl,
-    nickName: userInfo.nickName,
-  })
-    .then(() => {
-      queryUserInfo();
-    });
-};
 const queryUserInfo = async () => {
   const { code, data } = await getMemberInfo('');
   if (code === 0 && data) {
     accountInfo.value = data;
   }
 };
-queryUserInfo();
+onShow(() => {
+  queryUserInfo();
+});
 const handleLogout = async () => {
   const { code } = await logout();
   if (code !== 0) return;

@@ -21,6 +21,12 @@ export const getLogo = async (data: any) => {
   return request(url, data);
 };
 
+//    查询默认线上分销商
+export const getDefaultDistributorInfoByOpsIdFront = async (data: any) => {
+  const url = `${devBaseUrl}/usr/operationDistributorInfoFront/getDefaultDistributorInfoByOpsIdFront`;
+  return request(url, data);
+};
+
 // 获取主题色系
 // export const getWmColorTheme = async () => request(`${baseUrl}/emp-base/wxmeberFront/getWmColorTheme`, '');
 
