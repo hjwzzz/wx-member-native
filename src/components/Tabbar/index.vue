@@ -60,11 +60,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useBasicsData } from '@/store/basicsData';
+import { useBasicsData, useActiveTab } from '@/store/basicsData';
 import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 
 const initBasicsData = useBasicsData();
+const initActiveTab = useActiveTab();
 interface Props {
   current?: number | string;
   tabBar?: any;
@@ -78,7 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const tabBarList = computed(() => {
   const list = initBasicsData.bottomNavList;
-  initTab(list);
+  initTab();
   return list;
 });
 const tabBarStyle = reactive({
@@ -103,6 +104,11 @@ const handleFloatNavAdd = () => {
 };
 const linkNavListFun = (item: any) => {
   floatNavShow.value = false;
+  //   const active = list.findIndex(({ code }: any) => code === props.code);
+  if (['wm_center', 'wm_index'].includes(item.code)) {
+    const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === item.code);
+    initActiveTab.setCurrent(active);
+  }
   Router.goCodePage(item.code);
 };
 
@@ -112,15 +118,20 @@ const setSelected = (index: number, item: any) => {
   if (selected.value === index) {
     return;
   }
+  if (['wm_center', 'wm_index'].includes(item.code)) {
+    initActiveTab.setCurrent(index);
+  }
   floatNavShow.value = false;
   Router.goCodePage(item.code);
 };
 
 onMounted(() => {
-  initTab(initBasicsData.bottomNavList);
+  // initTab(initBasicsData.bottomNavList);
+  initTab();
 });
 
-const initTab = (list: any) => {
+const initTab = () => {
+  // list?: any
   // const page: any = getCurrentPages()
   //   .pop();
   // const route = page ? page.route.split('?')[0] : '';
@@ -129,8 +140,12 @@ const initTab = (list: any) => {
   // if (active) {
   //   selected.value = active;
   // }
-  const active = list.findIndex(({ code }: any) => code === props.code);
-  selected.value = active || 0;
+
+  // const active = list.findIndex(({ code }: any) => code === props.code);
+  // console.log(active);
+  // selected.value = active || 0;
+
+  selected.value = initActiveTab.current;
 };
 </script>
 
