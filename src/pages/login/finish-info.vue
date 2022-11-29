@@ -442,7 +442,7 @@ const handle = (item: any) => {
 // 过滤不显示和未婚的纪念日
 const showList = computed(() => list.value.filter((item: any) => {
   if (item.show === 'N') return false;
-  if (item.code === MDAY && maritalValue.value === 'N') return false;
+  if (item.code === MDAY && maritalValue.value === '1') return false;
   return true;
 }));
 const radioChange = (e: any) => {
