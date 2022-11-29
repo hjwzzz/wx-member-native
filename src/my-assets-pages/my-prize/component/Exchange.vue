@@ -76,7 +76,7 @@
         </view>
       </view>
       <view class="right">
-        <uni-icons type="arrow-right" color="#B7B8C4" size="30" />
+        <uni-icons type="right" color="#B7B8C4" size="16" />
       </view>
     </view>
 
@@ -173,7 +173,7 @@ const getPrize = async () => {
   } else if (!params.recvStoreId) {
     str = '请选择领取门店';
   } else if (exchangeCode.value === 1) {
-    const phoneReg =/^1\d{10}$/;
+    const phoneReg = /^1\d{10}$/;
     !phoneReg.test(params.recverPhone) && (str = '手机号格式错误');
     !params.recverPhone && (str = '请输入手机号');
     !params.recver && (str = '请输入领取人');
@@ -295,6 +295,7 @@ const navBack = () => {
   box-sizing: border-box;
   position: fixed;
   left: 0;
+  font-size: 28rpx;
   bottom: 0rpx;
   // height: 100rpx;
   // padding: 10rpx 32rpx;
@@ -306,6 +307,7 @@ const navBack = () => {
   padding-bottom: calc(10rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
   .btn {
+    font-size: 28rpx;
     background-color: var(--main-color);
     height: 80rpx;
     line-height: 80rpx;
@@ -327,7 +329,7 @@ const navBack = () => {
   width: 610rpx;
   .text {
     margin-top: 20rpx;
-    color: var(--main-color);
+    color: #323338;
   }
   .sure {
     margin-top: 40rpx;
@@ -335,7 +337,7 @@ const navBack = () => {
     text-align: center;
     line-height: 100rpx;
     border-top: 1rpx solid #ebedf0;
-    color: var(--main-color);
+    color: #323338;
   }
 
   .modelimg {
