@@ -13,7 +13,7 @@
         v-for="item in advertList"
         :key="item.imgUrl"
         class="advert-list-item"
-        >
+      >
         <image
           mode="aspectFill"
           :src="item.imgUrl"
@@ -66,10 +66,7 @@
           <text> 已领取 {{ item.percentage }} </text>
         </template>
       </CouponItem>
-      <uni-load-more
-        :status="status"
-        color="#D8D9E0"
-      ></uni-load-more>
+      <uni-load-more :status="status" color="#D8D9E0"></uni-load-more>
     </view>
     <view class="preferential" v-else>
       <image :src="staticUrl + 'img/Salesperson.png'" mode=""></image>
@@ -106,6 +103,8 @@ import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
 import { shareAppMessage } from '@/utils/shareHold';
+import { bannerListClick } from '@/utils/util';
+//
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 
@@ -131,7 +130,10 @@ const queryReceiveCenterListFront = async () => {
   if (!data) {
     return;
   }
-  receiveCenterList.value = queryReceiveCenterListForm.curPage === 1 ? data.records : [...receiveCenterList.value, ...data.records];
+  receiveCenterList.value =
+    queryReceiveCenterListForm.curPage === 1
+      ? data.records
+      : [...receiveCenterList.value, ...data.records];
 
   if (receiveCenterList.value.length >= data.totalRecord) {
     status.value = 'no-more';
@@ -209,20 +211,26 @@ const onConfirm = () => {
 };
 const onCancel = () => modelShow.value = false;
 
-const bannerListClick = (item: any) => {
-  const url = JSON.parse(item.url || {});
-  if (!url.code && !url.systemUrl && url.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` })
-    return
-  }
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(url.code || url.systemUrl, param);
-};
+// const bannerListClick = (item: any) => {
+//   const url = JSON.parse(item.url || {});
+//   const code = url.code || url.systemUrl;
+//   if (!code && url.appletUrl) {
+//     const miniUrl = item.miniUrl || url.appletUrl;
+//     Router.goNoCodePage(miniUrl);
+//     return;
+//   }
+//   if (!code && url.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+//     return;
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(code, param);
+// };
 
 // 加载更多
 const onLoadMore = () => {

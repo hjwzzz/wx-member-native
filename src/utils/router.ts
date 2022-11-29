@@ -181,7 +181,7 @@ class Router {
       }
       Router.goCodePage(activityPage[route] ?? 'wm_index', query);
     } else {
-      // console.log('oldPage[route]');
+      // console.log('111oldPage[route]', miniUrl);
       uni.navigateTo({ url: miniUrl });
     }
   }
