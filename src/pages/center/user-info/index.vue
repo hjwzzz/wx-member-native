@@ -220,17 +220,22 @@
           </picker>
         </template>
       </view>
-      <view class="rili">
-        <uni-calendar
+        <!-- <uni-calendar
           :date="initDate"
           ref="calendar"
           :lunar="true"
           :insert="false"
           @confirm="confirmDate"
         >
-        </uni-calendar>
-      </view>
+        </uni-calendar> -->
+      <CalendarPicker
+        :date="birthDate"
+        :calendar-type="userInfo.birthKind"
+        @confirmDialog="confirmDate"
+        ref="calendar"
+      />
       <uni-popup
+
         ref="popup"
         input
         :nickname="dialogKey === 'nickName'"
@@ -269,13 +274,29 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
+import CalendarPicker from '@/components/quick-calendar/calendar.vue';
+
 const initBasicsData = useBasicsData();
+
+const birthDate = computed(() => {
+  if (userInfo.value.birthKind === 'S') {
+    return userInfo.value.birthSolar;
+  }
+  if (userInfo.value.birthKind === 'L') {
+    return userInfo.value.birthlunar;
+  }
+  return undefined;
+});
+
+onMounted(() => {
+  // calendar.value.open();
+});
 
 const header = computed(() => [
   {
@@ -510,17 +531,20 @@ const updateUserIno = async (item: any, refresh = false) => {
   }
 };
 const confirmDate = (e: any) => {
-  const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
+  // const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
   if (!isBirthDay.value) {
-    updateUserIno({ annday: e.fulldate });
+    // updateUserIno({ annday: e.fulldate });
   } else {
-    userInfo.value.birthLunar = nl;
+    // userInfo.value.birthLunar = nl;
     updateUserIno({
-      birthKind: items[current.value].value,
-      birthSolar: e.fulldate,
+      birthKind: userInfo.value.birthKind,
+      birthSolar: `${e.year}-${e.month}-${e.day}`,
     });
   }
+  calendar.value.close();
 };
+
+// 切换生日类型
 const radioChange = (e: any) => {
   userInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
