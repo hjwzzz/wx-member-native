@@ -351,7 +351,7 @@ const handleQuickUrl = (item: any) => {
       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
       return;
     }
-    console.log('item.miniUrl', item.miniUrl);
+    // console.log('item.miniUrl', item.miniUrl);
     Router.goNoCodePage(item.miniUrl);
   }
   let param = item.miniUrl?.split('?')?.[1];

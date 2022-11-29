@@ -95,7 +95,7 @@
                     <view
                       class="bottwo"
                       :class="{
-                        income: item.opKind && item.opKind.code === 'BON_IN',
+                        income: item.opKind && item.opKind === 'BON_IN',
                       }"
                     >
                       {{ incomeFun(item.opKind) }}{{ item.realValue }}
