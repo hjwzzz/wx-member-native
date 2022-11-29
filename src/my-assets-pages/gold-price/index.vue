@@ -164,7 +164,7 @@ const current = ref(0);
 // };
 const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
-  Router.goCodePage('chooseStore');
+  Router.goCodePage('chooseStore', 't=gold_price');
 };
 
 const linktap = (e: any) => {

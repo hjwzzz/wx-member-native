@@ -96,6 +96,7 @@ const props = defineProps({
   id: { type: String },
   belong: { type: Boolean }, // 修改归属门店
   relatedId: { type: String },
+  t: { type: String }, // 附近门店接口 增加字段： type 值：prize  - 奖品        store - 门店       gold_price - 金价
   showBelong: { type: Boolean }, // 显示归属门店
   type: { type: String, defaulet: 'getNearStore' }, // 接口类型
 });
@@ -155,6 +156,7 @@ const updateNearStorePost = async () => {
     storeName: keyward.value,
     coordCur: geo(local.value) || '',
     relatedId: props.relatedId,
+    ...props.t && { type: props.t },
   });
   if (code === 0) {
     list.value = data;

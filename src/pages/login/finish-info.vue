@@ -392,7 +392,7 @@ const handle = (item: any) => {
       });
       router.goCodePage(
         'chooseStore',
-        `?id=${memberInfo.value.belongDistId || ''}`
+        `?id=${memberInfo.value.belongDistId || ''}&t=store`
       );
       break;
     }
