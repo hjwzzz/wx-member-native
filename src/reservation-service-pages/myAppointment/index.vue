@@ -7,8 +7,8 @@
           :current="current"
           :bar-style="{ background: initBasicsData.mainColor }"
           inactive-color="#9697A2"
-          :active-item-style="{ color: '#323338' }"
-          :bar-width="80"
+          :active-item-style="{ color: initBasicsData.mainColor }"
+          :bar-width="40"
           @change="handleChangeTab"
         />
       </USticky>
@@ -229,17 +229,6 @@ const querySubscribeList = async () => {
 
 <style scoped lang="scss">
 .myAppointment {
-  // padding-top: 80rpx;
-  .tabBar {
-    //   // position: sticky;
-    //   position: fixed;
-    //   top: 0;
-    //   left: 0;
-    //   z-index: 1;
-    :deep(.u-sticky) {
-      box-shadow: 0px 5px 5px #efefef;
-    }
-  }
   .wrapper {
     height: calc(100% - 86rpx);
     .main {
