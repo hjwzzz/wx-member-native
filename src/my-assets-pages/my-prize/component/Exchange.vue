@@ -152,7 +152,9 @@ const goStore = () => {
   uni.$once('chooseStore', e => storeInfo.value = e);
   router.goCodePage(
     'chooseStore',
-    `id=${storeInfo.value.distId ?? ''}&relatedId=${props.item.relatedId}`
+    `id=${storeInfo.value.distId ?? ''}&relatedId=${
+      props.item.relatedId
+    }&t=prize`
   );
 };
 // 确认兑换
