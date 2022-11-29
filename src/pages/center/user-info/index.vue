@@ -1,4 +1,5 @@
 <template>
+  <page-meta :page-style="'overflow:'+(show?'hidden':'visible')"></page-meta>
   <CustomPage>
     <view class="user-info">
       <view class="wrapper-header">
@@ -13,7 +14,7 @@
             :disabled="!FieldObj[IInfoField.avatar]"
             style="height: 80rpx"
             :modelValue="userInfo.avatarUrl"
-            @update:modelValue="(e: any) =>updateUserIno({ avatarUrl: e })"
+            @update:modelValue="(e: any) =>updateUserInfo({ avatarUrl: e })"
             v-if="item.key === 'avatarUrl'"
           >
             <image
@@ -232,6 +233,7 @@
         :date="birthDate"
         :calendar-type="userInfo.birthKind"
         @confirmDialog="confirmDate"
+        @close-dialog="closeDate"
         ref="calendar"
       />
       <uni-popup
@@ -274,28 +276,31 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
-import CalendarPicker from '@/components/quick-calendar/calendar.vue';
+import CalendarPicker from '@/components/Birthcalendar/index.vue';
+import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
 
 const initBasicsData = useBasicsData();
 
-const birthDate = computed(() => {
-  if (userInfo.value.birthKind === 'S') {
-    return userInfo.value.birthSolar;
+const CalendarPickerShow = ref(false);
+
+watch(() => CalendarPickerShow.value, () => {
+  if (CalendarPickerShow.value) {
+    calendar.value.open();
+  } else {
+    calendar.value.close();
   }
-  if (userInfo.value.birthKind === 'L') {
-    return userInfo.value.birthlunar;
-  }
-  return undefined;
 });
 
+const birthDate = ref('');
+
 onMounted(() => {
-  // calendar.value.open();
+  // CalendarPickerShow.value = true;
 });
 
 const header = computed(() => [
@@ -405,7 +410,7 @@ const updateInfo = async ({
     case IInfoField.Store: {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
-        updateUserIno({
+        updateUserInfo({
           belongDistId: e.distId,
           belongDistName: e.storeName,
           // 切换门店时候，清空导购信息
@@ -426,7 +431,7 @@ const updateInfo = async ({
       uni.$once('updateGuide', e => {
         if (!e.uid) return;
         const { belongDistId, belongDistName } = userInfo.value;
-        updateUserIno({
+        updateUserInfo({
           belongDistId,
           belongDistName,
           belongUid: e.uid,
@@ -489,7 +494,7 @@ const dialogConfirm = (e: string) => {
   } else if (dialogKey.value === 'email' && !reg.test(e)) {
     str = '请输入合法邮箱';
   } else {
-    updateUserIno({ [dialogKey.value]: e });
+    updateUserInfo({ [dialogKey.value]: e });
     popup.value.close();
     dialogTitle.value = '';
     return;
@@ -515,14 +520,14 @@ const handleOpen = (item: { name: any }) => {
   } else {
     initDate.value = birthSolar;
   }
-  calendar.value.open();
+  CalendarPickerShow.value = true;
 };
 const updateEdu = (e: any) => {
   edcIndex.value = e.detail.value;
   const { value } = educations[e.detail.value];
-  updateUserIno({ education: value });
+  updateUserInfo({ education: value });
 };
-const updateUserIno = async (item: any, refresh = false) => {
+const updateUserInfo = async (item: any, refresh = false) => {
   const { code } = await updateMemberInfo(item);
   if (code === 0) {
     Object.assign(userInfo.value, item);
@@ -530,18 +535,35 @@ const updateUserIno = async (item: any, refresh = false) => {
     uni.showToast({ title: '更新成功' });
   }
 };
-const confirmDate = (e: any) => {
+const confirmDate = ({
+  value: {
+    year,
+    month,
+    day
+  },
+  type,
+  lunarDesc
+}: any) => {
   // const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
   if (!isBirthDay.value) {
     // updateUserIno({ annday: e.fulldate });
   } else {
     // userInfo.value.birthLunar = nl;
-    updateUserIno({
+    userInfo.value.birthKind = type;
+    birthDate.value = `${year}-${month}-${day}`;
+    updateUserInfo({
       birthKind: userInfo.value.birthKind,
-      birthSolar: `${e.year}-${e.month}-${e.day}`,
+      birthSolar: `${year}-${String(month)
+        .padStart(2, '0')}-${String(day)
+        .padStart(2, '0')}`
     });
+    userInfo.value.birthLunar = lunarDesc;
   }
-  calendar.value.close();
+  closeDate();
+};
+
+const closeDate = () => {
+  CalendarPickerShow.value = false;
 };
 
 // 切换生日类型
@@ -551,7 +573,7 @@ const radioChange = (e: any) => {
 };
 const bindPickerChangeGender = (e: any) => {
   genderIndex.value = e.detail.value;
-  updateUserIno({ sex: ['M', 'F', 'U'][genderIndex.value] });
+  updateUserInfo({ sex: ['M', 'F', 'U'][genderIndex.value] });
 };
 
 const querySetting = async () => {
@@ -588,7 +610,7 @@ const professionChange = (e: any) => {
   const item =
     professions.value[one].professionList?.[two] ?? professions.value[one];
 
-  updateUserIno({
+  updateUserInfo({
     proName: item.name,
     proId: item.id,
   });
@@ -599,11 +621,14 @@ const queryUserInfo = async () => {
   if (code === 0 && data) {
     data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png';
     userInfo.value = data;
+
+    birthDate.value = data.birthSolar;
+
     // 计算农历生日
-    if (data.birthSolar) {
-      const [a, b, c] = data.birthSolar ? data.birthSolar.split('-') : [];
+    if (userInfo.value.birthSolar) {
+      const [a, b, c] = userInfo.value.birthSolar ? userInfo.value.birthSolar.split('-') : [];
       const r = Lunar.toLunar(a, b, c);
-      data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
+      userInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
     // 日期类型（公历/农历） 默认公历
     if (!data.birthKind || data.birthKind === 'U') data.birthKind = 'S';
