@@ -394,6 +394,23 @@
           }
         }
       ]
+    },
+    {
+      "root": "activity",
+      "pages": [
+        {
+          "path": "inviteGift/index",
+          "style": {
+            "navigationBarTitleText": "邀请有礼"
+          }
+        },
+        {
+          "path": "popularity/index",
+          "style": {
+            "navigationBarTitleText": "活动-人气值千"
+          }
+        }
+      ]
     }
   ],
   "preloadRule": {

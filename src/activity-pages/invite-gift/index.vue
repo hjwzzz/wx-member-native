@@ -257,7 +257,16 @@ const showRulePopup = ref(false); // 规则说明显示
 const optionsTemplateRef = ref();
 const isInit = ref(true);
 
+const initOptions = ref('');
+
 onLoad((options: any) => {
+  console.log('onLoad((options: any)', options);
+  if (options && typeof options === 'object') {
+    initOptions.value = `?${Object.entries(options)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&')}`;
+  }
+
   // #ifdef H5
   // this.setParamData(options);
   // #endif
@@ -318,7 +327,14 @@ const setParamData = (options: any) => {
   if (initBasicsData.checkLogin) {
     inviteHandle();
   } else {
-    Router.goLogin();
+    const page: any = getCurrentPages()
+      .pop();
+    let url = '';
+    if (page.route && initOptions.value) {
+      url = `/${page.route}${initOptions.value}`;
+      initOptions.value = '';
+    }
+    Router.goLogin(url, true);
   }
   // initBasicsData.checkLogin && inviteHandle();
   // setTimeout(() => {

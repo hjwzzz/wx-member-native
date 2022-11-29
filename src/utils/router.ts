@@ -163,6 +163,9 @@ class Router {
     if (type === 'reLaunch') {
       return uni.reLaunch({ url });
     }
+    if (type === 'redirectTo') {
+      return uni.redirectTo({ url });
+    }
     uni.navigateTo({ url });
   }
   static compatibilityOldPage(e: any) {
