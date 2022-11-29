@@ -244,7 +244,7 @@ const confirmDialog = () => {
   let lunarDesc = '';
 
   if (SolarRes !== -1) {
-    lunarDesc = `${SolarRes.lYear}-${SolarRes.lMonth}-${SolarRes.lDay}`;
+    lunarDesc = `${SolarRes.lYear}-${SolarRes.IMonthCn}-${SolarRes.IDayCn}`;
   }
 
   emits('confirmDialog', {

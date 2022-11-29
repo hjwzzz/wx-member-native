@@ -1,5 +1,4 @@
 <template>
-  <page-meta :page-style="'overflow:'+(show?'hidden':'visible')"></page-meta>
   <CustomPage>
     <view class="user-info">
       <view class="wrapper-header">
@@ -80,6 +79,7 @@
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
                     class="selecte-redio"
+
                     v-for="radio in items"
                     :key="radio.name"
                     style="transform: scale(0.7)"
@@ -558,8 +558,8 @@ const confirmDate = ({
         .padStart(2, '0')}`
     });
     userInfo.value.birthLunar = lunarDesc;
+    closeDate();
   }
-  closeDate();
 };
 
 const closeDate = () => {
@@ -570,6 +570,7 @@ const closeDate = () => {
 const radioChange = (e: any) => {
   userInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
+  CalendarPickerShow.value = true;
 };
 const bindPickerChangeGender = (e: any) => {
   genderIndex.value = e.detail.value;
