@@ -1,5 +1,5 @@
 <template>
-  <uni-popup ref="CalendarRef" type="bottom">
+  <uni-popup ref="CalendarRef" type="bottom" background-color="#fff">
     <view
       class="content"
       @touchmove.stop.prevent=""
@@ -78,10 +78,11 @@
 
 <script lang="ts" setup>
 import { ref, watch, nextTick, reactive } from 'vue';
-import { CALENDAR_TYPE, CalendarPickItem, CalendarMonthPickItem } from './calendar-data/calendar.type';
-import * as render from './calendar-data/render';
-import { calendar as formatCalendar } from './calendar-data/calendar';
+import { CALENDAR_TYPE, CalendarPickItem, CalendarMonthPickItem } from './index.type';
+import { useCalendar } from './useBirthcalendar';
+import { calendar as formatCalendar } from './calendar';
 
+const { initLunar, initSolar } = useCalendar();
 
 let date = new Date();
 
@@ -134,15 +135,20 @@ const calendarIndex = reactive({
 
 const type = ref<CALENDAR_TYPE>(CALENDAR_TYPE.SOLAR);
 
+const getSolarCalendar = (type: CALENDAR_TYPE) => {
+  if (type === CALENDAR_TYPE.SOLAR) {
+    return initSolar(calendarValue);
+  }
+  if (type === CALENDAR_TYPE.LUNAR) {
+    return initLunar(calendarValue);
+  }
 
-// onMounted(() => {
-//   init();
-// });
-
-const getSolarCalendar = (type: CALENDAR_TYPE) => render.init(type, 1900, 2100, calendarValue.year, calendarValue.month, calendarValue.day);
+};
 
 const setSolarCalendar = (type: CALENDAR_TYPE) => {
   const res = getSolarCalendar(type);
+
+  console.log(res);
 
   if (!res) {
     return;
@@ -233,8 +239,19 @@ const closeDialog = () => {
 };
 
 const confirmDialog = () => {
+  const SolarRes = formatCalendar.solar2lunar(calendarValue.year, calendarValue.month, calendarValue.day);
 
-  emits('confirmDialog', calendarValue);
+  let lunarDesc = '';
+
+  if (SolarRes !== -1) {
+    lunarDesc = `${SolarRes.lYear}-${SolarRes.lMonth}-${SolarRes.lDay}`;
+  }
+
+  emits('confirmDialog', {
+    value: calendarValue,
+    type: type.value,
+    lunarDesc
+  });
 
   // if(type.value === CALENDAR_TYPE.SOLAR) {
   //   solarDate.value = `${year.value}年${month.value}月${day.value}日`;
@@ -260,6 +277,10 @@ const confirmDialog = () => {
 
 watch([() => props.calendarType], () => {
   type.value = props.calendarType;
+  init();
+}, { immediate: true });
+
+watch([() => props.date], () => {
   init();
 }, { immediate: true });
 
