@@ -13,7 +13,7 @@
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
-            @click.stop="bannerClick(item)"
+            @click.stop="bannerListClick(item)"
           >
             <image
               class=""
@@ -108,7 +108,7 @@
 import { computed, Ref, ref } from 'vue';
 import { queryShareSett } from '@/api/index';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
-import { richImage } from '@/utils/util';
+import { richImage, bannerListClick } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 
 // import {
@@ -117,14 +117,12 @@ import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 //   queryGoldPriceByDist,
 // } from '@/api/gold-price';
 import { getDefaultDistributorInfoByOpsIdFront } from '@/api/server';
-
 //
 import {
   queryGoldPriceBannerListFront,
   getSaleMetalPrice,
 } from '@/my-assets-pages/api/gold-price';
-
-import router from '@/utils/router';
+import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
 import Tabs from '@/components/Tabs/index.vue';
 
@@ -143,17 +141,30 @@ const list = ref<any[]>([]);
 const goldPriceDatas = ref<any>({});
 const current = ref(0);
 
-const bannerClick = (item: any) => {
-  const url = JSON.parse(item.url || {});
-  if (!item.code && item.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-    return;
-  }
-  router.goCodePage(url.code || url.systemUrl);
-};
+// const bannerClick = (item: any) => {
+
+//   const url = JSON.parse(item.url || {});
+//   const code = url.code || url.systemUrl;
+//   if (!code && url.appletUrl) {
+//     const miniUrl = item.miniUrl || url.appletUrl;
+//     Router.goNoCodePage(miniUrl);
+//     return;
+//   }
+//   if (!code && url.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+//     return;
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(code, param);
+// };
 const onChooseStore = () => {
   uni.$once('chooseStore', e => getGoldPrice(e.distId));
-  router.goCodePage('chooseStore', 't=gold_price');
+  Router.goCodePage('chooseStore', 't=gold_price');
 };
 
 const linktap = (e: any) => {

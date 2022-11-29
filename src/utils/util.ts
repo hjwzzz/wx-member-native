@@ -1,3 +1,4 @@
+import Router from '@/utils/router';
 // 时间格式format
 export const formatTime = (date: Date) => {
   const year = date.getFullYear();
@@ -148,3 +149,43 @@ export function copyText(val: string) {
   document.execCommand('Copy'); // 执行浏览器复制命令
   document.body.removeChild(oInput); // 删除临时实例
 }
+
+export const bannerListClick = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  const code = url.code || url.systemUrl;
+  if (!code && url.appletUrl) {
+    const miniUrl = item.miniUrl || url.appletUrl;
+    Router.goNoCodePage(miniUrl);
+    return;
+  }
+  if (!code && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
+  }
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(code, param);
+};
+
+export const handleEntryUrl = (item: any) => {
+  if (!item.code && item.miniUrl) {
+    Router.goNoCodePage(item.miniUrl);
+    return;
+  }
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
+
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(item.code, param);
+};
