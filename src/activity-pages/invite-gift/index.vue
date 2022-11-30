@@ -260,17 +260,15 @@ const isInit = ref(true);
 const initOptions = ref('');
 
 onLoad((options: any) => {
-  console.log('onLoad((options: any)', options);
+  options?.c && uni.setStorageSync('c', options?.c);
+  options?.num && uni.setStorageSync('num', options?.num);
+  options?.inviteMid && uni.setStorageSync('inviteMid', options?.inviteMid);
   if (options && typeof options === 'object') {
     initOptions.value = `?${Object.entries(options)
       .map(([k, v]) => `${k}=${v}`)
       .join('&')}`;
   }
 
-  // #ifdef H5
-  // this.setParamData(options);
-  // #endif
-  // #ifdef MP
   const scene = String(options?.scene || uni.getLaunchOptionsSync().scene);
   const actNum = options?.num;
   if (scene?.includes('num')) {
@@ -285,7 +283,6 @@ onLoad((options: any) => {
     const data = uni.getStorageSync('actNum');
     getParamData(data);
   }
-  // #endif
 });
 onShow(() => {
   if (!isInit.value) {

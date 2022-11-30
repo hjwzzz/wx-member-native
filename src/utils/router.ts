@@ -127,7 +127,7 @@ class Router {
   }
   // 从登录返回之前保存的页面
   static fromLoginBack(url = Storage.getPages()) {
-    const fail = () => Router.go('wm_index');
+    const fail = () => Router.goCodePage('wm_index');
     if (!url || url.includes('/pages/login/index')) {
       uni.navigateBack({ fail });
       return;
