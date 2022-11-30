@@ -135,7 +135,7 @@ const wxPhoneLogin = async (params: any) => {
     const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
     if (openRegist === 'Y') {
       if (list.length) {
-        uni.redirectTo({ url: '/pages/login/finish-info' });
+        uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
       } else {
         // 不用填写
         const phone = data.phone || uni.getStorageSync('phone');

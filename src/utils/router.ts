@@ -127,15 +127,19 @@ class Router {
   }
   // 从登录返回之前保存的页面
   static fromLoginBack(url = Storage.getPages()) {
+    const fail = () => Router.go('wm_index');
     if (!url || url.includes('/pages/login/index')) {
-      uni.navigateBack();
+      uni.navigateBack({ fail });
       return;
     }
     if (switchTabUrl.includes(url)) {
-      uni.switchTab({ url });
+      uni.switchTab({ url, fail });
       return;
     }
-    uni.redirectTo({ url: decodeURIComponent(url) ?? url });
+    uni.redirectTo({
+      url: decodeURIComponent(url) ?? url,
+      fail,
+    });
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams: unknown = '', type = '') {
