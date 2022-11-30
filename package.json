@@ -6,6 +6,7 @@
     "dev:mp-weixin:fat": "uni -p mp-weixin --mode fat",
     "dev:mp-weixin:uat": "uni -p mp-weixin --mode uat",
     "dev:mp-weixin:prod": "uni -p mp-weixin --mode prod",
+    "dev:mp-weixin:prod-dev": "uni -p mp-weixin --mode prod-dev",
     "build:mp-weixin:dev": "uni build -p mp-weixin --mode dev",
     "build:mp-weixin:fat": "uni build -p mp-weixin  --mode fat",
     "build:mp-weixin:uat": "uni build -p mp-weixin --mode uat",

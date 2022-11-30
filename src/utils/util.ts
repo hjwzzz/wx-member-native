@@ -1,4 +1,7 @@
 import Router from '@/utils/router';
+import { useBasicsData, useActiveTab } from '@/store/basicsData';
+import { staticUrl } from '@/utils/config';
+
 // 时间格式format
 export const formatTime = (date: Date) => {
   const year = date.getFullYear();
@@ -179,6 +182,13 @@ export const handleEntryUrl = (item: any) => {
   if (!item.code && item.h5Url) {
     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
     return;
+  }
+  const initBasicsData = useBasicsData();
+  const initActiveTab = useActiveTab();
+
+  if (['wm_center', 'wm_index'].includes(item.code)) {
+    const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === item.code);
+    initActiveTab.setCurrent(active);
   }
 
   let param = item.miniUrl?.split('?')?.[1];
