@@ -32,6 +32,9 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
   };
 
 
+  /**
+   * 初始化阳历
+   */
   const initSolar = ({ year, month, day }: CalendarCurrentValue, calendarConfig: CalendarPickConfig = {}) => {
 
     setConfig(calendarConfig);
@@ -81,6 +84,9 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
     };
   };
 
+  /**
+   * 初始化农历
+   */
   const initLunar = ({ year, month, day }: CalendarCurrentValue, calendarConfig: CalendarPickConfig = {}) => {
 
     const res = formatCalendar.solar2lunar(year, month, day);
@@ -151,7 +157,7 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
     }));
 
     const yearIndex = yearArray.findIndex(item => item.value === res.lYear);
-    const monthIndex = res.isLeap ? res.lMonth : res.lMonth - 1;
+    const monthIndex = res.isLeap ? monthArray.findIndex(item => item.isLeap) : res.lMonth;
     const dayIndex = dayArray.findIndex(item => item.value === res.lDay);
 
     return {

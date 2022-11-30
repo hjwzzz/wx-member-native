@@ -1,5 +1,5 @@
 <template>
-  <uni-popup ref="CalendarRef" type="bottom" background-color="#fff">
+  <uni-popup ref="CalendarRef" type="bottom" background-color="#fff" :is-mask-click="false">
     <view
       class="content"
       @touchmove.stop.prevent=""
@@ -148,7 +148,7 @@ const getSolarCalendar = (type: CALENDAR_TYPE) => {
 const setSolarCalendar = (type: CALENDAR_TYPE) => {
   const res = getSolarCalendar(type);
 
-  console.log(res);
+  console.log('setSolarCalendar', res, calendarValue);
 
   if (!res) {
     return;
@@ -204,13 +204,6 @@ const bindChange = (e: any) => {
   const month = months.value[e.detail.value[1]].value;
   const day = days.value[e.detail.value[2]].value;
 
-  calendarValue.year = year;
-  calendarValue.month = month;
-  calendarValue.day = day;
-
-  calendarIndex.year = e.detail.value[0];
-  calendarIndex.month = e.detail.value[1];
-  calendarIndex.day = e.detail.value[2];
 
   if (type.value === CALENDAR_TYPE.LUNAR) {
     const isLeapMonth = months.value[e.detail.value[1]].isLeap;
@@ -218,13 +211,22 @@ const bindChange = (e: any) => {
     if (SolarRes === -1) {
       return;
     }
-
     calendarValue.year = SolarRes.cYear;
     calendarValue.month = SolarRes.cMonth;
     calendarValue.day = SolarRes.cDay;
+  } else {
+    calendarValue.year = year;
+    calendarValue.month = month;
+    calendarValue.day = day;
   }
 
   setSolarCalendar(type.value);
+
+  nextTick(() => {
+    calendarIndex.year = e.detail.value[0];
+    calendarIndex.month = e.detail.value[1];
+    calendarIndex.day = e.detail.value[2];
+  });
 };
 
 
@@ -270,11 +272,6 @@ const confirmDialog = () => {
   // }
 };
 
-// const blak = () => {
-//   lunarDate.value = '';
-//   solarDate.value = '';
-// };
-
 watch([() => props.calendarType], () => {
   type.value = props.calendarType;
   init();
@@ -284,12 +281,6 @@ watch([() => props.date], () => {
   init();
 }, { immediate: true });
 
-// const confirmDialog = () => {
-//   emits('confirmDialog', {
-//     date: returnDate.value,
-//     time: returnTime.value
-//   });
-// };
 </script>
 
 <style scoped lang="scss">

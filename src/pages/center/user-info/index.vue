@@ -1,4 +1,5 @@
 <template>
+  <page-meta :page-style="'overflow:'+(CalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
   <CustomPage>
     <view class="user-info">
       <view class="wrapper-header">
@@ -520,7 +521,7 @@ const handleOpen = (item: { name: any }) => {
   } else {
     initDate.value = birthSolar;
   }
-  CalendarPickerShow.value = true;
+  openDate();
 };
 const updateEdu = (e: any) => {
   edcIndex.value = e.detail.value;
@@ -562,6 +563,10 @@ const confirmDate = ({
   }
 };
 
+const openDate = () => {
+  CalendarPickerShow.value = true;
+};
+
 const closeDate = () => {
   CalendarPickerShow.value = false;
 };
@@ -570,7 +575,7 @@ const closeDate = () => {
 const radioChange = (e: any) => {
   userInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
-  CalendarPickerShow.value = true;
+  openDate();
 };
 const bindPickerChangeGender = (e: any) => {
   genderIndex.value = e.detail.value;
@@ -598,6 +603,7 @@ const showProfession = computed(() => {
   const one: any = professions.value[professionsIdx.value[0]];
   return [professions.value ?? [], one?.professionList ?? []];
 });
+
 const queryPro = async () => {
   const parmas = '';
   const { code, data } = await queryProfessionAsCate(parmas);
@@ -606,6 +612,7 @@ const queryPro = async () => {
   }
   queryUserInfo();
 };
+
 const professionChange = (e: any) => {
   const [one, two] = e.detail.value;
   const item =
@@ -628,7 +635,7 @@ const queryUserInfo = async () => {
     // 计算农历生日
     if (userInfo.value.birthSolar) {
       const [a, b, c] = userInfo.value.birthSolar ? userInfo.value.birthSolar.split('-') : [];
-      const r = Lunar.toLunar(a, b, c);
+      const r = Lunar.toLunar(Number(a), Number(b), Number(c));
       userInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
     // 日期类型（公历/农历） 默认公历
@@ -636,6 +643,7 @@ const queryUserInfo = async () => {
     const { proId, sex, birthKind, education } = data;
     edcIndex.value = educations.findIndex(i => i.value === education);
     current.value = birthKind === 'S' ? 0 : 1;
+
 
     // 性别
     const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] ?? 2);
