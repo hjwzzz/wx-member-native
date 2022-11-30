@@ -3,7 +3,7 @@
     <view class="user">
       <view class="login-info">
         <view class="user-info">
-          <view class="info-left" @click="handleQuickUrl({ code: 'userInfo' })">
+          <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
             <view class="info-img">
               <image
                 class="image"
@@ -21,13 +21,17 @@
             <view v-if="initBasicsData.checkLogin" class="use-info">
               <text>{{ userInfo.nickName || '' }}</text>
             </view>
-            <view v-else class="info-btn" @click.stop="Router.goCodePage('reg')"
-              >请先登录</view
+            <view
+              v-else
+              class="info-btn"
+              @click.stop="Router.goCodePage('reg')"
             >
+              请先登录
+            </view>
           </view>
           <view
             class="info-right"
-            @click="handleQuickUrl({ code: 'installCenter' })"
+            @click="handleEntryUrl({ code: 'installCenter' })"
           >
             <image
               class="setting"
@@ -42,7 +46,7 @@
             <view
               class="login-item"
               v-if="item.showed"
-              @click="handleQuickUrl(item)"
+              @click="handleEntryUrl(item)"
             >
               <view class="item-num">{{
                 item.accountValue !== ' ' ? item.accountValue : 0
@@ -59,13 +63,6 @@
         @click="handleFixedSysUrl()"
       >
         <view class="boot-equity-left">
-          <!-- <view class="icon">
-            <image
-              class="image"
-              :src="staticUrl + 'img/level.png'"
-              mode="aspectFit"
-            />
-          </view> -->
           <image
             class="icon-image"
             :src="staticUrl + 'img/level.png'"
@@ -84,15 +81,15 @@
         <view class="grid-list" v-if="item.kind === entryType.EN">
           <!-- GONGGE  LIST -->
           <view
+            v-if="item.param.showType"
             :class="
               item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
             "
-            v-if="item.param.showType"
           >
             <block v-for="(entry, index) in item.param.linkList" :key="index">
               <view
                 class="list-item"
-                @click="handleQuickUrl(entry)"
+                @click="handleEntryUrl(entry)"
                 v-if="entry.showed"
               >
                 <view class="item-icon">
@@ -103,8 +100,15 @@
                     "
                     mode="aspectFit"
                   />
+                  <view
+                    class="badge"
+                    v-if="showRedDot(item, entry, 'GONGGE')"
+                  />
                 </view>
-                <view class="item-name">{{ entry.title }}</view>
+                <view class="item-name">
+                  {{ entry.title }}
+                  <view class="badge" v-if="showRedDot(item, entry, 'LIST')" />
+                </view>
                 <uni-icons
                   v-if="item.param.showType == 'LIST'"
                   type="arrowright"
@@ -186,6 +190,8 @@ import {
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 //
 // import { queryGoldPriceByPage } from '@/api/server';
+
+import { bannerListClick, handleEntryUrl } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
@@ -226,21 +232,10 @@ const bannerList: Ref<any> = ref([]);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
-// const login = () => {
-//   uni.navigateTo({ url: '/pages/login/index' });
-// };
-
-// onMounted(() => {
-//   console.log('onMounted-onShow');
-// });
-
-// const reState: any = inject('reState');
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
   // getGoldPriceByPage();
-  // uni.$emit('refreshComponent');
-  // reState.value = !reState.value;
 });
 
 const getMemberCentertIndex = async () => {
@@ -298,19 +293,44 @@ const getBannerData = async () => {
     bannerList.value = result;
   }
 };
-const bannerListClick = (item: any) => {
-  const url = JSON.parse(item.url || {});
-  if (!url.code && !url.systemUrl && url.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-    return;
-  }
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(url.code || url.systemUrl, param);
+
+// if (!item.code) {
+//     if (item.miniUrl) {
+//       Router.goNoCodePage(item.miniUrl);
+//       return;
+//     }
+//     if (item.h5Url) {
+//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+//       return;
+//     }
+//   }
+// const bannerListClick = (item: any) => {
+//   const url = JSON.parse(item.url || {});
+//   const code = url.code || url.systemUrl;
+//   if (!code && url.appletUrl) {
+//     const miniUrl = item.miniUrl || url.appletUrl;
+//     Router.goNoCodePage(miniUrl);
+//     return;
+//   }
+//   if (!code && url.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+//     return;
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(url.code || url.systemUrl, param);
+// };
+
+// 显示红点
+const showRedDot = (item: any, entry: any, text: string) => {
+  const code = ['sign', 'coupon'].includes(entry.code);
+  const red = entry.showRedDot === 'Y';
+  const showType = item.param.showType === text;
+  return code && red && showType;
 };
 
 // 获取今日金价
@@ -324,7 +344,6 @@ const bannerListClick = (item: any) => {
 //     // this.uiParam = uiParam;
 //     const { showNum } = param;
 //     const result: any = [];
-
 //     branPriceList.map((item: any, index: number) => {
 //       if (index < showNum) {
 //         result.push(item);
@@ -341,17 +360,25 @@ const handleFixedSysUrl = () => {
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
-const handleQuickUrl = (item: any) => {
-  // if (initBasicsData.checkLogin) {
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(item.code, param);
-  // }
-};
+// const handleQuickUrl = (item: any) => {
+//   if (!item.code) {
+//     if (item.miniUrl) {
+//       Router.goNoCodePage(item.miniUrl);
+//       return;
+//     }
+//     if (item.h5Url) {
+//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+//       return;
+//     }
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(item.code, param);
+// };
 </script>
 
 <style lang="scss" scoped>

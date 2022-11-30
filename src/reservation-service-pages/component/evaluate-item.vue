@@ -3,8 +3,10 @@
     <image class="img" mode="aspectFit" :src="props.info.avatarUrl"></image>
     <view class="wrapper">
       <view class="name">
-        {{ props.info.membName || '' }}
-        <text class="date">{{ props.info.createTime || '' }}</text>
+        <view class="text-break left">
+          {{ props.info.membName || '' }}
+        </view>
+        <view class="date">{{ props.info.createTime || '' }}</view>
       </view>
       <view class="content">{{ props.info.content || '' }}</view>
       <view class="img-list">
@@ -58,6 +60,7 @@ const previewImage = (index: any) => {
       align-items: center;
       margin-bottom: 18rpx;
       .date {
+        flex-shrink: 0;
         font-size: 24rpx;
         font-weight: normal;
         color: #b7b8c4;

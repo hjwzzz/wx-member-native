@@ -24,7 +24,10 @@
           circular
         >
           <block v-for="(item, index) in bannerList" :key="index">
-            <swiper-item class="swiper-item" @click.stop="bannerIndexFun(item)">
+            <swiper-item
+              class="swiper-item"
+              @click.stop="bannerListClick(item)"
+            >
               <image
                 class=""
                 style="height: 300rpx"
@@ -71,7 +74,7 @@
             <block v-for="(item, index) in adBannerList" :key="index">
               <swiper-item class="swiper-item">
                 <image
-                  @click="bannerIndexFun(item)"
+                  @click="bannerListClick(item)"
                   class="image"
                   style="height: 180rpx"
                   :src="item.image"
@@ -121,7 +124,12 @@
         </view>
         <!-- 富文本 -->
         <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
-          <mp-html v-if="items.param.content" :copy-link="false" :content="richImage(items.param.content)" @linktap="linktap" />
+          <mp-html
+            v-if="items.param.content"
+            :copy-link="false"
+            :content="richImage(items.param.content)"
+            @linktap="linktap"
+          />
           <NoneData v-else> </NoneData>
         </view>
         <!-- 今日金价 -->
@@ -160,7 +168,7 @@
             >
               <image
                 class="alert-box-image"
-                @click="bannerIndexFun(item)"
+                @click="bannerListClick(item)"
                 :src="item.image"
                 mode="aspectFit"
               ></image>
@@ -199,9 +207,9 @@ import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import Tabbar from '@/components/Tabbar/index.vue';
-import Router from '@/utils/router';
+// import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
-import { richImage } from '@/utils/util';
+import { richImage, bannerListClick, handleEntryUrl } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 import { useBasicsData } from '@/store/basicsData';
 
@@ -221,8 +229,8 @@ onShow(() => {
 });
 
 const linktap = (e: any) => {
-  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
-}
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+};
 
 // const shareObj: Ref<any> = ref({});
 const shareData: Ref<any> = ref([]);
@@ -264,20 +272,27 @@ const getPageDate = async () => {
   getPanelList();
 };
 
-const bannerIndexFun = (item: any) => {
-  const url = JSON.parse(item.url || {});
-  if (!url.code && !url.systemUrl && url.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-    return;
-  }
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(url.code || url.systemUrl, param);
-};
+// const bannerIndexFun = (item: any) => {
+//   const url = JSON.parse(item.url || {});
+//   const code = url.code || url.systemUrl;
+//   if (!code && url.appletUrl) {
+//     const miniUrl = item.miniUrl || url.appletUrl;
+//     Router.goNoCodePage(miniUrl);
+//     return;
+//   }
+//   if (!code && url.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+//     return;
+//   }
+
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(url.code || url.systemUrl, param);
+// };
 // QUICK_NAV
 const getPanelList = () => {
   const panelList = dataList.value.wmMainRspVo?.panelList;
@@ -353,20 +368,24 @@ const topBgImageUrl = computed(() => {
   return 'linear-gradient(121deg, #fff0eb 0%, #dce2fb 100%)';
 });
 
-const handleEntryUrl = (item: any) => {
-  if (!item.code && item.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-    return;
-  }
+// const handleEntryUrl = (item: any) => {
+//   if (!item.code && item.miniUrl) {
+//     Router.goNoCodePage(item.miniUrl);
+//     return;
+//   }
+//   if (!item.code && item.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+//     return;
+//   }
 
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(item.code, param);
-};
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(item.code, param);
+// };
 
 // 设置广告弹窗
 // frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出

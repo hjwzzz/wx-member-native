@@ -87,6 +87,14 @@ const oldPage: {
   'reservationService/myAppointment/detail': 'reservation_detail', // 预约服务-详情
   'pages/center/member-benefits/index': 'member_equity', // 会员权益
 };
+
+const activityPage: {
+  [key: string]: string;
+} = {
+  '/activity/inviteGift/index': 'invite_courteous', // 邀请有礼
+  '/activity/popularity/index': 'popularity', // 活动-人气值千金
+  '/signInGift/giftPage/index': 'sign', // 签到
+};
 // 路由控制
 class Router {
   static go(url: string): void {
@@ -155,10 +163,30 @@ class Router {
     if (type === 'reLaunch') {
       return uni.reLaunch({ url });
     }
+    if (type === 'redirectTo') {
+      return uni.redirectTo({ url });
+    }
     uni.navigateTo({ url });
   }
   static compatibilityOldPage(e: any) {
     Router.goCodePage(oldPage[e.path] ?? 'wm_index', e.query, 'reLaunch');
+  }
+  //
+
+  static goNoCodePage(miniUrl: string) {
+    const urlData = miniUrl.split('?');
+    const route = urlData[0];
+    // console.log('activityPage[route]', activityPage[route]);
+    if (activityPage[route]) {
+      let query = '';
+      if (urlData.length > 1) {
+        query = `?${urlData[1]}`;
+      }
+      Router.goCodePage(activityPage[route] ?? 'wm_index', query);
+    } else {
+      // console.log('111oldPage[route]', miniUrl);
+      uni.navigateTo({ url: miniUrl });
+    }
   }
 }
 export default Router;

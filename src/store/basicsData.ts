@@ -54,3 +54,15 @@ export const useBasicsData = defineStore(
   },
   { persist: { enabled: true } }
 );
+
+// tab
+export const useActiveTab = defineStore('useActiveTab', () => {
+  const current = ref(0);
+  const setCurrent = (item: any) => {
+    current.value = item || 0;
+  };
+  return {
+    current,
+    setCurrent,
+  };
+});
