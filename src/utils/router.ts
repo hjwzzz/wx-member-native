@@ -190,6 +190,10 @@ class Router {
       Router.goCodePage(activityPage[route] ?? 'wm_index', query);
     } else {
       // console.log('111oldPage[route]', miniUrl);
+      if (switchTabUrl.includes(miniUrl)) {
+        uni.switchTab({ url: miniUrl });
+        return;
+      }
       uni.navigateTo({ url: miniUrl });
     }
   }

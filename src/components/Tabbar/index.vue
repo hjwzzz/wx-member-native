@@ -124,7 +124,11 @@ const linkNavListFun = (item: any) => {
 // const emits = defineEmits(['change']);
 const selected = ref(props.current);
 const setSelected = (index: number, item: any) => {
+  // console.log({ ...item });
   if (!item.code && item.miniUrl) {
+    if (['/pages/tabbar/index', '/pages/center/index'].includes(item.miniUrl)) {
+      initActiveTab.setCurrent(index);
+    }
     Router.goNoCodePage(item.miniUrl);
     return;
   }
