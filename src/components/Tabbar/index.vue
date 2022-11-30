@@ -91,13 +91,13 @@ const tabBarStyle = reactive({
 });
 
 // 浮窗导航
-const floatNavList = computed(() => {
-  const navList = initBasicsData.levitationNavList;
-  if (navList) {
-    return navList;
-  }
-  return [];
-});
+const floatNavList = computed(() => initBasicsData.levitationNavList || []);
+// const navList = initBasicsData.levitationNavList;
+// if (navList) {
+//   return navList;
+// }
+// return [];
+
 const floatNavShow = ref(false);
 const handleFloatNavAdd = () => {
   floatNavShow.value = !floatNavShow.value;
@@ -105,6 +105,15 @@ const handleFloatNavAdd = () => {
 const linkNavListFun = (item: any) => {
   floatNavShow.value = false;
   //   const active = list.findIndex(({ code }: any) => code === props.code);
+  // console.log('linkNavListFun', item);
+  if (!item.code && item.miniUrl) {
+    Router.goNoCodePage(item.miniUrl);
+    return;
+  }
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
   if (['wm_center', 'wm_index'].includes(item.code)) {
     const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === item.code);
     initActiveTab.setCurrent(active);
@@ -115,6 +124,15 @@ const linkNavListFun = (item: any) => {
 // const emits = defineEmits(['change']);
 const selected = ref(props.current);
 const setSelected = (index: number, item: any) => {
+  if (!item.code && item.miniUrl) {
+    Router.goNoCodePage(item.miniUrl);
+    return;
+  }
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
+
   if (selected.value === index) {
     return;
   }
