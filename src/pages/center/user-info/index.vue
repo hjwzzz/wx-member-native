@@ -396,7 +396,7 @@ const updateInfo = async ({
       });
       router.goCodePage(
         'chooseStore',
-        `?belong=true&id=${userInfo.value.belongDistId || ''}&t=store`
+        `?belong=true&id=${userInfo.value.belongDistId || ''}&t=user_info`
       );
       break;
     }

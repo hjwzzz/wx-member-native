@@ -161,6 +161,7 @@ const updateNearStorePost = async () => {
     distId: '',
     storeName: keyward.value,
     coordCur: coordCur.value,
+    type: 'store',
   });
   loading.value = false;
   if (code === 0) {
