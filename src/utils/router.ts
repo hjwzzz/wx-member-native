@@ -88,13 +88,18 @@ const oldPage: {
   'pages/center/member-benefits/index': 'member_equity', // 会员权益
 };
 
+// '/activity/inviteGift/index': 'invite_courteous', // 邀请有礼
+// '/activity/popularity/index': 'popularity', // 活动-人气值千金
+// '/signInGift/giftPage/index': 'sign', // 签到
+
 const activityPage: {
   [key: string]: string;
-} = {
-  '/activity/inviteGift/index': 'invite_courteous', // 邀请有礼
-  '/activity/popularity/index': 'popularity', // 活动-人气值千金
-  '/signInGift/giftPage/index': 'sign', // 签到
-};
+} = {};
+
+for (const [key, value] of Object.entries(oldPage)) {
+  activityPage[`/${key}`] = value;
+}
+
 // 路由控制
 class Router {
   static go(url: string): void {
@@ -134,7 +139,7 @@ class Router {
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams: unknown = '', type = '') {
-    console.log('goCodePage', code);
+    // console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     let url = pageCode[code];
     if (!url) {
@@ -153,7 +158,7 @@ class Router {
       urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
     }
     url += urlQueryParams;
-    console.log('url', url);
+    // console.log('url', url);
 
     // 如果没有登录，需要登录的页面-就去登录
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
