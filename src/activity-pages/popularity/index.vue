@@ -611,7 +611,7 @@ const onExchange = (item: any) => {
   onReceivePrize(item);
 };
 const checkPrize = (info: any, params: any) => {
-  const { memberPrizeId: id, recvManner } = info;
+  const { memberPrizeId, recvManner } = info;
   const color = styleObj.page.topImgBgColor;
   checkChgAward(params)
     .then(res => {
@@ -627,7 +627,7 @@ const checkPrize = (info: any, params: any) => {
       // 	router.go(url)
       // }
         let url = '/my-assets-pages/my-prize/prize-detail';
-        url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+        url += `?id=${memberPrizeId}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
         // uni.setStorageSync('pages', url);
         Router.go(url);
       } else if (res.code !== 500) {
