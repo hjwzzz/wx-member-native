@@ -257,11 +257,18 @@ const showRulePopup = ref(false); // 规则说明显示
 const optionsTemplateRef = ref();
 const isInit = ref(true);
 
+const initOptions = ref('');
+
 onLoad((options: any) => {
-  // #ifdef H5
-  // this.setParamData(options);
-  // #endif
-  // #ifdef MP
+  options?.c && uni.setStorageSync('c', options?.c);
+  options?.num && uni.setStorageSync('num', options?.num);
+  options?.inviteMid && uni.setStorageSync('inviteMid', options?.inviteMid);
+  if (options && typeof options === 'object') {
+    initOptions.value = `?${Object.entries(options)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&')}`;
+  }
+
   const scene = String(options?.scene || uni.getLaunchOptionsSync().scene);
   const actNum = options?.num;
   if (scene?.includes('num')) {
@@ -276,7 +283,6 @@ onLoad((options: any) => {
     const data = uni.getStorageSync('actNum');
     getParamData(data);
   }
-  // #endif
 });
 onShow(() => {
   if (!isInit.value) {
@@ -318,7 +324,14 @@ const setParamData = (options: any) => {
   if (initBasicsData.checkLogin) {
     inviteHandle();
   } else {
-    Router.goLogin();
+    const page: any = getCurrentPages()
+      .pop();
+    let url = '';
+    if (page.route && initOptions.value) {
+      url = `/${page.route}${initOptions.value}`;
+      initOptions.value = '';
+    }
+    Router.goLogin(url, true);
   }
   // initBasicsData.checkLogin && inviteHandle();
   // setTimeout(() => {

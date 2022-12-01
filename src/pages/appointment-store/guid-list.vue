@@ -19,9 +19,8 @@
         :key="item.uid"
         @click="selectedItem = item"
       >
-        <view class="letter">
-          <text>{{ item.name }}</text>
-        </view>
+        <view class="letter">{{ item.name }} </view>
+        <view v-if="item?.zsResult === 'Y'" class="tag">专属</view>
         <view class="selected">
           <radio
             style="transform: scale(0.7)"
@@ -94,10 +93,23 @@ const handleSelectedGuid = () => {
     height: 98rpx;
     display: flex;
     box-sizing: border-box;
-    justify-content: space-between;
     padding: 30rpx;
+    align-items: center;
     border-bottom: solid 1rpx #ebedf0;
-
+    .tag {
+      flex: none;
+      margin-left: 12rpx;
+      margin-right: 5rpx;
+      display: inline-block;
+      width: 66rpx;
+      height: 32rpx;
+      line-height: 32rpx;
+      text-align: center;
+      border-radius: 4rpx;
+      font-size: 20rpx;
+      color: #ffffff;
+      background: var(--main-color);
+    }
     .letter {
       height: 40rpx;
       font-size: 28rpx;
@@ -141,6 +153,8 @@ const handleSelectedGuid = () => {
 }
 :deep(.selected) {
   color: var(--main-color);
+  flex: 1;
+  text-align: right;
 }
 .search-bar-bg {
   background-color: #fff;

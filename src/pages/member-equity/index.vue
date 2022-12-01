@@ -10,7 +10,6 @@
         v-if="benefitsDataFlag === 'finish'"
         :style="{
           backgroundColor: currentStyle.bgColor,
-          color: currentStyle.fontColor,
         }"
       >
         <view class="cont-inner">
@@ -53,7 +52,12 @@
             </swiper>
           </view>
 
-          <view class="bf-growth-value">
+          <view
+          class="bf-growth-value"
+            :style="{
+              color: currentStyle.fontColor,
+            }"
+          >
             <view class="">
               我的等级：<text class="numb" :style="{ color: mainColor }">{{
                 curLevelName || '--'
@@ -92,7 +96,14 @@
                   <view class="show-image">
                     <image class="image-icon" :src="item.icoUrl" />
                   </view>
-                  <view class="grid-text">{{ item.name }}</view>
+                  <view
+                    class="grid-text"
+                    :style="{
+                      color: currentStyle.fontColor,
+                    }"
+                  >
+                    {{ item.name }}
+                  </view>
                 </view>
               </view>
             </view>
@@ -116,7 +127,7 @@
             v-if="currentBenefitsData && currentBenefitsData.description"
           >
             <view class="title"> 权益说明 </view>
-            <view v-html="richImage(currentBenefitsData.description)"></view>
+            <mp-html :copy-link="false" :content="richImage(currentBenefitsData.description)" @linktap="linktap" />
           </view>
         </view>
       </view>
@@ -173,6 +184,10 @@ const onChangeSwp = (e: any) => {
     'levelList.value[e.detail.current]',
     levelList.value[e.detail.current]
   );
+};
+
+const linktap = (e: any) => {
+  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
 };
 
 const getAllBenefits = async () => {

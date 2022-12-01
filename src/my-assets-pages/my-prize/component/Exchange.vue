@@ -76,7 +76,7 @@
         </view>
       </view>
       <view class="right">
-        <uni-icons type="arrow-right" color="#B7B8C4" size="30" />
+        <uni-icons type="right" color="#B7B8C4" size="16" />
       </view>
     </view>
 
@@ -106,7 +106,11 @@ import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
 import router from '@/utils/router';
 
-const props = defineProps<{ item: any }>();
+interface DistInit {
+  distId: string;
+  storeName: string;
+}
+const props = defineProps<{ item: any; distInit: DistInit }>();
 const form = reactive({ name: '', phone: '' });
 
 const exchangeCode = ref(0);
@@ -126,8 +130,7 @@ watch(
 // 默认地址
 onMounted(async () => {
   const { data } = await getAdressList();
-  // TODO 接口修改未生效，先测试使用
-  const d = data.find((i: any) => ['Y', 'true'].includes(i.isDefault));
+  const d = data.find((i: any) => i.isDefault === 'Y');
   if (d) {
     address.value = d;
     const { receiver, phone } = d;
@@ -144,15 +147,16 @@ const goAdress = () => {
 };
 
 // 选择店铺
-const storeInfo = ref<any>({});
+const storeInfo = ref<any>(props.distInit || {});
 const goStore = () => {
   uni.$once('chooseStore', e => storeInfo.value = e);
   router.goCodePage(
     'chooseStore',
-    `id=${storeInfo.value.distId ?? ''}&relatedId=${props.item.relatedId}`
+    `id=${storeInfo.value.distId ?? ''}&relatedId=${
+      props.item.relatedId
+    }&t=prize`
   );
 };
-
 // 确认兑换
 const popup = ref();
 const getPrize = async () => {
@@ -171,9 +175,9 @@ const getPrize = async () => {
   } else if (!params.recvStoreId) {
     str = '请选择领取门店';
   } else if (exchangeCode.value === 1) {
-    const phoneReg =
-      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
-    !phoneReg.test(params.recverPhone) && (str = '请输入手机号');
+    const phoneReg = /^1\d{10}$/;
+    !phoneReg.test(params.recverPhone) && (str = '手机号格式错误');
+    !params.recverPhone && (str = '请输入手机号');
     !params.recver && (str = '请输入领取人');
   } else if (exchangeCode.value === 2) {
     if (!address.value.phone) {
@@ -210,7 +214,14 @@ const getPrize = async () => {
     popup.value.open('center');
   }
 };
-const navBack = () => uni.navigateBack({ delta: 1 });
+const navBack = () => {
+  uni.navigateBack({
+    delta: 1,
+    fail() {
+      router.goCodePage('my_prize');
+    },
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -286,6 +297,7 @@ const navBack = () => uni.navigateBack({ delta: 1 });
   box-sizing: border-box;
   position: fixed;
   left: 0;
+  font-size: 28rpx;
   bottom: 0rpx;
   // height: 100rpx;
   // padding: 10rpx 32rpx;
@@ -297,6 +309,7 @@ const navBack = () => uni.navigateBack({ delta: 1 });
   padding-bottom: calc(10rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
   .btn {
+    font-size: 28rpx;
     background-color: var(--main-color);
     height: 80rpx;
     line-height: 80rpx;
@@ -318,7 +331,7 @@ const navBack = () => uni.navigateBack({ delta: 1 });
   width: 610rpx;
   .text {
     margin-top: 20rpx;
-    color: var(--main-color);
+    color: #323338;
   }
   .sure {
     margin-top: 40rpx;
@@ -326,7 +339,7 @@ const navBack = () => uni.navigateBack({ delta: 1 });
     text-align: center;
     line-height: 100rpx;
     border-top: 1rpx solid #ebedf0;
-    color: var(--main-color);
+    color: #323338;
   }
 
   .modelimg {

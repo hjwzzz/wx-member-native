@@ -611,7 +611,8 @@ const onExchange = (item: any) => {
   onReceivePrize(item);
 };
 const checkPrize = (info: any, params: any) => {
-  const { memberPrizeId: id, recvManner } = info;
+  const { memberPrizeId, recvManner } = info;
+  const color = styleObj.page.topImgBgColor;
   checkChgAward(params)
     .then(res => {
       if (res.code === 0) {
@@ -626,9 +627,17 @@ const checkPrize = (info: any, params: any) => {
       // 	router.go(url)
       // }
         let url = '/my-assets-pages/my-prize/prize-detail';
-        url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+        url += `?id=${memberPrizeId}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
         // uni.setStorageSync('pages', url);
-        Router.go(url);
+        showToast('兑换成功');
+        setTimeout(() => {
+          Router.go(url);
+        }, 2500);
+      } else if (res.code !== 500) {
+        showToast(res.msg);
+        setTimeout(() => {
+          Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
+        }, 2500);
       }
     });
 };
@@ -642,7 +651,6 @@ const onReceivePrize = (item: any) => {
   chgAward(params, true)
     .then(res => {
       if (res.code === 0) {
-        showToast('兑换成功');
         const { chgAwardRspVo } = res.data;
         if (item.kind === 'PRIZE') {
           checkPrize(chgAwardRspVo, params);
@@ -650,8 +658,13 @@ const onReceivePrize = (item: any) => {
         // const url = `/activity/inviteGift/prize?actId=${id.value}&c=${color}`;
         // uni.setStorageSync('pages', url);
         // Router.go(url);
-          Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
+          showToast('兑换成功');
+          setTimeout(() => {
+            Router.goCodePage('activiy_prize', `?actId=${id.value}&c=${color}`);
+          }, 2500);
         }
+      } else if (res.code !== 500) {
+        showToast(res.msg);
       }
     });
 };

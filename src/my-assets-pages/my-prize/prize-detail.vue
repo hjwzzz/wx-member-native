@@ -72,17 +72,21 @@
       </Goods>
       <!-- 兑奖方式 -->
 
-      <Exchange :item="detail" v-if="detail.statusName === '待兑换'"></Exchange>
+      <Exchange
+        :item="detail"
+        :distInit="distInitInfo"
+        v-if="detail.statusName === '待兑换'"
+      ></Exchange>
       <!-- 门店信息 -->
-      <view
-        class="information"
-        v-if="
-          detail.statusName !== '待兑换' &&
-          !(detail.recvManner === '2' && !detail.fulldisAddress)
-        "
-      >
+      <view class="information" v-if="showChangeHeader(detail)">
         <view class="title"> 兑换信息 </view>
-        <view class="address">
+        <view
+          class="address"
+          v-if="
+            detail.statusName !== '待兑换' &&
+            !(detail.recvManner === '2' && !detail.fulldisAddress)
+          "
+        >
           <view class="a1">
             <view class="left"> 领取门店 </view>
             <view class="right dist-name">
@@ -285,9 +289,25 @@ const getPrize = async () => {
     uni.navigateBack({ delta: 1 });
   }, 1000);
 };
-onLoad(() => {
+const distInitInfo = ref({
+  distId: '',
+  storeName: '',
+});
+onLoad(options => {
+  if (options?.distId && options?.storeName) {
+    // 传参携带门店信息时，初始选中该门店
+    distInitInfo.value.distId = options.distId;
+    distInitInfo.value.storeName = options.storeName;
+  }
   getData();
 });
+
+// 是否显示兑换信息栏： 领取人信息和店铺信息至少一个不为空
+const showChangeHeader = (detail: IPrize) => {
+  if (detail.statusName === '待兑换') return false;
+  if (detail.recvManner !== '2' && detail.fulldisAddress) return true;
+  if (detail.receiver || detail.phone || detail.bizTime) return true;
+};
 </script>
 
 <style scoped lang="scss">
@@ -477,11 +497,13 @@ onLoad(() => {
   background-color: #ffffff;
   width: 100%;
   padding-right: 32rpx;
+  font-size: 28rpx;
   padding-left: 32rpx;
   padding-top: 10rpx;
   padding-bottom: calc(10rpx + constant(safe-area-inset-bottom));
   padding-bottom: calc(10rpx + env(safe-area-inset-bottom));
   .btn {
+    font-size: 28rpx;
     background-color: var(--main-color);
     height: 80rpx;
     line-height: 80rpx;

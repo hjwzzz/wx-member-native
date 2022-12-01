@@ -108,7 +108,7 @@ watch(
     align-items: center;
     float: left;
     &-black {
-      width: 35rpx;
+      min-width: 35rpx;
       height: 35rpx;
       background: rgba(0, 0, 0, 0.5);
       border-radius: 6rpx;

@@ -24,7 +24,7 @@
           src="https://img.dev.jqzplat.com/12D3868F/COMM/e35badb5-20220527.png"
           mode="aspectFill"
         ></image>
-        <view class="address-info-value">
+        <view class="address-info-value text-line-two">
           {{ item.province + item.city + item.district + item.address || '--' }}
         </view>
       </view>
@@ -122,6 +122,7 @@ const onCheck = (e: any) => {
   .address-item-option {
     position: relative;
     padding-left: 40rpx;
+    padding-right: 40rpx;
   }
   .address-icon {
     position: absolute;

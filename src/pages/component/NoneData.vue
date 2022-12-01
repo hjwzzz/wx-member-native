@@ -2,8 +2,8 @@
   <view class="empty-wrapper">
     <image
       class="image"
+      mode="widthFix"
       :src="`${staticUrl}img/empty/${props.icon}.png`"
-      :style="imgSize"
     ></image>
     <view class="empty">{{ props.text }}</view>
   </view>
@@ -11,7 +11,6 @@
 
 <script setup lang="ts">
 import { staticUrl } from '@/utils/config';
-import { computed, ref } from 'vue';
 
 interface Props {
 
@@ -37,17 +36,6 @@ const props = withDefaults(defineProps<Props>(), {
   icon: 'status',
   text: '暂无相关信息',
 });
-const imgInfo = ref({
-  width: 100,
-  height: 100,
-});
-const imgSize = computed(() => `width: ${imgInfo.value.width}px;height: ${imgInfo.value.height}px;`);
-uni.getImageInfo({
-  src: `${staticUrl}img/empty/${props.icon}.png`,
-  success: e => {
-    imgInfo.value = e;
-  },
-});
 </script>
 
 <style lang="scss" scoped>
@@ -57,21 +45,23 @@ uni.getImageInfo({
   align-items: center;
   width: 100%;
   height: 100%;
+  padding-bottom: 10rpx;
 
   .image {
     line-height: 0;
-    width: 200rpx;
-    height: 200rpx;
+    width: 320rpx;
+    height: 320rpx;
   }
 
   .empty {
-    width: 144rpx;
+    // width: 144rpx;
     height: 34rpx;
     margin: 0 auto;
-    font-size: 24rpx;
+    font-size: 28rpx;
     font-weight: 400;
     line-height: 34rpx;
     color: #b7b8c4;
+    margin-bottom: 20rpx;
   }
 }
 </style>

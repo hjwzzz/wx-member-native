@@ -1,3 +1,7 @@
+import Router from '@/utils/router';
+import { useBasicsData, useActiveTab } from '@/store/basicsData';
+import { staticUrl } from '@/utils/config';
+
 // 时间格式format
 export const formatTime = (date: Date) => {
   const year = date.getFullYear();
@@ -60,12 +64,20 @@ export const richImage = (item: any) => {
   }
   let content = item;
   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-  content = content.replace(reg, '<img style="max-width: 100%;" src="$1" />');
+  content = content.replace(
+    reg,
+    '<img style="max-width: 100%; vertical-align: bottom;" src="$1" />'
+  );
   //
   const regP = /<p.*?>/g;
   content = content.replace(
     regP,
     '<p style="max-width: 100%;word-break:break-all;word-wrap:break-word"  >'
+  );
+  const regBlockquote = /<blockquote.*?>/g;
+  content = content.replace(
+    regBlockquote,
+    '<blockquote style="display: block; border-left: 8px solid #d0e5f2; padding: 5px 10px; margin: 10px 0; line-height: 1.4; font-size: 100%; background-color: #f1f1f1;" >'
   );
   return content;
 };
@@ -140,3 +152,50 @@ export function copyText(val: string) {
   document.execCommand('Copy'); // 执行浏览器复制命令
   document.body.removeChild(oInput); // 删除临时实例
 }
+
+export const bannerListClick = (item: any) => {
+  const url = JSON.parse(item.url || {});
+  const code = url.code || url.systemUrl;
+  if (!code && url.appletUrl) {
+    const miniUrl = item.miniUrl || url.appletUrl;
+    Router.goNoCodePage(miniUrl);
+    return;
+  }
+  if (!code && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
+  }
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(code, param);
+};
+
+export const handleEntryUrl = (item: any) => {
+  if (!item.code && item.miniUrl) {
+    Router.goNoCodePage(item.miniUrl);
+    return;
+  }
+  if (!item.code && item.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+    return;
+  }
+  const initBasicsData = useBasicsData();
+  const initActiveTab = useActiveTab();
+
+  if (['wm_center', 'wm_index'].includes(item.code)) {
+    const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === item.code);
+    initActiveTab.setCurrent(active);
+  }
+
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(item.code, param);
+};

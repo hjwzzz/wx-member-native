@@ -1,12 +1,23 @@
 <template>
   <CustomPage>
     <view class="info">
-      <view v-for="(info, index) in showList" :key="index" class="list">
+      <view
+        v-for="(info, index) in showList"
+        :key="info.code"
+        class="list"
+        :class="{ last: index === list.length - 1, first: index === 0 }"
+      >
         <view
-          v-if="info.code !== hardCode && info.show == 'Y'"
-          :key="index"
+          v-if="
+            ![
+              IRegistField.Name,
+              IRegistField.nickName,
+              IRegistField.avatar,
+            ].includes(info.code)
+          "
+          :key="info.code"
           class="list-item"
-          @click="handle(index)"
+          @click="handle(info)"
         >
           <!-- 生日 农历 阴历    -->
           <view class="selected-item">
@@ -36,25 +47,6 @@
                 </radio-group>
               </view>
               <!--						婚姻-->
-              <view v-show="info.code === maritalCode" class="radio">
-                <radio-group class="selecte-redio" @change="maritalChange">
-                  <label
-                    v-for="item in maritalStatusList"
-                    :key="item.value"
-                    class="selecte-redio"
-                    style="transform: scale(0.7)"
-                  >
-                    <view>
-                      <radio
-                        :value="item.value"
-                        :checked="item.value === maritalValue"
-                        :color="initBasicsData.mainColor"
-                      />
-                    </view>
-                    <view>{{ item.name }}</view>
-                  </label>
-                </radio-group>
-              </view>
             </view>
             <view class="right">
               <view v-show="info.code == BIRTH_DAY" class="date-format">
@@ -106,6 +98,18 @@
                   }}</view>
                 </picker>
               </view>
+              <!--						婚姻-->
+              <view v-show="info.code === maritalCode" class="guid">
+                <picker
+                  @change="maritalChange"
+                  :value="maritalValue"
+                  :range="['已婚', '未婚']"
+                >
+                  <view class="uni-input">{{
+                    ['已婚', '未婚'][parseInt(maritalValue)]
+                  }}</view>
+                </picker>
+              </view>
               <view
                 v-show="
                   info.code === 'REGIST_REQUIRED_AREA' && memberInfoAddressDet
@@ -114,7 +118,7 @@
               >
                 <text>{{ memberInfoAddressDet }}</text>
               </view>
-              <uni-icons type="arrowright" size="14" />
+              <uni-icons color="#B7B8C4" type="arrowright" size="14" />
             </view>
           </view>
           <view
@@ -138,30 +142,30 @@
               </view>
             </view>
             <view v-if="selectedShop.fullAddress" class="shop-address">
-              <view class="address-icon">
-                <image
-                  :src="`${staticUrl}prize/store/address.png`"
-                  mode="scaleToFill"
-                />
-              </view>
+              <image
+                class="address-icon"
+                :src="`${staticUrl}prize/store/address.png`"
+                mode="scaleToFill"
+              />
+
               <view class="address-text">
                 {{ selectedShop.fullAddress }}
               </view>
             </view>
             <view v-if="selectedShop.tel" class="shop-phone">
-              <view class="phone-icon">
-                <image
-                  :src="`${staticUrl}prize/store/phone.png`"
-                  mode="scaleToFill"
-                />
-              </view>
+              <image
+                class="phone-icon"
+                :src="`${staticUrl}prize/store/phone.png`"
+                mode="scaleToFill"
+              />
+
               <view class="phone-code">
                 {{ selectedShop.tel }}
               </view>
             </view>
           </view>
         </view>
-        <view v-else-if="info.show == 'Y'" class="inpu-item">
+        <view v-else-if="info.code === IRegistField.Name" class="inpu-item">
           <view class="input-left">
             <text v-show="info.required == 'Y'" class="input-icon"> * </text>
             <text class="input-name">
@@ -170,10 +174,37 @@
           </view>
           <view class="input-right">
             <input
+              class="cR"
               v-model="memberInfo.name"
               type="text"
               maxlength="20"
+              placeholder-style="color:#d8d9e0;font-size:28rpx;"
               :placeholder="'请输入' + info.name"
+            />
+          </view>
+        </view>
+
+        <userIcon
+          v-else-if="info.code === IRegistField.avatar"
+          :name="info.name"
+          :required="info.required"
+          v-model="memberInfo.avatarUrl"
+        ></userIcon>
+
+        <view v-else-if="info.code === IRegistField.nickName" class="inpu-item">
+          <view class="input-left">
+            <text v-show="info.required == 'Y'" class="input-icon">*</text>
+            <text class="input-name">{{ info.name }}</text>
+          </view>
+          <view class="input-right">
+            <input
+              class="cR"
+              v-model="memberInfo.nickName"
+              @input="changeNickName"
+              type="nickname"
+              maxlength="32"
+              placeholder-style="color:var(--main-color);font-size:28rpx;"
+              placeholder="设置昵称"
             />
           </view>
         </view>
@@ -194,9 +225,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
+import { IRegistField } from '@/api/types/server';
 import {
   completeInfo,
   getMemberInfo,
@@ -207,6 +239,7 @@ import { getNearStore } from '@/pages/api/nearby-store';
 import router from '@/utils/router';
 import { formatTime, mergeFullAddress } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
+import userIcon from './UserIcon.vue';
 
 const initBasicsData = useBasicsData();
 
@@ -221,16 +254,7 @@ const items = [
     name: '农历',
   },
 ];
-const maritalStatusList = [
-  {
-    value: 'Y',
-    name: '已婚',
-  },
-  {
-    value: 'N',
-    name: '未婚',
-  },
-];
+
 const selecteList = [
   {
     label: '男',
@@ -241,7 +265,7 @@ const selecteList = [
     value: 'F',
   },
 ];
-const hardCode = 'REGIST_REQUIRED_NAME';
+
 const shop = 'REGIST_REQUIRED_STORE';
 const saler = 'REGIST_REQUIRED_SELLER';
 const MDAY = 'REGIST_REQUIRED_MDAY';
@@ -249,7 +273,7 @@ const BIRTH_DAY = 'REGIST_REQUIRED_BIRTH';
 const GENDER = 'REGIST_REQUIRED_GENDER';
 const maritalCode = 'REGIST_MARITAL_STATUS';
 const current = ref(0);
-const maritalValue = ref('Y');
+const maritalValue = ref('0');
 const memberInfo = ref<any>({});
 const selectedShop = ref<any>({});
 const memberInfoAddressDet = computed(() => {
@@ -262,8 +286,9 @@ const showSex = ref(0);
 
 const activeData = ref<any>({});
 const isActivity = ref(false);
-
-onLoad(() => {
+const lastPage = ref('');
+onLoad(e => {
+  lastPage.value = e.p || '';
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
@@ -282,12 +307,14 @@ onLoad(() => {
 });
 const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
-  data.sex ??= 'M';
-  data.birthKind ??= 'S';
+  data.sex ||= 'M';
+  data.birthKind ||= 'S';
+  data.birthLunar = '';
+  data.nickName === '微信用户' && (data.nickName = '');
   if (data) {
     memberInfo.value = data;
-    selectedShop.value.storeName = data.belongDistName;
-    selectedShop.value.distId = data.belongDistId;
+    selectedShop.value.storeName = data.belongDistName || '';
+    selectedShop.value.distId = data.belongDistId || '';
   }
 };
 // 获取附近门店
@@ -303,7 +330,7 @@ const queryNearShop = async (distId: any) => {
   if (!res.code && res.data?.length) {
     selectedShop.value = res.data[0];
   } else {
-    selectedShop.value.distId = undefined;
+    selectedShop.value.distId = '';
   }
 };
 const queryWriteInfo = async (p = {}) => {
@@ -348,8 +375,7 @@ const queryWriteInfo = async (p = {}) => {
   }
 };
 
-const handle = (index: number) => {
-  const item = list.value[index];
+const handle = (item: any) => {
   if (isActivity.value) {
     if (item.code === shop && !activeData.value.canModifyDist) {
       return;
@@ -365,7 +391,10 @@ const handle = (index: number) => {
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
-      router.goCodePage('chooseStore', `?id=${memberInfo.value.belongDistId}`);
+      router.goCodePage(
+        'chooseStore',
+        `?id=${memberInfo.value.belongDistId || ''}&t=user_info`
+      );
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
@@ -404,29 +433,26 @@ const handle = (index: number) => {
       );
       break;
     }
-    case GENDER: {
-      break;
-    }
     case 'REGIST_REQUIRED_AREA': {
-      uni.$once('chooseAddress', e => {
-        selectedShop.value = e;
-      });
-      router.goCodePage('finishAddress');
       break;
     }
     default:
       break;
   }
 };
-const showList = computed(() => list.value.filter((item: any) => !(maritalValue.value === 'N' && item.code === MDAY)));
+// 过滤不显示和未婚的纪念日
+const showList = computed(() => list.value.filter((item: any) => {
+  if (item.show === 'N') return false;
+  if (item.code === MDAY && maritalValue.value === '1') return false;
+  return true;
+}));
 const radioChange = (e: any) => {
   memberInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
 };
 const maritalChange = (e: any) => {
   maritalValue.value = e.detail.value;
-
-  if (e.detail.value === 'N') {
+  if (e.detail.value === '1') {
     memberInfo.value.annday = '';
     showAnnday.value = '';
   }
@@ -434,7 +460,7 @@ const maritalChange = (e: any) => {
 const handleStep = async () => {
   const {
     name,
-    phone,
+
     nickName,
     province,
     city,
@@ -445,14 +471,21 @@ const handleStep = async () => {
     birthKind,
     birthSolar,
     sex,
+    avatarUrl,
   } = memberInfo.value;
+  const phone = memberInfo.value.phone || uni.getStorageSync('phone');
   const params = {
     name,
-    nickName,
-    activeDistId: selectedShop.value.distId,
+    nickName:
+      nickName || `${phone.substr(0, 4)}***${phone.substr()
+        .substr(-3, 3)}`,
+    activeDistId: selectedShop.value.distId || null,
     activeUid,
     province,
     city,
+    avatarUrl:
+      avatarUrl ||
+      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
     district,
     address,
     inviteCode: name, // 验证码，已废弃
@@ -511,9 +544,7 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_MDAY': {
-        console.log(maritalValue.value);
-
-        if (maritalValue.value === 'Y' && !params.annday) {
+        if (maritalValue.value === '0' && !params.annday) {
           uni.showModal({
             content: '请选择纪念日',
             showCancel: false,
@@ -561,7 +592,7 @@ const handleStep = async () => {
   const { code, data } = await completeInfo(params);
   if (code === 0) {
     data && initBasicsData.setUseMid(data);
-    router.fromLoginBack();
+    router.fromLoginBack(lastPage.value);
     uni.removeStorageSync('c');
     uni.removeStorageSync('num');
     uni.removeStorageSync('pages');
@@ -604,6 +635,22 @@ const confirmDate = (e: any) => {
     memberInfo.value.birthSolar = e.fulldate;
   }
 };
+
+const changeNickName = (e: any) => {
+  const value = e.detail.value;
+  let len = 0;
+  let result = '';
+  for (let i = 0; i < value.length; i++) {
+    if (value.charCodeAt(i) > 127 || value.charCodeAt(i) === 94) {
+      len++;
+    }
+    len++;
+    result += value.charAt(i);
+    if (len >= 32) {
+      return nextTick(() => memberInfo.value.nickName = result);
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -615,7 +662,16 @@ const confirmDate = (e: any) => {
 
   .list {
     background: #ffffff;
-
+    border-bottom: 1rpx solid #ebedf0;
+    &.last {
+      border-bottom: none;
+      border-bottom-left-radius: 16rpx;
+      border-bottom-right-radius: 16rpx;
+    }
+    &.first {
+      border-top-right-radius: 16rpx;
+      border-top-left-radius: 16rpx;
+    }
     .list-item {
       .selected-item {
         display: flex;
@@ -649,8 +705,8 @@ const confirmDate = (e: any) => {
         .right {
           display: flex;
           height: 18rpx;
-          color: #b7b8c4;
-
+          color: #9697a2;
+          font-size: 28rpx;
           .letter {
             width: 500rpx;
             text-align: right;
@@ -699,40 +755,31 @@ const confirmDate = (e: any) => {
 
         .shop-address {
           display: flex;
+          margin-top: 12rpx;
           .address-icon {
-            display: inline-block;
-            width: 16rpx;
-            height: 19rpx;
+            width: 17rpx;
+            height: 18rpx;
             margin-right: 10rpx;
-
-            image {
-              width: 100%;
-              height: 100%;
-            }
+            margin-top: 8rpx;
           }
 
           .address-text {
             flex: 1;
             font-size: 24rpx;
-            font-weight: 400;
             color: #9697a2;
+            font-weight: 400;
             line-height: 34rpx;
           }
         }
 
         .shop-phone {
           display: flex;
-
+          margin-top: 12rpx;
           .phone-icon {
-            display: inline-block;
             width: 17rpx;
-            height: 19rpx;
+            height: 18rpx;
             margin-right: 10rpx;
-
-            image {
-              width: 100%;
-              height: 100%;
-            }
+            margin-top: 9rpx;
           }
 
           .phone-code {
@@ -792,5 +839,9 @@ const confirmDate = (e: any) => {
 
     margin-top: 60rpx;
   }
+}
+.cR {
+  color: #9697a2;
+  font-size: 28rpx;
 }
 </style>

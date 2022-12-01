@@ -97,6 +97,10 @@
       @onChange="onChangeShowAddress"
       @onCheck="onCheck"
     />
+    <toast-template
+      v-model:visible="toastVisible"
+      :message="toastMsg"
+    ></toast-template>
   </view>
 </template>
 
@@ -115,6 +119,7 @@ import { richImage } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 import { useBasicsData } from '@/store/basicsData';
+import ToastTemplate from '../../component/Toast/index.vue';
 
 const initBasicsData = useBasicsData();
 const actId = ref('');
@@ -213,7 +218,7 @@ const onSumbit = () => {
   // console.log('formArr', formArr.value);
   for (let i = 0; i < formArr.value.length; i++) {
     const item = formArr.value[i];
-    if (item.type === 'DIST_NAME' && !form.distId && form.notNull === 'Y') {
+    if (item.type === 'DIST_NAME' && !form.distId && item.notNull === 'Y') {
       uni.showToast({
         title: `请选择${item.propertyName}`,
         duration: 3000,
@@ -221,7 +226,7 @@ const onSumbit = () => {
       });
       return;
     }
-    if (item.type === 'NAME' && !form.name && form.notNull === 'Y') {
+    if (item.type === 'NAME' && !form.name && item.notNull === 'Y') {
       uni.showToast({
         title: `请输入${item.propertyName}`,
         duration: 3000,
@@ -229,7 +234,7 @@ const onSumbit = () => {
       });
       return;
     }
-    if (item.type === 'PHONE' && !form.phone && form.notNull === 'Y') {
+    if (item.type === 'PHONE' && !form.phone && item.notNull === 'Y') {
       uni.showToast({
         title: `请授权${item.propertyName}`,
         duration: 3000,
@@ -279,9 +284,11 @@ const onSumbit = () => {
           Router.goCodePage(
             'activiy_prize',
             `?actId=${actId.value}&c=${color.value}`,
-            'reLaunch'
+            'redirectTo'
           );
         }
+      } else if (res.code !== 500) {
+        showToast(res.msg);
       }
     });
 };
@@ -301,8 +308,18 @@ const checkPrize = (info: any) => {
         }
         let url = '/my-assets-pages/my-prize/prize-detail';
         url += `?id=${id}&code=${recvManner.code}&name=${recvManner.name}&flag=true`;
+        if (form.distId) {
+          url += `&storeName=${form.distName}&storage_id=${form.distId}`;
+        }
         // uni.setStorageSync('pages', url);
-        uni.reLaunch({ url });
+        uni.redirectTo({ url });
+      } else {
+        showToast(res.msg);
+        Router.goCodePage(
+          'activiy_prize',
+          `?actId=${actId.value}&c=${color.value}`,
+          'redirectTo'
+        );
       }
     });
 };
@@ -317,6 +334,13 @@ const onChangeShowAddress = (val: boolean) => {
 };
 
 const richImageFun = (item: any) => richImage(item);
+// 提示
+const toastVisible = ref(false);
+const toastMsg = ref('');
+const showToast = (str: string) => {
+  toastMsg.value = str;
+  toastVisible.value = true;
+};
 </script>
 <style lang="scss" scoped>
 .popularity-exchange-page {

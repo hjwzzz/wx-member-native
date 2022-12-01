@@ -20,7 +20,7 @@
         :indicator-dots="goldPrice?.length > 1"
         indicator-color="#D8D9E0"
         :indicator-active-color="initBasicsData.mainColor"
-        style="height: 280rpx"
+        style="height: 250rpx"
       >
         <swiper-item v-for="(price, index) in goldPrice" :key="index">
           <view class="swiper-item uni-bg-red">
@@ -45,7 +45,9 @@
                 </view>
                 <view class="right">元/克</view>
               </view>
-              <view class="detail-footer _text1">{{ price.distName }}</view>
+              <view class="detail-footer _text1 text-break">
+                {{ price.name || price.distName }}
+              </view>
             </view>
           </view>
         </swiper-item>
@@ -88,6 +90,17 @@ onMounted(() => {
   _getGoldPriceByPage();
 });
 
+watch(
+  () => initBasicsData.checkLogin,
+  (bool: boolean) => {
+    if (bool) {
+      _getGoldPriceByPage();
+    } else {
+      goldPrice.value = [];
+    }
+  }
+);
+
 const _getGoldPriceByPage = async () => {
   if (!initBasicsData.checkLogin) {
     goldPrice.value = [];
@@ -116,23 +129,13 @@ const _getGoldPriceByPage = async () => {
     // console.log('goldPrice', result);
   }
 };
-
-watch(
-  () => initBasicsData.checkLogin,
-  (bool: boolean) => {
-    if (bool) {
-      _getGoldPriceByPage();
-    } else {
-      goldPrice.value = [];
-    }
-  }
-);
 </script>
 
 <style lang="scss" scoped>
 .grid-price {
   // width: 630rpx;
   padding: 30rpx;
+  padding-bottom: 0rpx;
   // margin-top: 30rpx;
   margin-bottom: 30rpx;
   background: #fff;
@@ -261,13 +264,14 @@ watch(
       }
     }
 
-    // ._text1 {
-    //   display: box;
-    //   overflow: hidden;
-    //   text-overflow: ellipsis;
-    //   -webkit-line-clamp: 1;
-    //   -webkit-box-orient: vertical;
-    // }
+    ._text1 {
+      // overflow: hidden;
+      // text-overflow: ellipsis;
+      // -webkit-line-clamp: 1;
+      // -webkit-box-orient: vertical;
+      font-size: 24rpx;
+      color: #b7b8c4;
+    }
   }
 
   .swiper-item {

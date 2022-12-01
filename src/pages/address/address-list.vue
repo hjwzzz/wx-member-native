@@ -11,12 +11,15 @@
               {{ item.phone }}
             </view>
           </view>
-          <view style="word-wrap: break-word">
+          <view style="word-wrap: break-word; color: #9697a2">
             {{ item.province + item.city + item.district + item.address }}
           </view>
         </view>
         <view class="addr-bottom">
-          <view @click="changeDefaultAddress(item, item.isDefault)">
+          <view
+            @click="changeDefaultAddress(item, item.isDefault)"
+            style="font-size: 28rpx"
+          >
             <text
               :class="[
                 'iconfont margin-text',
@@ -29,10 +32,18 @@
           </view>
           <view class="edit-del">
             <view style="margin-right: 48rpx" @click="goToUpdatePage(item)">
-              <text class="iconfont icon-bianjiedit icon-text"></text>编辑
+              <text
+                class="iconfont icon-bianjiedit icon-text"
+                style="margin-right: 10rpx; vertical-align: bottom"
+              ></text
+              >编辑
             </view>
             <view @click="deleAdress(item.id)">
-              <text class="iconfont icon-shanchu_delete icon-text"></text>移除
+              <text
+                class="iconfont icon-shanchu_delete icon-text"
+                style="margin-right: 10rpx; vertical-align: bottom"
+              ></text
+              >移除
             </view>
           </view>
         </view>
@@ -121,9 +132,9 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
 .icon-yigouxuan {
   color: var(--main-color);
 }
-.icon-weigouxuan {
-  color: var(--main-color);
-}
+// .icon-weigouxuan {
+//   color: var(--main-color);
+// }
 .address-tip-show {
   display: flex;
   justify-content: center;
@@ -175,6 +186,7 @@ const changeDefaultAddress = async (e: IAddress, d: string) => {
   color: #f86262;
 }
 .adress-list {
+  font-size: 28rpx;
   display: flow-root;
   min-height: calc(100vh - (215rpx + constant(safe-area-inset-bottom)));
   min-height: calc(100vh - (215rpx + env(safe-area-inset-bottom)));

@@ -85,7 +85,7 @@ const prizeList = [
 
 <style lang="scss" scoped>
 .grid-prize {
-  height: 240rpx;
+  min-height: 190rpx;
   padding: 30rpx;
   margin: 30rpx 0rpx;
   background: #fff;
@@ -161,22 +161,16 @@ const prizeList = [
             top: -16rpx;
             left: 30rpx;
             box-sizing: border-box;
-
-            /* display: grid; */
-
-            /* place-content: center; */
-
-            /* place-items: center; */
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 32rpx;
-            height: 32rpx;
-            padding: 0 10rpx;
-            font-size: 24rpx;
+            flex-wrap: nowrap;
+            width: 36rpx;
+            height: 36rpx;
+            font-size: 20rpx;
             color: #fff;
             background-color: #ff4c4c;
-            border-radius: 16rpx;
+            border-radius: 50%;
           }
 
           .image {

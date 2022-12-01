@@ -53,6 +53,7 @@ const pageCode: any = {
   location: '/pages/center/user-info/address', // 修改地址
   activiy_prize: '/activity-pages/prize/index', // 活动-我的奖品
   popularity: '/activity-pages/popularity/index', // 活动-人气值千金
+  my_reservation_detail: '/reservation-service-pages/myAppointment/index', // 我的预约服务
   reservation_detail: '/reservation-service-pages/myAppointment/detail', // 预约服务-详情
   member_equity: '/pages/member-equity/index', // 会员权益
 };
@@ -72,18 +73,33 @@ const oldPage: {
   'reservationService/reservationService/index': 'reservation', // 预约服务
   'pages/center/quality/index': 'warranty', // 质保单列表
   'myAssets/integral/index': 'point', // 我的积分
+  'pages/center/integral/index': 'point', // 我的积分
   'pages/center/coupon-center/index': 'get_coupon', // 领券中心
   'pages/center/gold-price/index': 'gold_price', // 今日金价
   // 'pages/center/index': 'wm_center', // 个人中心
   // 'pages/tabbar/index': 'wm_index', // 首页
   'signInGift/giftPage/index': 'sign', // 签到
   'myAssets/thebalance/index': 'balance', // 我的余额
+  'pages/center/thebalance/index': 'balance', // 我的余额
   'pages/center/ticket/index': 'coupon', // 我的优惠券
   'pages/center/nearby-store/index': 'nearby_store', // 附近门店
   'activity/popularity/index': 'popularity', // 活动-人气值千金
   'reservationService/myAppointment/detail': 'reservation_detail', // 预约服务-详情
   'pages/center/member-benefits/index': 'member_equity', // 会员权益
 };
+
+// '/activity/inviteGift/index': 'invite_courteous', // 邀请有礼
+// '/activity/popularity/index': 'popularity', // 活动-人气值千金
+// '/signInGift/giftPage/index': 'sign', // 签到
+
+const activityPage: {
+  [key: string]: string;
+} = {};
+
+for (const [key, value] of Object.entries(oldPage)) {
+  activityPage[`/${key}`] = value;
+}
+
 // 路由控制
 class Router {
   static go(url: string): void {
@@ -111,19 +127,23 @@ class Router {
   }
   // 从登录返回之前保存的页面
   static fromLoginBack(url = Storage.getPages()) {
+    const fail = () => Router.goCodePage('wm_index');
     if (!url || url.includes('/pages/login/index')) {
-      uni.navigateBack();
+      uni.navigateBack({ fail });
       return;
     }
     if (switchTabUrl.includes(url)) {
-      uni.switchTab({ url });
+      uni.switchTab({ url, fail });
       return;
     }
-    uni.redirectTo({ url: decodeURIComponent(url) ?? url });
+    uni.redirectTo({
+      url: decodeURIComponent(url) ?? url,
+      fail,
+    });
   }
   // 根据code来跳转页面
   static goCodePage(code: string, urlQueryParams: unknown = '', type = '') {
-    console.log('goCodePage', code);
+    // console.log('goCodePage', code);
     const initBasicsData = useBasicsData();
     let url = pageCode[code];
     if (!url) {
@@ -142,7 +162,7 @@ class Router {
       urlQueryParams.startsWith('?') || (urlQueryParams = `?${urlQueryParams}`);
     }
     url += urlQueryParams;
-    console.log('url', url);
+    // console.log('url', url);
 
     // 如果没有登录，需要登录的页面-就去登录
     if (!initBasicsData.checkLogin && configRouterAuth.includes(code)) {
@@ -152,10 +172,34 @@ class Router {
     if (type === 'reLaunch') {
       return uni.reLaunch({ url });
     }
+    if (type === 'redirectTo') {
+      return uni.redirectTo({ url });
+    }
     uni.navigateTo({ url });
   }
   static compatibilityOldPage(e: any) {
     Router.goCodePage(oldPage[e.path] ?? 'wm_index', e.query, 'reLaunch');
+  }
+  //
+
+  static goNoCodePage(miniUrl: string) {
+    const urlData = miniUrl.split('?');
+    const route = urlData[0];
+    // console.log('activityPage[route]', activityPage[route]);
+    if (activityPage[route]) {
+      let query = '';
+      if (urlData.length > 1) {
+        query = `?${urlData[1]}`;
+      }
+      Router.goCodePage(activityPage[route] ?? 'wm_index', query);
+    } else {
+      // console.log('111oldPage[route]', miniUrl);
+      if (switchTabUrl.includes(miniUrl)) {
+        uni.switchTab({ url: miniUrl });
+        return;
+      }
+      uni.navigateTo({ url: miniUrl });
+    }
   }
 }
 export default Router;

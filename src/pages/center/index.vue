@@ -3,11 +3,11 @@
     <view class="user">
       <view class="login-info">
         <view class="user-info">
-          <view class="info-left" @click="handleQuickUrl({ code: 'userInfo' })">
+          <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
             <view class="info-img">
               <image
                 class="image"
-                v-if="initBasicsData.checkLogin"
+                v-if="initBasicsData.checkLogin && userInfo.avatarUrl"
                 :src="userInfo.avatarUrl"
                 mode="scaleToFill"
               />
@@ -21,13 +21,17 @@
             <view v-if="initBasicsData.checkLogin" class="use-info">
               <text>{{ userInfo.nickName || '' }}</text>
             </view>
-            <view v-else class="info-btn" @click.stop="Router.goCodePage('reg')"
-              >请先登录</view
+            <view
+              v-else
+              class="info-btn"
+              @click.stop="Router.goCodePage('reg')"
             >
+              请先登录
+            </view>
           </view>
           <view
             class="info-right"
-            @click="handleQuickUrl({ code: 'installCenter' })"
+            @click="handleEntryUrl({ code: 'installCenter' })"
           >
             <image
               class="setting"
@@ -42,12 +46,12 @@
             <view
               class="login-item"
               v-if="item.showed"
-              @click="handleQuickUrl(item)"
+              @click="handleEntryUrl(item)"
             >
               <view class="item-num">{{
                 item.accountValue !== ' ' ? item.accountValue : 0
               }}</view>
-              <view class="item-name">{{ item.title }}</view>
+              <view class="login-list-item-name">{{ item.title }}</view>
             </view>
           </block>
         </view>
@@ -58,19 +62,17 @@
         v-if="initBasicsData.checkLogin"
         @click="handleFixedSysUrl()"
       >
-        <view class="left">
-          <view class="icon">
-            <image
-              class="image"
-              :src="staticUrl + 'img/level.png'"
-              mode="aspectFit"
-            />
-          </view>
+        <view class="boot-equity-left">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/level.png'"
+            mode="aspectFit"
+          />
           <view class="text">{{ userInfo.curLevelName || '' }}</view>
         </view>
         <view class="boot-equity-right">
           <text class="text">查看权益</text>
-          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+          <uni-icons type="arrowright" size="14" color="#975d17"></uni-icons>
         </view>
       </view>
     </view>
@@ -79,21 +81,34 @@
         <view class="grid-list" v-if="item.kind === entryType.EN">
           <!-- GONGGE  LIST -->
           <view
+            v-if="item.param.showType"
             :class="
               item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
             "
-            v-if="item.param.showType"
           >
             <block v-for="(entry, index) in item.param.linkList" :key="index">
               <view
                 class="list-item"
-                @click="handleQuickUrl(entry)"
+                @click="handleEntryUrl(entry)"
                 v-if="entry.showed"
               >
                 <view class="item-icon">
-                  <image class="image" :src="entry.icoUrl" mode="aspectFit" />
+                  <image
+                    class="image"
+                    :src="
+                      entry.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                    "
+                    mode="aspectFit"
+                  />
+                  <view
+                    class="badge"
+                    v-if="showRedDot(item, entry, 'GONGGE')"
+                  />
                 </view>
-                <view class="item-name">{{ entry.title }}</view>
+                <view class="item-name">
+                  {{ entry.title }}
+                  <view class="badge" v-if="showRedDot(item, entry, 'LIST')" />
+                </view>
                 <uni-icons
                   v-if="item.param.showType == 'LIST'"
                   type="arrowright"
@@ -149,6 +164,7 @@
           v-else-if="item.kind === entryType.RES"
           :title="item.param.title"
           :srvProshowNum="srvProshowNum"
+          :srvProList="srvProList"
         />
         <!-- 质保单 -->
         <MyQuality
@@ -171,8 +187,11 @@ import {
   getMemberCenterIndex,
   queryMemberCenterBannerListFront,
 } from '@/pages/api/center';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
 //
 // import { queryGoldPriceByPage } from '@/api/server';
+
+import { bannerListClick, handleEntryUrl } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
@@ -213,10 +232,6 @@ const bannerList: Ref<any> = ref([]);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
-// const login = () => {
-//   uni.navigateTo({ url: '/pages/login/index' });
-// };
-
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
@@ -241,6 +256,23 @@ const getMemberCentertIndex = async () => {
     userInfo.curLevelName = curLevelName;
     loginList.value = quickNavList;
     panelList.value = panelListItem;
+    getMemberRecommend();
+  }
+};
+
+// 预约服务
+const srvProList: Ref<any> = ref([]);
+const getMemberRecommend = async () => {
+  if (initBasicsData.checkLogin) {
+    const servPage = await queryServiceBookPageFront({
+      mid: initBasicsData.useMid,
+      curPage: 1,
+      pageSize: srvProshowNum.value,
+      status: '',
+    });
+    srvProList.value = servPage.data?.records || [];
+  } else {
+    srvProList.value = [];
   }
 };
 
@@ -261,15 +293,44 @@ const getBannerData = async () => {
     bannerList.value = result;
   }
 };
-const bannerListClick = (item: any) => {
-  const url = JSON.parse(item.url || {});
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(url.code || url.systemUrl, param);
+
+// if (!item.code) {
+//     if (item.miniUrl) {
+//       Router.goNoCodePage(item.miniUrl);
+//       return;
+//     }
+//     if (item.h5Url) {
+//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+//       return;
+//     }
+//   }
+// const bannerListClick = (item: any) => {
+//   const url = JSON.parse(item.url || {});
+//   const code = url.code || url.systemUrl;
+//   if (!code && url.appletUrl) {
+//     const miniUrl = item.miniUrl || url.appletUrl;
+//     Router.goNoCodePage(miniUrl);
+//     return;
+//   }
+//   if (!code && url.h5Url) {
+//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+//     return;
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(url.code || url.systemUrl, param);
+// };
+
+// 显示红点
+const showRedDot = (item: any, entry: any, text: string) => {
+  const code = ['sign', 'coupon'].includes(entry.code);
+  const red = entry.showRedDot === 'Y';
+  const showType = item.param.showType === text;
+  return code && red && showType;
 };
 
 // 获取今日金价
@@ -283,7 +344,6 @@ const bannerListClick = (item: any) => {
 //     // this.uiParam = uiParam;
 //     const { showNum } = param;
 //     const result: any = [];
-
 //     branPriceList.map((item: any, index: number) => {
 //       if (index < showNum) {
 //         result.push(item);
@@ -300,17 +360,25 @@ const handleFixedSysUrl = () => {
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
-const handleQuickUrl = (item: any) => {
-  // if (initBasicsData.checkLogin) {
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(item.code, param);
-  // }
-};
+// const handleQuickUrl = (item: any) => {
+//   if (!item.code) {
+//     if (item.miniUrl) {
+//       Router.goNoCodePage(item.miniUrl);
+//       return;
+//     }
+//     if (item.h5Url) {
+//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+//       return;
+//     }
+//   }
+//   let param = item.miniUrl?.split('?')?.[1];
+//   if (param) {
+//     param = `?${param}`;
+//   } else {
+//     param = '';
+//   }
+//   Router.goCodePage(item.code, param);
+// };
 </script>
 
 <style lang="scss" scoped>
@@ -403,7 +471,7 @@ const handleQuickUrl = (item: any) => {
         color: #323338;
       }
 
-      .item-name {
+      .login-list-item-name {
         height: 28rpx;
         font-size: 20rpx;
         font-weight: 400;
@@ -419,27 +487,32 @@ const handleQuickUrl = (item: any) => {
   align-items: center;
   justify-content: space-between;
   width: 630rpx;
-  height: calc(400rpx - 296rpx);
+  height: 104rpx;
   padding: 0 30rpx;
   margin: 0 auto;
   background: linear-gradient(90deg, #ffefd2 0%, #ffddad 100%);
   border-radius: 16rpx 16rpx 0rpx 0rpx;
 
-  .left {
+  .boot-equity-left {
     display: flex;
     align-items: center;
+    height: 104rpx;
 
-    .icon {
-      display: inline-block;
-      width: 37rpx;
+    .icon-image {
+      width: 32rpx;
       height: 32rpx;
-      overflow: hidden;
-
-      .image {
-        width: 100%;
-        height: 100%;
-      }
     }
+    // .icon {
+    //   // display: inline-block;
+    //   width: 32rpx;
+    //   height: 32rpx;
+    //   // overflow: hidden;
+    //   margin-top: -4 + rpx;
+    //   .image {
+    //     width: 100%;
+    //     height: 100%;
+    //   }
+    // }
 
     .text {
       height: 40rpx;
@@ -454,7 +527,10 @@ const handleQuickUrl = (item: any) => {
   .boot-equity-right {
     display: flex;
     align-items: center;
-
+    height: 104rpx;
+    // :deep(.uni-icons) {
+    //   margin-top: -8rpx;
+    // }
     .text {
       width: 96rpx;
       height: 32rpx;
@@ -463,6 +539,7 @@ const handleQuickUrl = (item: any) => {
       font-weight: 400;
       line-height: 32rpx;
       color: #975d17;
+      margin-top: 2rpx;
     }
   }
 }
@@ -520,7 +597,7 @@ const handleQuickUrl = (item: any) => {
         align-items: center;
         justify-content: space-between;
         padding-right: 12rpx;
-
+        font-size: 28rpx;
         .badge {
           width: 20rpx;
           height: 20rpx;
