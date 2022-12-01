@@ -50,7 +50,7 @@
   "quickapp": {},
   /* 小程序特有相关  dev开发环境： wxd850ff0cc3cc960c fat测试环境： wx55776771de6369cc UAT环境： wx9bb3bd01db33ef27 生产：wx2075f2e57d7a2994 */
   "mp-weixin": {
-    "appid": "wx9bb3bd01db33ef27",
+    "appid": "wx5ea830671783ca53",
     "setting": {
       "ignoreDevUnusedFiles": false,
       "urlCheck": false

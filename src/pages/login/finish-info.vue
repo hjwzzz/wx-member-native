@@ -286,8 +286,9 @@ const showSex = ref(0);
 
 const activeData = ref<any>({});
 const isActivity = ref(false);
-
-onLoad(() => {
+const lastPage = ref('');
+onLoad(e => {
+  lastPage.value = e.p || '';
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
@@ -392,7 +393,7 @@ const handle = (item: any) => {
       });
       router.goCodePage(
         'chooseStore',
-        `?id=${memberInfo.value.belongDistId || ''}&t=store`
+        `?id=${memberInfo.value.belongDistId || ''}&t=user_info`
       );
       break;
     }
@@ -591,7 +592,7 @@ const handleStep = async () => {
   const { code, data } = await completeInfo(params);
   if (code === 0) {
     data && initBasicsData.setUseMid(data);
-    router.fromLoginBack();
+    router.fromLoginBack(lastPage.value);
     uni.removeStorageSync('c');
     uni.removeStorageSync('num');
     uni.removeStorageSync('pages');

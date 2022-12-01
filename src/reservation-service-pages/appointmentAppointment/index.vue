@@ -18,7 +18,7 @@
           </view>
         </view>
         <uni-forms :modelValue="form" ref="myForm">
-          <uni-forms-item label-width="166rpx" label="预约门店" required>
+          <uni-forms-item label-width="170rpx" label="预约门店" required>
             <view class="right-value" @click="selectStore">
               {{ form.storeName ? form.storeName : '请选择' }}
               <uni-icons
@@ -29,7 +29,7 @@
               />
             </view>
           </uni-forms-item>
-          <uni-forms-item label-width="166rpx" label="预约时间" required>
+          <uni-forms-item label-width="170rpx" label="预约时间" required>
             <view class="right-value" @click="selectDateTime">
               {{ form.dataTime || '请选择' }}
               <uni-icons
@@ -41,7 +41,7 @@
             </view>
           </uni-forms-item>
           <uni-forms-item
-            label-width="166rpx"
+            label-width="170rpx"
             label="预约导购"
             v-if="data.boolShowGuide === 'Y'"
           >
@@ -419,8 +419,12 @@ const previewImage = (index: any) => {
         margin-bottom: 0;
         border-bottom: solid 1px #ebedf0;
         .uni-forms-item__label {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
           line-height: 100rpx;
           height: 100rpx;
+          padding: 0;
           color: #323338 !important;
         }
         .right-value {
@@ -432,7 +436,7 @@ const previewImage = (index: any) => {
           text-overflow: ellipsis;
           white-space: nowrap;
           padding-right: 28rpx;
-          width: 468rpx;
+          width: 464rpx;
           position: relative;
           .icon {
             position: absolute;
