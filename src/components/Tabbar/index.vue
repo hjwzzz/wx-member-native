@@ -40,13 +40,18 @@
                 class="iconfont icon-style"
                 :class="item.icoUrl"
                 :style="{
-                  color: selected == index ? tabBarStyle.selectedColor : '',
+                  color:
+                    initActiveTab.current == index
+                      ? tabBarStyle.selectedColor
+                      : '',
                 }"
               ></view>
             </view>
             <view
               :style="
-                selected == index ? 'color:' + tabBarStyle.selectedColor : ''
+                initActiveTab.current == index
+                  ? 'color:' + tabBarStyle.selectedColor
+                  : ''
               "
               class="tarbar-list-li-name"
               >{{ item.title }}</view
@@ -122,7 +127,7 @@ const linkNavListFun = (item: any) => {
 };
 
 // const emits = defineEmits(['change']);
-const selected = ref(props.current);
+// const selected = ref(props.current);
 const setSelected = (index: number, item: any) => {
   // console.log({ ...item });
   if (!item.code && item.miniUrl) {
@@ -137,7 +142,7 @@ const setSelected = (index: number, item: any) => {
     return;
   }
 
-  if (selected.value === index) {
+  if (initActiveTab.current === index) {
     return;
   }
   if (['wm_center', 'wm_index'].includes(item.code)) {
@@ -162,12 +167,13 @@ const initTab = () => {
   // if (active) {
   //   selected.value = active;
   // }
-
   // const active = list.findIndex(({ code }: any) => code === props.code);
   // console.log(active);
   // selected.value = active || 0;
+  // selected.value = initActiveTab.current;
 
-  selected.value = initActiveTab.current;
+  const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  initActiveTab.setCurrent(active || 0);
 };
 </script>
 
