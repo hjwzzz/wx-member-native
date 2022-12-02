@@ -33,30 +33,14 @@
           v-for="(item, index) in tabBarList"
           :key="index"
           @click="setSelected(index, item)"
+          :style="actionColor(index)"
         >
-          <template>
-            <view class="tarbar-list-li-icon">
-              <view
-                class="iconfont icon-style"
-                :class="item.icoUrl"
-                :style="{
-                  color:
-                    initActiveTab.current == index
-                      ? tabBarStyle.selectedColor
-                      : '',
-                }"
-              ></view>
-            </view>
-            <view
-              :style="
-                initActiveTab.current == index
-                  ? 'color:' + tabBarStyle.selectedColor
-                  : ''
-              "
-              class="tarbar-list-li-name"
-              >{{ item.title }}</view
-            >
-          </template>
+          <view class="tarbar-list-li-icon">
+            <view class="iconfont icon-style" :class="item.icoUrl"></view>
+          </view>
+          <view class="tarbar-list-li-name">
+            {{ item.title }}
+          </view>
         </view>
       </view>
     </view>
@@ -125,6 +109,15 @@ const linkNavListFun = (item: any) => {
   }
   Router.goCodePage(item.code);
 };
+
+// 显示颜色
+
+const actionColor = computed(() => (index: number) => {
+  if (initActiveTab.current === index) {
+    return `color:${tabBarStyle.selectedColor}`;
+  }
+  return '';
+});
 
 // const emits = defineEmits(['change']);
 // const selected = ref(props.current);
