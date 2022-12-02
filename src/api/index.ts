@@ -1,5 +1,5 @@
 // import type { wxmeberFront, member } from '../typings/api';
-import { baseUrl, devBaseUrl } from '@/utils/config';
+import { devBaseUrl } from '@/utils/config';
 import request from '@/utils/request';
 
 // 根据页面名字code获取对应配置信息   新接口
