@@ -238,7 +238,6 @@ import {
   watch,
   computed,
   nextTick,
-  getCurrentInstance,
 } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
@@ -320,7 +319,7 @@ const menberCodeInfo = reactive<GetBarCodeRequestRes>({
 
 let barCodeCanvasContent: any = null;
 
-const instance = getCurrentInstance();
+// const instance = getCurrentInstance();
 
 const getBarCode = async () => {
   const getBarCodeRequestRes = await getBarCodeRequest();
@@ -333,6 +332,11 @@ const getBarCode = async () => {
 };
 
 const drawCanvas = () => {
+  if (!barCodeCanvasContent) {
+    barCodeCanvasContent = uni.createCanvasContext('barCode');
+  }
+
+  barCodeCanvasContent.clearRect(0, 0, 1000, 1000);
   nextTick(() => {
     // const selectorQuery = uni.createSelectorQuery()
     //   .in(instance);
@@ -352,15 +356,11 @@ const drawCanvas = () => {
     //   })
     //   .exec();
 
-    if (!barCodeCanvasContent) {
-      barCodeCanvasContent = uni.createCanvasContext('barCode');
-    }
-
     BrCode128(
       barCodeCanvasContent,
       menberCodeInfo.barCode,
-      610,
-      200
+      336,
+      110
     );
   });
 };

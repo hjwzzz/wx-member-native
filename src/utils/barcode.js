@@ -35,6 +35,8 @@ const BrCode128 = function (ctx, text, width, height) {
 
   const codes = stringToCode128(text);
 
+  console.log(codes);
+
   const g = new Graphics(ctx, width, height);
 
   const barWeight = g.area.width / ((codes.length - 3) * 11 + 35);

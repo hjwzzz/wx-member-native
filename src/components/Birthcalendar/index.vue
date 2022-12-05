@@ -172,7 +172,7 @@ const setSolarCalendar = (type: CALENDAR_TYPE) => {
 };
 
 const init = () => {
-  date = new Date(`${props.date}`);
+  date = props.date ? new Date(`${props.date}`) : new Date();
 
   const year = date.getFullYear();
   const month = date.getMonth() + 1;

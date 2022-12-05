@@ -157,7 +157,7 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
     }));
 
     const yearIndex = yearArray.findIndex(item => item.value === res.lYear);
-    const monthIndex = res.isLeap ? monthArray.findIndex(item => item.isLeap) : res.lMonth;
+    const monthIndex = res.isLeap ? monthArray.findIndex(item => item.isLeap) : res.lMonth - 1;
     const dayIndex = dayArray.findIndex(item => item.value === res.lDay);
 
     return {

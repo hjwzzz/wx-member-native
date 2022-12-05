@@ -311,6 +311,10 @@ const selecteList = [
     label: '女',
     value: 'F',
   },
+  {
+    label: '未知',
+    value: 'U',
+  },
 ];
 
 const shop = 'REGIST_REQUIRED_STORE';
@@ -355,11 +359,15 @@ onLoad(e => {
 const queryMemeberInfo = async () => {
   const { data } = await getMemberInfo('');
   data.sex ||= 'M';
-  data.birthKind ||= 'S';
+
+  const sexIndex = selecteList.findIndex(item => item.value === data.sex);
+
+  showSex.value = sexIndex === -1 ? 2 : sexIndex;
+
+  if (!data.birthKind || data.birthKind === 'U') data.birthKind = 'S';
   data.birthLunar = '';
   data.nickName === '微信用户' && (data.nickName = '');
   if (data) {
-    memberInfo.value = data;
     selectedShop.value.storeName = data.belongDistName || '';
     selectedShop.value.distId = data.belongDistId || '';
 
@@ -369,6 +377,7 @@ const queryMemeberInfo = async () => {
       const r = Lunar.toLunar(Number(a), Number(b), Number(c));
       memberInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
+    memberInfo.value = data;
   }
 };
 // 获取附近门店
@@ -589,7 +598,7 @@ const handleStep = async () => {
         break;
       }
       case 'REGIST_REQUIRED_GENDER': {
-        if (!['M', 'F'].includes(params.sex)) {
+        if (!['M', 'F', 'U'].includes(params.sex)) {
           uni.showModal({
             content: '请选择性别',
             showCancel: false,
@@ -701,12 +710,6 @@ const confirmBirthCalendarPicker = ({
   memberInfo.value.birthSolar = `${year}-${String(month)
     .padStart(2, '0')}-${String(day)
     .padStart(2, '0')}`;
-  // updateUserInfo({
-  //   birthKind: memberInfo.value.birthKind,
-  //   birthSolar: `${year}-${String(month)
-  //     .padStart(2, '0')}-${String(day)
-  //     .padStart(2, '0')}`
-  // });
   memberInfo.value.birthLunar = lunarDesc;
   closeBirthCalendarPicker();
 };
@@ -721,11 +724,6 @@ const confirmAnndayCalendarPicker = ({
   memberInfo.value.annday = `${year}-${String(month)
     .padStart(2, '0')}-${String(day)
     .padStart(2, '0')}`;
-  // updateUserInfo({
-  //   annday: `${year}-${String(month)
-  //     .padStart(2, '0')}-${String(day)
-  //     .padStart(2, '0')}`
-  // });
   closeAnndayCalendarPicker();
 };
 
