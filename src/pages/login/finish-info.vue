@@ -473,25 +473,21 @@ const handleStep = async () => {
     sex,
     avatarUrl,
   } = memberInfo.value;
-  const phone = memberInfo.value.phone || uni.getStorageSync('phone');
+  const phone = memberInfo.value.phone || uni.getStorageSync('phone') || '';
   const params = {
     name,
-    nickName:
-      nickName || `${phone.substr(0, 4)}***${phone.substr()
-        .substr(-3, 3)}`,
+    nickName,
     activeDistId: selectedShop.value.distId || null,
     activeUid,
     province,
     city,
-    avatarUrl:
-      avatarUrl ||
-      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    avatarUrl,
     district,
     address,
     inviteCode: name, // 验证码，已废弃
     annday,
     sex,
-    phone: phone || uni.getStorageSync('phone'),
+    phone,
     wmid: uni.getStorageSync('wmid') || '',
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
@@ -583,12 +579,38 @@ const handleStep = async () => {
         }
         break;
       }
+      case IRegistField.avatar: {
+        if (!params.avatarUrl) {
+          uni.showModal({
+            content: '请设置头像',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case IRegistField.nickName: {
+        if (!params.nickName) {
+          uni.showModal({
+            content: '请设置昵称',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
 
       default:
+        // todo 未限制项
+        console.log(i);
         break;
     }
   });
   if (verifyData) return;
+  params.nickName ||= `${phone.substr(0, 4)}***${phone.substr()
+    .substr(-3, 3)}`;
+  params.avatarUrl ||=
+    'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132';
   const { code, data } = await completeInfo(params);
   if (code === 0) {
     data && initBasicsData.setUseMid(data);
