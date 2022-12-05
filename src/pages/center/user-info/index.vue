@@ -278,7 +278,7 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, ref, onMounted, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
 import { mergeFullAddress } from '@/utils/util';
@@ -287,7 +287,6 @@ import UserIcon from '@/pages/login/UserIcon.vue';
 import CalendarPicker from '@/components/Birthcalendar/index.vue';
 import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
 
-const initBasicsData = useBasicsData();
 
 const BirthCalendarPickerRef = ref();
 
@@ -316,9 +315,7 @@ watch(() => anndayCalendarPickerShow.value, () => {
   }
 });
 
-onMounted(() => {
-  // CalendarPickerShow.value = true;
-});
+const initBasicsData = useBasicsData();
 
 const header = computed(() => [
   {
@@ -670,7 +667,6 @@ const queryUserInfo = async () => {
     const { proId, sex, birthKind, education } = data;
     edcIndex.value = educations.findIndex(i => i.value === education);
     current.value = birthKind === 'S' ? 0 : 1;
-
 
     // 性别
     const formatGenderIndex = (i: string) => ({ M: 0, F: 1, U: 2 }[i] ?? 2);

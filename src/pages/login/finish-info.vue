@@ -1,4 +1,5 @@
 <template>
+  <page-meta :page-style="'overflow:'+(birthCalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
   <CustomPage>
     <view class="info">
       <view
@@ -218,7 +219,6 @@
         @confirm="confirmDate"
       >
       </uni-calendar> -->
-
 
       <view class="next" @click="handleStep"> 下一步 </view>
     </view>
@@ -503,7 +503,6 @@ const showList = computed(() => list.value.filter((item: any) => {
 const radioChange = (e: any) => {
   memberInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
-  console.log(memberInfo.value.birthKind);
   openBirthCalendarPicker();
 };
 const maritalChange = (e: any) => {

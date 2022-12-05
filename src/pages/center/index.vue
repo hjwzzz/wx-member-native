@@ -22,7 +22,7 @@
               />
             </view>
             <view v-if="initBasicsData.checkLogin" class="use-info">
-              <text>{{ userInfo.nickName || "" }}</text>
+              <text>{{ userInfo.nickName || '' }}</text>
             </view>
             <view
               v-else
@@ -61,7 +61,7 @@
               @click="handleEntryUrl(item)"
             >
               <view class="item-num">{{
-                item.accountValue !== " " ? item.accountValue : 0
+                item.accountValue !== ' ' ? item.accountValue : 0
               }}</view>
               <view class="login-list-item-name">{{ item.title }}</view>
             </view>
@@ -75,19 +75,12 @@
         @click="handleFixedSysUrl()"
       >
         <view class="boot-equity-left">
-          <!-- <view class="icon">
-            <image
-              class="image"
-              :src="staticUrl + 'img/level.png'"
-              mode="aspectFit"
-            />
-          </view> -->
           <image
             class="icon-image"
             :src="staticUrl + 'img/level.png'"
             mode="aspectFit"
           />
-          <view class="text">{{ userInfo.curLevelName || "" }}</view>
+          <view class="text">{{ userInfo.curLevelName || '' }}</view>
         </view>
         <view class="boot-equity-right">
           <text class="text">查看权益</text>
@@ -270,8 +263,6 @@ import MyPrizes from '../component/MyPrizes.vue';
 import MyService from '../component/MyService.vue';
 import MyQuality from '../component/MyQuality.vue';
 import BrCode128 from '@/utils/barcode.js';
-import JsBarcode from 'jsbarcode';
-
 
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
@@ -619,8 +610,6 @@ const handleMyPrizes = (index: number) => {
     }
 
     .info-right {
-      // width: 64rpx;
-      // height: 64rpx;
       display: flex;
       align-items: center;
 
@@ -882,7 +871,6 @@ const handleMyPrizes = (index: number) => {
     height: 100%;
   }
 }
-
 .menber-code-popup {
   :deep(.uni-popup) {
     z-index: 99999;
