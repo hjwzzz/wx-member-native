@@ -23,7 +23,6 @@
             </view>
             <view v-if="initBasicsData.checkLogin" class="use-info">
               <text>{{ userInfo.nickName || "" }}</text>
-              <text>{{ userInfo.nickName || "" }}</text>
             </view>
             <view
               v-else

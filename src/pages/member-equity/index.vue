@@ -154,12 +154,9 @@
 import { computed, onMounted, ref, Ref } from 'vue';
 // import { queryAllLevelRights } from '@/api/server';
 import { getMemberLevelRights } from '@/pages/api/member-equity';
-import Router from '@/utils/router';
-
-//
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
-import { richImage } from '@/utils/util';
+import { richImage, handleEntryUrl } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 const mainColor = computed(() => initBasicsData.mainColor);
@@ -178,23 +175,6 @@ const benefitsDataFlag = ref('nodata');
 onMounted(() => {
   getAllBenefits();
 });
-
-const handleEntryUrl = (item: any) => {
-  debugger;
-  if (!item.code && item.h5Url) {
-    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-    return;
-  }
-
-  let param = item.miniUrl?.split('?')?.[1];
-  if (param) {
-    param = `?${param}`;
-  } else {
-    param = '';
-  }
-  Router.goCodePage(item.code, param);
-};
-
 
 const onChangeSwp = (e: any) => {
   currentIndex.value = e.detail.current;
