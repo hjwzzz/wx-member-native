@@ -20,7 +20,7 @@
           </view>
         </view>
 
-        <view class="type">
+        <view class="type" v-if="selectLunar">
           <view
             :class="['type-item', 'solar', type === CALENDAR_TYPE.SOLAR ? 'current' : '']"
             @click="tabCalendar(CALENDAR_TYPE.SOLAR)"
@@ -91,12 +91,14 @@ const CalendarRef = ref<any>();
 const props = withDefaults(defineProps<{
   calendarType?: CALENDAR_TYPE
   date?: string
+  selectLunar?: boolean
 }>(), {
   date: `${new Date()
     .getFullYear()}-${new Date()
     .getMonth() + 1}-${new Date()
     .getDate()}`,
-  calendarType: CALENDAR_TYPE.SOLAR
+  calendarType: CALENDAR_TYPE.SOLAR,
+  selectLunar: true
 });
 
 const open = () => {
@@ -147,8 +149,6 @@ const getSolarCalendar = (type: CALENDAR_TYPE) => {
 
 const setSolarCalendar = (type: CALENDAR_TYPE) => {
   const res = getSolarCalendar(type);
-
-  console.log('setSolarCalendar', res, calendarValue);
 
   if (!res) {
     return;

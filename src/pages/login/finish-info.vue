@@ -30,7 +30,7 @@
               <view v-show="info.code == BIRTH_DAY" class="radio">
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
-                    v-for="(item, index) in items"
+                    v-for="(item) in items"
                     :key="item.value"
                     class="selecte-redio"
                     style="transform: scale(0.7)"
@@ -38,7 +38,7 @@
                     <view>
                       <radio
                         :value="item.value"
-                        :checked="index === current"
+                        :checked="item.value === memberInfo.birthKind"
                         :color="initBasicsData.mainColor"
                       />
                     </view>
@@ -210,22 +210,39 @@
         </view>
       </view>
 
-      <uni-calendar
+      <!-- <uni-calendar
         :date="initDate"
         ref="calendar"
         :lunar="true"
         :insert="false"
         @confirm="confirmDate"
       >
-      </uni-calendar>
+      </uni-calendar> -->
+
 
       <view class="next" @click="handleStep"> 下一步 </view>
     </view>
+
+    <CalendarPicker
+      :date="birthCalendarPickerDate"
+      :calendar-type="memberInfo.birthKind"
+      @confirmDialog="confirmBirthCalendarPicker"
+      @close-dialog="closeBirthCalendarPicker"
+      ref="BirthCalendarPickerRef"
+    />
+    <CalendarPicker
+      :date="memberInfo.annday"
+      :calendar-type="CALENDAR_TYPE.SOLAR"
+      @confirmDialog="confirmAnndayCalendarPicker"
+      @close-dialog="closeAnndayCalendarPicker"
+      :select-lunar="false"
+      ref="AnndayCalendarPickerRef"
+    />
   </CustomPage>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
 import { IRegistField } from '@/api/types/server';
@@ -237,11 +254,41 @@ import {
 
 import { getNearStore } from '@/pages/api/nearby-store';
 import router from '@/utils/router';
-import { formatTime, mergeFullAddress } from '@/utils/util';
+import { mergeFullAddress } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import userIcon from './UserIcon.vue';
+import Lunar from '@/utils/date';
+import CalendarPicker from '@/components/Birthcalendar/index.vue';
+import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
 
 const initBasicsData = useBasicsData();
+
+const BirthCalendarPickerRef = ref();
+
+const birthCalendarPickerShow = ref(false);
+
+const birthCalendarPickerDate = ref('');
+
+watch(() => birthCalendarPickerShow.value, () => {
+  if (birthCalendarPickerShow.value) {
+    BirthCalendarPickerRef.value?.open();
+  } else {
+    BirthCalendarPickerRef.value?.close();
+  }
+});
+
+
+const AnndayCalendarPickerRef = ref();
+
+const anndayCalendarPickerShow = ref(false);
+
+watch(() => anndayCalendarPickerShow.value, () => {
+  if (anndayCalendarPickerShow.value) {
+    AnndayCalendarPickerRef.value?.open();
+  } else {
+    AnndayCalendarPickerRef.value?.close();
+  }
+});
 
 const list = ref<any>([]);
 const items = [
@@ -315,6 +362,13 @@ const queryMemeberInfo = async () => {
     memberInfo.value = data;
     selectedShop.value.storeName = data.belongDistName || '';
     selectedShop.value.distId = data.belongDistId || '';
+
+    if (memberInfo.value.birthSolar) {
+      birthCalendarPickerDate.value = data.birthSolar;
+      const [a, b, c] = memberInfo.value.birthSolar ? memberInfo.value.birthSolar.split('-') : [];
+      const r = Lunar.toLunar(Number(a), Number(b), Number(c));
+      memberInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
+    }
   }
 };
 // 获取附近门店
@@ -449,6 +503,8 @@ const showList = computed(() => list.value.filter((item: any) => {
 const radioChange = (e: any) => {
   memberInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
+  console.log(memberInfo.value.birthKind);
+  openBirthCalendarPicker();
 };
 const maritalChange = (e: any) => {
   maritalValue.value = e.detail.value;
@@ -601,22 +657,14 @@ const handleStep = async () => {
 };
 
 // 日期修改（日历选择器）
-const calendar = ref();
-const isBirthDay = ref(false);
-const initDate = ref(formatTime(new Date())
-  .substring(0, 10));
 const handleOpen = (item: { name: any }) => {
   const { name } = item;
   const mark = 'mday';
-  const birthSolar = memberInfo.value.birthSolar;
-  const annday = memberInfo.value.annday;
-  isBirthDay.value = name !== mark;
   if (name === mark) {
-    initDate.value = annday;
+    openAnndayCalendarPicker();
   } else {
-    initDate.value = birthSolar;
+    openBirthCalendarPicker();
   }
-  calendar.value.open();
 };
 
 const bindPickerChangeGender = (e: any) => {
@@ -624,16 +672,62 @@ const bindPickerChangeGender = (e: any) => {
   memberInfo.value.sex = selecteList[showSex.value].value;
 };
 
-const confirmDate = (e: any) => {
-  const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
-  if (!isBirthDay.value) {
-    memberInfo.value.annday = e.fulldate;
-    showAnnday.value = e.fulldate;
-  } else {
-    memberInfo.value.birthLunar = nl;
-    memberInfo.value.birthKind = items[current.value].value;
-    memberInfo.value.birthSolar = e.fulldate;
-  }
+const openBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = true;
+};
+
+const closeBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = false;
+};
+
+const openAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = true;
+};
+
+const closeAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = false;
+};
+
+const confirmBirthCalendarPicker = ({
+  value: {
+    year,
+    month,
+    day
+  },
+  type,
+  lunarDesc
+}: any) => {
+  memberInfo.value.birthKind = type;
+  birthCalendarPickerDate.value = `${year}-${month}-${day}`;
+  memberInfo.value.birthSolar = `${year}-${String(month)
+    .padStart(2, '0')}-${String(day)
+    .padStart(2, '0')}`;
+  // updateUserInfo({
+  //   birthKind: memberInfo.value.birthKind,
+  //   birthSolar: `${year}-${String(month)
+  //     .padStart(2, '0')}-${String(day)
+  //     .padStart(2, '0')}`
+  // });
+  memberInfo.value.birthLunar = lunarDesc;
+  closeBirthCalendarPicker();
+};
+
+const confirmAnndayCalendarPicker = ({
+  value: {
+    year,
+    month,
+    day
+  },
+}: any) => {
+  memberInfo.value.annday = `${year}-${String(month)
+    .padStart(2, '0')}-${String(day)
+    .padStart(2, '0')}`;
+  // updateUserInfo({
+  //   annday: `${year}-${String(month)
+  //     .padStart(2, '0')}-${String(day)
+  //     .padStart(2, '0')}`
+  // });
+  closeAnndayCalendarPicker();
 };
 
 const changeNickName = (e: any) => {

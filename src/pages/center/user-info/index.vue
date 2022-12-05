@@ -1,5 +1,5 @@
 <template>
-  <page-meta :page-style="'overflow:'+(CalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
+  <page-meta :page-style="'overflow:'+(birthCalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
   <CustomPage>
     <view class="user-info">
       <view class="wrapper-header">
@@ -222,23 +222,24 @@
           </picker>
         </template>
       </view>
-        <!-- <uni-calendar
-          :date="initDate"
-          ref="calendar"
-          :lunar="true"
-          :insert="false"
-          @confirm="confirmDate"
-        >
-        </uni-calendar> -->
       <CalendarPicker
-        :date="birthDate"
+        :date="birthCalendarPickerDate"
         :calendar-type="userInfo.birthKind"
-        @confirmDialog="confirmDate"
-        @close-dialog="closeDate"
-        ref="calendar"
+        @confirmDialog="confirmBirthCalendarPicker"
+        @close-dialog="closeBirthCalendarPicker"
+        ref="BirthCalendarPickerRef"
       />
-      <uni-popup
 
+      <CalendarPicker
+        :date="userInfo.annday"
+        :calendar-type="CALENDAR_TYPE.SOLAR"
+        @confirmDialog="confirmAnndayCalendarPicker"
+        @close-dialog="closeAnndayCalendarPicker"
+        :select-lunar="false"
+        ref="AnndayCalendarPickerRef"
+      />
+
+      <uni-popup
         ref="popup"
         input
         :nickname="dialogKey === 'nickName'"
@@ -280,7 +281,7 @@ import { onShow } from '@dcloudio/uni-app';
 import { computed, ref, onMounted, watch } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
-import { formatTime, mergeFullAddress } from '@/utils/util';
+import { mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
 import CalendarPicker from '@/components/Birthcalendar/index.vue';
@@ -288,17 +289,32 @@ import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
 
 const initBasicsData = useBasicsData();
 
-const CalendarPickerShow = ref(false);
+const BirthCalendarPickerRef = ref();
 
-watch(() => CalendarPickerShow.value, () => {
-  if (CalendarPickerShow.value) {
-    calendar.value.open();
+const birthCalendarPickerShow = ref(false);
+
+const birthCalendarPickerDate = ref('');
+
+watch(() => birthCalendarPickerShow.value, () => {
+  if (birthCalendarPickerShow.value) {
+    BirthCalendarPickerRef.value.open();
   } else {
-    calendar.value.close();
+    BirthCalendarPickerRef.value.close();
   }
 });
 
-const birthDate = ref('');
+
+const AnndayCalendarPickerRef = ref();
+
+const anndayCalendarPickerShow = ref(false);
+
+watch(() => anndayCalendarPickerShow.value, () => {
+  if (anndayCalendarPickerShow.value) {
+    AnndayCalendarPickerRef.value.open();
+  } else {
+    AnndayCalendarPickerRef.value.close();
+  }
+});
 
 onMounted(() => {
   // CalendarPickerShow.value = true;
@@ -505,23 +521,32 @@ const dialogConfirm = (e: string) => {
     title: str,
   });
 };
+
+const openBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = true;
+};
+
+const closeBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = false;
+};
+
+const openAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = true;
+};
+
+const closeAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = false;
+};
+
 // 日期修改（日历选择器）
-const calendar = ref();
-const isBirthDay = ref(false);
-const initDate = ref(formatTime(new Date())
-  .substring(0, 10));
 const handleOpen = (item: { name: any }) => {
   const { name } = item;
   const mark = 'mday';
-  const birthSolar = userInfo.value.birthSolar;
-  const annday = userInfo.value.annday;
-  isBirthDay.value = name !== mark;
   if (name === mark) {
-    initDate.value = annday;
+    openAnndayCalendarPicker();
   } else {
-    initDate.value = birthSolar;
+    openBirthCalendarPicker();
   }
-  openDate();
 };
 const updateEdu = (e: any) => {
   edcIndex.value = e.detail.value;
@@ -536,7 +561,7 @@ const updateUserInfo = async (item: any, refresh = false) => {
     uni.showToast({ title: '更新成功' });
   }
 };
-const confirmDate = ({
+const confirmBirthCalendarPicker = ({
   value: {
     year,
     month,
@@ -545,37 +570,39 @@ const confirmDate = ({
   type,
   lunarDesc
 }: any) => {
-  // const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
-  if (!isBirthDay.value) {
-    // updateUserIno({ annday: e.fulldate });
-  } else {
-    // userInfo.value.birthLunar = nl;
-    userInfo.value.birthKind = type;
-    birthDate.value = `${year}-${month}-${day}`;
-    updateUserInfo({
-      birthKind: userInfo.value.birthKind,
-      birthSolar: `${year}-${String(month)
-        .padStart(2, '0')}-${String(day)
-        .padStart(2, '0')}`
-    });
-    userInfo.value.birthLunar = lunarDesc;
-    closeDate();
-  }
+  userInfo.value.birthKind = type;
+  birthCalendarPickerDate.value = `${year}-${month}-${day}`;
+  updateUserInfo({
+    birthKind: userInfo.value.birthKind,
+    birthSolar: `${year}-${String(month)
+      .padStart(2, '0')}-${String(day)
+      .padStart(2, '0')}`
+  });
+  userInfo.value.birthLunar = lunarDesc;
+  closeBirthCalendarPicker();
 };
 
-const openDate = () => {
-  CalendarPickerShow.value = true;
+const confirmAnndayCalendarPicker = ({
+  value: {
+    year,
+    month,
+    day
+  },
+}: any) => {
+  updateUserInfo({
+    annday: `${year}-${String(month)
+      .padStart(2, '0')}-${String(day)
+      .padStart(2, '0')}`
+  });
+  closeAnndayCalendarPicker();
 };
 
-const closeDate = () => {
-  CalendarPickerShow.value = false;
-};
 
 // 切换生日类型
 const radioChange = (e: any) => {
   userInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
-  openDate();
+  openBirthCalendarPicker();
 };
 const bindPickerChangeGender = (e: any) => {
   genderIndex.value = e.detail.value;
@@ -630,7 +657,7 @@ const queryUserInfo = async () => {
     data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png';
     userInfo.value = data;
 
-    birthDate.value = data.birthSolar;
+    birthCalendarPickerDate.value = data.birthSolar;
 
     // 计算农历生日
     if (userInfo.value.birthSolar) {
