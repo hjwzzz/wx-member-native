@@ -237,8 +237,8 @@ import {
   Ref,
   watch,
   computed,
-  getCurrentInstance,
   nextTick,
+  getCurrentInstance,
 } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
@@ -261,6 +261,8 @@ import MyPrizes from '../component/MyPrizes.vue';
 import MyService from '../component/MyService.vue';
 import MyQuality from '../component/MyQuality.vue';
 import BrCode128 from '@/utils/barcode.js';
+import JsBarcode from 'jsbarcode';
+
 
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
@@ -329,7 +331,7 @@ const menberCodeInfo = reactive<GetBarCodeRequestRes>({
 
 let barCodeCanvasContent: any = null;
 
-// const instance = getCurrentInstance();
+const instance = getCurrentInstance();
 
 const getBarCode = async () => {
   const getBarCodeRequestRes = await getBarCodeRequest();
@@ -349,11 +351,15 @@ const drawCanvas = () => {
     // selectorQuery
     //   .select('#barCode')
     //   .node(res => {
-    //     console.log(res);
 
     //     barCodeCanvasContent = res.node.getContext('2d');
 
-    //     BrCode128(barCodeCanvasContent, menberCodeInfo.barCode, '610', '200');
+    //     console.log(barCodeCanvasContent);
+
+    //     JsBarcode(barCodeCanvasContent, menberCodeInfo.barCode, {
+    //       width: 610,
+    //       height: 200
+    //     });
     //   })
     //   .exec();
 
