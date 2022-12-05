@@ -133,7 +133,7 @@ watch(
       }
 
       .number {
-        width: 36rpx;
+        // width: 36rpx;
         height: 40rpx;
         margin-left: 4rpx;
         font-size: 28rpx;
