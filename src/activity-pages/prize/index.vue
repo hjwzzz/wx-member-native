@@ -146,12 +146,12 @@
                 </view>
               </view>
               <view class="giftList-content-con-item-right">
-                <view
+                <!-- <view
                   class="giftList-content-con-item-right-btn"
                   @click="goPointList(item)"
                   :style="{ background: color || '' }"
                   >查看</view
-                >
+                > -->
               </view>
             </view>
           </view>
