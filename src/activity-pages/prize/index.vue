@@ -142,7 +142,7 @@
                   <text class="giftList-content-con-item-left1-title-num">{{
                     item.num
                   }}</text>
-                  {{ item.unit }}
+                  {{ item.name }}
                 </view>
               </view>
               <view class="giftList-content-con-item-right">
@@ -303,11 +303,11 @@ const goDepositList = (item: any) => {
 // 跳转成长值
 const goMemberList = async () => {
   const pages = '/pages/member-equity/index';
-  const res = await queryAllLevelRights('');
-  if (!res.data) {
-    Router.goCodePage('wm_center');
-    return;
-  }
+  // const res = await queryAllLevelRights('');
+  // if (!res.data) {
+  //   Router.goCodePage('wm_center');
+  //   return;
+  // }
   // uni.setStorageSync('pages', pages);
   Router.go(pages);
 };

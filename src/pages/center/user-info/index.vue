@@ -413,7 +413,12 @@ const updateInfo = async ({
         });
       });
       if (userInfo.value.belongDistId) {
-        router.goCodePage('chooseGuide', `?id=${userInfo.value.belongDistId}`);
+        router.goCodePage(
+          'chooseGuide',
+          `?id=${userInfo.value.belongDistId}&uid=${
+            userInfo.value.belongUid || ''
+          }`
+        );
         return;
       }
       uni.showModal({
