@@ -368,6 +368,7 @@ const showMenberCodePopup = async () => {
 const hideMenberCodePopup = async () => {
   menberCodePopupVisible.value = false;
   showFullMenberCode.value = false;
+  clearInterval(GetBarCodeIntervalId.value);
   sendKeyExpiredBarCodeRequest(menberCodeInfo.barCode);
 };
 
