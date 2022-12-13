@@ -10,7 +10,8 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
     limit: {
       year: {
         start: 1900,
-        end: date.getFullYear() + 1
+        // end: date.getFullYear() + 1
+        end: 2100
       },
       month: { start: 1 },
       day: { start: 1 },
