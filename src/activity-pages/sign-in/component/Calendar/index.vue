@@ -24,8 +24,9 @@
           </view>
         </view>
         <view class="right" v-if="showData.notified === 'Y'">
-          <text class="right-text">签到提醒</text
-          ><switch
+          <!-- -->
+          <text class="right-text">签到提醒</text>
+          <switch
             class="right-switch"
             :checked="check"
             size="30"
@@ -87,8 +88,9 @@
 
 <script lang="ts" setup>
 import { onShow } from '@dcloudio/uni-app';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { staticUrl } from '@/utils/config';
+import { getByKindAndCode } from '@/api/index';
 
 const props = defineProps({
   showData: {
@@ -126,6 +128,21 @@ const setStatus = (arr: any[], val: any, name: any) => {
     }
   });
 };
+
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const { data } = await getByKindAndCode({
+    codes: ['no_sign_remind'],
+    kind: 'WM',
+  });
+  // tplId
+  // console.log(data.map((item: any) => item.tplId));
+  tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+};
+
+onMounted(() => {
+  getKindAndCode();
+});
 
 const init = () => {
   const now = new Date();
@@ -258,8 +275,54 @@ const clickGiftFun = (item: any = null) => {
     emits('clickGift', props.showData.award);
   }
 };
+
+// reservation-service-pages/appointmentAppointment/index
+// const signInTip = () => {
+//   // console.log('check.value=', check.value);
+//   if (check.value) {
+//     // uni.requestSubscribeMessage({
+//     //   tmplIds: ['uxZTaRN-gMoL7o1ad6vFW8uBRQkzVyHNZ_oyYx0_M64'],
+//     //   success(res) {
+//     //     console.log('res', res);
+//     //   },
+//     //   fail(eer) {
+//     //     console.log('eer', eer);
+//     //   },
+//     // });
+//   }
+// };
+
 const change = (val: any) => {
   emits('openNotice', val);
+  // uni.getSetting({
+  //   withSubscriptions: true, //  这里设置为true,下面才会返回mainSwitch
+  //   success(res) {
+  //     if (res.subscriptionsSetting.mainSwitch) {  // 用户打开了订阅消息总开关
+  //         if (res.subscriptionsSetting.itemSettings != null) {   // 用户同意总是保持是否推送消息的选择, 这里表示以后不会再拉起推送消息的授权
+  //           let moIdState = res.subscriptionsSetting.itemSettings['uxZTaRN-gMoL7o1ad6vFW8uBRQkzVyHNZ_oyYx0_M64'];  // 用户同意的消息模板id
+  //           if(moIdState === 'accept'){
+  //             console.log('接受了消息推送');
+
+  //           }else if(moIdState === 'reject'){
+  //             console.log("拒绝消息推送");
+
+  //           }else if(moIdState === 'ban'){
+  //             console.log("已被后台封禁");
+  //           }
+  //         }
+  //   }
+  // });
+  if (val.detail.value) {
+    uni.requestSubscribeMessage({
+      tmplIds: tmplIdsValue.value,
+      success(res) {
+        console.log('res', res);
+      },
+      fail(eer) {
+        console.log('eer', eer);
+      },
+    });
+  }
 };
 onShow(() => {
   init();

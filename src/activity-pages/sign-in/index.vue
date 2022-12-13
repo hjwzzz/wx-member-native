@@ -180,6 +180,8 @@ import {
   getUserSignActivityById,
   udpateUserNoticed,
 } from '@/activity-pages/api/sign-in';
+
+// import { getByKindAndCode } from '@/api/index';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
 import Router from '@/utils/router';
@@ -247,11 +249,22 @@ const todayGift = computed(() => {
         (index === data.todayOrTomorrowAward.awardList.length - 1 ? '' : '，'));
   return text;
 });
+
+// const tmplIds = ref('');
+// const getKindAndCode = async () => {
+//   const { data: { tplId } } = await getByKindAndCode({
+//     code: 'no_sign_remind',
+//     kind: 'WM',
+//   });
+//   tmplIds.value = tplId;
+// };
+
 onShow(() => {
   if (!initBasicsData.checkLogin) {
     return Router.goLogin();
   }
   getUserSignActivityByIdFun();
+  // getKindAndCode();
 });
 const moveStop = () => {
   //
@@ -262,6 +275,15 @@ const getMonth = (val: any) => {
 };
 // 签到
 const signIn = async () => {
+  // uni.requestSubscribeMessage({
+  //   tmplIds: ['uxZTaRN-gMoL7o1ad6vFW8uBRQkzVyHNZ_oyYx0_M64'],
+  //   success(res) {
+  //     console.log('res', res);
+  //   },
+  //   fail(eer) {
+  //     console.log('eer', eer);
+  //   },
+  // });
   const res = await addMemberSignActivity('');
   const { code } = res;
   if (res && !code) {

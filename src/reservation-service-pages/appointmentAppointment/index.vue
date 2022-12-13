@@ -144,19 +144,71 @@
         ></uni-popup-dialog>
       </uni-popup>
     </view>
+
+    <CouponResultModal
+      :visible="modelShow"
+      :type="getResult"
+      @ok="onConfirm"
+      @cancel="onCancel"
+    >
+    </CouponResultModal>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
-// import { staticUrl } from '@/utils/config';
-// import { saveImmeBookServ } from '@/api/reservation-service';
+import { Ref, ref, onMounted } from 'vue';
+import CouponResultModal from '@/reservation-service-pages/component/CouponResultModal.vue';
 import { onLoad } from '@dcloudio/uni-app';
 import router from '@/utils/router';
-// import { imgBaseUrl } from '@/api/quality';
 import { staticUrl, imgUrl } from '@/utils/config';
 import { saveBookingFront } from '../api/api';
 import Storage from '@/utils/storage';
+import {
+  getByKindAndCode,
+  saveMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
+// import { imgBaseUrl } from '@/api/quality';
+// import { staticUrl } from '@/utils/config';
+// import { saveImmeBookServ } from '@/api/reservation-service';
+// import CouponResultModal from '@/reservation-service-pages/component/CouponResultModal/index.vue';
+
+// 'success' : 'await'
+const modelShow = ref(false);
+const getResult = ref('success');
+
+const relatedIdMessage = ref('');
+const setSaveMiniAppSubscribeMessageEnabled = async () => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: true,
+    relatedId: relatedIdMessage.value,
+    templateId: tmplIdsValue.value[0],
+  });
+};
+
+const onConfirm = () => {
+  console.log('onConfirm');
+  modelShow.value = false;
+  uni.requestSubscribeMessage({
+    tmplIds: tmplIdsValue.value,
+    success(res) {
+      console.log('res', res);
+      setSaveMiniAppSubscribeMessageEnabled();
+      setTimeout(() => {
+        uni.navigateBack({ delta: 2 });
+      }, 200);
+    },
+    fail(eer) {
+      console.log('eer', eer);
+    },
+  });
+};
+
+// saveMiniAppSubscribeMessageEnabled
+
+const onCancel = () => {
+  modelShow.value = false;
+  uni.navigateBack({ delta: 2 });
+};
 
 const alertDialogRef = ref();
 const data: Ref<any> = ref({});
@@ -193,6 +245,21 @@ const selectStore = () => {
     `?id=${data.value.id ?? ''}&type=getServiceStore&showBelong=true`
   );
 };
+
+// const tmplIds = ref('');
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const res: any = await getByKindAndCode({
+    codes: ['booking_service_notice'],
+    kind: 'WM',
+  });
+  tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+};
+
+onMounted(() => {
+  getKindAndCode();
+});
+
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;
   if (!distId) {
@@ -329,24 +396,34 @@ const submitAppointment = () => {
         uid: form.value.uid,
       })
         .then(res => {
-          setTimeout(() => {
-            uni.showToast({
-              title: res.data,
-              duration: 3000,
-            });
-          }, 500);
-          setTimeout(() => {
-            loading.value = false;
-            // uni.navigateBack()
-            uni.navigateBack({
-              delta: 2,
-              complete: () => {
-                // setTimeout(() => {
-                //   uni.navigateTo({ url: '/reservationService/myAppointment/index' });
-                // }, 500);
-              },
-            });
-          }, 3000);
+          console.log(res);
+          relatedIdMessage.value = res.data;
+          modelShow.value = true;
+          // uni.requestSubscribeMessage({
+          //   tmplIds: tmplIdsValue.value,
+          //   success(res) {
+          //     console.log('res', res);
+          //   },
+          //   fail(eer) {
+          //     console.log('eer', eer);
+          //   },
+          // });
+          // setTimeout(() => {
+          //   uni.showToast({
+          //     title: res.data,
+          //     duration: 3000,
+          //   });
+          // }, 500);
+          // setTimeout(() => {
+          //   loading.value = false;
+          //   // uni.navigateBack()
+          //   uni.navigateBack({
+          //     delta: 2,
+          //     complete: () => {
+
+          //     },
+          //   });
+          // }, 3000);
         })
         .catch(() => {
           loading.value = false;

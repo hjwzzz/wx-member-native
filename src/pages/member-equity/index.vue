@@ -62,7 +62,7 @@
               <view class="bf-growth-value-info-text text-break">
                 我的等级：<text class="numb">{{ curLevelName || '--' }}</text>
               </view>
-              <view class="bf-growth-value-info-set">
+              <view class="bf-growth-value-info-set" v-if="showMessageEvent">
                 <text class="right-text">等待提升提醒</text>
                 <switch
                   class="right-switch"
@@ -163,10 +163,35 @@ import { computed, onMounted, ref, Ref } from 'vue';
 import { getMemberLevelRights } from '@/pages/api/member-equity';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
+import { getByKindAndCode, getOperationMessageEventByCode } from '@/api/index';
 // import { queryAllLevelRights } from '@/api/server';
 // import { useBasicsData } from '@/store/basicsData';
 // const initBasicsData = useBasicsData();
 // const mainColor = computed(() => initBasicsData.mainColor);
+
+// level_promote   getOperationMessageEventByCode
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const { data } = await getByKindAndCode({
+    codes: ['level_promote'],
+    kind: 'WM',
+  });
+  tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+};
+
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'level_promote',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
+// onMounted(() => {
+//   getKindAndCode();
+// });
 
 const benefitsData: Ref<any> = ref(null);
 const curLevelId: Ref<any> = ref(null);
@@ -181,6 +206,8 @@ const benefitsDataFlag = ref('nodata');
 
 onMounted(() => {
   getAllBenefits();
+  getMessageEvent();
+  getKindAndCode();
 });
 
 const onChangeSwp = (e: any) => {
@@ -243,7 +270,19 @@ const currentStyle = computed(() => ({
 }));
 
 const checkSwitch = ref(false);
-const changeSwitch = () => {};
+const changeSwitch = (val: any) => {
+  if (val.detail.value) {
+    uni.requestSubscribeMessage({
+      tmplIds: tmplIdsValue.value,
+      success(res) {
+        console.log('res', res);
+      },
+      fail(eer) {
+        console.log('eer', eer);
+      },
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>

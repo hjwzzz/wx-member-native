@@ -68,6 +68,8 @@
               </view>
             </view>
             <view class="item-foot">
+              <!-- showMessageEvent -->
+
               <view
                 v-if="['NEW', 'CFD'].includes(item.status)"
                 class="btn"
@@ -75,6 +77,15 @@
               >
                 取消预约
               </view>
+              <view
+                v-if="['NEW', 'CFD'].includes(item.status) && showMessageEvent"
+                class="btn btn-msg"
+                :class="item.subscribeEnabled ? 'btn-msg-lis' : ''"
+                @click.stop="subscribeEnabled(item)"
+              >
+                {{ item.subscribeEnabled ? '已订阅' : '订阅提醒' }}
+              </view>
+
               <view
                 v-if="item.status === 'FTF'"
                 class="btn"
@@ -123,6 +134,11 @@ import Tabs from '@/components/Tabs/tab2.vue';
 import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
 import Storage from '@/utils/storage';
+import {
+  getByKindAndCode,
+  getOperationMessageEventByCode,
+  saveMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
 
 const initBasicsData = useBasicsData();
 const list = [
@@ -142,6 +158,49 @@ const recordId = ref('');
 const moreStatus = ref('loadmore');
 let tabKey = '';
 let total = 0;
+
+const subscribeEnabled = (item: any) => {
+  if (item.subscribeEnabled) {
+    return;
+  }
+  // .subscribeEnabled id
+  uni.requestSubscribeMessage({
+    tmplIds: tmplIdsValue.value,
+    success() {
+      setSaveMiniAppSubscribeMessageEnabled(item.id);
+    },
+  });
+};
+const setSaveMiniAppSubscribeMessageEnabled = async (id: string) => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: true,
+    relatedId: id,
+    templateId: tmplIdsValue.value[0],
+  });
+  curPage = 1;
+  subscribeList.value = [];
+  querySubscribeList();
+};
+
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const res: any = await getByKindAndCode({
+    codes: ['booking_service_notice'],
+    kind: 'WM',
+  });
+  tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+};
+
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'booking_service_notice',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
 onShow(() => {
   curPage = 1;
   if (subscribeList.value.length === 0) {
@@ -152,6 +211,8 @@ onShow(() => {
     subscribeList.value = [];
     querySubscribeList();
   }
+  getMessageEvent();
+  getKindAndCode();
 });
 
 const handleChangeTab = (index: number) => {
@@ -295,6 +356,14 @@ const querySubscribeList = async () => {
         display: flex;
         justify-content: flex-end;
         /*margin-top: 20rpx;*/
+        color: #323338;
+        .btn-msg {
+          background-color: var(--main-color);
+          color: white;
+        }
+        .btn-msg-lis {
+          opacity: 0.5;
+        }
         .btn {
           box-sizing: border-box;
           height: 64rpx;
@@ -303,7 +372,6 @@ const querySubscribeList = async () => {
           padding: 14rpx 32rpx 16rpx;
           margin-left: 20rpx;
           font-size: 24rpx;
-          color: #323338;
         }
       }
     }
