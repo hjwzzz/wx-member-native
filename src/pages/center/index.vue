@@ -194,6 +194,7 @@
     class="menber-code-popup"
     ref="MenberCodePopupRef"
     :mask-click="false"
+    :animation="false"
   >
     <view class="menber-code-popup-content">
       <view class="avatar">
@@ -237,7 +238,6 @@ import {
   Ref,
   watch,
   computed,
-  nextTick,
 } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
@@ -337,32 +337,12 @@ const drawCanvas = () => {
   }
 
   barCodeCanvasContent.clearRect(0, 0, 1000, 1000);
-  nextTick(() => {
-    // const selectorQuery = uni.createSelectorQuery()
-    //   .in(instance);
-
-    // selectorQuery
-    //   .select('#barCode')
-    //   .node(res => {
-
-    //     barCodeCanvasContent = res.node.getContext('2d');
-
-    //     console.log(barCodeCanvasContent);
-
-    //     JsBarcode(barCodeCanvasContent, menberCodeInfo.barCode, {
-    //       width: 610,
-    //       height: 200
-    //     });
-    //   })
-    //   .exec();
-
-    BrCode128(
-      barCodeCanvasContent,
-      menberCodeInfo.barCode,
-      336,
-      110
-    );
-  });
+  BrCode128(
+    barCodeCanvasContent,
+    menberCodeInfo.barCode,
+    336,
+    110
+  );
 };
 
 const GetBarCodeIntervalId = ref(0);
@@ -387,6 +367,7 @@ const showMenberCodePopup = async () => {
 
 const hideMenberCodePopup = async () => {
   menberCodePopupVisible.value = false;
+  showFullMenberCode.value = false;
   sendKeyExpiredBarCodeRequest(menberCodeInfo.barCode);
 };
 
@@ -461,36 +442,6 @@ const getBannerData = async () => {
   }
 };
 
-// if (!item.code) {
-//     if (item.miniUrl) {
-//       Router.goNoCodePage(item.miniUrl);
-//       return;
-//     }
-//     if (item.h5Url) {
-//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-//       return;
-//     }
-//   }
-// const bannerListClick = (item: any) => {
-//   const url = JSON.parse(item.url || {});
-//   const code = url.code || url.systemUrl;
-//   if (!code && url.appletUrl) {
-//     const miniUrl = item.miniUrl || url.appletUrl;
-//     Router.goNoCodePage(miniUrl);
-//     return;
-//   }
-//   if (!code && url.h5Url) {
-//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-//     return;
-//   }
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(url.code || url.systemUrl, param);
-// };
 
 // 显示红点
 const showRedDot = (item: any, entry: any, text: string) => {
@@ -500,26 +451,6 @@ const showRedDot = (item: any, entry: any, text: string) => {
   return code && red && showType;
 };
 
-// 获取今日金价
-// const getGoldPriceByPage = async () => {
-//   if (!initBasicsData.checkLogin) {
-//     return;
-//   }
-//   const res = await queryGoldPriceByPage('WM_CENTER');
-//   if (res.code === 0 && res.data) {
-//     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
-//     // this.uiParam = uiParam;
-//     const { showNum } = param;
-//     const result: any = [];
-//     branPriceList.map((item: any, index: number) => {
-//       if (index < showNum) {
-//         result.push(item);
-//       }
-//     });
-//     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
-//     goldPrice.value = result;
-//   }
-// };
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
@@ -527,25 +458,6 @@ const handleFixedSysUrl = () => {
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
-// const handleQuickUrl = (item: any) => {
-//   if (!item.code) {
-//     if (item.miniUrl) {
-//       Router.goNoCodePage(item.miniUrl);
-//       return;
-//     }
-//     if (item.h5Url) {
-//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-//       return;
-//     }
-//   }
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(item.code, param);
-// };
 </script>
 
 <style lang="scss" scoped>
