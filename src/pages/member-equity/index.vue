@@ -163,7 +163,12 @@ import { computed, onMounted, ref, Ref } from 'vue';
 import { getMemberLevelRights } from '@/pages/api/member-equity';
 import { staticUrl } from '@/utils/config';
 import { richImage } from '@/utils/util';
-import { getByKindAndCode, getOperationMessageEventByCode } from '@/api/index';
+import {
+  getByKindAndCode,
+  getOperationMessageEventByCode,
+  saveMiniAppSubscribeMessageEnabled,
+  queryMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
 // import { queryAllLevelRights } from '@/api/server';
 // import { useBasicsData } from '@/store/basicsData';
 // const initBasicsData = useBasicsData();
@@ -177,6 +182,28 @@ const getKindAndCode = async () => {
     kind: 'WM',
   });
   tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+  getMiniAppSubscribeMessageEnabled();
+};
+const setSaveMiniAppSubscribeMessageEnabled = async () => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: true,
+    relatedId: tmplIdsValue.value[0],
+    templateId: tmplIdsValue.value[0],
+  });
+};
+
+// queryMiniAppSubscribeMessageEnabled
+
+const getMiniAppSubscribeMessageEnabled = async () => {
+  const { data } = await queryMiniAppSubscribeMessageEnabled({
+    relatedIds: [tmplIdsValue.value[0]],
+    templateId: tmplIdsValue.value[0],
+  });
+
+  console.log('data', data[0].enabled);
+  if (data[0].enabled) {
+    checkSwitch.value = true;
+  }
 };
 
 const showMessageEvent = ref(false);
@@ -270,19 +297,26 @@ const currentStyle = computed(() => ({
 }));
 
 const checkSwitch = ref(false);
-const changeSwitch = (val: any) => {
+const changeSwitch = async (val: any) => {
   if (val.detail.value) {
-    uni.requestSubscribeMessage({
-      tmplIds: tmplIdsValue.value,
-      success(res) {
-        console.log('res', res);
-      },
-      fail(eer) {
-        console.log('eer', eer);
-      },
+    uni.requestSubscribeMessage({ tmplIds: tmplIdsValue.value });
+    setSaveMiniAppSubscribeMessageEnabled();
+  } else {
+    await saveMiniAppSubscribeMessageEnabled({
+      enabled: false,
+      relatedId: tmplIdsValue.value[0],
+      templateId: tmplIdsValue.value[0],
     });
   }
 };
+// const getMessageEvent = async () => {
+//   const { data: { enabled } } = await getOperationMessageEventByCode({
+//     evtCode: 'booking_service_notice',
+//     kind: 'WX',
+//     templateKind: 'WM',
+//   });
+//   showMessageEvent.value = enabled === 'Y';
+// };
 </script>
 
 <style lang="scss" scoped>
