@@ -272,6 +272,7 @@ const getPrize = async () => {
       detail.value.recvManner === '2' ? '确认已收货该奖品' : '确认已领取该奖品',
 
     confirmColor: basicsData.mainColor,
+    confirmText: '确认',
   });
   if (cancel) return;
   const { recvManner } = detail.value;
