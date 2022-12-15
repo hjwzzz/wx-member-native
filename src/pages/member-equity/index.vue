@@ -96,6 +96,7 @@
                 class="grid-item-icon"
                 v-for="(item, index) in currentBenefitsData.param.modualList"
                 :key="index"
+                @click="handleEntryUrl(item)"
               >
                 <view>
                   <view class="show-image">
@@ -162,7 +163,7 @@
 import { computed, onMounted, ref, Ref } from 'vue';
 import { getMemberLevelRights } from '@/pages/api/member-equity';
 import { staticUrl } from '@/utils/config';
-import { richImage } from '@/utils/util';
+import { richImage, handleEntryUrl } from '@/utils/util';
 import {
   getByKindAndCode,
   getOperationMessageEventByCode,
@@ -182,27 +183,29 @@ const getKindAndCode = async () => {
     kind: 'WM',
   });
   tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+
   getMiniAppSubscribeMessageEnabled();
 };
 const setSaveMiniAppSubscribeMessageEnabled = async () => {
   await saveMiniAppSubscribeMessageEnabled({
     enabled: true,
     relatedId: tmplIdsValue.value[0],
-    templateId: tmplIdsValue.value[0],
+    templateIds: tmplIdsValue.value,
   });
 };
 
 // queryMiniAppSubscribeMessageEnabled
 
 const getMiniAppSubscribeMessageEnabled = async () => {
-  const { data } = await queryMiniAppSubscribeMessageEnabled({
-    relatedIds: [tmplIdsValue.value[0]],
-    templateId: tmplIdsValue.value[0],
-  });
-
-  console.log('data', data[0].enabled);
-  if (data[0].enabled) {
-    checkSwitch.value = true;
+  if (tmplIdsValue.value[0]) {
+    const { data } = await queryMiniAppSubscribeMessageEnabled({
+      relatedIds: [tmplIdsValue.value[0]],
+      templateId: tmplIdsValue.value[0],
+    });
+    // console.log('data', data[0].enabled);
+    if (data[0].enabled) {
+      checkSwitch.value = true;
+    }
   }
 };
 

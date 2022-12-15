@@ -77,13 +77,23 @@
               >
                 取消预约
               </view>
+
               <view
                 v-if="['NEW', 'CFD'].includes(item.status) && showMessageEvent"
                 class="btn btn-msg"
-                :class="item.subscribeEnabled ? 'btn-msg-lis' : ''"
+                :class="
+                  !item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0
+                    ? 'btn-msg-lis'
+                    : ''
+                "
                 @click.stop="subscribeEnabled(item)"
               >
-                {{ item.subscribeEnabled ? '已订阅' : '订阅提醒' }}
+                <!-- item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0 -->
+                {{
+                  !item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0
+                    ? '已订阅'
+                    : '订阅提醒'
+                }}
               </view>
 
               <view
@@ -135,7 +145,7 @@ import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
 import Storage from '@/utils/storage';
 import {
-  getByKindAndCode,
+  // getByKindAndCode,
   getOperationMessageEventByCode,
   saveMiniAppSubscribeMessageEnabled,
 } from '@/api/index';
@@ -160,36 +170,58 @@ let tabKey = '';
 let total = 0;
 
 const subscribeEnabled = (item: any) => {
-  if (item.subscribeEnabled) {
+  //  unsubscribeTplIds subscribeTplIds
+  if (!item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0) {
     return;
   }
   // .subscribeEnabled id
   uni.requestSubscribeMessage({
-    tmplIds: tmplIdsValue.value,
-    success() {
-      setSaveMiniAppSubscribeMessageEnabled(item.id);
+    tmplIds: item.unsubscribeTplIds,
+    success(res: any) {
+      // 0lfD3AHqv3eyW0HypY2tiwh9zYQxlFHPy2RKQ2-Qz2c: "accept"
+      // errMsg: "requestSubscribeMessage:ok"
+      // 0lfD3AHqv3eyW0HypY2tiwh9zYQxlFHPy2RKQ2-Qz2c: "reject"
+      // errMsg: "requestSubscribeMessage:ok"
+      // console.log('res', res);
+      // console.log('tmplIdsValue.value', tmplIdsValue.value);
+      // const dddd = Object.keys(res)
+      //   .includes('accept');
+      // console.log('Object.keys(res)');
+      // console.log(Object.keys(res));
+      // console.log(dddd);
+      // if (Object.keys(res)
+      //   .includes('accept')) {
+      //   console.log('2222222222成功');
+      // }
+      const cssel = Object.values(res);
+      if (cssel.includes('accept')) {
+        setSaveMiniAppSubscribeMessageEnabled(item.id, item.unsubscribeTplIds);
+      }
     },
   });
 };
-const setSaveMiniAppSubscribeMessageEnabled = async (id: string) => {
+const setSaveMiniAppSubscribeMessageEnabled = async (
+  id: string,
+  tplIds: any
+) => {
   await saveMiniAppSubscribeMessageEnabled({
     enabled: true,
     relatedId: id,
-    templateId: tmplIdsValue.value[0],
+    templateIds: tplIds,
   });
   curPage = 1;
   subscribeList.value = [];
   querySubscribeList();
 };
 
-const tmplIdsValue = ref([]);
-const getKindAndCode = async () => {
-  const res: any = await getByKindAndCode({
-    codes: ['booking_service_notice'],
-    kind: 'WM',
-  });
-  tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
-};
+// const tmplIdsValue = ref([]);
+// const getKindAndCode = async () => {
+//   const res: any = await getByKindAndCode({
+//     codes: ['booking_service_notice'],
+//     kind: 'WM',
+//   });
+//   tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+// };
 
 const showMessageEvent = ref(false);
 const getMessageEvent = async () => {
@@ -212,7 +244,7 @@ onShow(() => {
     querySubscribeList();
   }
   getMessageEvent();
-  getKindAndCode();
+  // getKindAndCode();
 });
 
 const handleChangeTab = (index: number) => {

@@ -315,12 +315,12 @@ const change = (val: any) => {
   if (val.detail.value) {
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
-      success(res) {
-        console.log('res', res);
-      },
-      fail(eer) {
-        console.log('eer', eer);
-      },
+      // success(res) {
+      //   console.log('res', res);
+      // },
+      // fail(eer) {
+      //   console.log('eer', eer);
+      // },
     });
   }
 };

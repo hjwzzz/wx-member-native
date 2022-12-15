@@ -28,10 +28,12 @@ import { staticUrl } from '@/utils/config';
 interface Props {
   type?: string;
   visible: boolean;
+  tmplIdsValue?: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   type: 'success',
   visible: false,
+  tmplIdsValue: () => [],
 });
 const alertDialog: any = ref(null);
 // :src="`${staticUrl}reservation-service/add-img.png`"  reservation-success.png onMounted,
@@ -80,9 +82,26 @@ const onCancel = () => {
   emits('cancel');
 };
 const onConfirm = () => {
-  alertDialog.value.close();
-  emits('ok');
-  emits('cancel');
+  console.log(props.tmplIdsValue);
+  uni.requestSubscribeMessage({
+    tmplIds: props.tmplIdsValue,
+    success(res) {
+      alertDialog.value.close();
+
+      const cssel = Object.values(res);
+      if (cssel.includes('accept')) {
+        emits('ok', true);
+      } else {
+        emits('ok', false);
+      }
+      setTimeout(() => {
+        uni.navigateBack({ delta: 2 });
+      }, 1000);
+    },
+    fail(eer) {
+      console.log('eer', eer);
+    },
+  });
 };
 const onMaskClick = () => {
   emits('cancel');

@@ -148,6 +148,7 @@
     <CouponResultModal
       :visible="modelShow"
       :type="getResult"
+      :tmplIdsValue="tmplIdsValue"
       @ok="onConfirm"
       @cancel="onCancel"
     >
@@ -181,26 +182,30 @@ const setSaveMiniAppSubscribeMessageEnabled = async () => {
   await saveMiniAppSubscribeMessageEnabled({
     enabled: true,
     relatedId: relatedIdMessage.value,
-    templateId: tmplIdsValue.value[0],
+    templateIds: tmplIdsValue.value,
   });
 };
 
-const onConfirm = () => {
-  console.log('onConfirm');
+const onConfirm = (bool: boolean) => {
+  // uni.requestSubscribeMessage({
+  //   tmplIds: tmplIdsValue.value,
+  //   success(res) {
+  //     const cssel = Object.values(res);
+  //     if (cssel.includes('accept')) {
+  //       setSaveMiniAppSubscribeMessageEnabled();
+  //     }
+  //     setTimeout(() => {
+  //       uni.navigateBack({ delta: 2 });
+  //     }, 1000);
+  //   },
+  //   fail(eer) {
+  //     console.log('eer', eer);
+  //   },
+  // });
+  if (bool) {
+    setSaveMiniAppSubscribeMessageEnabled();
+  }
   modelShow.value = false;
-  uni.requestSubscribeMessage({
-    tmplIds: tmplIdsValue.value,
-    success(res) {
-      console.log('res', res);
-      setSaveMiniAppSubscribeMessageEnabled();
-      setTimeout(() => {
-        uni.navigateBack({ delta: 2 });
-      }, 200);
-    },
-    fail(eer) {
-      console.log('eer', eer);
-    },
-  });
 };
 
 // saveMiniAppSubscribeMessageEnabled
@@ -250,7 +255,11 @@ const selectStore = () => {
 const tmplIdsValue = ref([]);
 const getKindAndCode = async () => {
   const res: any = await getByKindAndCode({
-    codes: ['booking_service_notice'],
+    codes: [
+      'booking_service_notice',
+      'booking_service_fail_notice',
+      'booking_service_expire_notice',
+    ],
     kind: 'WM',
   });
   tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];

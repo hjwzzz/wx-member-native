@@ -155,7 +155,9 @@
       </view>
 
       <view v-if="showSureButton(detail)" class="button">
-        <button class="btn" type="button" @click="getPrize">确认领取</button>
+        <button class="btn" type="button" @click="getPrize">
+          {{ showText }}
+        </button>
       </view>
     </view>
   </CustomPage>
@@ -172,7 +174,7 @@ import {
 } from '@/my-assets-pages/api/my-prize';
 import type { IPrize } from '@/my-assets-pages/api/types/my-prize';
 import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import Goods from './component/Goods.vue';
 import { useBasicsData } from '@/store/basicsData';
 import Exchange from './component/Exchange.vue';
@@ -263,9 +265,11 @@ const getData = async () => {
     }
   }
 };
+const showText = computed(() => (detail.value.recvManner === '2' ? '确认收货' : '确认领取'));
 const getPrize = async () => {
   const { cancel }: any = await uni.showModal({
-    content: '确认已领取该奖品',
+    content:
+      detail.value.recvManner === '2' ? '确认已收货该奖品' : '确认已领取该奖品',
 
     confirmColor: basicsData.mainColor,
   });
@@ -280,8 +284,9 @@ const getPrize = async () => {
     remark: '',
     status: 'FINISHED',
   });
+
   uni.showToast({
-    title: code === 0 ? '领取成功' : '奖品已被领取',
+    title: code === 0 ? showText.value : '奖品已被领取',
     icon: 'success',
   });
   setTimeout(() => {
