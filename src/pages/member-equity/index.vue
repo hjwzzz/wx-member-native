@@ -306,9 +306,12 @@ const changeSwitch = async (val: any) => {
     setSaveMiniAppSubscribeMessageEnabled();
   } else {
     await saveMiniAppSubscribeMessageEnabled({
+      // enabled: false,
+      // relatedId: tmplIdsValue.value[0],
+      // templateId: tmplIdsValue.value[0],
       enabled: false,
       relatedId: tmplIdsValue.value[0],
-      templateId: tmplIdsValue.value[0],
+      templateIds: tmplIdsValue.value,
     });
   }
 };
