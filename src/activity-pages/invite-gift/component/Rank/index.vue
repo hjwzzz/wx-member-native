@@ -101,7 +101,7 @@
             </view>
           </view>
         </view>
-        <Empty msg="暂排名数据，赶紧去抢沙发吧~" v-else />
+        <Empty msg="暂无排名数据，赶紧去抢沙发吧~" v-else />
       </view>
     </view>
   </view>
