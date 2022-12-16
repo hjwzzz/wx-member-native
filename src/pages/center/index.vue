@@ -213,7 +213,7 @@
           <canvas
             id="barCode"
             canvas-id="barCode"
-            style="width: 610rpx; height: 200rpx"
+            style="width: 300px; height: 100px"
           />
         </view>
         <view class="content-desc">门店消费时使用，每30秒自动更新</view>
@@ -337,10 +337,11 @@ const drawCanvas = () => {
   }
 
   barCodeCanvasContent.clearRect(0, 0, 1000, 1000);
+
   BrCode128(
     barCodeCanvasContent,
     menberCodeInfo.barCode,
-    336,
+    300,
     110
   );
 };
