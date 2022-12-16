@@ -792,7 +792,7 @@ const handleMyPrizes = (index: number) => {
 }
 
 .menber-code-popup-content {
-  width: 690rpx;
+  // width: 690rpx;
   // height: 552rpx;
   background: #ffffff;
   border-radius: 32rpx;
