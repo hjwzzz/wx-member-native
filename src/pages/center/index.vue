@@ -213,7 +213,7 @@
           <canvas
             id="barCode"
             canvas-id="barCode"
-            style="width: 300px; height: 100px"
+            style="width: 610rpx; height: 200rpx"
           />
         </view>
         <view class="content-desc">门店消费时使用，每30秒自动更新</view>
@@ -338,10 +338,14 @@ const drawCanvas = () => {
 
   barCodeCanvasContent.clearRect(0, 0, 1000, 1000);
 
+  const { windowWidth } = uni.getSystemInfoSync();
+
+  const dpi = windowWidth / 375;
+
   BrCode128(
     barCodeCanvasContent,
     menberCodeInfo.barCode,
-    300,
+    305 * dpi,
     110
   );
 };
@@ -792,7 +796,7 @@ const handleMyPrizes = (index: number) => {
 }
 
 .menber-code-popup-content {
-  // width: 690rpx;
+  width: 690rpx;
   // height: 552rpx;
   background: #ffffff;
   border-radius: 32rpx;
