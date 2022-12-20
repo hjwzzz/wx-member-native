@@ -93,6 +93,7 @@ import { staticUrl } from '@/utils/config';
 import {
   getByKindAndCode,
   saveMiniAppSubscribeMessageEnabled,
+  queryMiniAppSubscribeMessageEnabled,
 } from '@/api/index';
 
 const props = defineProps({
@@ -107,18 +108,22 @@ const emits = defineEmits(['getMonth', 'clickGift', 'openNotice']);
 const year = ref(0);
 const month = ref(0);
 const week = ref(['日', '一', '二', '三', '四', '五', '六']);
-const dateArr = ref<any[]>([]);
+const dateArr: any = ref<any[]>([]);
 const today = ref('0');
 const dateWeek = ref(false);
 const todayIndex = ref(0);
 const check = ref(false);
 const isEmpty = ref(false);
+
+const checkLi = ref(false);
 watch(
   () => props.showData,
   val => {
     setStatus(dateArr.value, val.giftDate || [], 'gift');
     setStatus(dateArr.value, val.signInDate || [], 'signIn');
-    check.value = val.userNotified === 'Y';
+    checkLi.value = val.userNotified === 'Y';
+
+    //  ;
     isEmpty.value = !val.award;
   }
 );
@@ -132,6 +137,22 @@ const setStatus = (arr: any[], val: any, name: any) => {
   });
 };
 
+const getMiniAppSubscribeMessageEnabled = async () => {
+  if (tmplIdsValue.value[0]) {
+    const { data } = await queryMiniAppSubscribeMessageEnabled({
+      relatedIds: [tmplIdsValue.value[0]],
+      templateId: tmplIdsValue.value[0],
+    });
+    // console.log('data', data[0].enabled);
+    // console.log('data[0].enabled', data[0].enabled);
+    // console.log(' checkLi.value', checkLi.value);
+    if (data[0].enabled && checkLi.value) {
+      check.value = true;
+      // checkSwitch.value = true;
+    }
+  }
+};
+
 const tmplIdsValue = ref([]);
 const getKindAndCode = async () => {
   const { data } = await getByKindAndCode({
@@ -141,6 +162,7 @@ const getKindAndCode = async () => {
   // tplId
   // console.log(data.map((item: any) => item.tplId));
   tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+  getMiniAppSubscribeMessageEnabled();
 };
 
 onMounted(() => {
