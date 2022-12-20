@@ -90,7 +90,10 @@
 import { onShow } from '@dcloudio/uni-app';
 import { onMounted, ref, watch } from 'vue';
 import { staticUrl } from '@/utils/config';
-import { getByKindAndCode } from '@/api/index';
+import {
+  getByKindAndCode,
+  saveMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
 
 const props = defineProps({
   showData: {
@@ -292,7 +295,7 @@ const clickGiftFun = (item: any = null) => {
 //   }
 // };
 
-const change = (val: any) => {
+const change = async (val: any) => {
   emits('openNotice', val);
   // uni.getSetting({
   //   withSubscriptions: true, //  这里设置为true,下面才会返回mainSwitch
@@ -312,18 +315,48 @@ const change = (val: any) => {
   //         }
   //   }
   // });
+  // if (val.detail.value) {
+  //   uni.requestSubscribeMessage({
+  //     tmplIds: tmplIdsValue.value,
+  //     // success(res) {
+  //     //   console.log('res', res);
+  //     // },
+  //     // fail(eer) {
+  //     //   console.log('eer', eer);
+  //     // },
+  //   });
+  // }
+
   if (val.detail.value) {
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
-      // success(res) {
-      //   console.log('res', res);
-      // },
-      // fail(eer) {
-      //   console.log('eer', eer);
-      // },
+      success(res) {
+        // console.log('requestSubscribeMessage', res);
+        const cssel = Object.values(res);
+        if (cssel.includes('accept')) {
+          setSaveMiniAppSubscribeMessageEnabled(true);
+        }
+      },
     });
+    // setSaveMiniAppSubscribeMessageEnabled();
+  } else {
+    // await saveMiniAppSubscribeMessageEnabled({
+    //   enabled: false,
+    //   relatedId: tmplIdsValue.value[0],
+    //   templateIds: tmplIdsValue.value,
+    // });
+    setSaveMiniAppSubscribeMessageEnabled(false);
   }
 };
+
+const setSaveMiniAppSubscribeMessageEnabled = async (bool: boolean) => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: bool,
+    relatedId: tmplIdsValue.value[0],
+    templateIds: tmplIdsValue.value,
+  });
+};
+
 onShow(() => {
   init();
 });
