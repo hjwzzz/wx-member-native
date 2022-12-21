@@ -355,7 +355,7 @@ const queryWriteInfo = async (p = {}) => {
     });
 
     list.value = l;
-    Object.assign(activeData, {
+    Object.assign(activeData.value, {
       canModifySaler,
       canModifyDist,
       belongUid,
@@ -388,12 +388,18 @@ const handle = (item: any) => {
     case 'REGIST_REQUIRED_STORE': {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
+        if (e.distId !== selectedShop.value.distId) {
+          Object.assign(memberInfo.value, {
+            belongUid: '',
+            belongUser: '',
+          });
+        }
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
       router.goCodePage(
         'chooseStore',
-        `?id=${memberInfo.value.belongDistId || ''}&t=user_info`
+        `?belong=true&id=${selectedShop.value.distId || ''}&t=user_info`
       );
       break;
     }
@@ -407,7 +413,12 @@ const handle = (item: any) => {
         });
       });
       if (selectedShop.value.distId) {
-        router.goCodePage('chooseGuide', `?id=${selectedShop.value.distId}`);
+        router.goCodePage(
+          'chooseGuide',
+          `?id=${selectedShop.value.distId}&uid=${
+            memberInfo.value.belongUid || ''
+          }`
+        );
         return;
       }
       uni.showModal({
@@ -473,25 +484,21 @@ const handleStep = async () => {
     sex,
     avatarUrl,
   } = memberInfo.value;
-  const phone = memberInfo.value.phone || uni.getStorageSync('phone');
+  const phone = memberInfo.value.phone || uni.getStorageSync('phone') || '';
   const params = {
     name,
-    nickName:
-      nickName || `${phone.substr(0, 4)}***${phone.substr()
-        .substr(-3, 3)}`,
+    nickName,
     activeDistId: selectedShop.value.distId || null,
     activeUid,
     province,
     city,
-    avatarUrl:
-      avatarUrl ||
-      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    avatarUrl,
     district,
     address,
     inviteCode: name, // 验证码，已废弃
     annday,
     sex,
-    phone: phone || uni.getStorageSync('phone'),
+    phone,
     wmid: uni.getStorageSync('wmid') || '',
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
@@ -583,12 +590,38 @@ const handleStep = async () => {
         }
         break;
       }
+      case IRegistField.avatar: {
+        if (!params.avatarUrl) {
+          uni.showModal({
+            content: '请设置头像',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
+      case IRegistField.nickName: {
+        if (!params.nickName) {
+          uni.showModal({
+            content: '请设置昵称',
+            showCancel: false,
+          });
+          return true;
+        }
+        break;
+      }
 
       default:
+        // todo 未限制项
+        console.log(i);
         break;
     }
   });
   if (verifyData) return;
+  params.nickName ||= `${phone.substr(0, 4)}***${phone.substr()
+    .substr(-3, 3)}`;
+  params.avatarUrl ||=
+    'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132';
   const { code, data } = await completeInfo(params);
   if (code === 0) {
     data && initBasicsData.setUseMid(data);

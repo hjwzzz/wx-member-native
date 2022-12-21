@@ -54,6 +54,7 @@ const initBasicsData = useBasicsData();
 
 const props = defineProps<{
   id: string;
+  uid: string;
   type: string;
 }>();
 
@@ -68,6 +69,9 @@ const getData = async () => {
     name: keyward.value,
   });
   list.value = data ?? [];
+  list.value.map((v: any) => {
+    if (v.uid === props.uid) selectedItem.value = v;
+  });
 };
 onLoad(getData);
 const searchChange = (e: any) => {
