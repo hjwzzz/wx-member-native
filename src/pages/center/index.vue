@@ -205,9 +205,11 @@
         />
       </view>
       <view class="content">
-        <view class="content-text" @click="viewFullMenberCode">
-          <view class="content-text-code">{{ menberCode }}</view>
-          <view class="content-text-desc">查看会员编号</view>
+        <view class="content-text" >
+          <view class="content-text-code" @click="hideFullMenberCode">{{ menberCode }}</view>
+          <view v-if="!showFullMenberCode" @click="viewFullMenberCode" class="content-text-desc">
+            <img :src="`${imageUrl}img/person.png`" >
+          </view>
         </view>
         <view class="content-qrcode">
           <canvas
@@ -390,6 +392,10 @@ const menberCode = computed(() => {
 
 const viewFullMenberCode = () => {
   showFullMenberCode.value = true;
+};
+
+const hideFullMenberCode = () => {
+  showFullMenberCode.value = false;
 };
 
 const getMemberCentertIndex = async () => {
@@ -839,11 +845,10 @@ const handleMyPrizes = (index: number) => {
         font-weight: 700;
         color: #323338;
         line-height: 50rpx;
-        margin-right: 30rpx;
       }
-      // .content-text-desc {
-      //
-      // }
+      .content-text-desc {
+        margin-left: 30px;
+      }
     }
 
     .content-qrcode {

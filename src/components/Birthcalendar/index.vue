@@ -43,6 +43,7 @@
           class="picker"
           :value="value"
           @change="bindChange"
+          :immediate-change="false"
         >
           <picker-view-column>
             <view
@@ -102,6 +103,7 @@ const props = withDefaults(defineProps<{
 });
 
 const open = () => {
+  init();
   CalendarRef.value.open();
 };
 
@@ -122,6 +124,7 @@ const months = ref<CalendarMonthPickItem[]>([]);
 const days = ref<CalendarPickItem[]>([]);
 
 const value = ref<[number, number, number]>([0, 0, 0]); // 当前选择的五类下标【可以是3类、3类】
+const lastValue = ref<[number, number, number]>([0, 0, 0]); // 当前选择的五类下标【可以是3类、3类】
 
 const calendarValue = reactive({
   year: 0,
@@ -168,6 +171,7 @@ const setSolarCalendar = (type: CALENDAR_TYPE) => {
 
   nextTick(() => {
     value.value = [calendarIndex.year, calendarIndex.month, calendarIndex.day];
+    lastValue.value = [calendarIndex.year, calendarIndex.month, calendarIndex.day];
   });
 };
 
@@ -207,7 +211,14 @@ const bindChange = (e: any) => {
 
   if (type.value === CALENDAR_TYPE.LUNAR) {
     const isLeapMonth = months.value[e.detail.value[1]].isLeap;
-    const SolarRes = formatCalendar.lunar2solar(year, month, day, isLeapMonth);
+    let SolarRes: any;
+    if (e.detail.value[0] !== lastValue.value[0]) {
+      SolarRes = formatCalendar.lunar2solar(year, 1, 1);
+    } else if (e.detail.value[1] !== lastValue.value[1]) {
+      SolarRes = formatCalendar.lunar2solar(year, month, 1, isLeapMonth);
+    } else if (e.detail.value[2] !== lastValue.value[2]) {
+      SolarRes = formatCalendar.lunar2solar(year, month, day, isLeapMonth);
+    }
     if (SolarRes === -1) {
       return;
     }

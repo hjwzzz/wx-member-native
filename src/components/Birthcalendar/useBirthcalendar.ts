@@ -107,7 +107,7 @@ export const useCalendar = (calendarConfig: CalendarPickConfig = {}) => {
           end: yearEnd
         },
         month: { end: monthEnd = leapMonthIndex ? 13 : 12 },
-        day: { end: dayEnd = leapMonthIndex === month ? formatCalendar.leapDays(year) : formatCalendar.monthDays(year, month) },
+        day: { end: dayEnd = leapMonthIndex === month ? formatCalendar.leapDays(year) : formatCalendar.monthDays(year, res.lMonth) },
       }
     } = getConfig();
 
