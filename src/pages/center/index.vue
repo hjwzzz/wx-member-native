@@ -3,7 +3,7 @@
     :page-style="'overflow:' + (menberCodePopupVisible ? 'hidden' : 'visible')"
   ></page-meta>
   <CustomPage bottom>
-    <view class="user">
+    <view class="user" :style="{ backgroundImage: `url( ${showToImage} )` }">
       <view class="login-info">
         <view class="user-info">
           <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
@@ -302,12 +302,15 @@ onShow(() => {
   // getGoldPriceByPage();
 });
 
+const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
+const showToImage = ref(deFImage);
 const getMemberCentertIndex = async () => {
   const res = await getMemberCenterIndex('');
   if (res.code === 0 && res.data) {
     const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
     const quickNavList = wmCenterRspVo.param?.quickNavList || [];
     const panelListItem: any = wmCenterRspVo.panelList;
+    showToImage.value = wmCenterRspVo.param.topBgImageUrl || deFImage;
     const srvObj =
       panelListItem.find((item: any) => item.kind === entryType.RES) || {};
     const policyList =
@@ -478,7 +481,7 @@ const hideFullMenberCode = () => {
 .user {
   width: 100%;
   height: 400rpx;
-  background-image: url("https://static.jqzplat.com/web/c_default_center_bg.jpg");
+  // background-image: url('https://static.jqzplat.com/web/c_default_center_bg.jpg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
 

@@ -33,25 +33,14 @@
           v-for="(item, index) in tabBarList"
           :key="index"
           @click="setSelected(index, item)"
+          :style="actionColor(index)"
         >
-          <template>
-            <view class="tarbar-list-li-icon">
-              <view
-                class="iconfont icon-style"
-                :class="item.icoUrl"
-                :style="{
-                  color: selected == index ? tabBarStyle.selectedColor : '',
-                }"
-              ></view>
-            </view>
-            <view
-              :style="
-                selected == index ? 'color:' + tabBarStyle.selectedColor : ''
-              "
-              class="tarbar-list-li-name"
-              >{{ item.title }}</view
-            >
-          </template>
+          <view class="tarbar-list-li-icon">
+            <view class="iconfont icon-style" :class="item.icoUrl"></view>
+          </view>
+          <view class="tarbar-list-li-name">
+            {{ item.title }}
+          </view>
         </view>
       </view>
     </view>
@@ -121,8 +110,17 @@ const linkNavListFun = (item: any) => {
   Router.goCodePage(item.code);
 };
 
+// 显示颜色
+
+const actionColor = computed(() => (index: number) => {
+  if (initActiveTab.current === index) {
+    return `color:${tabBarStyle.selectedColor}`;
+  }
+  return '';
+});
+
 // const emits = defineEmits(['change']);
-const selected = ref(props.current);
+// const selected = ref(props.current);
 const setSelected = (index: number, item: any) => {
   // console.log({ ...item });
   if (!item.code && item.miniUrl) {
@@ -137,7 +135,7 @@ const setSelected = (index: number, item: any) => {
     return;
   }
 
-  if (selected.value === index) {
+  if (initActiveTab.current === index) {
     return;
   }
   if (['wm_center', 'wm_index'].includes(item.code)) {
@@ -162,12 +160,13 @@ const initTab = () => {
   // if (active) {
   //   selected.value = active;
   // }
-
   // const active = list.findIndex(({ code }: any) => code === props.code);
   // console.log(active);
   // selected.value = active || 0;
+  // selected.value = initActiveTab.current;
 
-  selected.value = initActiveTab.current;
+  const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  initActiveTab.setCurrent(active || 0);
 };
 </script>
 

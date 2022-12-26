@@ -21,7 +21,8 @@
               :style="{ backgroundColor: basicsData.mainColor }"
               @click="determine(item)"
             >
-              确认领取
+              {{ item.recvManner === '2' ? '确认收货' : '确认领取' }}
+              <!-- 确认领取 -->
             </view>
             <!-- 详情按钮 -->
             <view
