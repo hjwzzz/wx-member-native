@@ -29,18 +29,21 @@ interface Props {
   type?: string;
   visible: boolean;
   tmplIdsValue?: any;
+  tmplIdsValueing?: any;
   title: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   type: 'success',
   visible: false,
-  title: '预约成功',
+  title: '',
   tmplIdsValue: () => [],
 });
 const alertDialog: any = ref(null);
 // :src="`${staticUrl}reservation-service/add-img.png`"  reservation-success.png onMounted,
 const showImg = computed(() => `${staticUrl}reservation-service/reservation-${
-  props.title === '服务预约成功' ? 'success' : 'await'
+  props.title === '服务预约成功' || props.title === '预约成功'
+    ? 'success'
+    : 'await'
 }.png`);
 
 // const showText = computed(() => {
@@ -84,9 +87,10 @@ const onCancel = () => {
   emits('cancel');
 };
 const onConfirm = () => {
-  console.log(props.tmplIdsValue);
+  // console.log(props.tmplIdsValue);
   uni.requestSubscribeMessage({
-    tmplIds: props.tmplIdsValue,
+    tmplIds:
+      props.title === '预约成功' ? props.tmplIdsValueing : props.tmplIdsValue,
     success(res) {
       alertDialog.value.close();
 

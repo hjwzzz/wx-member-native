@@ -186,9 +186,9 @@ const getKindAndCode = async () => {
 
   getMiniAppSubscribeMessageEnabled();
 };
-const setSaveMiniAppSubscribeMessageEnabled = async () => {
+const setSaveMiniAppSubscribeMessageEnabled = async (bool: boolean) => {
   await saveMiniAppSubscribeMessageEnabled({
-    enabled: true,
+    enabled: bool,
     relatedId: tmplIdsValue.value[0],
     templateIds: tmplIdsValue.value,
   });
@@ -302,19 +302,29 @@ const currentStyle = computed(() => ({
 const checkSwitch = ref(false);
 const changeSwitch = async (val: any) => {
   if (val.detail.value) {
-    uni.requestSubscribeMessage({ tmplIds: tmplIdsValue.value });
-    setSaveMiniAppSubscribeMessageEnabled();
-  } else {
-    await saveMiniAppSubscribeMessageEnabled({
-      // enabled: false,
-      // relatedId: tmplIdsValue.value[0],
-      // templateId: tmplIdsValue.value[0],
-      enabled: false,
-      relatedId: tmplIdsValue.value[0],
-      templateIds: tmplIdsValue.value,
+    checkSwitch.value = true;
+    uni.requestSubscribeMessage({
+      tmplIds: tmplIdsValue.value,
+      success(res) {
+        const cssel = Object.values(res);
+        if (cssel.includes('accept')) {
+          setSaveMiniAppSubscribeMessageEnabled(true);
+        } else {
+          checkSwitch.value = false;
+        }
+      },
     });
+  } else {
+    setSaveMiniAppSubscribeMessageEnabled(false);
   }
 };
+
+// watch(
+//   () => checkSwitch.value,
+//   () => {
+//   }
+// );
+
 // const getMessageEvent = async () => {
 //   const { data: { enabled } } = await getOperationMessageEventByCode({
 //     evtCode: 'booking_service_notice',

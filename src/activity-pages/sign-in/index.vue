@@ -288,12 +288,13 @@ const signIn = async () => {
   const { code } = res;
   if (res && !code) {
     if (data.firstSign) {
-      uni.requestSubscribeMessage({
-        tmplIds: [''],
-        success() {
-          openNotice('s');
-        },
-      });
+      // uni.requestSubscribeMessage({
+      //   tmplIds: [''],
+      //   success() {
+      //     openNotice('s');
+      //   },
+      // });
+      openNotice('s');
     }
     toastRef.value.open();
     setTimeout(() => {

@@ -149,6 +149,7 @@
       :visible="modelShow"
       :type="getResult"
       :tmplIdsValue="tmplIdsValue"
+      :tmplIdsValueing="tmplIdsValueing"
       :title="showTitle"
       @ok="onConfirm"
       @cancel="onCancel"
@@ -265,6 +266,7 @@ const selectStore = () => {
 
 // const tmplIds = ref('');
 const tmplIdsValue = ref([]);
+const tmplIdsValueing = ref([]);
 const getKindAndCode = async () => {
   const res: any = await getByKindAndCode({
     codes: [
@@ -275,6 +277,12 @@ const getKindAndCode = async () => {
     kind: 'WM',
   });
   tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+  tmplIdsValueing.value =
+    res.data
+      .filter((item: any) => item.code !== 'booking_service_notice')
+      .map((item: any) => item.tplId) || [];
+  // console.log('tmplIdsValue.value', tmplIdsValue.value);
+  // console.log('tmplIdsValueing.value.value', tmplIdsValueing.value);
 };
 
 onMounted(() => {
@@ -428,6 +436,8 @@ const submitAppointment = () => {
           }
           const { id, msg } = res.data;
           showTitle.value = msg;
+          // booking_service_notice
+          console.log('showTitle.value', showTitle.value);
           relatedIdMessage.value = id;
           if (showMessageEvent.value && id) {
             modelShow.value = true;
