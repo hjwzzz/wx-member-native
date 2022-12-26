@@ -316,7 +316,9 @@ const clickGiftFun = (item: any = null) => {
 };
 
 const change = async (val: any) => {
-  emits('openNotice', val);
+  // setTimeout(() => {
+  //
+  // }, 2500);
   if (!showMessageEvent.value) {
     return;
   }
@@ -331,8 +333,12 @@ const change = async (val: any) => {
       setTimeout(() => {
         check.value = false;
       }, 500);
+      setTimeout(() => {
+        emits('openNotice', val);
+      }, 2500);
       return;
     }
+    emits('openNotice', val);
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
       success(res) {
@@ -352,8 +358,12 @@ const change = async (val: any) => {
         icon: 'none',
       });
       check.value = false;
+      setTimeout(() => {
+        emits('openNotice', val);
+      }, 2500);
       return;
     }
+    emits('openNotice', val);
     setSaveMiniAppSubscribeMessageEnabled(false);
   }
 };
