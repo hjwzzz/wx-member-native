@@ -8,7 +8,33 @@ export const queryShareSett = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// 根据类型、代码查询微信消息模板
+export const getByKindAndCode = async (data: any) => {
+  const url = `${devBaseUrl}/usr/messageTemplateFront/getByKindAndCodes`;
+  const res = await request(url, data);
+  return res;
+};
 
+// 代码查询微信消息模板是否开启
+export const getOperationMessageEventByCode = async (data: any) => {
+  const url = `${devBaseUrl}/usr/operationMessageEventFront/getOperationMessageEventByCode`;
+  const res = await request(url, data);
+  return res;
+};
+
+// 保存小程序订阅消息启用状态
+export const saveMiniAppSubscribeMessageEnabled = async (data: any) => {
+  const url = `${devBaseUrl}/usr/messageFront/saveMiniAppSubscribeMessageEnabled`;
+  const res = await request(url, data);
+  return res;
+};
+//
+// 获取小程序订阅消息启用状态列表
+export const queryMiniAppSubscribeMessageEnabled = async (data: any) => {
+  const url = `${devBaseUrl}/usr/messageFront/queryMiniAppSubscribeMessageEnabled`;
+  const res = await request(url, data);
+  return res;
+};
 //
 // export const wxmemberIndex = async (data: unknown) => {
 //   const url = `${baseUrl}/emp-base/wxmeberFront/wxmember/index`;

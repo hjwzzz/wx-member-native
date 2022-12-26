@@ -53,29 +53,34 @@
           </view>
 
           <view
-          class="bf-growth-value"
+            class="bf-growth-value"
             :style="{
               color: currentStyle.fontColor,
             }"
           >
-            <view class="">
-              我的等级：<text class="numb" :style="{ color: mainColor }">{{
-                curLevelName || '--'
-              }}</text>
+            <view class="bf-growth-value-info">
+              <view class="bf-growth-value-info-text text-break">
+                我的等级：<text class="numb">{{ curLevelName || '--' }}</text>
+              </view>
+              <view class="bf-growth-value-info-set" v-if="showMessageEvent">
+                <text class="right-text">等待提升提醒</text>
+                <switch
+                  class="right-switch"
+                  :checked="checkSwitch"
+                  size="30"
+                  @change="changeSwitch"
+                  color="#FF394E"
+                  style="transform: scale(0.56) translate(-25%, -42%)"
+                />
+              </view>
             </view>
             <view class="" @click="goGrowthDetails">
               成长值：
-              <text
-                class="numb"
-                :style="{ color: mainColor }"
-                v-if="levelList[0].curLeveled !== 'Y'"
-              >
+              <text class="numb" v-if="levelList[0].curLeveled !== 'Y'">
                 {{ growth }}
               </text>
               距升级还差
-              <text class="numb" :style="{ color: mainColor }">
-                {{ nextUpgradeGrowth }} </text
-              >成长值
+              <text class="numb"> {{ nextUpgradeGrowth }} </text>成长值
             </view>
           </view>
 
@@ -91,6 +96,7 @@
                 class="grid-item-icon"
                 v-for="(item, index) in currentBenefitsData.param.modualList"
                 :key="index"
+                @click="handleEntryUrl(item)"
               >
                 <view>
                   <view class="show-image">
@@ -127,7 +133,11 @@
             v-if="currentBenefitsData && currentBenefitsData.description"
           >
             <view class="title"> 权益说明 </view>
-            <mp-html :copy-link="false" :content="richImage(currentBenefitsData.description)" @linktap="linktap" />
+            <mp-html
+              :copy-link="false"
+              :content="richImage(currentBenefitsData.description)"
+              @linktap="linktap"
+            />
           </view>
         </view>
       </view>
@@ -151,16 +161,67 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref } from 'vue';
-// import { queryAllLevelRights } from '@/api/server';
 import { getMemberLevelRights } from '@/pages/api/member-equity';
-
-//
-import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
-import { richImage } from '@/utils/util';
+import { richImage, handleEntryUrl } from '@/utils/util';
+import {
+  getByKindAndCode,
+  getOperationMessageEventByCode,
+  saveMiniAppSubscribeMessageEnabled,
+  queryMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
+// import { queryAllLevelRights } from '@/api/server';
+// import { useBasicsData } from '@/store/basicsData';
+// const initBasicsData = useBasicsData();
+// const mainColor = computed(() => initBasicsData.mainColor);
 
-const initBasicsData = useBasicsData();
-const mainColor = computed(() => initBasicsData.mainColor);
+// level_promote   getOperationMessageEventByCode
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const { data } = await getByKindAndCode({
+    codes: ['level_promote'],
+    kind: 'WM',
+  });
+  tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+
+  getMiniAppSubscribeMessageEnabled();
+};
+const setSaveMiniAppSubscribeMessageEnabled = async (bool: boolean) => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: bool,
+    relatedId: tmplIdsValue.value[0],
+    templateIds: tmplIdsValue.value,
+  });
+};
+
+// queryMiniAppSubscribeMessageEnabled
+
+const getMiniAppSubscribeMessageEnabled = async () => {
+  if (tmplIdsValue.value[0]) {
+    const { data } = await queryMiniAppSubscribeMessageEnabled({
+      relatedIds: [tmplIdsValue.value[0]],
+      templateId: tmplIdsValue.value[0],
+    });
+    // console.log('data', data[0].enabled);
+    if (data[0].enabled) {
+      checkSwitch.value = true;
+    }
+  }
+};
+
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'level_promote',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
+// onMounted(() => {
+//   getKindAndCode();
+// });
 
 const benefitsData: Ref<any> = ref(null);
 const curLevelId: Ref<any> = ref(null);
@@ -175,15 +236,17 @@ const benefitsDataFlag = ref('nodata');
 
 onMounted(() => {
   getAllBenefits();
+  getMessageEvent();
+  getKindAndCode();
 });
 
 const onChangeSwp = (e: any) => {
   currentIndex.value = e.detail.current;
   currentBenefitsData.value = levelList.value[e.detail.current];
-  console.log(
-    'levelList.value[e.detail.current]',
-    levelList.value[e.detail.current]
-  );
+  // console.log(
+  //   'levelList.value[e.detail.current]',
+  //   levelList.value[e.detail.current]
+  // );
 };
 
 const linktap = (e: any) => {
@@ -235,9 +298,92 @@ const currentStyle = computed(() => ({
   fontColor: currentBenefitsData.value?.style?.fontColor || '#333',
   bgColor: currentBenefitsData.value?.style?.bgColor || '#FFF',
 }));
+
+const checkSwitch = ref(false);
+const changeSwitch = async (val: any) => {
+  if (val.detail.value) {
+    checkSwitch.value = true;
+    // tmplIdsValue.value = [];
+    if (tmplIdsValue.value.length === 0) {
+      uni.showToast({
+        title: '订阅失败，请联系客服添加服务类目',
+        duration: 4000,
+        icon: 'none',
+      });
+      setTimeout(() => {
+        checkSwitch.value = false;
+      }, 500);
+      return;
+    }
+    uni.requestSubscribeMessage({
+      tmplIds: tmplIdsValue.value,
+      success(res) {
+        const cssel = Object.values(res);
+        if (cssel.includes('accept')) {
+          setSaveMiniAppSubscribeMessageEnabled(true);
+        } else {
+          checkSwitch.value = false;
+        }
+      },
+    });
+  } else {
+    if (tmplIdsValue.value.length === 0) {
+      uni.showToast({
+        title: '订阅失败，请联系客服添加服务类目',
+        duration: 4000,
+        icon: 'none',
+      });
+      checkSwitch.value = false;
+      return;
+    }
+    setSaveMiniAppSubscribeMessageEnabled(false);
+  }
+};
+
+// watch(
+//   () => checkSwitch.value,
+//   () => {
+//   }
+// );
+
+// const getMessageEvent = async () => {
+//   const { data: { enabled } } = await getOperationMessageEventByCode({
+//     evtCode: 'booking_service_notice',
+//     kind: 'WX',
+//     templateKind: 'WM',
+//   });
+//   showMessageEvent.value = enabled === 'Y';
+// };
 </script>
 
 <style lang="scss" scoped>
+// bf-growth-value-info  bf-growth-value-info-text bf-growth-value-info-set
+.bf-growth-value-info {
+  display: flex;
+  justify-content: space-between;
+  .bf-growth-value-info-text {
+    width: 395rpx;
+    // background-color: red;
+  }
+  .bf-growth-value-info-set {
+    width: 230rpx;
+    font-size: 24rpx;
+    font-weight: 400;
+    color: #b7b8c4;
+    display: flex;
+    align-items: center;
+    .right-text {
+      flex: 1;
+      margin-right: 10rpx;
+    }
+    .right-switch {
+      flex: none;
+      width: 64rpx;
+      height: 36rpx;
+    }
+  }
+}
+
 .benefits {
   .containner {
     position: relative;
@@ -312,7 +458,7 @@ const currentStyle = computed(() => ({
   .numb {
     font-size: 28rpx;
     font-weight: 800;
-    color: #ff547b;
+    color: var(--main-color);
   }
 }
 .bf-legal-list {
