@@ -382,6 +382,7 @@ const querySubscribeList = async () => {
         .btn-msg {
           background-color: var(--main-color);
           color: white;
+          border: 2rpx solid var(--main-color);
         }
         .btn-msg-lis {
           opacity: 0.5;
@@ -389,9 +390,15 @@ const querySubscribeList = async () => {
         .btn {
           box-sizing: border-box;
           height: 64rpx;
+          min-width: 150rpx;
+          padding-left: 10rpx;
+          padding-right: 10rpx;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           border-radius: 32rpx;
           border: 2rpx solid #ebedf0;
-          padding: 14rpx 32rpx 16rpx;
+          // padding: 14rpx 32rpx 16rpx;
           margin-left: 20rpx;
           font-size: 24rpx;
         }
