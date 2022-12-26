@@ -79,21 +79,12 @@
               </view>
 
               <view
-                v-if="['NEW', 'CFD'].includes(item.status) && showMessageEvent"
+                v-if="getShowBtn(item)"
                 class="btn btn-msg"
-                :class="
-                  !item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0
-                    ? 'btn-msg-lis'
-                    : ''
-                "
+                :class="showUnsub(item) ? 'btn-msg-lis' : ''"
                 @click.stop="subscribeEnabled(item)"
               >
-                <!-- item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0 -->
-                {{
-                  !item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0
-                    ? '已订阅'
-                    : '订阅提醒'
-                }}
+                {{ showUnsub(item) ? '已订阅' : '订阅提醒' }}
               </view>
 
               <view
@@ -190,6 +181,18 @@ const subscribeEnabled = (item: any) => {
     },
   });
 };
+
+const getShowBtn = (item: any) => {
+  if (
+    item.unsubscribeTplIds?.length === 0 &&
+    item.subscribeTplIds?.length === 0
+  ) {
+    return false;
+  }
+  return ['NEW', 'CFD'].includes(item.status) && showMessageEvent.value;
+};
+const showUnsub = (item: any) => !item.unsubscribeTplIds || item.unsubscribeTplIds?.length === 0;
+
 const setSaveMiniAppSubscribeMessageEnabled = async (
   id: string,
   tplIds: any
