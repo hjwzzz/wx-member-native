@@ -325,10 +325,12 @@ const change = async (val: any) => {
     if (tmplIdsValue.value.length === 0) {
       uni.showToast({
         title: '订阅失败，请联系客服添加服务类目',
-        duration: 3000,
+        duration: 4000,
         icon: 'none',
       });
-      check.value = false;
+      setTimeout(() => {
+        check.value = false;
+      }, 500);
       return;
     }
     uni.requestSubscribeMessage({
@@ -343,6 +345,15 @@ const change = async (val: any) => {
       },
     });
   } else {
+    if (tmplIdsValue.value.length === 0) {
+      uni.showToast({
+        title: '订阅失败，请联系客服添加服务类目',
+        duration: 4000,
+        icon: 'none',
+      });
+      check.value = false;
+      return;
+    }
     setSaveMiniAppSubscribeMessageEnabled(false);
   }
 };

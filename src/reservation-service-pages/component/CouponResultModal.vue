@@ -90,15 +90,20 @@ const onConfirm = () => {
   // console.log(props.tmplIdsValue);
 
   const tmpl =
-    props.title === '预约成功' ? props.tmplIdsValueing : props.tmplIdsValue;
+    props.title === '预约成功'
+      ? props.tmplIdsValueing
+      : props.tmplIdsValue || [];
+  // const tmpl: any = [];
 
   if (tmpl.length === 0) {
     uni.showToast({
       title: '订阅失败，请联系客服添加服务类目',
-      duration: 3000,
+      duration: 4000,
       icon: 'none',
     });
-    uni.navigateBack({ delta: 2 });
+    setTimeout(() => {
+      uni.navigateBack({ delta: 2 });
+    }, 4000);
     return;
   }
 
