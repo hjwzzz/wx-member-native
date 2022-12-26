@@ -172,27 +172,17 @@ let total = 0;
 const subscribeEnabled = (item: any) => {
   //  unsubscribeTplIds subscribeTplIds
   if (!item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0) {
+    uni.showToast({
+      title: '订阅失败，请联系客服添加服务类目',
+      duration: 3000,
+      icon: 'none',
+    });
     return;
   }
   // .subscribeEnabled id
   uni.requestSubscribeMessage({
     tmplIds: item.unsubscribeTplIds,
     success(res: any) {
-      // 0lfD3AHqv3eyW0HypY2tiwh9zYQxlFHPy2RKQ2-Qz2c: "accept"
-      // errMsg: "requestSubscribeMessage:ok"
-      // 0lfD3AHqv3eyW0HypY2tiwh9zYQxlFHPy2RKQ2-Qz2c: "reject"
-      // errMsg: "requestSubscribeMessage:ok"
-      // console.log('res', res);
-      // console.log('tmplIdsValue.value', tmplIdsValue.value);
-      // const dddd = Object.keys(res)
-      //   .includes('accept');
-      // console.log('Object.keys(res)');
-      // console.log(Object.keys(res));
-      // console.log(dddd);
-      // if (Object.keys(res)
-      //   .includes('accept')) {
-      //   console.log('2222222222成功');
-      // }
       const cssel = Object.values(res);
       if (cssel.includes('accept')) {
         setSaveMiniAppSubscribeMessageEnabled(item.id, item.unsubscribeTplIds);

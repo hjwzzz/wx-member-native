@@ -88,9 +88,22 @@ const onCancel = () => {
 };
 const onConfirm = () => {
   // console.log(props.tmplIdsValue);
+
+  const tmpl =
+    props.title === '预约成功' ? props.tmplIdsValueing : props.tmplIdsValue;
+
+  if (tmpl.length === 0) {
+    uni.showToast({
+      title: '订阅失败，请联系客服添加服务类目',
+      duration: 3000,
+      icon: 'none',
+    });
+    uni.navigateBack({ delta: 2 });
+    return;
+  }
+
   uni.requestSubscribeMessage({
-    tmplIds:
-      props.title === '预约成功' ? props.tmplIdsValueing : props.tmplIdsValue,
+    tmplIds: tmpl,
     success(res) {
       alertDialog.value.close();
 

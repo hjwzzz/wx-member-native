@@ -303,6 +303,15 @@ const checkSwitch = ref(false);
 const changeSwitch = async (val: any) => {
   if (val.detail.value) {
     checkSwitch.value = true;
+    if (tmplIdsValue.value.length === 0) {
+      uni.showToast({
+        title: '订阅失败，请联系客服添加服务类目',
+        duration: 3000,
+        icon: 'none',
+      });
+      checkSwitch.value = false;
+      return;
+    }
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
       success(res) {

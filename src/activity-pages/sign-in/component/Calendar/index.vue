@@ -94,6 +94,7 @@ import {
   getByKindAndCode,
   saveMiniAppSubscribeMessageEnabled,
   queryMiniAppSubscribeMessageEnabled,
+  getOperationMessageEventByCode,
 } from '@/api/index';
 
 const props = defineProps({
@@ -155,6 +156,16 @@ const getMiniAppSubscribeMessageEnabled = async () => {
   }
 };
 
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'no_sign_remind',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
 const tmplIdsValue = ref([]);
 const getKindAndCode = async () => {
   const { data } = await getByKindAndCode({
@@ -169,6 +180,7 @@ const getKindAndCode = async () => {
 
 onMounted(() => {
   getKindAndCode();
+  getMessageEvent();
 });
 
 const init = () => {
@@ -305,16 +317,28 @@ const clickGiftFun = (item: any = null) => {
 
 const change = async (val: any) => {
   emits('openNotice', val);
-  if (!enabledSwitch.value) {
+  if (!showMessageEvent.value) {
     return;
   }
+  check.value = val.detail.value;
   if (val.detail.value) {
+    if (tmplIdsValue.value.length === 0) {
+      uni.showToast({
+        title: '订阅失败，请联系客服添加服务类目',
+        duration: 3000,
+        icon: 'none',
+      });
+      check.value = false;
+      return;
+    }
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
       success(res) {
         const cssel = Object.values(res);
         if (cssel.includes('accept')) {
           setSaveMiniAppSubscribeMessageEnabled(true);
+        } else {
+          check.value = false;
         }
       },
     });
