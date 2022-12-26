@@ -206,9 +206,10 @@
       </view>
       <view class="content">
         <view class="content-text" >
-          <view class="content-text-code" @click="hideFullMenberCode">{{ menberCode }}</view>
-          <view v-if="!showFullMenberCode" @click="viewFullMenberCode" class="content-text-desc">
-            <img :src="`${imageUrl}img/person.png`" >
+          <view class="content-text-code">{{ menberCode }}</view>
+          <view   class="content-text-desc">
+            <img class="icon" v-if="!showFullMenberCode" @click="viewFullMenberCode" :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`" >
+            <img class="icon" v-else :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`"  @click="hideFullMenberCode">
           </view>
         </view>
         <view class="content-qrcode">
@@ -847,7 +848,12 @@ const handleMyPrizes = (index: number) => {
         line-height: 50rpx;
       }
       .content-text-desc {
-        margin-left: 30px;
+        padding-left: 8px;
+        .icon {
+          width: 16px;
+          height: 16px;
+          display: block;
+        }
       }
     }
 
