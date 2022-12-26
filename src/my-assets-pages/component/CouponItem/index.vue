@@ -158,7 +158,7 @@ const showCondition = computed(() => {
     grid-template-columns: 1fr auto;
     box-sizing: border-box;
     // gap: 20rpx 0;
-    align-items: end;
+    // align-items: end;
     width: 100%;
     height: 200rpx;
     padding: 30rpx;
@@ -234,9 +234,11 @@ const showCondition = computed(() => {
       }
     }
     .threshold {
+      display: flex;
       z-index: 2;
       font-size: 24rpx;
       text-align: right;
+      align-items: flex-end;
     }
   }
 

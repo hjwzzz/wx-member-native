@@ -355,7 +355,7 @@ const queryWriteInfo = async (p = {}) => {
     });
 
     list.value = l;
-    Object.assign(activeData, {
+    Object.assign(activeData.value, {
       canModifySaler,
       canModifyDist,
       belongUid,
@@ -388,12 +388,18 @@ const handle = (item: any) => {
     case 'REGIST_REQUIRED_STORE': {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
+        if (e.distId !== selectedShop.value.distId) {
+          Object.assign(memberInfo.value, {
+            belongUid: '',
+            belongUser: '',
+          });
+        }
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
       router.goCodePage(
         'chooseStore',
-        `?id=${memberInfo.value.belongDistId || ''}&t=user_info`
+        `?belong=true&id=${selectedShop.value.distId || ''}&t=user_info`
       );
       break;
     }
@@ -407,7 +413,12 @@ const handle = (item: any) => {
         });
       });
       if (selectedShop.value.distId) {
-        router.goCodePage('chooseGuide', `?id=${selectedShop.value.distId}`);
+        router.goCodePage(
+          'chooseGuide',
+          `?id=${selectedShop.value.distId}&uid=${
+            memberInfo.value.belongUid || ''
+          }`
+        );
         return;
       }
       uni.showModal({

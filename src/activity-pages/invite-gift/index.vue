@@ -394,9 +394,6 @@ const getIndexData = async (type = 'first', isLoading = true) => {
   if (indexData.page.isOpenInviterCarousel) {
     queryInviteTargetRecord();
   }
-  if (indexData.page.isOpenRanking && initBasicsData.checkLogin) {
-    getRankData();
-  }
   // if (indexData?.activityStatus === 'ENDED') {
   //   isEnd();
   // }
@@ -409,6 +406,9 @@ const getIndexData = async (type = 'first', isLoading = true) => {
       });
     }
     return;
+  }
+  if (indexData.page.isOpenRanking && initBasicsData.checkLogin) {
+    getRankData();
   }
   if (indexData.page.isOpenBgMusic === 'Y') {
     nextTick(() => {
