@@ -10,7 +10,7 @@
         <image class="modelimg" :src="showImg"></image>
       </view>
       <!-- <view class="dialog-show dialog-text">{{ showText }}</view> -->
-      <view class="dialog-show dialog-text">预约成功</view>
+      <view class="dialog-show dialog-text">{{ props.title }}</view>
 
       <view class="dialog-show dialog-text dialog-text-tip"
         >是否订阅提醒服务？</view
@@ -29,16 +29,18 @@ interface Props {
   type?: string;
   visible: boolean;
   tmplIdsValue?: any;
+  title: string;
 }
 const props = withDefaults(defineProps<Props>(), {
   type: 'success',
   visible: false,
+  title: '预约成功',
   tmplIdsValue: () => [],
 });
 const alertDialog: any = ref(null);
 // :src="`${staticUrl}reservation-service/add-img.png`"  reservation-success.png onMounted,
 const showImg = computed(() => `${staticUrl}reservation-service/reservation-${
-  props.type === 'success' ? 'success' : 'await'
+  props.title === '服务预约成功' ? 'success' : 'await'
 }.png`);
 
 // const showText = computed(() => {
@@ -99,7 +101,9 @@ const onConfirm = () => {
       }, 1000);
     },
     fail(eer) {
-      console.log('eer', eer);
+      emits('ok', false);
+      console.log('订阅失败:', eer);
+      // console.log('eer', eer);
     },
   });
 };

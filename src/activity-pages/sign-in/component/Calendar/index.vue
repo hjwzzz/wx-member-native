@@ -137,6 +137,7 @@ const setStatus = (arr: any[], val: any, name: any) => {
   });
 };
 
+const enabledSwitch = ref(false);
 const getMiniAppSubscribeMessageEnabled = async () => {
   if (tmplIdsValue.value[0]) {
     const { data } = await queryMiniAppSubscribeMessageEnabled({
@@ -146,6 +147,7 @@ const getMiniAppSubscribeMessageEnabled = async () => {
     // console.log('data', data[0].enabled);
     // console.log('data[0].enabled', data[0].enabled);
     // console.log(' checkLi.value', checkLi.value);
+    enabledSwitch.value = data[0].enabled;
     if (data[0].enabled && checkLi.value) {
       check.value = true;
       // checkSwitch.value = true;
@@ -301,72 +303,22 @@ const clickGiftFun = (item: any = null) => {
   }
 };
 
-// reservation-service-pages/appointmentAppointment/index
-// const signInTip = () => {
-//   // console.log('check.value=', check.value);
-//   if (check.value) {
-//     // uni.requestSubscribeMessage({
-//     //   tmplIds: ['uxZTaRN-gMoL7o1ad6vFW8uBRQkzVyHNZ_oyYx0_M64'],
-//     //   success(res) {
-//     //     console.log('res', res);
-//     //   },
-//     //   fail(eer) {
-//     //     console.log('eer', eer);
-//     //   },
-//     // });
-//   }
-// };
-
 const change = async (val: any) => {
   emits('openNotice', val);
-  // uni.getSetting({
-  //   withSubscriptions: true, //  这里设置为true,下面才会返回mainSwitch
-  //   success(res) {
-  //     if (res.subscriptionsSetting.mainSwitch) {  // 用户打开了订阅消息总开关
-  //         if (res.subscriptionsSetting.itemSettings != null) {   // 用户同意总是保持是否推送消息的选择, 这里表示以后不会再拉起推送消息的授权
-  //           let moIdState = res.subscriptionsSetting.itemSettings['uxZTaRN-gMoL7o1ad6vFW8uBRQkzVyHNZ_oyYx0_M64'];  // 用户同意的消息模板id
-  //           if(moIdState === 'accept'){
-  //             console.log('接受了消息推送');
-
-  //           }else if(moIdState === 'reject'){
-  //             console.log("拒绝消息推送");
-
-  //           }else if(moIdState === 'ban'){
-  //             console.log("已被后台封禁");
-  //           }
-  //         }
-  //   }
-  // });
-  // if (val.detail.value) {
-  //   uni.requestSubscribeMessage({
-  //     tmplIds: tmplIdsValue.value,
-  //     // success(res) {
-  //     //   console.log('res', res);
-  //     // },
-  //     // fail(eer) {
-  //     //   console.log('eer', eer);
-  //     // },
-  //   });
-  // }
-
+  if (!enabledSwitch.value) {
+    return;
+  }
   if (val.detail.value) {
     uni.requestSubscribeMessage({
       tmplIds: tmplIdsValue.value,
       success(res) {
-        // console.log('requestSubscribeMessage', res);
         const cssel = Object.values(res);
         if (cssel.includes('accept')) {
           setSaveMiniAppSubscribeMessageEnabled(true);
         }
       },
     });
-    // setSaveMiniAppSubscribeMessageEnabled();
   } else {
-    // await saveMiniAppSubscribeMessageEnabled({
-    //   enabled: false,
-    //   relatedId: tmplIdsValue.value[0],
-    //   templateIds: tmplIdsValue.value,
-    // });
     setSaveMiniAppSubscribeMessageEnabled(false);
   }
 };

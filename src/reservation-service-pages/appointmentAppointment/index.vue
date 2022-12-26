@@ -149,6 +149,7 @@
       :visible="modelShow"
       :type="getResult"
       :tmplIdsValue="tmplIdsValue"
+      :title="showTitle"
       @ok="onConfirm"
       @cancel="onCancel"
     >
@@ -167,6 +168,7 @@ import Storage from '@/utils/storage';
 import {
   getByKindAndCode,
   saveMiniAppSubscribeMessageEnabled,
+  getOperationMessageEventByCode,
 } from '@/api/index';
 // import { imgBaseUrl } from '@/api/quality';
 // import { staticUrl } from '@/utils/config';
@@ -176,6 +178,7 @@ import {
 // 'success' : 'await'
 const modelShow = ref(false);
 const getResult = ref('success');
+const showTitle = ref('');
 
 const relatedIdMessage = ref('');
 const setSaveMiniAppSubscribeMessageEnabled = async () => {
@@ -184,6 +187,15 @@ const setSaveMiniAppSubscribeMessageEnabled = async () => {
     relatedId: relatedIdMessage.value,
     templateIds: tmplIdsValue.value,
   });
+};
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'booking_service_notice',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
 };
 
 const onConfirm = (bool: boolean) => {
@@ -267,6 +279,7 @@ const getKindAndCode = async () => {
 
 onMounted(() => {
   getKindAndCode();
+  getMessageEvent();
 });
 
 const selectDateTime = () => {
@@ -405,9 +418,30 @@ const submitAppointment = () => {
         uid: form.value.uid,
       })
         .then(res => {
-          console.log(res);
-          relatedIdMessage.value = res.data;
-          modelShow.value = true;
+          // console.log(res);
+          if (res.code !== 0) {
+            uni.showToast({
+              title: res.data.msg,
+              duration: 3000,
+            });
+            return;
+          }
+          const { id, msg } = res.data;
+          showTitle.value = msg;
+          relatedIdMessage.value = id;
+          if (showMessageEvent.value && id) {
+            modelShow.value = true;
+          } else {
+            uni.showToast({
+              title: res.data.msg,
+              duration: 3000,
+            });
+            setTimeout(() => {
+              loading.value = false;
+              uni.navigateBack({ delta: 2 });
+            }, 2800);
+          }
+
           // uni.requestSubscribeMessage({
           //   tmplIds: tmplIdsValue.value,
           //   success(res) {
