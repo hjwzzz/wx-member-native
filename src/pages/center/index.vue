@@ -302,6 +302,79 @@ onShow(() => {
   // getGoldPriceByPage();
 });
 
+const getMemberCentertIndex = async () => {
+  const res = await getMemberCenterIndex('');
+  if (res.code === 0 && res.data) {
+    const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
+    const quickNavList = wmCenterRspVo.param?.quickNavList || [];
+    const panelListItem: any = wmCenterRspVo.panelList;
+    const srvObj =
+      panelListItem.find((item: any) => item.kind === entryType.RES) || {};
+    const policyList =
+      panelListItem.find((item: any) => item.kind === entryType.WA) || {};
+
+    srvProshowNum.value = srvObj.param?.showNum || 1;
+    policyListNum.value = policyList.param?.showNum || 0;
+    userInfo.avatarUrl = avatarUrl || '';
+    userInfo.nickName = nickName || name;
+    userInfo.curLevelName = curLevelName;
+    loginList.value = quickNavList;
+    panelList.value = panelListItem;
+    getMemberRecommend();
+  }
+};
+
+// 预约服务
+const srvProList: Ref<any> = ref([]);
+const getMemberRecommend = async () => {
+  if (initBasicsData.checkLogin) {
+    const servPage = await queryServiceBookPageFront({
+      mid: initBasicsData.useMid,
+      curPage: 1,
+      pageSize: srvProshowNum.value,
+      status: '',
+    });
+    srvProList.value = servPage.data?.records || [];
+  } else {
+    srvProList.value = [];
+  }
+};
+
+// 获取广告
+const getBannerData = async () => {
+  const res = await queryMemberCenterBannerListFront('');
+  if (res.code === 0 && res.data) {
+    const result: any = [];
+    res.data.map((item: any) => {
+      result.push({
+        image: item.imgUrl,
+        title: '',
+        h5Url: item.h5Url,
+        miniUrl: item.miniUrl,
+        url: item.url,
+      });
+    });
+    bannerList.value = result;
+  }
+};
+
+
+// 显示红点
+const showRedDot = (item: any, entry: any, text: string) => {
+  const code = ['sign', 'coupon'].includes(entry.code);
+  const red = entry.showRedDot === 'Y';
+  const showType = item.param.showType === text;
+  return code && red && showType;
+};
+
+
+const handleFixedSysUrl = () => {
+  uni.navigateTo({ url: '/pages/member-equity/index' });
+};
+const handleMyPrizes = (index: number) => {
+  Router.goCodePage('my_prize', `?tab=${index}`);
+};
+
 const MenberCodePopupRef = ref<any>();
 
 const menberCodePopupVisible = ref(false);
@@ -399,78 +472,6 @@ const hideFullMenberCode = () => {
   showFullMenberCode.value = false;
 };
 
-const getMemberCentertIndex = async () => {
-  const res = await getMemberCenterIndex('');
-  if (res.code === 0 && res.data) {
-    const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
-    const quickNavList = wmCenterRspVo.param?.quickNavList || [];
-    const panelListItem: any = wmCenterRspVo.panelList;
-    const srvObj =
-      panelListItem.find((item: any) => item.kind === entryType.RES) || {};
-    const policyList =
-      panelListItem.find((item: any) => item.kind === entryType.WA) || {};
-
-    srvProshowNum.value = srvObj.param?.showNum || 1;
-    policyListNum.value = policyList.param?.showNum || 0;
-    userInfo.avatarUrl = avatarUrl || '';
-    userInfo.nickName = nickName || name;
-    userInfo.curLevelName = curLevelName;
-    loginList.value = quickNavList;
-    panelList.value = panelListItem;
-    getMemberRecommend();
-  }
-};
-
-// 预约服务
-const srvProList: Ref<any> = ref([]);
-const getMemberRecommend = async () => {
-  if (initBasicsData.checkLogin) {
-    const servPage = await queryServiceBookPageFront({
-      mid: initBasicsData.useMid,
-      curPage: 1,
-      pageSize: srvProshowNum.value,
-      status: '',
-    });
-    srvProList.value = servPage.data?.records || [];
-  } else {
-    srvProList.value = [];
-  }
-};
-
-// 获取广告
-const getBannerData = async () => {
-  const res = await queryMemberCenterBannerListFront('');
-  if (res.code === 0 && res.data) {
-    const result: any = [];
-    res.data.map((item: any) => {
-      result.push({
-        image: item.imgUrl,
-        title: '',
-        h5Url: item.h5Url,
-        miniUrl: item.miniUrl,
-        url: item.url,
-      });
-    });
-    bannerList.value = result;
-  }
-};
-
-
-// 显示红点
-const showRedDot = (item: any, entry: any, text: string) => {
-  const code = ['sign', 'coupon'].includes(entry.code);
-  const red = entry.showRedDot === 'Y';
-  const showType = item.param.showType === text;
-  return code && red && showType;
-};
-
-
-const handleFixedSysUrl = () => {
-  uni.navigateTo({ url: '/pages/member-equity/index' });
-};
-const handleMyPrizes = (index: number) => {
-  Router.goCodePage('my_prize', `?tab=${index}`);
-};
 </script>
 
 <style lang="scss" scoped>
