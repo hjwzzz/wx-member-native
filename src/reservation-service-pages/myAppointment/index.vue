@@ -172,11 +172,11 @@ let total = 0;
 const subscribeEnabled = (item: any) => {
   //  unsubscribeTplIds subscribeTplIds
   if (!item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0) {
-    uni.showToast({
-      title: '订阅失败，请联系客服添加服务类目',
-      duration: 3000,
-      icon: 'none',
-    });
+    // uni.showToast({
+    //   title: '订阅失败，请联系客服添加服务类目',
+    //   duration: 3000,
+    //   icon: 'none',
+    // });
     return;
   }
   // .subscribeEnabled id
