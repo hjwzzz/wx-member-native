@@ -66,9 +66,9 @@ export const saveAppraiseFront = async (data: any) => {
   return res;
 };
 
-// 提交保存预约信息
+// 提交保存预约信息 /usr/bookingServe/saveBookingFront
 export const saveBookingFront = async (data: any) => {
-  const url = `${devBaseUrl}/usr/bookingServe/saveBookingFront`;
+  const url = `${devBaseUrl}/usr/bookingServe/v2/saveBookingFront`;
   const res = await request(url, data);
   return res;
 };
