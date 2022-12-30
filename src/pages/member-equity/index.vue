@@ -92,26 +92,30 @@
                 currentBenefitsData.param.modualList.length
               "
             >
-              <view
-                class="grid-item-icon"
+              <template
                 v-for="(item, index) in currentBenefitsData.param.modualList"
                 :key="index"
-                @click="handleEntryUrl(item)"
               >
-                <view>
-                  <view class="show-image">
-                    <image class="image-icon" :src="item.icoUrl" />
-                  </view>
-                  <view
-                    class="grid-text"
-                    :style="{
-                      color: currentStyle.fontColor,
-                    }"
-                  >
-                    {{ item.name }}
+                <view
+                  class="grid-item-icon"
+                  @click="handleEntryUrl(item)"
+                  v-if="item.showed === 'true'"
+                >
+                  <view>
+                    <view class="show-image">
+                      <image class="image-icon" :src="item.icoUrl" />
+                    </view>
+                    <view
+                      class="grid-text"
+                      :style="{
+                        color: currentStyle.fontColor,
+                      }"
+                    >
+                      {{ item.name }}
+                    </view>
                   </view>
                 </view>
-              </view>
+              </template>
             </view>
 
             <view class="no-data-inner" v-else>
