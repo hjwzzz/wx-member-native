@@ -202,9 +202,16 @@ const setSaveMiniAppSubscribeMessageEnabled = async (
     relatedId: id,
     templateIds: tplIds,
   });
-  curPage = 1;
-  subscribeList.value = [];
-  querySubscribeList();
+  uni.showToast({
+    title: '订阅成功',
+    duration: 3000,
+    icon: 'none',
+  });
+  setTimeout(() => {
+    curPage = 1;
+    subscribeList.value = [];
+    querySubscribeList();
+  }, 1000);
 };
 
 // const tmplIdsValue = ref([]);
