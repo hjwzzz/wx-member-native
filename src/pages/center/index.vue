@@ -208,8 +208,8 @@
         <view class="content-text" >
           <view class="content-text-code">{{ menberCode }}</view>
           <view   class="content-text-desc">
-            <img class="icon" v-if="!showFullMenberCode" @click="viewFullMenberCode" :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`" >
-            <img class="icon" v-else :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`"  @click="hideFullMenberCode">
+            <img class="icon" v-if="!showFullMenberCode" @click="viewFullMenberCode" :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`" >
+            <img class="icon" v-else :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`"  @click="hideFullMenberCode">
           </view>
         </view>
         <view class="content-qrcode">
