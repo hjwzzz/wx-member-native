@@ -11,3 +11,19 @@ export const queryMemberCenterBannerListFront = async (data: any) => {
   const url = `${devBaseUrl}/memberAdvertFront/queryMemberCenterBannerListFront`;
   return request(url, data);
 };
+
+export interface GetBarCodeRequestRes {
+  barCode: string;
+  number: string;
+  polishing: string;
+}
+
+// 获取会员条形码
+export const getBarCodeRequest = () => request<GetBarCodeRequestRes>(`${devBaseUrl}/usr/memberInfoFront/getBarCode`);
+
+
+// 使会员条形码马上失效
+export const sendKeyExpiredBarCodeRequest = (data: string) => request(
+  `${devBaseUrl}/usr/memberInfoFront/sendKeyExpiredBarCode`,
+  data
+);

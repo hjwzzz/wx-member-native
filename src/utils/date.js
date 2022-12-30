@@ -81,11 +81,11 @@ const Lunar = {
         for (var i = 0; i < bit.length; i++) {
             months[i] = bit.substr(i, 1);
         }
-     
+
         for (var k = 0, len = 16 - months.length; k < len; k++) {
             months.unshift('0');
         }
-     
+
         months = months.slice(0, (leapMonth == 0 ? 12 : 13));
         for (var i = 0; i < months.length; i++) {
             months[i] = +months[i] + 29;
@@ -167,9 +167,9 @@ const Lunar = {
                     break;
                 }
             }
-             
+
             m = (leapMonth != 0 && t == leapMonth + 1)
-            ? ('闰'. this.chineseMonth(t-1))
+            ? ('闰'+ this.chineseMonth(t-1))
             : this.chineseMonth(((leapMonth != 0 && leapMonth + 1 < t) ? (t - 1) : t));
         }
         lunarArray.push(year, t, e); //年 月 日
