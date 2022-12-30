@@ -321,6 +321,11 @@ const changeSwitch = async (val: any) => {
         const cssel = Object.values(res);
         if (cssel.includes('accept')) {
           setSaveMiniAppSubscribeMessageEnabled(true);
+          uni.showToast({
+            title: '订阅成功',
+            duration: 3000,
+            icon: 'none',
+          });
         } else {
           checkSwitch.value = false;
         }

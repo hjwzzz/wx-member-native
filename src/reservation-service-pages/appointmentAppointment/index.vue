@@ -188,6 +188,11 @@ const setSaveMiniAppSubscribeMessageEnabled = async () => {
     relatedId: relatedIdMessage.value,
     templateIds: tmplIdsValue.value,
   });
+  uni.showToast({
+    title: '订阅成功',
+    duration: 3000,
+    icon: 'none',
+  });
 };
 const showMessageEvent = ref(false);
 const getMessageEvent = async () => {
