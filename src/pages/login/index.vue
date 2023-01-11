@@ -132,9 +132,9 @@ const wxPhoneLogin = async (params: any) => {
     initBasicsData.setUseMid(data.mid);
     Router.fromLoginBack();
   } else {
-    const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
+    const { data: { list, openRegist, activePerfectData } } = await queryRegistRequiredSettingNew({});
     if (openRegist === 'Y') {
-      if (list.length) {
+      if (list.length && activePerfectData === 'Y') {
         uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
       } else {
         // 不用填写
@@ -151,6 +151,7 @@ const wxPhoneLogin = async (params: any) => {
           name: '',
           sex: 'U',
           phone,
+          activePerfectData: 'N',
           nickName: `${phone.substr(0, 4)}***${phone.substr()
             .substr(-3, 3)}`,
           avatarUrl:
