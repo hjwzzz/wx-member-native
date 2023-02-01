@@ -38,6 +38,7 @@
                   >
                     <view>
                       <radio
+                        :disabled="!inactiveMemberControl.canModifyBirth"
                         :value="item.value"
                         :checked="item.value === memberInfo.birthKind"
                         :color="initBasicsData.mainColor"
@@ -50,6 +51,7 @@
               <!--						婚姻-->
             </view>
             <view class="right">
+              <!-- 生日 -->
               <view v-show="info.code == BIRTH_DAY" class="date-format">
                 <view class="wrapper">
                   <text v-if="memberInfo.birthKind === 'L'">
@@ -60,12 +62,14 @@
                   </text>
                 </view>
               </view>
+              <!-- 纪念日 -->
               <view
                 v-show="info.code === MDAY && memberInfo.annday"
                 class="guid"
               >
                 <text>{{ showAnnday || memberInfo.annday }}</text>
               </view>
+              <!-- 导购 -->
               <view
                 v-show="
                   info.code === 'REGIST_REQUIRED_SELLER' &&
@@ -92,14 +96,14 @@
                   :value="showSex"
                   range-key="label"
                   :range="selecteList"
+                  :disabled="!inactiveMemberControl.canModifySex"
                 >
-                  <!-- :disabled="info.update === 'N'" -->
                   <view class="uni-input">{{
                     selecteList[showSex].label
                   }}</view>
                 </picker>
               </view>
-              <!--						婚姻-->
+              <!--婚姻-->
               <view v-show="info.code === maritalCode" class="guid">
                 <picker
                   @change="maritalChange"
@@ -181,6 +185,7 @@
               maxlength="20"
               placeholder-style="color:#d8d9e0;font-size:28rpx;"
               :placeholder="'请输入' + info.name"
+              :disabled="!inactiveMemberControl.canModifyName"
             />
           </view>
         </view>
@@ -211,15 +216,6 @@
         </view>
       </view>
 
-      <!-- <uni-calendar
-        :date="initDate"
-        ref="calendar"
-        :lunar="true"
-        :insert="false"
-        @confirm="confirmDate"
-      >
-      </uni-calendar> -->
-
       <view class="next" @click="handleStep"> 下一步 </view>
     </view>
 
@@ -242,13 +238,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch, reactive } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
 import { IRegistField } from '@/api/types/server';
 import {
   completeInfo,
   getMemberInfo,
+  getMemberInfoUseActiveRequest,
   queryRegistRequiredSettingNew,
 } from '@/api/server';
 
@@ -338,6 +335,17 @@ const showSex = ref(0);
 const activeData = ref<any>({});
 const isActivity = ref(false);
 const lastPage = ref('');
+const isInactiveMember = ref(uni.getStorageSync('isMember') === 'Y');
+const inactiveMemberControl = reactive({
+  canModifyDist: true,
+  canModifySaler: true,
+  canModifyBirth: true,
+  canModifyName: true,
+  canModifySex: true,
+  canModifyAnnday: true,
+  canModifyAddress: true,
+});
+
 onLoad(e => {
   lastPage.value = e.p || '';
   const channel = uni.getStorageSync('c');
@@ -357,7 +365,33 @@ onLoad(e => {
   }
 });
 const queryMemeberInfo = async () => {
-  const { data } = await getMemberInfo('');
+
+  let data: any;
+
+  if (isInactiveMember.value) {
+    const res = await getMemberInfoUseActiveRequest(uni.getStorageSync('phone'));
+
+    data = res.data;
+
+    Object.assign(inactiveMemberControl, {
+      // avatarUrl: ""
+      // nickName: ""
+      // phone: "13726253246"
+
+      canModifyDist: !(data.belongDistId && data.belongDistName),
+      canModifySaler: !(data.belongUid && data.belongUser),
+      canModifyBirth: !data.birthSolar,
+      canModifyName: !data.name,
+      canModifySex: !data.sex,
+      canModifyAnnday: !data.annday,
+      canModifyAddress: !(data.province && data.city && data.district && data.address)
+    });
+
+  } else {
+    const res = await getMemberInfo('');
+    data = res.data;
+  }
+
   data.sex ||= 'M';
 
   const sexIndex = selecteList.findIndex(item => item.value === data.sex);
@@ -439,7 +473,36 @@ const queryWriteInfo = async (p = {}) => {
 };
 
 const handle = (item: any) => {
-  if (isActivity.value) {
+  if (isInactiveMember.value) {
+    if (item.code === BIRTH_DAY && !inactiveMemberControl.canModifyBirth) {
+      return;
+    }
+    if (item.code === MDAY && !inactiveMemberControl.canModifyAnnday) {
+      return;
+    }
+    if (item.code === 'REGIST_REQUIRED_ADDRESS' && !inactiveMemberControl.canModifyAddress) {
+      return;
+    }
+
+    if (item.code === shop) {
+      if (isActivity.value) {
+        if (!activeData.value.canModifyDist) {
+          return;
+        }
+      } else if (!inactiveMemberControl.canModifyDist) {
+        return;
+      }
+    }
+    if (item.code === saler) {
+      if (isActivity.value) {
+        if (!activeData.value.canModifySaler) {
+          return;
+        }
+      } else if (!inactiveMemberControl.canModifySaler) {
+        return;
+      }
+    }
+  } else if (isActivity.value) {
     if (item.code === shop && !activeData.value.canModifyDist) {
       return;
     }
@@ -447,6 +510,7 @@ const handle = (item: any) => {
       return;
     }
   }
+
   switch (item.code) {
     case 'REGIST_REQUIRED_STORE': {
       // 选择门店时，更新归属门店
@@ -694,6 +758,7 @@ const handleStep = async () => {
     uni.removeStorageSync('num');
     uni.removeStorageSync('pages');
     uni.removeStorageSync('inviteMid');
+    uni.removeStorageSync('isMember');
   }
 };
 

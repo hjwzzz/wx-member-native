@@ -117,6 +117,7 @@ const request = async <T = any>(
         wxAppid: Storage.getWXAppId(),
         token: Storage.getToken(),
         'ops-id': Storage.getOpsId() || 'CE273B4B-2146-1ACA-6547-04C8AB0F7E4F',
+        'Service-Id': 'JWX_MINI_PROGRAM',
         sessionKey: '',
         refreshToken: '',
         epid,
