@@ -106,6 +106,7 @@
               <!--婚姻-->
               <view v-show="info.code === maritalCode" class="guid">
                 <picker
+                  :disabled="!inactiveMemberControl.canModifyMarital"
                   @change="maritalChange"
                   :value="maritalValue"
                   :range="['已婚', '未婚']"
@@ -343,6 +344,7 @@ const inactiveMemberControl = reactive({
   canModifyName: true,
   canModifySex: true,
   canModifyAnnday: true,
+  canModifyMarital: true,
   canModifyAddress: true,
 });
 
@@ -383,6 +385,7 @@ const queryMemeberInfo = async () => {
       canModifyBirth: !data.birthSolar,
       canModifyName: !data.name,
       canModifySex: !data.sex,
+      canModifyMarital: !data.annday,
       canModifyAnnday: !data.annday,
       canModifyAddress: !(data.province && data.city && data.district && data.address)
     });
@@ -444,12 +447,15 @@ const queryWriteInfo = async (p = {}) => {
       distName: storeName,
     } = data;
     const index = l.findIndex((item: any) => item.code === MDAY);
-    l.splice(index, 0, {
-      show: 'Y',
-      required: 'N',
-      code: maritalCode,
-      name: '婚姻',
-    });
+
+    if (index !== -1) {
+      l.splice(index, 0, {
+        show: 'Y',
+        required: 'N',
+        code: maritalCode,
+        name: '婚姻',
+      });
+    }
 
     list.value = l;
     Object.assign(activeData.value, {
