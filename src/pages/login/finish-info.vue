@@ -408,11 +408,11 @@ const queryMemeberInfo = async () => {
     selectedShop.value.storeName = data.belongDistName || '';
     selectedShop.value.distId = data.belongDistId || '';
 
-    if (memberInfo.value.birthSolar) {
+    if (data.birthSolar) {
       birthCalendarPickerDate.value = data.birthSolar;
-      const [a, b, c] = memberInfo.value.birthSolar ? memberInfo.value.birthSolar.split('-') : [];
+      const [a, b, c] = data.birthSolar ? data.birthSolar.split('-') : [];
       const r = Lunar.toLunar(Number(a), Number(b), Number(c));
-      memberInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
+      data.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
     memberInfo.value = data;
   }
