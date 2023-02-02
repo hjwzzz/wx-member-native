@@ -119,8 +119,8 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } 
 
 const autoCompleteInfo = async ({ phone, wmid }: any) => {
   const { code, data: d } = await completeInfo({
-    activeDistId: '',
-    activeUid: '',
+    activeDistId: null,
+    activeUid: null,
     address: '',
     annday: '',
     birthKind: 'U',
