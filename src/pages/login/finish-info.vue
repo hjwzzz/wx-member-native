@@ -348,12 +348,12 @@ const inactiveMemberControl = reactive({
   canModifyAddress: true,
 });
 
-onLoad(e => {
+onLoad(async e => {
   lastPage.value = e.p || '';
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
-  queryMemeberInfo();
+  await queryMemeberInfo();
   if (channel && num) {
     isActivity.value = true;
     queryWriteInfo({
@@ -467,10 +467,41 @@ const queryWriteInfo = async (p = {}) => {
       storeName,
     });
 
-    belongUid && (memberInfo.value.belongUid = belongUid);
-    belongUser && (memberInfo.value.belongUser = belongUser);
-    storeName && (selectedShop.value.storeName = storeName);
-    distId && (selectedShop.value.distId = distId);
+    // 如果是未激活会员，且是扫推广码的
+    if (isInactiveMember.value && isActivity.value) {
+
+      if (selectedShop.value.storeName && selectedShop.value.distId && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+        return;
+      }
+      // 如果未激活会员没有门店和导购，用推广码的门店和导购
+      if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+        belongUid && (memberInfo.value.belongUid = belongUid);
+        belongUser && (memberInfo.value.belongUser = belongUser);
+        storeName && (selectedShop.value.storeName = storeName);
+        distId && (selectedShop.value.distId = distId);
+        // 如果未激活会员有门店没有导购，
+      } else if (selectedShop.value.storeName && selectedShop.value.distId && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+        // 判断推广码的门店是不是跟未激活会员的门店相同
+        // 相同，用推广码的导购
+        if (distId && selectedShop.value.distId === distId) {
+          belongUid && (memberInfo.value.belongUid = belongUid);
+          belongUser && (memberInfo.value.belongUser = belongUser);
+        }
+        // 如果未激活会员有导购没有门店，
+      } else if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+        // 判断推广码的导购是不是跟未激活会员的导购相同
+        // 相同，用推广码的门店
+        if (belongUid && memberInfo.value.belongUid === belongUid) {
+          storeName && (selectedShop.value.storeName = storeName);
+          distId && (selectedShop.value.distId = distId);
+        }
+      }
+    } else {
+      belongUid && (memberInfo.value.belongUid = belongUid);
+      belongUser && (memberInfo.value.belongUser = belongUser);
+      storeName && (selectedShop.value.storeName = storeName);
+      distId && (selectedShop.value.distId = distId);
+    }
 
     if (isActivity.value) {
       distId && queryNearShop(distId);
