@@ -47,7 +47,7 @@
             class="info"
             :key="item.code"
             @click="updateInfo(item)"
-            v-if="item.code == IInfoField.Mday && userInfo.annday"
+            v-if="item.code == IInfoField.Mday"
           >
             <view class="left">
               {{ item.codeName }}
