@@ -5,7 +5,10 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <button
-      v-if="agreeProto"
+      v-if="
+        agreeProto ||
+        (!protocol.regAgreementShowed && !protocol.privacyAgreementShowed)
+      "
       class="btn popup-btn-reslove"
       open-type="getPhoneNumber"
       @getphonenumber="decryptPhoneNumber"
