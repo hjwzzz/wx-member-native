@@ -112,6 +112,9 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } 
       nickName: '',
       avatarUrl: '',
       encryptedData,
+      relateKind: uni.getStorageSync('c') || undefined,
+      relateNumber: uni.getStorageSync('num') || undefined,
+      inviteMid: uni.getStorageSync('inviteMid') || undefined,
     });
   }
   waitPhoneAuth = false;
