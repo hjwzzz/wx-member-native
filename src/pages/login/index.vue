@@ -5,10 +5,17 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <button
+      v-if="
+        agreeProto ||
+        (!protocol.regAgreementShowed && !protocol.privacyAgreementShowed)
+      "
       class="btn popup-btn-reslove"
       open-type="getPhoneNumber"
       @getphonenumber="decryptPhoneNumber"
     >
+      微信授权登录
+    </button>
+    <button v-else class="btn popup-btn-reslove" @click="noAgree">
       微信授权登录
     </button>
 
@@ -17,7 +24,18 @@
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
     >
-      <uni-icons type="checkbox" style="margin-bottom: 10rpx" size="14" />
+      <div class="radioBox">
+        <div v-if="!agreeProto" class="text">请阅读并勾选协议</div>
+        <div v-if="!agreeProto" class="triangle"></div>
+        <radio-group @click="agreeProto = !agreeProto">
+          <radio
+            :checked="agreeProto"
+            :color="initBasicsData.mainColor"
+            style="transform: scale(0.7)"
+          />
+        </radio-group>
+      </div>
+
       <view class="protocol">
         <text>登录代表阅读并同意</text>
         <text
@@ -55,6 +73,7 @@ import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
 const logo = ref('');
 const protocol = reactive<Protocol>({});
+const agreeProto = ref(false);
 
 onLoad(({ c, num, inviteMid }) => {
   // 邀请信息
@@ -79,9 +98,7 @@ const jsCodeLogin = async () => {
   initBasicsData.setUseMid(mid);
 
   if (!mid) return;
-  // uni.showToast({ title: '登录成功！' });
   Router.fromLoginBack();
-  // setTimeout(Router.fromLoginBack, 1000);
 };
 
 // 用户协议
@@ -99,6 +116,10 @@ const agreement = (i: string) => {
 };
 
 let waitPhoneAuth = false;
+const noAgree = () => uni.showToast({
+  title: '请阅读并勾选协议',
+  icon: 'none',
+});
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } }: any) => {
   if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') return;
   waitPhoneAuth = true;
@@ -276,9 +297,32 @@ onUnload(() => Storage.setPages(''));
     :deep(.uniui-checkbox) {
       vertical-align: text-bottom;
     }
+    .radioBox {
+      position: relative;
+      .text {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.65);
+        font-size: 24rpx;
+        display: inline;
+        color: white;
+        bottom: 50rpx;
+        white-space: nowrap;
+        padding: 8rpx 12rpx;
+        border-radius: 7rpx;
+      }
+      .triangle {
+        width: 0;
+        height: 0;
+        position: absolute;
+        bottom: 32rpx;
+        left: 15rpx;
+        border: 10rpx solid;
+        border-color: rgba(0, 0, 0, 0.65) transparent transparent transparent;
+      }
+    }
     .protocol {
       height: 34rpx;
-      margin-left: 10rpx;
+
       font-size: 24rpx;
       color: #b7b8c4;
 
