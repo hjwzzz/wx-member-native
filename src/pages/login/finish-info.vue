@@ -38,6 +38,7 @@
                   >
                     <view>
                       <radio
+                        :disabled="!inactiveMemberControl.canModifyBirth"
                         :value="item.value"
                         :checked="item.value === memberInfo.birthKind"
                         :color="initBasicsData.mainColor"
@@ -50,6 +51,7 @@
               <!--						婚姻-->
             </view>
             <view class="right">
+              <!-- 生日 -->
               <view v-show="info.code == BIRTH_DAY" class="date-format">
                 <view class="wrapper">
                   <text v-if="memberInfo.birthKind === 'L'">
@@ -60,12 +62,14 @@
                   </text>
                 </view>
               </view>
+              <!-- 纪念日 -->
               <view
                 v-show="info.code === MDAY && memberInfo.annday"
                 class="guid"
               >
                 <text>{{ showAnnday || memberInfo.annday }}</text>
               </view>
+              <!-- 导购 -->
               <view
                 v-show="
                   info.code === 'REGIST_REQUIRED_SELLER' &&
@@ -92,16 +96,17 @@
                   :value="showSex"
                   range-key="label"
                   :range="selecteList"
+                  :disabled="!inactiveMemberControl.canModifySex"
                 >
-                  <!-- :disabled="info.update === 'N'" -->
                   <view class="uni-input">{{
                     selecteList[showSex].label
                   }}</view>
                 </picker>
               </view>
-              <!--						婚姻-->
+              <!--婚姻-->
               <view v-show="info.code === maritalCode" class="guid">
                 <picker
+                  :disabled="!inactiveMemberControl.canModifyMarital"
                   @change="maritalChange"
                   :value="maritalValue"
                   :range="['已婚', '未婚']"
@@ -181,6 +186,7 @@
               maxlength="20"
               placeholder-style="color:#d8d9e0;font-size:28rpx;"
               :placeholder="'请输入' + info.name"
+              :disabled="!inactiveMemberControl.canModifyName"
             />
           </view>
         </view>
@@ -211,15 +217,6 @@
         </view>
       </view>
 
-      <!-- <uni-calendar
-        :date="initDate"
-        ref="calendar"
-        :lunar="true"
-        :insert="false"
-        @confirm="confirmDate"
-      >
-      </uni-calendar> -->
-
       <view class="next" @click="handleStep"> 下一步 </view>
     </view>
 
@@ -242,13 +239,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch, reactive } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad } from '@dcloudio/uni-app';
 import { IRegistField } from '@/api/types/server';
 import {
   completeInfo,
   getMemberInfo,
+  getMemberInfoUseActiveRequest,
   queryRegistRequiredSettingNew,
 } from '@/api/server';
 
@@ -338,12 +336,24 @@ const showSex = ref(0);
 const activeData = ref<any>({});
 const isActivity = ref(false);
 const lastPage = ref('');
-onLoad(e => {
+const isInactiveMember = ref(uni.getStorageSync('isMember') === 'Y');
+const inactiveMemberControl = reactive({
+  canModifyDist: true,
+  canModifySaler: true,
+  canModifyBirth: true,
+  canModifyName: true,
+  canModifySex: true,
+  canModifyAnnday: true,
+  canModifyMarital: true,
+  canModifyAddress: true,
+});
+
+onLoad(async e => {
   lastPage.value = e.p || '';
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
-  queryMemeberInfo();
+  await queryMemeberInfo();
   if (channel && num) {
     isActivity.value = true;
     queryWriteInfo({
@@ -357,7 +367,34 @@ onLoad(e => {
   }
 });
 const queryMemeberInfo = async () => {
-  const { data } = await getMemberInfo('');
+
+  let data: any;
+
+  if (isInactiveMember.value) {
+    const res = await getMemberInfoUseActiveRequest(uni.getStorageSync('phone'));
+
+    data = res.data;
+
+    Object.assign(inactiveMemberControl, {
+      // avatarUrl: ""
+      // nickName: ""
+      // phone: "13726253246"
+
+      canModifyDist: !(data.belongDistId && data.belongDistName),
+      canModifySaler: !(data.belongUid && data.belongUser),
+      canModifyBirth: !data.birthSolar,
+      canModifyName: !data.name,
+      canModifySex: !data.sex,
+      canModifyMarital: !data.annday,
+      canModifyAnnday: !data.annday,
+      canModifyAddress: !(data.province || data.city || data.district || data.address)
+    });
+
+  } else {
+    const res = await getMemberInfo('');
+    data = res.data;
+  }
+
   data.sex ||= 'M';
 
   const sexIndex = selecteList.findIndex(item => item.value === data.sex);
@@ -371,11 +408,11 @@ const queryMemeberInfo = async () => {
     selectedShop.value.storeName = data.belongDistName || '';
     selectedShop.value.distId = data.belongDistId || '';
 
-    if (memberInfo.value.birthSolar) {
+    if (data.birthSolar) {
       birthCalendarPickerDate.value = data.birthSolar;
-      const [a, b, c] = memberInfo.value.birthSolar ? memberInfo.value.birthSolar.split('-') : [];
+      const [a, b, c] = data.birthSolar ? data.birthSolar.split('-') : [];
       const r = Lunar.toLunar(Number(a), Number(b), Number(c));
-      memberInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
+      data.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
     memberInfo.value = data;
   }
@@ -410,12 +447,15 @@ const queryWriteInfo = async (p = {}) => {
       distName: storeName,
     } = data;
     const index = l.findIndex((item: any) => item.code === MDAY);
-    l.splice(index, 0, {
-      show: 'Y',
-      required: 'N',
-      code: maritalCode,
-      name: '婚姻',
-    });
+
+    if (index !== -1) {
+      l.splice(index, 0, {
+        show: 'Y',
+        required: 'N',
+        code: maritalCode,
+        name: '婚姻',
+      });
+    }
 
     list.value = l;
     Object.assign(activeData.value, {
@@ -427,10 +467,41 @@ const queryWriteInfo = async (p = {}) => {
       storeName,
     });
 
-    belongUid && (memberInfo.value.belongUid = belongUid);
-    belongUser && (memberInfo.value.belongUser = belongUser);
-    storeName && (selectedShop.value.storeName = storeName);
-    distId && (selectedShop.value.distId = distId);
+    // 如果是未激活会员，且是扫推广码的
+    if (isInactiveMember.value && isActivity.value) {
+
+      if (selectedShop.value.storeName && selectedShop.value.distId && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+        return;
+      }
+      // 如果未激活会员没有门店和导购，用推广码的门店和导购
+      if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+        belongUid && (memberInfo.value.belongUid = belongUid);
+        belongUser && (memberInfo.value.belongUser = belongUser);
+        storeName && (selectedShop.value.storeName = storeName);
+        distId && (selectedShop.value.distId = distId);
+        // 如果未激活会员有门店没有导购，
+      } else if (selectedShop.value.storeName && selectedShop.value.distId && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+        // 判断推广码的门店是不是跟未激活会员的门店相同
+        // 相同，用推广码的导购
+        if (distId && selectedShop.value.distId === distId) {
+          belongUid && (memberInfo.value.belongUid = belongUid);
+          belongUser && (memberInfo.value.belongUser = belongUser);
+        }
+        // 如果未激活会员有导购没有门店，
+      } else if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+        // 判断推广码的导购是不是跟未激活会员的导购相同
+        // 相同，用推广码的门店
+        if (belongUid && memberInfo.value.belongUid === belongUid) {
+          storeName && (selectedShop.value.storeName = storeName);
+          distId && (selectedShop.value.distId = distId);
+        }
+      }
+    } else {
+      belongUid && (memberInfo.value.belongUid = belongUid);
+      belongUser && (memberInfo.value.belongUser = belongUser);
+      storeName && (selectedShop.value.storeName = storeName);
+      distId && (selectedShop.value.distId = distId);
+    }
 
     if (isActivity.value) {
       distId && queryNearShop(distId);
@@ -439,7 +510,36 @@ const queryWriteInfo = async (p = {}) => {
 };
 
 const handle = (item: any) => {
-  if (isActivity.value) {
+  if (isInactiveMember.value) {
+    if (item.code === BIRTH_DAY && !inactiveMemberControl.canModifyBirth) {
+      return;
+    }
+    if (item.code === MDAY && !inactiveMemberControl.canModifyAnnday) {
+      return;
+    }
+    if (item.code === 'REGIST_REQUIRED_ADDRESS' && !inactiveMemberControl.canModifyAddress) {
+      return;
+    }
+
+    if (item.code === shop) {
+      if (isActivity.value) {
+        if (!activeData.value.canModifyDist) {
+          return;
+        }
+      } else if (!inactiveMemberControl.canModifyDist) {
+        return;
+      }
+    }
+    if (item.code === saler) {
+      if (isActivity.value) {
+        if (!activeData.value.canModifySaler) {
+          return;
+        }
+      } else if (!inactiveMemberControl.canModifySaler) {
+        return;
+      }
+    }
+  } else if (isActivity.value) {
     if (item.code === shop && !activeData.value.canModifyDist) {
       return;
     }
@@ -447,6 +547,7 @@ const handle = (item: any) => {
       return;
     }
   }
+
   switch (item.code) {
     case 'REGIST_REQUIRED_STORE': {
       // 选择门店时，更新归属门店
@@ -503,7 +604,7 @@ const handle = (item: any) => {
       const { address, province, city, district } = memberInfo.value;
       router.goCodePage(
         'finishAddress',
-        `?address=${address || ''}&area=${province},${city},${district}`
+        `?address=${address || ''}&area=${province || ''},${city || ''},${district || ''}`
       );
       break;
     }
@@ -694,6 +795,7 @@ const handleStep = async () => {
     uni.removeStorageSync('num');
     uni.removeStorageSync('pages');
     uni.removeStorageSync('inviteMid');
+    uni.removeStorageSync('isMember');
   }
 };
 

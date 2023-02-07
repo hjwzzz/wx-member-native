@@ -7,7 +7,7 @@
           <view class="right">
             <view class="right-text">
               <picker mode="region" @change="bindPickerChange" :value="index">
-                <view class="uni-input">{{ index.join('/') }}</view>
+                <view class="uni-input">{{ index.filter(item => !!item).join('/') }}</view>
               </picker>
             </view>
             <uni-icons type="arrowright" size="14"></uni-icons>

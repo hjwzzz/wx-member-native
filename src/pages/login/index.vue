@@ -133,9 +133,45 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } 
       nickName: '',
       avatarUrl: '',
       encryptedData,
+      relateKind: uni.getStorageSync('c') || undefined,
+      relateNumber: uni.getStorageSync('num') || undefined,
+      inviteMid: uni.getStorageSync('inviteMid') || undefined,
     });
   }
   waitPhoneAuth = false;
+};
+
+const autoCompleteInfo = async ({ phone, wmid }: any) => {
+  const { code, data: d } = await completeInfo({
+    activeDistId: null,
+    activeUid: null,
+    address: '',
+    annday: '',
+    birthKind: 'U',
+    birthLunar: '',
+    birthSolar: '',
+    inviteCode: '',
+    name: '',
+    sex: 'U',
+    phone,
+    activePerfectData: 'N',
+    nickName: `${phone.substr(0, 4)}***${phone.substr()
+      .substr(-3, 3)}`,
+    avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    wmid,
+    relateKind: uni.getStorageSync('c') || undefined,
+    relateNumber: uni.getStorageSync('num') || undefined,
+    inviteMid: uni.getStorageSync('inviteMid') || undefined,
+  });
+
+  if (code === 0 && d) {
+    uni.removeStorageSync('c');
+    uni.removeStorageSync('num');
+    uni.removeStorageSync('pages');
+    uni.removeStorageSync('inviteMid');
+    initBasicsData.setUseMid(d);
+    Router.fromLoginBack();
+  }
 };
 
 const wxPhoneLogin = async (params: any) => {
@@ -147,52 +183,51 @@ const wxPhoneLogin = async (params: any) => {
     });
     return;
   }
+
+  const phone = data.phone || uni.getStorageSync('phone');
+  const wmid = data.wmid || uni.getStorageSync('wmid');
   const list = Object.keys(data);
   list.map(item => uni.setStorageSync(item, data[item]));
+
+  /**
+   * 如果有 mid ，表示已经是会员且激活了，不用进入完善资料
+   */
   if (data.mid) {
     initBasicsData.setUseMid(data.mid);
     Router.fromLoginBack();
   } else {
-    const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
+    const { data: { list, openRegist, activePerfectData } } = await queryRegistRequiredSettingNew({});
+
+    // 如果是未激活的用户
+    if (data.isMember === 'Y') {
+      // 如果开启激活完善资料
+      if (activePerfectData === 'Y') {
+        if (list.length) {
+          // 设置标识，在完善资料页面使用
+          uni.setStorageSync('isMember', data.isMember);
+          uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
+          return;
+        }
+      }
+      autoCompleteInfo({
+        phone,
+        wmid
+      });
+
+      return;
+    }
+    // 正常注册的客户
     if (openRegist === 'Y') {
       if (list.length) {
         uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
-      } else {
-        // 不用填写
-        const phone = data.phone || uni.getStorageSync('phone');
-        const { code, data: d } = await completeInfo({
-          activeDistId: '',
-          activeUid: '',
-          address: '',
-          annday: '',
-          birthKind: 'U',
-          birthLunar: '',
-          birthSolar: '',
-          inviteCode: '',
-          name: '',
-          sex: 'U',
-          phone,
-          nickName: `${phone.substr(0, 4)}***${phone.substr()
-            .substr(-3, 3)}`,
-          avatarUrl:
-            'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-          wmid: data.wmid || uni.getStorageSync('wmid'),
-          relateKind: uni.getStorageSync('c') || undefined,
-          relateNumber: uni.getStorageSync('num') || undefined,
-          inviteMid: uni.getStorageSync('inviteMid') || undefined,
-        });
-
-        if (code === 0 && d) {
-          uni.removeStorageSync('c');
-          uni.removeStorageSync('num');
-          uni.removeStorageSync('pages');
-          uni.removeStorageSync('inviteMid');
-          initBasicsData.setUseMid(d);
-          Router.fromLoginBack();
-        }
+        return;
       }
+      autoCompleteInfo({
+        phone,
+        wmid
+      });
     } else {
-      await uni.showModal({
+      uni.showModal({
         content: '账号不存在',
         showCancel: false,
       });

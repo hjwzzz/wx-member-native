@@ -33,6 +33,7 @@ const initData = async () => {
 onLaunch(() => {
   // Storage.removeEpid();
   initData();
+  console.log(uni.getAccountInfoSync());
 });
 
 onPageNotFound(Router.compatibilityOldPage);
