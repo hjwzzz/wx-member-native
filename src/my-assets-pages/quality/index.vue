@@ -1,7 +1,7 @@
 <template>
   <CustomScrollViewPage @scrolltolower="onLoadMore">
     <view class="quality-box" v-if="dataList.length > 0">
-      <view class="quality-cell" v-for="item, index in dataList" :key="item.id">
+      <view class="quality-cell" v-for="(item, index) in dataList" :key="item.id">
         <view class="quality-cell-header">
           <view class="quality-cell-header-name">
             {{ item.storeName }}
@@ -10,27 +10,36 @@
             {{ item.bizTime }}
           </view>
           <view class="quality-cell-header-num">
+            <!-- FIXME 图片 -->
             单据号：{{ item.number }}
           </view>
         </view>
 
         <view class="quality-cell-list">
-          <template v-for="goods, goodsIndex in item.list" :key="goods.id">
+          <template v-for="(goods, goodsIndex) in item.list" :key="goods.id">
             <view v-if="goodsIndex <= 1 || item.expand" class="quality-cell-content-list-item">
-              <image class="quality-cell-content-list-item-img" mode="widthFix" :src="goods.img[0]"
-                @click="previewImage(goods)"></image>
-
+              <image
+                class="quality-cell-content-list-item-img"
+                mode="widthFix"
+                :src="goods.img[0]"
+                @click="previewImage(goods)"
+              >
+              </image>
               <view class="quality-cell-content-list-item-name">{{ goods.name }}</view>
               <view class="quality-cell-content-list-item-code">条形码{{ goods.code }}</view>
-              <view class="quality-cell-content-list-item-status">{{ goods.status }}</view>
+              <view :class="`quality-cell-content-list-item-status  ${goods.status}`">{{ goods.status }}</view>
               <view class="quality-cell-content-list-item-value">￥{{ goods.value }}</view>
-
             </view>
           </template>
           <template v-if="item.list.length > 2">
-            <view v-if="!item.expand" class="quality-cell-content-list-handle expand" @click="item.expand = true">展开全部
+            <view v-if="!item.expand" class="quality-cell-content-list-handle expand" @click="item.expand = true">
+              展开全部
+              <uni-icons type="bottom" size="14"></uni-icons>
             </view>
-            <view v-else class="quality-cell-content-list-handle collapse" @click="item.expand = false">收起全部</view>
+            <view v-else class="quality-cell-content-list-handle collapse" @click="item.expand = false">
+              收起全部
+              <uni-icons type="top" size="14"></uni-icons>
+            </view>
           </template>
         </view>
 
@@ -130,28 +139,26 @@ const getWarrantyList = async () => {
       value: 12000,
       list: [
         {
-          img: ['https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png', 'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png'],
+          img: [
+            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
+            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
+          ],
           name: '钻石戒指',
           num: '条码号：AD1231411',
           status: '销售',
-          value: '4000'
+          value: '4000',
         },
         {
-          img: ['https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png'],
+          img: [
+            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
+          ],
           name: '钻石戒指',
           num: '条码号：AD1231411',
           status: '销售',
-          value: '4000'
+          value: '4000',
         },
-        {
-          img: ['https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png'],
-          name: '钻石戒指',
-          num: '条码号：AD1231411',
-          status: '销售',
-          value: '4000'
-        },
-      ]
-    }
+      ],
+    },
   ];
   const { records, totalPage: total, totalRecord } = res.data;
   totalPage.value = total;
@@ -178,7 +185,6 @@ const deleteItem = () => {
 
 const popupDeleteConfirm = async () => {
   popupDeleteRef.value.close();
-
 };
 const popupDeleteClose = () => {
   popupDeleteRef.value.close();
@@ -330,6 +336,24 @@ const onLoadMore = () => {
         .quality-cell-content-list-item-status {
           grid-area: status;
           justify-self: flex-end;
+          padding: 0 20rpx;
+          height: 32rpx;
+          line-height: 32rpx;
+          font-size: 20rpx;
+
+          &.A {
+            background-color: #0ec06020;
+            color: #0ec060;
+          }
+          &.B {
+            text-decoration:  line-through;
+            background-color: #9697a220;
+            color: #9697a2;
+          }
+          &.C {
+            background-color: #fa525220;
+            color: #fa5252;
+          }
         }
 
         .quality-cell-content-list-item-value {
@@ -447,7 +471,6 @@ const onLoadMore = () => {
     border-top-color: #ebedf0 !important;
 
     .uni-dialog-button {
-
       &.uni-border-left {
         border-left-color: #ebedf0 !important;
       }
@@ -461,9 +484,6 @@ const onLoadMore = () => {
         }
       }
     }
-
-
   }
-
 }
 </style>
