@@ -387,7 +387,7 @@ const queryMemeberInfo = async () => {
       canModifySex: !data.sex,
       canModifyMarital: !data.annday,
       canModifyAnnday: !data.annday,
-      canModifyAddress: !(data.province && data.city && data.district && data.address)
+      canModifyAddress: !(data.province || data.city || data.district || data.address)
     });
 
   } else {
@@ -604,7 +604,7 @@ const handle = (item: any) => {
       const { address, province, city, district } = memberInfo.value;
       router.goCodePage(
         'finishAddress',
-        `?address=${address || ''}&area=${province},${city},${district}`
+        `?address=${address || ''}&area=${province || ''},${city || ''},${district || ''}`
       );
       break;
     }
