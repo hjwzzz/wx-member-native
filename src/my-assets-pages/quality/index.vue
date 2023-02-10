@@ -1,7 +1,11 @@
 <template>
   <CustomScrollViewPage @scrolltolower="onLoadMore">
     <view class="quality-box" v-if="dataList.length > 0">
-      <view class="quality-cell" v-for="(item, index) in dataList" :key="item.id">
+      <view
+        class="quality-cell"
+        v-for="(item, index) in dataList"
+        :key="item.id"
+      >
         <view class="quality-cell-header">
           <view class="quality-cell-header-name">
             {{ item.storeName }}
@@ -16,27 +20,47 @@
         </view>
 
         <view class="quality-cell-list">
-          <template v-for="(goods, goodsIndex) in item.list" :key="goods.id">
-            <view v-if="goodsIndex <= 1 || item.expand" class="quality-cell-content-list-item">
+          <template v-for="(goods, goodsIndex) in item.details" :key="goods.id">
+            <view
+              v-if="goodsIndex <= 1 || item.expand"
+              class="quality-cell-content-list-item"
+            >
               <image
                 class="quality-cell-content-list-item-img"
                 mode="widthFix"
-                :src="goods.img[0]"
+                :src="item.warrantyCustUrl"
                 @click="previewImage(goods)"
               >
               </image>
-              <view class="quality-cell-content-list-item-name">{{ goods.name }}</view>
-              <view class="quality-cell-content-list-item-code">条形码{{ goods.code }}</view>
-              <view :class="`quality-cell-content-list-item-status  ${goods.status}`">{{ goods.status }}</view>
-              <view class="quality-cell-content-list-item-value">￥{{ goods.value }}</view>
+              <view class="quality-cell-content-list-item-name">{{
+                goods.goodsName
+              }}</view>
+              <view class="quality-cell-content-list-item-code"
+                >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}</view
+              >
+              <view
+                :class="`quality-cell-content-list-item-status  ${goods.status}`"
+                >{{ goods.status }}</view
+              >
+              <view class="quality-cell-content-list-item-value"
+                >￥{{ goods.amount }}</view
+              >
             </view>
           </template>
-          <template v-if="item.list.length > 2">
-            <view v-if="!item.expand" class="quality-cell-content-list-handle expand" @click="item.expand = true">
+          <template v-if="item.details.length > 2">
+            <view
+              v-if="!item.expand"
+              class="quality-cell-content-list-handle expand"
+              @click="item.expand = true"
+            >
               展开全部
               <uni-icons type="bottom" size="14"></uni-icons>
             </view>
-            <view v-else class="quality-cell-content-list-handle collapse" @click="item.expand = false">
+            <view
+              v-else
+              class="quality-cell-content-list-handle collapse"
+              @click="item.expand = false"
+            >
               收起全部
               <uni-icons type="top" size="14"></uni-icons>
             </view>
@@ -44,17 +68,27 @@
         </view>
 
         <view class="quality-cell-footer">
-          <view class="quality-cell-footer-count">总计(数量)：{{ item.count }}</view>
+          <view class="quality-cell-footer-count"
+            >总计(数量)：{{ item.details.length }}</view
+          >
           <view class="quality-cell-footer-value">
-            合计：
-            <text class="quality-cell-footer-value-content">
-              ￥{{ item.value }}
-            </text>
+            <text>合计：</text>
+            <text class="quality-cell-footer-value-content"
+              >￥{{ getValueCount(item.details) }}</text
+            >
           </view>
 
           <view class="quality-cell-footer-handle">
-            <view class="quality-cell-footer-handle-btn delete" @click="deleteItem">删除</view>
-            <view class="quality-cell-footer-handle-btn detail" @click="goDetail(index, item)">查看详情</view>
+            <view
+              class="quality-cell-footer-handle-btn delete"
+              @click="deleteItem({ id: item.id })"
+              >删除</view
+            >
+            <view
+              class="quality-cell-footer-handle-btn detail"
+              @click="goDetail(index, item)"
+              >查看详情</view
+            >
           </view>
         </view>
       </view>
@@ -63,7 +97,11 @@
     </view>
     <view class="imagewu" v-else>
       <view class="view-image">
-        <image class="tip-image" :src="staticUrl + 'img/noneStatus.png'" mode=""></image>
+        <image
+          class="tip-image"
+          :src="staticUrl + 'img/noneStatus.png'"
+          mode=""
+        ></image>
       </view>
       <view class="wujilu"> 暂无质保单 </view>
     </view>
@@ -80,8 +118,13 @@
     </uni-popup>
 
     <uni-popup ref="popupDeleteRef" type="dialog" class="popup-delete">
-      <uni-popup-dialog :title="' '" :confirmText="'删除'" :before-close="true" @close="popupDeleteClose"
-        @confirm="popupDeleteConfirm">
+      <uni-popup-dialog
+        :title="' '"
+        :confirmText="'删除'"
+        :before-close="true"
+        @close="popupDeleteClose"
+        @confirm="popupDeleteConfirm"
+      >
         <view class="content">
           确定删除列表中的该条数据吗？进行此操作可能影响售后体验。
         </view>
@@ -92,11 +135,66 @@
 
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue';
-import { queryWarrantyListPageFront } from '@/api/server';
+import {
+  queryWarrantyListPageFront,
+  updateWarrantyStatusRequest,
+} from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
+
+const getValueCount = (list: any[]) => list.reduce((prev, { amount }: any) => prev + Number(amount), 0);
+
+const getNumLabel = (code: BILL_KIND_CODE) => {
+  if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.RET].includes(code)) {
+    return '回收编号';
+  }
+
+  return '条形码';
+};
+
+const enum PROD_CODE {
+
+  /** 饰品 */
+  JW = 'JW',
+
+  /** 首饰 */
+  JWR = 'JWR',
+
+  /** 礼物 */
+  GIFT = 'GIFT',
+
+  /** 旧料 */
+  OAMT = 'OAMT',
+}
+
+const enum BILL_KIND_CODE {
+
+  /** 首饰销售 */
+  JXS = 'JXS',
+
+  /** 首饰销退 */
+  JXT = 'JXT',
+
+  /** 饰品销售 */
+  PXS = 'PXS',
+
+  /** 饰品销退 */
+  PXT = 'PXT',
+
+  /** 旧料回收 */
+  REC = 'REC',
+
+  /** 旧料退客 */
+  RET = 'RET',
+
+  /** 礼品销退 */
+  GXT = 'GXT',
+
+  /** 礼品销售 */
+  GXS = 'GXS',
+}
 
 const params = reactive({
   curPage: 1,
@@ -128,38 +226,6 @@ const goDetail = (type: any, item: any) => {
 // 查询列表
 const getWarrantyList = async () => {
   const res = await queryWarrantyListPageFront(params);
-  // FIXME
-  res.data.records = [
-    {
-      expand: false,
-      storeName: '小千金水贝店',
-      bizTime: '2022-11-23 13:49:33',
-      number: 'XS221123001',
-      count: 3,
-      value: 12000,
-      list: [
-        {
-          img: [
-            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
-            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
-          ],
-          name: '钻石戒指',
-          num: '条码号：AD1231411',
-          status: '销售',
-          value: '4000',
-        },
-        {
-          img: [
-            'https://img.dev.jqzplat.com/12D3868F/COMM/3a410740-20220519.png',
-          ],
-          name: '钻石戒指',
-          num: '条码号：AD1231411',
-          status: '销售',
-          value: '4000',
-        },
-      ],
-    },
-  ];
   const { records, totalPage: total, totalRecord } = res.data;
   totalPage.value = total;
   dataList.value =
@@ -179,11 +245,23 @@ const previewImage = (goods: any) => {
   });
 };
 
-const deleteItem = () => {
+const deleteInfo = reactive({ id: '' });
+
+const deleteItem = ({ id }: any) => {
+  deleteInfo.id = id;
   popupDeleteRef.value.open();
 };
 
 const popupDeleteConfirm = async () => {
+  await updateWarrantyStatusRequest({
+    id: deleteInfo.id,
+    deleted: 'Y',
+  });
+
+  uni.showToast({
+    title: '删除成功',
+    icon: 'success',
+  });
   popupDeleteRef.value.close();
 };
 const popupDeleteClose = () => {
@@ -346,7 +424,7 @@ const onLoadMore = () => {
             color: #0ec060;
           }
           &.B {
-            text-decoration:  line-through;
+            text-decoration: line-through;
             background-color: #9697a220;
             color: #9697a2;
           }

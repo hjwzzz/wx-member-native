@@ -15,6 +15,13 @@ export const queryWarrantyListPageFront = async (data: any) => {
   const url = `${devBaseUrl}/warranty/usr/queryWarrantyListPageFront`;
   return request(url, data);
 };
+
+// 更新质保单状态是否显示
+export const updateWarrantyStatusRequest = async (data: any) => {
+  const url = `${devBaseUrl}/warranty/usr/updateWarrantyStatus`;
+  return request(url, data);
+};
+
 // 获取企业LOGO
 export const getLogo = async (data: any) => {
   const url = `${devBaseUrl}/sysUiFront/getLogo`;
