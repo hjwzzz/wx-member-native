@@ -503,7 +503,7 @@ const queryWriteInfo = async (p = {}) => {
       distId && (selectedShop.value.distId = distId);
     }
 
-    if (isActivity.value) {
+    if (!isInactiveMember.value && isActivity.value) {
       distId && queryNearShop(distId);
     }
   }
