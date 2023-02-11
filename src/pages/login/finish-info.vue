@@ -376,10 +376,6 @@ const queryMemeberInfo = async () => {
     data = res.data;
 
     Object.assign(inactiveMemberControl, {
-      // avatarUrl: ""
-      // nickName: ""
-      // phone: "13726253246"
-
       canModifyDist: !(data.belongDistId && data.belongDistName),
       canModifySaler: !(data.belongUid && data.belongUser),
       canModifyBirth: !data.birthSolar,
@@ -504,8 +500,14 @@ const queryWriteInfo = async (p = {}) => {
     }
 
     if (!isInactiveMember.value && isActivity.value) {
-      distId && queryNearShop(distId);
+      distId && await queryNearShop(distId);
     }
+
+    Object.assign(inactiveMemberControl, {
+      canModifyDist: !(selectedShop.value.distId && selectedShop.value.storeName),
+      canModifySaler: !(memberInfo.value.belongUid && memberInfo.value.belongUser),
+    });
+
   }
 };
 
@@ -522,29 +524,58 @@ const handle = (item: any) => {
     }
 
     if (item.code === shop) {
+      // 如果是活动进来的
       if (isActivity.value) {
-        if (!activeData.value.canModifyDist) {
+        // 判断覆盖后的门店是否可以修改
+        // 如果可以修改，读配置
+        if (inactiveMemberControl.canModifyDist) {
+          if (!activeData.value.canModifyDist) {
+            return;
+          }
+        } else {
           return;
         }
+        // 如果不是活动进来的
       } else if (!inactiveMemberControl.canModifyDist) {
         return;
       }
     }
     if (item.code === saler) {
+      // 如果是活动进来的
       if (isActivity.value) {
-        if (!activeData.value.canModifySaler) {
+        // 判断覆盖后的导购是否可以修改
+        // 如果可以修改，读配置
+        if (inactiveMemberControl.canModifySaler) {
+          if (!activeData.value.canModifySaler) {
+            return;
+          }
+        } else {
           return;
         }
+        // 如果不是活动进来的
       } else if (!inactiveMemberControl.canModifySaler) {
         return;
       }
     }
+    // 如果是活动进来的
   } else if (isActivity.value) {
-    if (item.code === shop && !activeData.value.canModifyDist) {
-      return;
+    // 点击门店
+    if (item.code === shop) {
+      // 如果活动有门店，此时是否可以修改门店受按钮状态控制
+      if (activeData.value.distId && activeData.value.storeName) {
+        if (!activeData.value.canModifyDist) {
+          return;
+        }
+      }
     }
-    if (item.code === saler && !activeData.value.canModifySaler) {
-      return;
+    // 点击导购
+    if (item.code === saler) {
+      // 如果配置有返回导购
+      if (activeData.value.belongUid && activeData.value.belongUser) {
+        if (!activeData.value.canModifySaler) {
+          return;
+        }
+      }
     }
   }
 
