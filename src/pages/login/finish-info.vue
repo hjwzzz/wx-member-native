@@ -353,16 +353,15 @@ onLoad(async e => {
   const channel = uni.getStorageSync('c');
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
+  isActivity.value = !!(channel && num);
   await queryMemeberInfo();
   if (channel && num) {
-    isActivity.value = true;
     queryWriteInfo({
       channel,
       num,
       inviteMid,
     });
   } else {
-    isActivity.value = false;
     queryWriteInfo({});
   }
 });
@@ -375,16 +374,25 @@ const queryMemeberInfo = async () => {
 
     data = res.data;
 
-    Object.assign(inactiveMemberControl, {
-      canModifyDist: !(data.belongDistId && data.belongDistName),
-      canModifySaler: !(data.belongUid && data.belongUser),
-      canModifyBirth: !data.birthSolar,
-      canModifyName: !data.name,
-      canModifySex: !data.sex,
-      canModifyMarital: !data.annday,
-      canModifyAnnday: !data.annday,
-      canModifyAddress: !(data.province || data.city || data.district || data.address)
-    });
+    Object.assign(
+      inactiveMemberControl, {
+        canModifyBirth: !data.birthSolar,
+        canModifyName: !data.name,
+        canModifySex: !data.sex,
+        canModifyMarital: !data.annday,
+        canModifyAnnday: !data.annday,
+        canModifyAddress: !(data.province || data.city || data.district || data.address),
+      },
+      isActivity.value
+        ? {
+          canModifyDist: true,
+          canModifySaler: true,
+        }
+        : {
+          canModifyDist: !(data.belongDistId && data.belongDistName),
+          canModifySaler: !(data.belongUid && data.belongUser),
+        }
+    );
 
   } else {
     const res = await getMemberInfo('');
@@ -503,10 +511,13 @@ const queryWriteInfo = async (p = {}) => {
       distId && await queryNearShop(distId);
     }
 
-    Object.assign(inactiveMemberControl, {
-      canModifyDist: !(selectedShop.value.distId && selectedShop.value.storeName),
-      canModifySaler: !(memberInfo.value.belongUid && memberInfo.value.belongUser),
-    });
+    if (!selectedShop.value.distId && !selectedShop.value.storeName) {
+      inactiveMemberControl.canModifyDist = true;
+    }
+
+    if (!memberInfo.value.belongUid && !memberInfo.value.belongUser) {
+      inactiveMemberControl.canModifySaler = true;
+    }
 
   }
 };
@@ -541,20 +552,22 @@ const handle = (item: any) => {
       }
     }
     if (item.code === saler) {
-      // 如果是活动进来的
-      if (isActivity.value) {
-        // 判断覆盖后的导购是否可以修改
-        // 如果可以修改，读配置
-        if (inactiveMemberControl.canModifySaler) {
-          if (!activeData.value.canModifySaler) {
+      if (memberInfo.value.belongUid && memberInfo.value.belongUser) {
+        // 如果是活动进来的
+        if (isActivity.value) {
+          // 判断覆盖后的导购是否可以修改
+          // 如果可以修改，读配置
+          if (inactiveMemberControl.canModifySaler) {
+            if (!activeData.value.canModifySaler) {
+              return;
+            }
+          } else {
             return;
           }
-        } else {
+          // 如果不是活动进来的
+        } else if (!inactiveMemberControl.canModifySaler) {
           return;
         }
-        // 如果不是活动进来的
-      } else if (!inactiveMemberControl.canModifySaler) {
-        return;
       }
     }
     // 如果是活动进来的
@@ -571,7 +584,7 @@ const handle = (item: any) => {
     // 点击导购
     if (item.code === saler) {
       // 如果配置有返回导购
-      if (activeData.value.belongUid && activeData.value.belongUser) {
+      if (memberInfo.value.belongUid && memberInfo.value.belongUser) {
         if (!activeData.value.canModifySaler) {
           return;
         }
@@ -584,6 +597,8 @@ const handle = (item: any) => {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
         if (e.distId !== selectedShop.value.distId) {
+          activeData.value.canModifySaler = true;
+          inactiveMemberControl.canModifySaler = true;
           Object.assign(memberInfo.value, {
             belongUid: '',
             belongUser: '',
@@ -809,7 +824,6 @@ const handleStep = async () => {
 
       default:
         // todo 未限制项
-        console.log(i);
         break;
     }
   });

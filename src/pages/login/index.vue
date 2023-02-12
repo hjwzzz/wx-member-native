@@ -80,6 +80,7 @@ onLoad(({ c, num, inviteMid }) => {
   c && uni.setStorageSync('c', c);
   num && uni.setStorageSync('num', num);
   inviteMid && uni.setStorageSync('inviteMid', inviteMid);
+  uni.removeStorageSync('isMember');
 });
 onMounted(() => {
   getMemberEula();
