@@ -24,8 +24,9 @@
           </view>
         </view>
         <view class="right" v-if="showData.notified === 'Y'">
-          <text class="right-text">签到提醒</text
-          ><switch
+          <!-- -->
+          <text class="right-text">签到提醒</text>
+          <switch
             class="right-switch"
             :checked="check"
             size="30"
@@ -87,8 +88,14 @@
 
 <script lang="ts" setup>
 import { onShow } from '@dcloudio/uni-app';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { staticUrl } from '@/utils/config';
+import {
+  getByKindAndCode,
+  saveMiniAppSubscribeMessageEnabled,
+  queryMiniAppSubscribeMessageEnabled,
+  getOperationMessageEventByCode,
+} from '@/api/index';
 
 const props = defineProps({
   showData: {
@@ -102,18 +109,22 @@ const emits = defineEmits(['getMonth', 'clickGift', 'openNotice']);
 const year = ref(0);
 const month = ref(0);
 const week = ref(['日', '一', '二', '三', '四', '五', '六']);
-const dateArr = ref<any[]>([]);
+const dateArr: any = ref<any[]>([]);
 const today = ref('0');
 const dateWeek = ref(false);
 const todayIndex = ref(0);
 const check = ref(false);
 const isEmpty = ref(false);
+
+const checkLi = ref(false);
 watch(
   () => props.showData,
   val => {
     setStatus(dateArr.value, val.giftDate || [], 'gift');
     setStatus(dateArr.value, val.signInDate || [], 'signIn');
-    check.value = val.userNotified === 'Y';
+    checkLi.value = val.userNotified === 'Y';
+
+    //  ;
     isEmpty.value = !val.award;
   }
 );
@@ -126,6 +137,51 @@ const setStatus = (arr: any[], val: any, name: any) => {
     }
   });
 };
+
+const enabledSwitch = ref(false);
+const getMiniAppSubscribeMessageEnabled = async () => {
+  if (tmplIdsValue.value[0]) {
+    const { data } = await queryMiniAppSubscribeMessageEnabled({
+      relatedIds: [tmplIdsValue.value[0]],
+      templateId: tmplIdsValue.value[0],
+    });
+    // console.log('data', data[0].enabled);
+    // console.log('data[0].enabled', data[0].enabled);
+    // console.log(' checkLi.value', checkLi.value);
+    enabledSwitch.value = data[0].enabled;
+    if (data[0].enabled && checkLi.value) {
+      check.value = true;
+      // checkSwitch.value = true;
+    }
+  }
+};
+
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'no_sign_remind',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
+const tmplIdsValue = ref([]);
+const getKindAndCode = async () => {
+  const { data } = await getByKindAndCode({
+    codes: ['no_sign_remind'],
+    kind: 'WM',
+  });
+  // tplId
+  // console.log(data.map((item: any) => item.tplId));
+  tmplIdsValue.value = data.map((item: any) => item.tplId) || [];
+  getMiniAppSubscribeMessageEnabled();
+};
+
+onMounted(() => {
+  getKindAndCode();
+  getMessageEvent();
+});
 
 const init = () => {
   const now = new Date();
@@ -258,9 +314,70 @@ const clickGiftFun = (item: any = null) => {
     emits('clickGift', props.showData.award);
   }
 };
-const change = (val: any) => {
-  emits('openNotice', val);
+
+const change = async (val: any) => {
+  // setTimeout(() => {
+  //
+  // }, 2500);
+  if (!showMessageEvent.value) {
+    return;
+  }
+
+  const tipMsg = () => {
+    uni.showToast({
+      title: '订阅失败，请联系客服添加服务类目',
+      duration: 4000,
+      icon: 'none',
+    });
+    setTimeout(() => {
+      check.value = false;
+    }, 500);
+    setTimeout(() => {
+      emits('openNotice', val);
+    }, 2500);
+  };
+
+  check.value = val.detail.value;
+  if (val.detail.value) {
+    if (tmplIdsValue.value.length === 0) {
+      tipMsg();
+      return;
+    }
+    emits('openNotice', val);
+    uni.requestSubscribeMessage({
+      tmplIds: tmplIdsValue.value,
+      success(res) {
+        const cssel = Object.values(res);
+        if (cssel.includes('accept')) {
+          setSaveMiniAppSubscribeMessageEnabled(true);
+          uni.showToast({
+            title: '订阅成功',
+            duration: 3000,
+            icon: 'none',
+          });
+        } else {
+          check.value = false;
+        }
+      },
+    });
+  } else {
+    if (tmplIdsValue.value.length === 0) {
+      tipMsg();
+      return;
+    }
+    emits('openNotice', val);
+    setSaveMiniAppSubscribeMessageEnabled(false);
+  }
 };
+
+const setSaveMiniAppSubscribeMessageEnabled = async (bool: boolean) => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: bool,
+    relatedId: tmplIdsValue.value[0],
+    templateIds: tmplIdsValue.value,
+  });
+};
+
 onShow(() => {
   init();
 });

@@ -1,4 +1,5 @@
 <template>
+  <page-meta :page-style="'overflow:'+(birthCalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
   <CustomPage>
     <view class="user-info">
       <view class="wrapper-header">
@@ -13,7 +14,7 @@
             :disabled="!FieldObj[IInfoField.avatar]"
             style="height: 80rpx"
             :modelValue="userInfo.avatarUrl"
-            @update:modelValue="(e: any) =>updateUserIno({ avatarUrl: e })"
+            @update:modelValue="(e: any) =>updateUserInfo({ avatarUrl: e })"
             v-if="item.key === 'avatarUrl'"
           >
             <image
@@ -46,7 +47,7 @@
             class="info"
             :key="item.code"
             @click="updateInfo(item)"
-            v-if="item.code == IInfoField.Mday && userInfo.annday"
+            v-if="item.code == IInfoField.Mday"
           >
             <view class="left">
               {{ item.codeName }}
@@ -79,6 +80,7 @@
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
                     class="selecte-redio"
+
                     v-for="radio in items"
                     :key="radio.name"
                     style="transform: scale(0.7)"
@@ -220,16 +222,23 @@
           </picker>
         </template>
       </view>
-      <view class="rili">
-        <uni-calendar
-          :date="initDate"
-          ref="calendar"
-          :lunar="true"
-          :insert="false"
-          @confirm="confirmDate"
-        >
-        </uni-calendar>
-      </view>
+      <CalendarPicker
+        :date="birthCalendarPickerDate"
+        :calendar-type="userInfo.birthKind"
+        @confirmDialog="confirmBirthCalendarPicker"
+        @close-dialog="closeBirthCalendarPicker"
+        ref="BirthCalendarPickerRef"
+      />
+
+      <CalendarPicker
+        :date="userInfo.annday"
+        :calendar-type="CALENDAR_TYPE.SOLAR"
+        @confirmDialog="confirmAnndayCalendarPicker"
+        @close-dialog="closeAnndayCalendarPicker"
+        :select-lunar="false"
+        ref="AnndayCalendarPickerRef"
+      />
+
       <uni-popup
         ref="popup"
         input
@@ -269,12 +278,43 @@ import {
 import CustomPage from '@/components/CustomPage/index.vue';
 import { useBasicsData } from '@/store/basicsData';
 import { onShow } from '@dcloudio/uni-app';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
-import { formatTime, mergeFullAddress } from '@/utils/util';
+import { mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
+import CalendarPicker from '@/components/Birthcalendar/index.vue';
+import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
+
+
+const BirthCalendarPickerRef = ref();
+
+const birthCalendarPickerShow = ref(false);
+
+const birthCalendarPickerDate = ref('');
+
+watch(() => birthCalendarPickerShow.value, () => {
+  if (birthCalendarPickerShow.value) {
+    BirthCalendarPickerRef.value.open();
+  } else {
+    BirthCalendarPickerRef.value.close();
+  }
+});
+
+
+const AnndayCalendarPickerRef = ref();
+
+const anndayCalendarPickerShow = ref(false);
+
+watch(() => anndayCalendarPickerShow.value, () => {
+  if (anndayCalendarPickerShow.value) {
+    AnndayCalendarPickerRef.value.open();
+  } else {
+    AnndayCalendarPickerRef.value.close();
+  }
+});
+
 const initBasicsData = useBasicsData();
 
 const header = computed(() => [
@@ -384,7 +424,7 @@ const updateInfo = async ({
     case IInfoField.Store: {
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
-        updateUserIno({
+        updateUserInfo({
           belongDistId: e.distId,
           belongDistName: e.storeName,
           // 切换门店时候，清空导购信息
@@ -405,7 +445,7 @@ const updateInfo = async ({
       uni.$once('updateGuide', e => {
         if (!e.uid) return;
         const { belongDistId, belongDistName } = userInfo.value;
-        updateUserIno({
+        updateUserInfo({
           belongDistId,
           belongDistName,
           belongUid: e.uid,
@@ -473,7 +513,7 @@ const dialogConfirm = (e: string) => {
   } else if (dialogKey.value === 'email' && !reg.test(e)) {
     str = '请输入合法邮箱';
   } else {
-    updateUserIno({ [dialogKey.value]: e });
+    updateUserInfo({ [dialogKey.value]: e });
     popup.value.close();
     dialogTitle.value = '';
     return;
@@ -483,30 +523,39 @@ const dialogConfirm = (e: string) => {
     title: str,
   });
 };
+
+const openBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = true;
+};
+
+const closeBirthCalendarPicker = () => {
+  birthCalendarPickerShow.value = false;
+};
+
+const openAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = true;
+};
+
+const closeAnndayCalendarPicker = () => {
+  anndayCalendarPickerShow.value = false;
+};
+
 // 日期修改（日历选择器）
-const calendar = ref();
-const isBirthDay = ref(false);
-const initDate = ref(formatTime(new Date())
-  .substring(0, 10));
 const handleOpen = (item: { name: any }) => {
   const { name } = item;
   const mark = 'mday';
-  const birthSolar = userInfo.value.birthSolar;
-  const annday = userInfo.value.annday;
-  isBirthDay.value = name !== mark;
   if (name === mark) {
-    initDate.value = annday;
+    openAnndayCalendarPicker();
   } else {
-    initDate.value = birthSolar;
+    openBirthCalendarPicker();
   }
-  calendar.value.open();
 };
 const updateEdu = (e: any) => {
   edcIndex.value = e.detail.value;
   const { value } = educations[e.detail.value];
-  updateUserIno({ education: value });
+  updateUserInfo({ education: value });
 };
-const updateUserIno = async (item: any, refresh = false) => {
+const updateUserInfo = async (item: any, refresh = false) => {
   const { code } = await updateMemberInfo(item);
   if (code === 0) {
     Object.assign(userInfo.value, item);
@@ -514,25 +563,52 @@ const updateUserIno = async (item: any, refresh = false) => {
     uni.showToast({ title: '更新成功' });
   }
 };
-const confirmDate = (e: any) => {
-  const nl = `${e.lunar.gzYear} - ${e.lunar.IMonthCn} - ${e.lunar.IDayCn}`;
-  if (!isBirthDay.value) {
-    updateUserIno({ annday: e.fulldate });
-  } else {
-    userInfo.value.birthLunar = nl;
-    updateUserIno({
-      birthKind: items[current.value].value,
-      birthSolar: e.fulldate,
-    });
-  }
+const confirmBirthCalendarPicker = ({
+  value: {
+    year,
+    month,
+    day
+  },
+  type,
+  lunarDesc
+}: any) => {
+  userInfo.value.birthKind = type;
+  birthCalendarPickerDate.value = `${year}-${month}-${day}`;
+  updateUserInfo({
+    birthKind: userInfo.value.birthKind,
+    birthSolar: `${year}-${String(month)
+      .padStart(2, '0')}-${String(day)
+      .padStart(2, '0')}`
+  });
+  userInfo.value.birthLunar = lunarDesc;
+  closeBirthCalendarPicker();
 };
+
+const confirmAnndayCalendarPicker = ({
+  value: {
+    year,
+    month,
+    day
+  },
+}: any) => {
+  updateUserInfo({
+    annday: `${year}-${String(month)
+      .padStart(2, '0')}-${String(day)
+      .padStart(2, '0')}`
+  });
+  closeAnndayCalendarPicker();
+};
+
+
+// 切换生日类型
 const radioChange = (e: any) => {
   userInfo.value.birthKind = e.detail.value;
   current.value = items.findIndex(i => i.value === e.detail.value);
+  openBirthCalendarPicker();
 };
 const bindPickerChangeGender = (e: any) => {
   genderIndex.value = e.detail.value;
-  updateUserIno({ sex: ['M', 'F', 'U'][genderIndex.value] });
+  updateUserInfo({ sex: ['M', 'F', 'U'][genderIndex.value] });
 };
 
 const querySetting = async () => {
@@ -556,6 +632,7 @@ const showProfession = computed(() => {
   const one: any = professions.value[professionsIdx.value[0]];
   return [professions.value ?? [], one?.professionList ?? []];
 });
+
 const queryPro = async () => {
   const parmas = '';
   const { code, data } = await queryProfessionAsCate(parmas);
@@ -564,12 +641,13 @@ const queryPro = async () => {
   }
   queryUserInfo();
 };
+
 const professionChange = (e: any) => {
   const [one, two] = e.detail.value;
   const item =
     professions.value[one].professionList?.[two] ?? professions.value[one];
 
-  updateUserIno({
+  updateUserInfo({
     proName: item.name,
     proId: item.id,
   });
@@ -580,11 +658,14 @@ const queryUserInfo = async () => {
   if (code === 0 && data) {
     data.avatarUrl ||= 'https://static.jqzplat.com/img/person.png';
     userInfo.value = data;
+
+    birthCalendarPickerDate.value = data.birthSolar;
+
     // 计算农历生日
-    if (data.birthSolar) {
-      const [a, b, c] = data.birthSolar ? data.birthSolar.split('-') : [];
-      const r = Lunar.toLunar(a, b, c);
-      data.birthLunar = `${r[3]}-${r[5]}-${r[6]}`;
+    if (userInfo.value.birthSolar) {
+      const [a, b, c] = userInfo.value.birthSolar ? userInfo.value.birthSolar.split('-') : [];
+      const r = Lunar.toLunar(Number(a), Number(b), Number(c));
+      userInfo.value.birthLunar = `${a}-${r[5]}-${r[6]}`;
     }
     // 日期类型（公历/农历） 默认公历
     if (!data.birthKind || data.birthKind === 'U') data.birthKind = 'S';

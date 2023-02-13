@@ -5,10 +5,17 @@
       <image :src="logo" mode="aspectFit" />
     </view>
     <button
+      v-if="
+        agreeProto ||
+        (!protocol.regAgreementShowed && !protocol.privacyAgreementShowed)
+      "
       class="btn popup-btn-reslove"
       open-type="getPhoneNumber"
       @getphonenumber="decryptPhoneNumber"
     >
+      微信授权登录
+    </button>
+    <button v-else class="btn popup-btn-reslove" @click="noAgree">
       微信授权登录
     </button>
 
@@ -17,7 +24,18 @@
       v-if="protocol.regAgreementShowed || protocol.privacyAgreementShowed"
       class="footer"
     >
-      <uni-icons type="checkbox" style="margin-bottom: 10rpx" size="14" />
+      <div class="radioBox">
+        <div v-if="!agreeProto" class="text">请阅读并勾选协议</div>
+        <div v-if="!agreeProto" class="triangle"></div>
+        <radio-group @click="agreeProto = !agreeProto">
+          <radio
+            :checked="agreeProto"
+            :color="initBasicsData.mainColor"
+            style="transform: scale(0.7)"
+          />
+        </radio-group>
+      </div>
+
       <view class="protocol">
         <text>登录代表阅读并同意</text>
         <text
@@ -55,12 +73,14 @@ import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
 const logo = ref('');
 const protocol = reactive<Protocol>({});
+const agreeProto = ref(false);
 
 onLoad(({ c, num, inviteMid }) => {
   // 邀请信息
   c && uni.setStorageSync('c', c);
   num && uni.setStorageSync('num', num);
   inviteMid && uni.setStorageSync('inviteMid', inviteMid);
+  uni.removeStorageSync('isMember');
 });
 onMounted(() => {
   getMemberEula();
@@ -79,9 +99,7 @@ const jsCodeLogin = async () => {
   initBasicsData.setUseMid(mid);
 
   if (!mid) return;
-  // uni.showToast({ title: '登录成功！' });
   Router.fromLoginBack();
-  // setTimeout(Router.fromLoginBack, 1000);
 };
 
 // 用户协议
@@ -99,6 +117,10 @@ const agreement = (i: string) => {
 };
 
 let waitPhoneAuth = false;
+const noAgree = () => uni.showToast({
+  title: '请阅读并勾选协议',
+  icon: 'none',
+});
 const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } }: any) => {
   if (waitPhoneAuth || errMsg === 'getPhoneNumber:fail user deny') return;
   waitPhoneAuth = true;
@@ -112,9 +134,45 @@ const decryptPhoneNumber = async ({ detail: { errMsg, encryptedData, iv, code } 
       nickName: '',
       avatarUrl: '',
       encryptedData,
+      relateKind: uni.getStorageSync('c') || undefined,
+      relateNumber: uni.getStorageSync('num') || undefined,
+      inviteMid: uni.getStorageSync('inviteMid') || undefined,
     });
   }
   waitPhoneAuth = false;
+};
+
+const autoCompleteInfo = async ({ phone, wmid }: any) => {
+  const { code, data: d } = await completeInfo({
+    activeDistId: null,
+    activeUid: null,
+    address: '',
+    annday: '',
+    birthKind: 'U',
+    birthLunar: '',
+    birthSolar: '',
+    inviteCode: '',
+    name: '',
+    sex: 'U',
+    phone,
+    activePerfectData: 'N',
+    nickName: `${phone.substr(0, 4)}***${phone.substr()
+      .substr(-3, 3)}`,
+    avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    wmid,
+    relateKind: uni.getStorageSync('c') || undefined,
+    relateNumber: uni.getStorageSync('num') || undefined,
+    inviteMid: uni.getStorageSync('inviteMid') || undefined,
+  });
+
+  if (code === 0 && d) {
+    uni.removeStorageSync('c');
+    uni.removeStorageSync('num');
+    uni.removeStorageSync('pages');
+    uni.removeStorageSync('inviteMid');
+    initBasicsData.setUseMid(d);
+    Router.fromLoginBack();
+  }
 };
 
 const wxPhoneLogin = async (params: any) => {
@@ -126,52 +184,51 @@ const wxPhoneLogin = async (params: any) => {
     });
     return;
   }
+
+  const phone = data.phone || uni.getStorageSync('phone');
+  const wmid = data.wmid || uni.getStorageSync('wmid');
   const list = Object.keys(data);
   list.map(item => uni.setStorageSync(item, data[item]));
+
+  /**
+   * 如果有 mid ，表示已经是会员且激活了，不用进入完善资料
+   */
   if (data.mid) {
     initBasicsData.setUseMid(data.mid);
     Router.fromLoginBack();
   } else {
-    const { data: { list, openRegist } } = await queryRegistRequiredSettingNew({});
+    const { data: { list, openRegist, activePerfectData } } = await queryRegistRequiredSettingNew({});
+
+    // 如果是未激活的用户
+    if (data.isMember === 'Y') {
+      // 如果开启激活完善资料
+      if (activePerfectData === 'Y') {
+        if (list.length) {
+          // 设置标识，在完善资料页面使用
+          uni.setStorageSync('isMember', data.isMember);
+          uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
+          return;
+        }
+      }
+      autoCompleteInfo({
+        phone,
+        wmid
+      });
+
+      return;
+    }
+    // 正常注册的客户
     if (openRegist === 'Y') {
       if (list.length) {
         uni.redirectTo({ url: `/pages/login/finish-info?p=${Storage.getPages() || ''}` });
-      } else {
-        // 不用填写
-        const phone = data.phone || uni.getStorageSync('phone');
-        const { code, data: d } = await completeInfo({
-          activeDistId: '',
-          activeUid: '',
-          address: '',
-          annday: '',
-          birthKind: 'U',
-          birthLunar: '',
-          birthSolar: '',
-          inviteCode: '',
-          name: '',
-          sex: 'U',
-          phone,
-          nickName: `${phone.substr(0, 4)}***${phone.substr()
-            .substr(-3, 3)}`,
-          avatarUrl:
-            'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
-          wmid: data.wmid || uni.getStorageSync('wmid'),
-          relateKind: uni.getStorageSync('c') || undefined,
-          relateNumber: uni.getStorageSync('num') || undefined,
-          inviteMid: uni.getStorageSync('inviteMid') || undefined,
-        });
-
-        if (code === 0 && d) {
-          uni.removeStorageSync('c');
-          uni.removeStorageSync('num');
-          uni.removeStorageSync('pages');
-          uni.removeStorageSync('inviteMid');
-          initBasicsData.setUseMid(d);
-          Router.fromLoginBack();
-        }
+        return;
       }
+      autoCompleteInfo({
+        phone,
+        wmid
+      });
     } else {
-      await uni.showModal({
+      uni.showModal({
         content: '账号不存在',
         showCancel: false,
       });
@@ -241,9 +298,32 @@ onUnload(() => Storage.setPages(''));
     :deep(.uniui-checkbox) {
       vertical-align: text-bottom;
     }
+    .radioBox {
+      position: relative;
+      .text {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.65);
+        font-size: 24rpx;
+        display: inline;
+        color: white;
+        bottom: 50rpx;
+        white-space: nowrap;
+        padding: 8rpx 12rpx;
+        border-radius: 7rpx;
+      }
+      .triangle {
+        width: 0;
+        height: 0;
+        position: absolute;
+        bottom: 32rpx;
+        left: 15rpx;
+        border: 10rpx solid;
+        border-color: rgba(0, 0, 0, 0.65) transparent transparent transparent;
+      }
+    }
     .protocol {
       height: 34rpx;
-      margin-left: 10rpx;
+
       font-size: 24rpx;
       color: #b7b8c4;
 

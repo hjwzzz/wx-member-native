@@ -144,19 +144,94 @@
         ></uni-popup-dialog>
       </uni-popup>
     </view>
+
+    <CouponResultModal
+      :visible="modelShow"
+      :type="getResult"
+      :tmplIdsValue="tmplIdsValue"
+      :tmplIdsValueing="tmplIdsValueing"
+      :title="showTitle"
+      @ok="onConfirm"
+      @cancel="onCancel"
+    >
+    </CouponResultModal>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
-// import { staticUrl } from '@/utils/config';
-// import { saveImmeBookServ } from '@/api/reservation-service';
+import { Ref, ref, onMounted } from 'vue';
+import CouponResultModal from '@/reservation-service-pages/component/CouponResultModal.vue';
 import { onLoad } from '@dcloudio/uni-app';
 import router from '@/utils/router';
-// import { imgBaseUrl } from '@/api/quality';
 import { staticUrl, imgUrl } from '@/utils/config';
 import { saveBookingFront } from '../api/api';
 import Storage from '@/utils/storage';
+import {
+  getByKindAndCode,
+  saveMiniAppSubscribeMessageEnabled,
+  getOperationMessageEventByCode,
+} from '@/api/index';
+// import { imgBaseUrl } from '@/api/quality';
+// import { staticUrl } from '@/utils/config';
+// import { saveImmeBookServ } from '@/api/reservation-service';
+// import CouponResultModal from '@/reservation-service-pages/component/CouponResultModal/index.vue';
+
+// 'success' : 'await'
+const modelShow = ref(false);
+const getResult = ref('success');
+const showTitle = ref('');
+
+const relatedIdMessage = ref('');
+const setSaveMiniAppSubscribeMessageEnabled = async () => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: true,
+    relatedId: relatedIdMessage.value,
+    templateIds: tmplIdsValue.value,
+  });
+  uni.showToast({
+    title: '订阅成功',
+    duration: 3000,
+    icon: 'none',
+  });
+};
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'booking_service_notice',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
+const onConfirm = (bool: boolean) => {
+  // uni.requestSubscribeMessage({
+  //   tmplIds: tmplIdsValue.value,
+  //   success(res) {
+  //     const cssel = Object.values(res);
+  //     if (cssel.includes('accept')) {
+  //       setSaveMiniAppSubscribeMessageEnabled();
+  //     }
+  //     setTimeout(() => {
+  //       uni.navigateBack({ delta: 2 });
+  //     }, 1000);
+  //   },
+  //   fail(eer) {
+  //     console.log('eer', eer);
+  //   },
+  // });
+  if (bool) {
+    setSaveMiniAppSubscribeMessageEnabled();
+  }
+  modelShow.value = false;
+};
+
+// saveMiniAppSubscribeMessageEnabled
+
+const onCancel = () => {
+  modelShow.value = false;
+  uni.navigateBack({ delta: 2 });
+};
 
 const alertDialogRef = ref();
 const data: Ref<any> = ref({});
@@ -193,6 +268,33 @@ const selectStore = () => {
     `?id=${data.value.id ?? ''}&type=getServiceStore&showBelong=true`
   );
 };
+
+// const tmplIds = ref('');
+const tmplIdsValue = ref([]);
+const tmplIdsValueing = ref([]);
+const getKindAndCode = async () => {
+  const res: any = await getByKindAndCode({
+    codes: [
+      'booking_service_notice',
+      'booking_service_fail_notice',
+      'booking_service_expire_notice',
+    ],
+    kind: 'WM',
+  });
+  tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+  tmplIdsValueing.value =
+    res.data
+      .filter((item: any) => item.code !== 'booking_service_notice')
+      .map((item: any) => item.tplId) || [];
+  // console.log('tmplIdsValue.value', tmplIdsValue.value);
+  // console.log('tmplIdsValueing.value.value', tmplIdsValueing.value);
+};
+
+onMounted(() => {
+  getKindAndCode();
+  getMessageEvent();
+});
+
 const selectDateTime = () => {
   const { distId, selectedTime, timeId } = form.value;
   if (!distId) {
@@ -329,24 +431,57 @@ const submitAppointment = () => {
         uid: form.value.uid,
       })
         .then(res => {
-          setTimeout(() => {
+          // console.log(res);
+          if (res.code !== 0) {
             uni.showToast({
-              title: res.data,
+              title: res.data.msg,
               duration: 3000,
             });
-          }, 500);
-          setTimeout(() => {
-            loading.value = false;
-            // uni.navigateBack()
-            uni.navigateBack({
-              delta: 2,
-              complete: () => {
-                // setTimeout(() => {
-                //   uni.navigateTo({ url: '/reservationService/myAppointment/index' });
-                // }, 500);
-              },
+            return;
+          }
+          const { id, msg } = res.data;
+          showTitle.value = msg;
+          // booking_service_notice
+          console.log('showTitle.value', showTitle.value);
+          relatedIdMessage.value = id;
+          if (showMessageEvent.value && id) {
+            modelShow.value = true;
+          } else {
+            uni.showToast({
+              title: res.data.msg,
+              duration: 3000,
             });
-          }, 3000);
+            setTimeout(() => {
+              loading.value = false;
+              uni.navigateBack({ delta: 2 });
+            }, 2800);
+          }
+
+          // uni.requestSubscribeMessage({
+          //   tmplIds: tmplIdsValue.value,
+          //   success(res) {
+          //     console.log('res', res);
+          //   },
+          //   fail(eer) {
+          //     console.log('eer', eer);
+          //   },
+          // });
+          // setTimeout(() => {
+          //   uni.showToast({
+          //     title: res.data,
+          //     duration: 3000,
+          //   });
+          // }, 500);
+          // setTimeout(() => {
+          //   loading.value = false;
+          //   // uni.navigateBack()
+          //   uni.navigateBack({
+          //     delta: 2,
+          //     complete: () => {
+
+          //     },
+          //   });
+          // }, 3000);
         })
         .catch(() => {
           loading.value = false;

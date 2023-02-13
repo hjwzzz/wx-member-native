@@ -68,6 +68,8 @@
               </view>
             </view>
             <view class="item-foot">
+              <!-- showMessageEvent -->
+
               <view
                 v-if="['NEW', 'CFD'].includes(item.status)"
                 class="btn"
@@ -75,6 +77,16 @@
               >
                 取消预约
               </view>
+
+              <view
+                v-if="getShowBtn(item)"
+                class="btn btn-msg"
+                :class="showUnsub(item) ? 'btn-msg-lis' : ''"
+                @click.stop="subscribeEnabled(item)"
+              >
+                {{ showUnsub(item) ? '已订阅' : '订阅提醒' }}
+              </view>
+
               <view
                 v-if="item.status === 'FTF'"
                 class="btn"
@@ -123,6 +135,11 @@ import Tabs from '@/components/Tabs/tab2.vue';
 import USticky from '@/components/Tabs/u-sticky.vue';
 import cancelReason from './component/cancel-reason.vue';
 import Storage from '@/utils/storage';
+import {
+  // getByKindAndCode,
+  getOperationMessageEventByCode,
+  saveMiniAppSubscribeMessageEnabled,
+} from '@/api/index';
 
 const initBasicsData = useBasicsData();
 const list = [
@@ -142,6 +159,80 @@ const recordId = ref('');
 const moreStatus = ref('loadmore');
 let tabKey = '';
 let total = 0;
+
+const subscribeEnabled = (item: any) => {
+  //  unsubscribeTplIds subscribeTplIds
+  if (!item.unsubscribeTplIds || item.unsubscribeTplIds.length === 0) {
+    // uni.showToast({
+    //   title: '订阅失败，请联系客服添加服务类目',
+    //   duration: 3000,
+    //   icon: 'none',
+    // });
+    return;
+  }
+  // .subscribeEnabled id
+  uni.requestSubscribeMessage({
+    tmplIds: item.unsubscribeTplIds,
+    success(res: any) {
+      const cssel = Object.values(res);
+      if (cssel.includes('accept')) {
+        setSaveMiniAppSubscribeMessageEnabled(item.id, item.unsubscribeTplIds);
+      }
+    },
+  });
+};
+
+const getShowBtn = (item: any) => {
+  if (
+    item.unsubscribeTplIds?.length === 0 &&
+    item.subscribeTplIds?.length === 0
+  ) {
+    return false;
+  }
+  return ['NEW', 'CFD'].includes(item.status) && showMessageEvent.value;
+};
+const showUnsub = (item: any) => !item.unsubscribeTplIds || item.unsubscribeTplIds?.length === 0;
+
+const setSaveMiniAppSubscribeMessageEnabled = async (
+  id: string,
+  tplIds: any
+) => {
+  await saveMiniAppSubscribeMessageEnabled({
+    enabled: true,
+    relatedId: id,
+    templateIds: tplIds,
+  });
+  uni.showToast({
+    title: '订阅成功',
+    duration: 3000,
+    icon: 'none',
+  });
+  setTimeout(() => {
+    curPage = 1;
+    subscribeList.value = [];
+    querySubscribeList();
+  }, 1000);
+};
+
+// const tmplIdsValue = ref([]);
+// const getKindAndCode = async () => {
+//   const res: any = await getByKindAndCode({
+//     codes: ['booking_service_notice'],
+//     kind: 'WM',
+//   });
+//   tmplIdsValue.value = res.data.map((item: any) => item.tplId) || [];
+// };
+
+const showMessageEvent = ref(false);
+const getMessageEvent = async () => {
+  const { data: { enabled } } = await getOperationMessageEventByCode({
+    evtCode: 'booking_service_notice',
+    kind: 'WX',
+    templateKind: 'WM',
+  });
+  showMessageEvent.value = enabled === 'Y';
+};
+
 onShow(() => {
   curPage = 1;
   if (subscribeList.value.length === 0) {
@@ -152,6 +243,8 @@ onShow(() => {
     subscribeList.value = [];
     querySubscribeList();
   }
+  getMessageEvent();
+  // getKindAndCode();
 });
 
 const handleChangeTab = (index: number) => {
@@ -295,15 +388,29 @@ const querySubscribeList = async () => {
         display: flex;
         justify-content: flex-end;
         /*margin-top: 20rpx;*/
+        color: #323338;
+        .btn-msg {
+          background-color: var(--main-color);
+          color: white;
+          border: 2rpx solid var(--main-color);
+        }
+        .btn-msg-lis {
+          opacity: 0.5;
+        }
         .btn {
           box-sizing: border-box;
           height: 64rpx;
+          min-width: 150rpx;
+          padding-left: 10rpx;
+          padding-right: 10rpx;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           border-radius: 32rpx;
           border: 2rpx solid #ebedf0;
-          padding: 14rpx 32rpx 16rpx;
+          // padding: 14rpx 32rpx 16rpx;
           margin-left: 20rpx;
           font-size: 24rpx;
-          color: #323338;
         }
       }
     }

@@ -101,6 +101,8 @@ export const logout = () => request(`${devBaseUrl}/usr/memberInfoFront/logout`, 
 //   return res;
 // };
 export const getMemberInfo = async (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/getMemberInfo`, data);
+
+export const getMemberInfoUseActiveRequest = async (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/getMemberInfoUseActive`, data);
 // 修改手机号码-发送验证码
 export const updatePhoneSendCode = (data: any) => request(`${devBaseUrl}/usr/memberInfoFront/sendCodeForUpdatePhone`, data);
 // export const updatePhoneSendCode = async (data: any) => {

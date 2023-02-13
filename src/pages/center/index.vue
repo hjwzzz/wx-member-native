@@ -1,6 +1,9 @@
 <template>
+  <page-meta
+    :page-style="'overflow:' + (menberCodePopupVisible ? 'hidden' : 'visible')"
+  ></page-meta>
   <CustomPage bottom>
-    <view class="user">
+    <view class="user" :style="{ backgroundImage: `url( ${showToImage} )` }">
       <view class="login-info">
         <view class="user-info">
           <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
@@ -29,14 +32,23 @@
               请先登录
             </view>
           </view>
-          <view
-            class="info-right"
-            @click="handleEntryUrl({ code: 'installCenter' })"
-          >
+          <view class="info-right">
+            <view
+              v-if="initBasicsData.checkLogin"
+              class="menber-code"
+              @click="showMenberCodePopup"
+            >
+              <image
+                class="menber-code-icon"
+                :src="`${imageUrl}img/menber-code-qrcode.png`"
+              />
+              <view class="menber-code-desc">会员码</view>
+            </view>
             <image
               class="setting"
               :src="imageUrl + 'img/setInfo.png'"
               mode="scaleToFill"
+              @click="handleEntryUrl({ code: 'installCenter' })"
             />
           </view>
         </view>
@@ -177,15 +189,66 @@
     </view>
   </CustomPage>
   <Tabbar code="wm_center"> </Tabbar>
+
+  <uni-popup
+    class="menber-code-popup"
+    ref="MenberCodePopupRef"
+    :mask-click="false"
+    :animation="false"
+  >
+    <view class="menber-code-popup-content">
+      <view class="avatar">
+        <image
+          class="avatar-image"
+          mode="aspectFit"
+          :src="userInfo.avatarUrl || `${imageUrl}img/person.png`"
+        />
+      </view>
+      <view class="content">
+        <view class="content-text" >
+          <view class="content-text-code">{{ menberCode }}</view>
+          <view   class="content-text-desc">
+            <img class="icon" v-if="!showFullMenberCode" @click="viewFullMenberCode" :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`" >
+            <img class="icon" v-else :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`"  @click="hideFullMenberCode">
+          </view>
+        </view>
+        <view class="content-qrcode">
+          <canvas
+            id="barCode"
+            canvas-id="barCode"
+            style="width: 610rpx; height: 200rpx"
+          />
+        </view>
+        <view class="content-desc">门店消费时使用，每30秒自动更新</view>
+      </view>
+
+      <view class="close" @click="hideMenberCodePopup">
+        <image
+          mode="widthFix"
+          class="close-icon"
+          :src="`${imageUrl}img/home-close.png`"
+        />
+      </view>
+    </view>
+  </uni-popup>
 </template>
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, reactive, Ref } from 'vue';
+import {
+  ref,
+  reactive,
+  Ref,
+  watch,
+  computed,
+} from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
   getMemberCenterIndex,
   queryMemberCenterBannerListFront,
+  getBarCodeRequest,
+  GetBarCodeRequestRes,
+  sendKeyExpiredBarCodeRequest,
 } from '@/pages/api/center';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 //
@@ -201,6 +264,7 @@ import ContentMall from '../component/ContentMall.vue';
 import MyPrizes from '../component/MyPrizes.vue';
 import MyService from '../component/MyService.vue';
 import MyQuality from '../component/MyQuality.vue';
+import BrCode128 from '@/utils/barcode.js';
 
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
@@ -238,12 +302,15 @@ onShow(() => {
   // getGoldPriceByPage();
 });
 
+const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
+const showToImage = ref(deFImage);
 const getMemberCentertIndex = async () => {
   const res = await getMemberCenterIndex('');
   if (res.code === 0 && res.data) {
     const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
     const quickNavList = wmCenterRspVo.param?.quickNavList || [];
     const panelListItem: any = wmCenterRspVo.panelList;
+    showToImage.value = wmCenterRspVo.param.topBgImageUrl || deFImage;
     const srvObj =
       panelListItem.find((item: any) => item.kind === entryType.RES) || {};
     const policyList =
@@ -294,36 +361,6 @@ const getBannerData = async () => {
   }
 };
 
-// if (!item.code) {
-//     if (item.miniUrl) {
-//       Router.goNoCodePage(item.miniUrl);
-//       return;
-//     }
-//     if (item.h5Url) {
-//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-//       return;
-//     }
-//   }
-// const bannerListClick = (item: any) => {
-//   const url = JSON.parse(item.url || {});
-//   const code = url.code || url.systemUrl;
-//   if (!code && url.appletUrl) {
-//     const miniUrl = item.miniUrl || url.appletUrl;
-//     Router.goNoCodePage(miniUrl);
-//     return;
-//   }
-//   if (!code && url.h5Url) {
-//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-//     return;
-//   }
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(url.code || url.systemUrl, param);
-// };
 
 // 显示红点
 const showRedDot = (item: any, entry: any, text: string) => {
@@ -333,26 +370,6 @@ const showRedDot = (item: any, entry: any, text: string) => {
   return code && red && showType;
 };
 
-// 获取今日金价
-// const getGoldPriceByPage = async () => {
-//   if (!initBasicsData.checkLogin) {
-//     return;
-//   }
-//   const res = await queryGoldPriceByPage('WM_CENTER');
-//   if (res.code === 0 && res.data) {
-//     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
-//     // this.uiParam = uiParam;
-//     const { showNum } = param;
-//     const result: any = [];
-//     branPriceList.map((item: any, index: number) => {
-//       if (index < showNum) {
-//         result.push(item);
-//       }
-//     });
-//     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
-//     goldPrice.value = result;
-//   }
-// };
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
@@ -360,32 +377,111 @@ const handleFixedSysUrl = () => {
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
 };
-// const handleQuickUrl = (item: any) => {
-//   if (!item.code) {
-//     if (item.miniUrl) {
-//       Router.goNoCodePage(item.miniUrl);
-//       return;
-//     }
-//     if (item.h5Url) {
-//       uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-//       return;
-//     }
-//   }
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(item.code, param);
-// };
+
+const MenberCodePopupRef = ref<any>();
+
+const menberCodePopupVisible = ref(false);
+
+watch(menberCodePopupVisible, () => {
+  if (menberCodePopupVisible.value) {
+    MenberCodePopupRef.value.open();
+  } else {
+    MenberCodePopupRef.value.close();
+  }
+});
+
+const menberCodeInfo = reactive<GetBarCodeRequestRes>({
+  barCode: '',
+  number: '',
+  polishing: '',
+});
+
+let barCodeCanvasContent: any = null;
+
+// const instance = getCurrentInstance();
+
+const getBarCode = async () => {
+  const getBarCodeRequestRes = await getBarCodeRequest();
+
+  if (getBarCodeRequestRes.code !== 0) {
+    return;
+  }
+
+  Object.assign(menberCodeInfo, getBarCodeRequestRes.data);
+};
+
+const drawCanvas = () => {
+  if (!barCodeCanvasContent) {
+    barCodeCanvasContent = uni.createCanvasContext('barCode');
+  }
+
+  barCodeCanvasContent.clearRect(0, 0, 1000, 1000);
+
+  const { windowWidth } = uni.getSystemInfoSync();
+
+  const dpi = windowWidth / 375;
+
+  BrCode128(
+    barCodeCanvasContent,
+    menberCodeInfo.barCode,
+    305 * dpi,
+    110
+  );
+};
+
+const GetBarCodeIntervalId = ref(0);
+
+const setIntervalForGetBarCode = () => {
+  GetBarCodeIntervalId.value = setInterval(async () => {
+    if (menberCodePopupVisible.value) {
+      await getBarCode();
+      drawCanvas();
+    } else {
+      clearInterval(GetBarCodeIntervalId.value);
+    }
+  }, 30 * 1000);
+};
+
+const showMenberCodePopup = async () => {
+  menberCodePopupVisible.value = true;
+  await getBarCode();
+  drawCanvas();
+  setIntervalForGetBarCode();
+};
+
+const hideMenberCodePopup = async () => {
+  menberCodePopupVisible.value = false;
+  showFullMenberCode.value = false;
+  clearInterval(GetBarCodeIntervalId.value);
+  sendKeyExpiredBarCodeRequest(menberCodeInfo.barCode);
+};
+
+const showFullMenberCode = ref(false);
+
+const menberCode = computed(() => {
+  if (showFullMenberCode.value) {
+    if (menberCodeInfo.number && menberCodeInfo.polishing) {
+      return menberCodeInfo.number.replace('***', menberCodeInfo.polishing);
+    }
+  }
+  return menberCodeInfo.number;
+});
+
+const viewFullMenberCode = () => {
+  showFullMenberCode.value = true;
+};
+
+const hideFullMenberCode = () => {
+  showFullMenberCode.value = false;
+};
+
 </script>
 
 <style lang="scss" scoped>
 .user {
   width: 100%;
   height: 400rpx;
-  background-image: url('https://static.jqzplat.com/web/c_default_center_bg.jpg');
+  // background-image: url('https://static.jqzplat.com/web/c_default_center_bg.jpg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
 
@@ -443,15 +539,35 @@ const handleMyPrizes = (index: number) => {
     }
 
     .info-right {
-      width: 64rpx;
-      height: 64rpx;
-      overflow: hidden;
-      background: rgb(255 255 255 / 50%);
-      border-radius: 32rpx;
+      display: flex;
+      align-items: center;
+
+      .menber-code {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 32rpx;
+        display: flex;
+        align-items: center;
+        padding: 16rpx 24rpx 18rpx 22rpx;
+        box-sizing: border-box;
+        margin-right: 20rpx;
+
+        .menber-code-icon {
+          width: 30rpx;
+          height: 30rpx;
+          margin-right: 12rpx;
+        }
+        .menber-code-desc {
+          font-size: 24rpx;
+          color: #323338;
+          line-height: 1;
+        }
+      }
 
       .setting {
-        width: 100%;
-        height: 100%;
+        width: 64rpx;
+        height: 64rpx;
+        background: rgb(255 255 255 / 50%);
+        border-radius: 32rpx;
       }
     }
   }
@@ -546,7 +662,7 @@ const handleMyPrizes = (index: number) => {
 
 .reveal-grid {
   position: relative;
-  z-index: 999;
+  // z-index: 999;
   // width: 750rpx;
   // padding: 30rpx;
   padding-left: 30rpx;
@@ -682,6 +798,90 @@ const handleMyPrizes = (index: number) => {
   .image {
     width: 100%;
     height: 100%;
+  }
+}
+.menber-code-popup {
+  :deep(.uni-popup) {
+    z-index: 99999;
+  }
+}
+
+.menber-code-popup-content {
+  width: 690rpx;
+  // height: 552rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  position: relative;
+
+  .avatar {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 70rpx;
+    background: #ffffff;
+    border: 4rpx solid #ffffff;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100rpx;
+    height: 100rpx;
+
+    .avatar-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .content {
+    padding: 148rpx 40rpx 80rpx;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 28rpx;
+    color: #b7b8c4;
+    line-height: 40rpx;
+
+    .content-text {
+      display: flex;
+      align-items: center;
+      .content-text-code {
+        font-size: 36rpx;
+        font-weight: 700;
+        color: #323338;
+        line-height: 50rpx;
+      }
+      .content-text-desc {
+        padding-left: 8px;
+        .icon {
+          width: 16px;
+          height: 16px;
+          display: block;
+        }
+      }
+    }
+
+    .content-qrcode {
+      margin: 24rpx 0 30rpx;
+    }
+
+    // .content-desc {
+    // font-size: 28rpx;
+    // color: #b7b8c4;
+    // line-height: 40px;
+    // }
+  }
+
+  .close {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    .close-icon {
+      width: 64rpx;
+      height: 64rpx;
+    }
   }
 }
 </style>
