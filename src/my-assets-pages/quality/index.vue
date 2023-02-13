@@ -14,7 +14,11 @@
             {{ item.bizTime }}
           </view>
           <view class="quality-cell-header-num">
-            <!-- FIXME 图片 -->
+            <image
+              class="quality-cell-header-num-icon"
+              src="https://static.jqzplat.com/wx_%20applet/img/qualitynum.png"
+              mode="aspectFit"
+            ></image>
             单据号：{{ item.number }}
           </view>
         </view>
@@ -27,8 +31,8 @@
             >
               <image
                 class="quality-cell-content-list-item-img"
-                mode="widthFix"
-                :src="item.warrantyCustUrl"
+                mode="aspectFill"
+                :src="goods.imgUrl"
                 @click="previewImage(goods)"
               >
               </image>
@@ -36,18 +40,18 @@
                 goods.goodsName
               }}</view>
               <view class="quality-cell-content-list-item-code"
-                >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}</view
-              >
+                >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}
+              </view>
               <view
                 :class="`quality-cell-content-list-item-status  ${goods.status}`"
-                >{{ goods.status }}</view
-              >
+                >{{ goods.status }}
+              </view>
               <view class="quality-cell-content-list-item-value"
-                >￥{{ goods.amount }}</view
-              >
+                >￥{{ goods.amount }}
+              </view>
             </view>
           </template>
-          <template v-if="item.details.length > 2">
+          <template v-if="item.details?.length > 2">
             <view
               v-if="!item.expand"
               class="quality-cell-content-list-handle expand"
@@ -69,12 +73,12 @@
 
         <view class="quality-cell-footer">
           <view class="quality-cell-footer-count"
-            >总计(数量)：{{ item.details.length }}</view
+            >总计(数量)：{{ item.details?.length || 0 }}</view
           >
           <view class="quality-cell-footer-value">
             <text>合计：</text>
             <text class="quality-cell-footer-value-content"
-              >￥{{ getValueCount(item.details) }}</text
+              >￥{{ getValueCount(item?.details) }}</text
             >
           </view>
 
@@ -142,9 +146,11 @@ import {
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
 
+const defaultGoodsImg = `${staticUrl}img/goods.png`;
+
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 
-const getValueCount = (list: any[]) => list.reduce((prev, { amount }: any) => prev + Number(amount), 0);
+const getValueCount = (list: any[] = []) => list.reduce((prev, { amount }: any) => prev + Number(amount), 0);
 
 const getNumLabel = (code: BILL_KIND_CODE) => {
   if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.RET].includes(code)) {
@@ -228,6 +234,13 @@ const getWarrantyList = async () => {
   const res = await queryWarrantyListPageFront(params);
   const { records, totalPage: total, totalRecord } = res.data;
   totalPage.value = total;
+
+  records.forEach((item: any) => {
+    item.details.forEach((goods: any) => {
+      goods.imgUrl = goods.imgUrl ?? defaultGoodsImg;
+    });
+  });
+
   dataList.value =
     params.curPage === 1 ? records : [...dataList.value, ...records];
 
@@ -239,9 +252,14 @@ const getWarrantyList = async () => {
 };
 
 const previewImage = (goods: any) => {
+
+  if (goods.imgUrl === defaultGoodsImg) {
+    return;
+  }
+
   uni.previewImage({
     current: 0,
-    urls: goods.img,
+    urls: [goods.imgUrl],
   });
 };
 
@@ -374,6 +392,14 @@ const onLoadMore = () => {
         grid-area: num;
         font-size: 24rpx;
         color: #9697a2;
+        display: flex;
+        align-items: center;
+
+        .quality-cell-header-num-icon {
+          width: 32rpx;
+          height: 32rpx;
+          margin-right: 10rpx;
+        }
       }
     }
 
