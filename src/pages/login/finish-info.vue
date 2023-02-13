@@ -535,21 +535,26 @@ const handle = (item: any) => {
     }
 
     if (item.code === shop) {
-      // 如果是活动进来的
-      if (isActivity.value) {
-        // 判断覆盖后的门店是否可以修改
-        // 如果可以修改，读配置
-        if (inactiveMemberControl.canModifyDist) {
-          if (!activeData.value.canModifyDist) {
+      if (selectedShop.value.storeName && selectedShop.value.distId) {
+        if (isActivity.value) {
+          // 判断覆盖后的门店是否可以修改
+          // 如果可以修改，读配置
+          if (inactiveMemberControl.canModifyDist) {
+            if (!activeData.value.canModifyDist) {
+              return;
+            }
+          } else {
             return;
           }
-        } else {
+          // 如果不是活动进来的
+        } else if (!inactiveMemberControl.canModifyDist) {
           return;
         }
-        // 如果不是活动进来的
-      } else if (!inactiveMemberControl.canModifyDist) {
-        return;
+      } else {
+        activeData.value.canModifyDist = true;
+        inactiveMemberControl.canModifyDist = true;
       }
+      // 如果是活动进来的
     }
     if (item.code === saler) {
       if (memberInfo.value.belongUid && memberInfo.value.belongUser) {
