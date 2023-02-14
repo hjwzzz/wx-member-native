@@ -202,6 +202,33 @@ const enum BILL_KIND_CODE {
   GXS = 'GXS',
 }
 
+const BILL_KIND_CODE_DESC = {
+
+  /** 首饰销售 */
+  [BILL_KIND_CODE.JXS]: '销售',
+
+  /** 首饰销退 */
+  [BILL_KIND_CODE.JXT]: '销退',
+
+  /** 饰品销售 */
+  [BILL_KIND_CODE.PXS]: '销售',
+
+  /** 饰品销退 */
+  [BILL_KIND_CODE.PXT]: '销退',
+
+  /** 旧料回收 */
+  [BILL_KIND_CODE.REC]: '回收',
+
+  /** 旧料退客 */
+  [BILL_KIND_CODE.RET]: '退客',
+
+  /** 礼品销退 */
+  [BILL_KIND_CODE.GXT]: '销退',
+
+  /** 礼品销售 */
+  [BILL_KIND_CODE.GXS]: '销售',
+};
+
 const params = reactive({
   curPage: 1,
   pageSize: 20,
