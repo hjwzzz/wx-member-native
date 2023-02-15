@@ -43,8 +43,8 @@
                 >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}
               </view>
               <view
-                :class="`quality-cell-content-list-item-status  ${goods.status}`"
-                >{{ goods.status }}
+                :class="`quality-cell-content-list-item-status  ${(BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className}`"
+                >{{ (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
               </view>
               <view class="quality-cell-content-list-item-value"
                 >￥{{ goods.amount }}
@@ -205,28 +205,52 @@ const enum BILL_KIND_CODE {
 const BILL_KIND_CODE_DESC = {
 
   /** 首饰销售 */
-  [BILL_KIND_CODE.JXS]: '销售',
+  [BILL_KIND_CODE.JXS]: {
+    desc: '销售',
+    className: 'A'
+  },
 
   /** 首饰销退 */
-  [BILL_KIND_CODE.JXT]: '销退',
+  [BILL_KIND_CODE.JXT]: {
+    desc: '销退',
+    className: 'C'
+  },
 
   /** 饰品销售 */
-  [BILL_KIND_CODE.PXS]: '销售',
+  [BILL_KIND_CODE.PXS]: {
+    desc: '销售',
+    className: 'A'
+  },
 
   /** 饰品销退 */
-  [BILL_KIND_CODE.PXT]: '销退',
+  [BILL_KIND_CODE.PXT]: {
+    desc: '销退',
+    className: 'C'
+  },
 
   /** 旧料回收 */
-  [BILL_KIND_CODE.REC]: '回收',
+  [BILL_KIND_CODE.REC]: {
+    desc: '回收',
+    className: 'B'
+  },
 
   /** 旧料退客 */
-  [BILL_KIND_CODE.RET]: '退客',
+  [BILL_KIND_CODE.RET]: {
+    desc: '退客',
+    className: 'C'
+  },
 
   /** 礼品销退 */
-  [BILL_KIND_CODE.GXT]: '销退',
+  [BILL_KIND_CODE.GXT]: {
+    desc: '销退',
+    className: 'C'
+  },
 
   /** 礼品销售 */
-  [BILL_KIND_CODE.GXS]: '销售',
+  [BILL_KIND_CODE.GXS]: {
+    desc: '销售',
+    className: 'A'
+  },
 };
 
 const params = reactive({
