@@ -7,7 +7,7 @@
           <view class="right">
             <view class="right-text">
               <picker mode="region" @change="bindPickerChange" :value="index">
-                <view class="uni-input">{{ index.filter(item => !!item).join('/') }}</view>
+                <view class="uni-input">{{ index.filter(item => !!item).join('/') || '请选择' }}</view>
               </picker>
             </view>
             <uni-icons type="arrowright" size="14"></uni-icons>
@@ -46,7 +46,7 @@ onLoad((e: any) => {
     index.value = e.area.split(',');
   }
 });
-const index = ref(['广东省', '深圳市', '罗湖区']);
+const index = ref([]);
 const detail = ref('');
 const bindPickerChange = (e: any) => index.value = e.target.value;
 const handleSaveAddress = () => {
