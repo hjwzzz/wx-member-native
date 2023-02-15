@@ -278,6 +278,7 @@ const getPointHistoryTotal = async () => {
   const body = {
     acctId: styleObj.value.id,
     curPage: page.value,
+    pageSize: 5000,
     startTime: timeValue.value,
     opKind: opKind.value,
   };
