@@ -36,15 +36,17 @@
                 @click="previewImage(goods)"
               >
               </image>
-              <view class="quality-cell-content-list-item-name">{{
-                goods.goodsName
-              }}</view>
+              <view class="quality-cell-content-list-item-name">
+                {{ goods.goodsName }}
+              </view>
               <view class="quality-cell-content-list-item-code"
                 >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}
               </view>
               <view
+                v-if="![PROD_CODE.GIFT, PROD_CODE.OMAT].includes(goods.prodCode)"
                 :class="`quality-cell-content-list-item-status  ${(BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className}`"
-                >{{ (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
+              >
+                {{ (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
               </view>
               <view class="quality-cell-content-list-item-value"
                 >￥{{ goods.amount }}
@@ -77,17 +79,18 @@
           >
           <view class="quality-cell-footer-value">
             <text>合计：</text>
-            <text class="quality-cell-footer-value-content"
-              >￥{{ getValueCount(item?.details) }}</text
-            >
+            <text class="quality-cell-footer-value-content">
+              ￥{{ getValueCount(item?.details) }}
+            </text>
           </view>
 
           <view class="quality-cell-footer-handle">
             <view
               class="quality-cell-footer-handle-btn delete"
               @click="deleteItem({ id: item.id })"
-              >删除</view
             >
+              删除
+            </view>
             <view
               class="quality-cell-footer-handle-btn detail"
               @click="goDetail(index, item)"
@@ -153,7 +156,7 @@ const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 const getValueCount = (list: any[] = []) => list.reduce((prev, { amount }: any) => prev + Number(amount), 0);
 
 const getNumLabel = (code: BILL_KIND_CODE) => {
-  if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.RET].includes(code)) {
+  if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.REF].includes(code)) {
     return '回收编号';
   }
 
@@ -172,7 +175,7 @@ const enum PROD_CODE {
   GIFT = 'GIFT',
 
   /** 旧料 */
-  OAMT = 'OAMT',
+  OMAT = 'OMAT',
 }
 
 const enum BILL_KIND_CODE {
@@ -193,7 +196,7 @@ const enum BILL_KIND_CODE {
   REC = 'REC',
 
   /** 旧料退客 */
-  RET = 'RET',
+  REF = 'REF',
 
   /** 礼品销退 */
   GXT = 'GXT',
@@ -207,49 +210,49 @@ const BILL_KIND_CODE_DESC = {
   /** 首饰销售 */
   [BILL_KIND_CODE.JXS]: {
     desc: '销售',
-    className: 'A'
+    className: 'A',
   },
 
   /** 首饰销退 */
   [BILL_KIND_CODE.JXT]: {
     desc: '销退',
-    className: 'C'
+    className: 'C',
   },
 
   /** 饰品销售 */
   [BILL_KIND_CODE.PXS]: {
     desc: '销售',
-    className: 'A'
+    className: 'A',
   },
 
   /** 饰品销退 */
   [BILL_KIND_CODE.PXT]: {
     desc: '销退',
-    className: 'C'
+    className: 'C',
   },
 
   /** 旧料回收 */
   [BILL_KIND_CODE.REC]: {
-    desc: '回收',
-    className: 'B'
+    desc: '已回收',
+    className: 'B',
   },
 
   /** 旧料退客 */
-  [BILL_KIND_CODE.RET]: {
+  [BILL_KIND_CODE.REF]: {
     desc: '退客',
-    className: 'C'
+    className: '',
   },
 
   /** 礼品销退 */
   [BILL_KIND_CODE.GXT]: {
     desc: '销退',
-    className: 'C'
+    className: 'C',
   },
 
   /** 礼品销售 */
   [BILL_KIND_CODE.GXS]: {
     desc: '销售',
-    className: 'A'
+    className: 'A',
   },
 };
 
@@ -303,7 +306,6 @@ const getWarrantyList = async () => {
 };
 
 const previewImage = (goods: any) => {
-
   if (goods.imgUrl === defaultGoodsImg) {
     return;
   }
