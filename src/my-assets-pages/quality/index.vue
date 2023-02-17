@@ -333,7 +333,12 @@ const popupDeleteConfirm = async () => {
     title: '删除成功',
     icon: 'success',
   });
+  setTimeout(() => {
+    params.curPage = 1;
+    getWarrantyList();
+  }, 800);
   popupDeleteRef.value.close();
+
 };
 const popupDeleteClose = () => {
   popupDeleteRef.value.close();
@@ -432,6 +437,10 @@ const onLoadMore = () => {
         font-size: 28rpx;
         font-weight: 700;
         color: #323338;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
       }
 
       .quality-cell-header-time {
@@ -447,6 +456,10 @@ const onLoadMore = () => {
         color: #9697a2;
         display: flex;
         align-items: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
 
         .quality-cell-header-num-icon {
           width: 32rpx;
@@ -482,12 +495,20 @@ const onLoadMore = () => {
           grid-area: name;
           font-size: 28rpx;
           color: #323338;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          word-break: break-all;
         }
 
         .quality-cell-content-list-item-code {
           grid-area: code;
           font-size: 24rpx;
           color: #9697a2;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          word-break: break-all;
         }
 
         .quality-cell-content-list-item-status {
