@@ -36,7 +36,7 @@
                   储值金额({{ styleObj.unit || '' }})
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
-                  {{ styleObj.value || 0 }}
+                  {{ styleObj.totalValueIn || 0 }}
                 </view>
               </view>
               <view class="right">
@@ -44,7 +44,7 @@
                   赠送金额({{ styleObj.unit || '' }})
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
-                  {{ styleObj.bonus || 0 }}
+                  {{ styleObj.totalBonusIn || 0 }}
                 </view>
               </view>
             </view>
@@ -98,7 +98,7 @@
                         income: item.opKind && item.opKind === 'BON_IN',
                       }"
                     >
-                      {{ incomeFun(item.opKind) }}{{ item.realValue }}
+                      {{ item.realValue }}
                     </view>
                   </view>
                   <view class="bottom">
@@ -210,6 +210,7 @@ onMounted(() => {
   styleObj.value = res || {};
   queryDepDetailPageFun();
   getPointHistoryTotal();
+  // refreshDepListFun();
 });
 
 const onRefresh = () => {

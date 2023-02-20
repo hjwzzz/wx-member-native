@@ -31,7 +31,7 @@
                 储值金额({{ item.unit || '' }})
               </view>
               <view class="bottomTo" :style="{ color: item.bottomTo }">
-                {{ item.value || 0 }}
+                {{ item.totalValueIn || 0 }}
               </view>
             </view>
             <view class="right">
@@ -39,7 +39,7 @@
                 赠送金额({{ item.unit || '' }})
               </view>
               <view class="bottomTo" :style="{ color: item.bottomTo }">
-                {{ item.bonus || 0 }}
+                {{ item.totalBonusIn || 0 }}
               </view>
             </view>
           </view>
