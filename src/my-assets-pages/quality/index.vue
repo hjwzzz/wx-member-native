@@ -324,10 +324,18 @@ const deleteItem = ({ id }: any) => {
 };
 
 const popupDeleteConfirm = async () => {
-  await updateWarrantyStatusRequest({
+  const { code, msg } = await updateWarrantyStatusRequest({
     id: deleteInfo.id,
     deleted: 'Y',
   });
+
+  if (code !== 0) {
+    uni.showToast({
+      title: msg || '删除失败',
+      icon: 'error',
+    });
+    return;
+  }
 
   uni.showToast({
     title: '删除成功',
