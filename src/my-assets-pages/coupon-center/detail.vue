@@ -59,7 +59,10 @@ import { staticUrl } from '@/utils/config';
 import Router from '@/utils/router';
 import Storage from '@/utils/storage';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
-import { getCouponsFront } from '@/my-assets-pages/api/coupon';
+import {
+  getCouponsFront,
+  getCouponCenterDetailFront,
+} from '@/my-assets-pages/api/coupon';
 // initBasicsData.mainColor
 const initBasicsData = useBasicsData();
 const modelShow = ref(false);
@@ -108,15 +111,49 @@ const isDisabled = computed(() => !(ticketData.value.surplus && !ticketData.valu
 // onShareAppMessage((res: any) => onShareCoupon(res));
 
 const couponId = ref('');
-const couponName = ref('');
-const couponStatus = ref('');
+const couponOptions = ref({});
 
 onLoad((options: any) => {
-  couponId.value = options.id;
-  couponName.value = options.name;
-  couponStatus.value = options.status;
+  const { id = '' } = options;
+  couponOptions.value = options;
+  couponId.value = id;
+
+  if (!id) {
+    const scene = String(options?.scene || wx.getLaunchOptionsSync().scene);
+    const couponDetailNum = options?.num;
+    console.log('scene', scene);
+    if (scene) {
+      uni.setStorageSync('couponDetailNum', scene);
+      getParamData(scene);
+    } else if (couponDetailNum) {
+      uni.setStorageSync('couponDetailNum', couponDetailNum);
+      getParamData(couponDetailNum, options);
+    } else {
+      const data = uni.getStorageSync('couponDetailNum');
+      getParamData(data);
+    }
+  } else {
+    getDetail();
+  }
+  // couponName.value = options.name;
+  // couponStatus.value = options.status;
   // createdtatus();
 });
+
+const getParamData = async (scene: any, ops = {}) => {
+  // const res = await getCenterCouponIdByStorageFront(scene);
+  // couponId.value = res.data
+  getDetail();
+};
+
+const getDetail = async () => {
+  const params = { centerId: couponId.value };
+  const res = await getCouponCenterDetailFront(params);
+  if (res.code === 0) {
+    console.log('res.data', res.data);
+    Object.assign(ticketData, res.data);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
