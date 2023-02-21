@@ -162,9 +162,9 @@ const getJXSClass = (goods: any) => {
     if (goods.reclaimed === 'Y') {
       return 'B';
     }
-    // if (goods.refunded === 'Y') {
-    //   return 'B';
-    // }
+    if (goods.refunded === 'Y') {
+      return 'B';
+    }
     return '';
   }
   return '';
@@ -178,9 +178,9 @@ const getJXSDesc = (goods: any) => {
     if (goods.reclaimed === 'Y') {
       return '已回收';
     }
-    // if (goods.refunded === 'Y') {
-    //   return '已退客';
-    // }
+    if (goods.refunded === 'Y') {
+      return '已销退';
+    }
   }
 };
 
