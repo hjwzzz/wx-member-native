@@ -44,9 +44,9 @@
               </view>
               <view
                 v-if="![PROD_CODE.GIFT, PROD_CODE.OMAT].includes(goods.prodCode)"
-                :class="`quality-cell-content-list-item-status  ${(BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className}`"
+                :class="`quality-cell-content-list-item-status ${(BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className} ${getJXSClass(goods)}`"
               >
-                {{ (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
+                {{ getJXSDesc(goods) ?? (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
               </view>
               <view class="quality-cell-content-list-item-value"
                 >￥{{ goods.amount }}
@@ -79,8 +79,8 @@
           >
           <view class="quality-cell-footer-value">
             <text>合计：</text>
-            <text class="quality-cell-footer-value-content">
-              ￥{{ getValueCount(item?.details) }}
+            <text class="quality-cell-footer-value-content" :style="{color: initBasicsData.mainColor}">
+              ￥{{ item.realAmt || 0 }}
             </text>
           </view>
 
@@ -93,8 +93,10 @@
             </view>
             <view
               class="quality-cell-footer-handle-btn detail"
+              :style="{background: initBasicsData.mainColor}"
               @click="goDetail(index, item)"
-              >查看详情</view
+              >查看详情
+              </view
             >
           </view>
         </view>
@@ -148,12 +150,43 @@ import {
 } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import Storage from '@/utils/storage';
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
+
+const getJXSClass = (goods: any) => {
+  if (goods.billKindCode === BILL_KIND_CODE.JXS) {
+    if (goods.recrefund === 'Y') {
+      return 'B';
+    }
+    if (goods.reclaimed === 'Y') {
+      return 'B';
+    }
+    if (goods.refunded === 'Y') {
+      return 'B';
+    }
+    return '';
+  }
+  return '';
+};
+
+const getJXSDesc = (goods: any) => {
+  if (goods.billKindCode === BILL_KIND_CODE.JXS) {
+    if (goods.recrefund === 'Y') {
+      return '已销退';
+    }
+    if (goods.reclaimed === 'Y') {
+      return '已回收';
+    }
+    if (goods.refunded === 'Y') {
+      return '已退客';
+    }
+  }
+};
 
 const defaultGoodsImg = `${staticUrl}img/goods.png`;
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
-
-const getValueCount = (list: any[] = []) => list.reduce((prev, { amount }: any) => prev + Number(amount), 0);
 
 const getNumLabel = (code: BILL_KIND_CODE) => {
   if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.REF].includes(code)) {
@@ -559,7 +592,7 @@ const onLoadMore = () => {
 
     .quality-cell-footer {
       display: grid;
-      grid-template-columns: auto 1fr;
+      grid-template-columns: 1fr 1fr;
       grid-template-rows: auto;
       grid-gap: 12rpx;
       grid-template-areas:
@@ -576,6 +609,10 @@ const onLoadMore = () => {
         font-size: 24rpx;
         color: #9697a2;
         grid-area: footerValue;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-all;
 
         .quality-cell-footer-value-content {
           font-size: 28rpx;
