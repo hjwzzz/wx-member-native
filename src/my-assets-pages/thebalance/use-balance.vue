@@ -92,16 +92,11 @@
                 >
                   <view class="top">
                     <view class="left">
-                      <text v-if="item.remark">
-                        {{ getText(item.remark) || '' }}
+                      <text v-if="item.opReason">
+                        {{ getText(item.opReason) || '' }}
                       </text>
                     </view>
-                    <view
-                      class="bottwo"
-                      :class="{
-                        income: item.opKind && item.opKind === 'BON_IN',
-                      }"
-                    >
+                    <view class="bottwo">
                       {{ item.realValue }}
                     </view>
                   </view>
@@ -292,14 +287,49 @@ const getPointHistoryTotal = async () => {
   totalOutOfMonth.value = res.data.totalOutOfMonth || 0;
 };
 
+// <a-select-option value="XCHG">兑现</a-select-option>
+// <a-select-option value="REC">收回</a-select-option>
+// <a-select-option value="BACK">返还</a-select-option>
+
+// <a-select-option value="DIFF">补差</a-select-option>
+// <a-select-option value="PRF">结息</a-select-option>
+// <a-select-option value="MAN">手动</a-select-option>
+// <a-select-option value="IMP">导入</a-select-option>
+// <a-select-option value="CHRG">充值</a-select-option>
+// <a-select-option value="GIVE">赠送</a-select-option>
+// <a-select-option value="CHRG_RET">充值退账</a-select-option>
+// <a-select-option value="GIVE_RET">赠送退账</a-select-option>
+// <a-select-option value="CHRG_DEC">充值扣减</a-select-option>
+// <a-select-option value="GIVE_DEC">赠送扣减</a-select-option>
+// <a-select-option value="CHRG_REC">充值退回</a-select-option>
+//  <a-select-option value="GIVE_REC">赠送退回</a-select-option>
+
 // 截取字符串
 const getText = (str: any) => {
-  let result = '';
-  result = str.substring(0, 12);
-  if (result.length >= 12) {
-    return `${result}...`;
-  }
-  return result;
+  const showText: any = {
+    XCHG: '兑现',
+    REC: '收回',
+    BACK: '返还',
+    DIFF: '补差',
+    PRF: '结息',
+    MAN: '手动',
+    IMP: '导入',
+    CHRG: '充值',
+    GIVE: '赠送',
+    CHRG_RET: '充值退账',
+    GIVE_RET: '赠送退账',
+    CHRG_DEC: '充值扣减',
+    GIVE_DEC: '赠送扣减',
+    CHRG_REC: '赠送退回',
+    GIVE_REC: '赠送退回',
+  };
+
+  // let result = '';
+  // result = str.substring(0, 12);
+  // if (result.length >= 12) {
+  //   return `${result}...`;
+  // }
+  return showText[str] || '--';
 };
 
 // 刷新接口
