@@ -33,7 +33,7 @@
             <view class="foolt">
               <view class="left">
                 <view class="topTo" :style="{ color: styleObj.topTo }">
-                  储值金额({{ styleObj.unit || '' }})
+                  累计充值
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
                   {{ styleObj.totalValueIn || 0 }}
@@ -41,7 +41,7 @@
               </view>
               <view class="right">
                 <view class="topTo" :style="{ color: styleObj.topTo }">
-                  赠送金额({{ styleObj.unit || '' }})
+                  累计赠送
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
                   {{ styleObj.totalBonusIn || 0 }}
@@ -66,14 +66,18 @@
                     {{ timeValue }}
                   </view>
                   <view class="right">
-                    <view class="r1" v-if="current === 0 || current === 1">
+                    <!-- v-if="current === 0 || current === 1" -->
+                    <view class="r1">
                       收入：<text class="yuan">
                         {{ totalInOfMonth }}
                       </text>
                     </view>
-                    <view class="r2" v-if="current === 0 || current === 2">
+                    <!--v-if="current === 0 || current === 2" -->
+                    <view class="r2">
                       支出：<text class="yuan">
-                        {{ totalOutOfMonth }}
+                        {{
+                          current === 1 || current === 2 ? 0 : totalOutOfMonth
+                        }}
                       </text>
                     </view>
                   </view>
@@ -185,11 +189,11 @@ const tabList = [
     key: 0,
   },
   {
-    name: '收入',
+    name: '充值',
     key: 1,
   },
   {
-    name: '支出',
+    name: '赠送',
     key: 2,
   },
 ];
@@ -243,7 +247,7 @@ const queryDepDetailPageFun = async () => {
     acctId: styleObj.value.id,
     curPage: page.value,
     startTime: timeValue.value,
-    opKind: opKind.value,
+    opReason: opKind.value,
     pageSize: 5000,
   };
   dataList.value = [];
@@ -281,7 +285,7 @@ const getPointHistoryTotal = async () => {
     curPage: page.value,
     pageSize: 5000,
     startTime: timeValue.value,
-    opKind: opKind.value,
+    opReason: opKind.value,
   };
   const res: any = await getDepositHistoryTotalFront(body);
   totalInOfMonth.value = res.data.totalInOfMonth || 0;
@@ -331,7 +335,8 @@ const changeTabs = ({ index }: any) => {
   current.value = index;
   page.value = 1;
   dataList.value = [];
-  opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
+  // CHRG：充值 GIVE：赠送
+  opKind.value = index === 0 ? '' : index === 1 ? 'CHRG' : 'GIVE';
   dataList.value = [];
   queryDepDetailPageFun();
 };
