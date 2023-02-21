@@ -16,6 +16,13 @@ export const queryCouponCenterListFront = async (data: any) => {
   return res;
 };
 
+// 查询领券中心可领取优惠券详情  新接口
+export const getCouponCenterDetailFront = async (data: any) => {
+  const url = `${devBaseUrl}/coupon/center/getCouponCenterDetailFront`;
+  const res = await request(url, data);
+  return res;
+};
+
 // 优惠券--领取优惠券   新接口
 export const getCouponsFront = async (data: any) => {
   const url = `${devBaseUrl}/coupon/center/usr/getCouponsFront`;
