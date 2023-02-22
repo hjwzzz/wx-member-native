@@ -22,6 +22,12 @@ export const getCouponCenterDetailFront = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+// /coupon/center/getCenterCouponIdByStorageFront
+export const getCenterCouponIdByStorageFront = async (data: any) => {
+  const url = `${devBaseUrl}/coupon/center/getCenterCouponIdByStorageFront`;
+  const res = await request(url, data);
+  return res;
+};
 
 // 优惠券--领取优惠券   新接口
 export const getCouponsFront = async (data: any) => {

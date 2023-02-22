@@ -62,6 +62,7 @@ import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/ind
 import {
   getCouponsFront,
   getCouponCenterDetailFront,
+  getCenterCouponIdByStorageFront,
 } from '@/my-assets-pages/api/coupon';
 // initBasicsData.mainColor
 const initBasicsData = useBasicsData();
@@ -85,8 +86,8 @@ const getCoupon = async () => {
     });
   }
   const res = await getCouponsFront({
-    centerId: item.id,
-    couponId: item.couponId,
+    centerId: ticketData.value.id,
+    couponId: ticketData.value.couponId,
     mid: initBasicsData.useMid,
     relatedAppId: Storage.getJqzAppId(),
   });
@@ -140,9 +141,10 @@ onLoad((options: any) => {
   // createdtatus();
 });
 
+// getCenterCouponIdByStorageFront
 const getParamData = async (scene: any, ops = {}) => {
-  // const res = await getCenterCouponIdByStorageFront(scene);
-  // couponId.value = res.data
+  const res = await getCenterCouponIdByStorageFront(scene);
+  couponId.value = res.data;
   getDetail();
 };
 
@@ -151,7 +153,8 @@ const getDetail = async () => {
   const res = await getCouponCenterDetailFront(params);
   if (res.code === 0) {
     console.log('res.data', res.data);
-    Object.assign(ticketData, res.data);
+    ticketData.value = res.data;
+    // Object.assign(ticketData, res.data);
   }
 };
 </script>
