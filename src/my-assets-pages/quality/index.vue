@@ -156,9 +156,6 @@ const initBasicsData = useBasicsData();
 
 const getStatusClass = (goods: any) => {
   if (goods.billKindCode === BILL_KIND_CODE.JXS) {
-    if (goods.recrefund === 'Y') {
-      return 'B';
-    }
     if (goods.refunded === 'Y') {
       return 'B';
     }
@@ -172,9 +169,6 @@ const getStatusClass = (goods: any) => {
 
 const getStatusDesc = (goods: any) => {
   if (goods.billKindCode === BILL_KIND_CODE.JXS) {
-    if (goods.recrefund === 'Y') {
-      return '已销退';
-    }
     if (goods.refunded === 'Y') {
       return '已销退';
     }
