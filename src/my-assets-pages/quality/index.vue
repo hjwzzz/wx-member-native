@@ -44,9 +44,9 @@
               </view>
               <view
                 v-if="![PROD_CODE.GIFT, PROD_CODE.OMAT].includes(goods.prodCode)"
-                :class="`quality-cell-content-list-item-status ${(BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className} ${getJXSClass(goods)}`"
+                :class="`quality-cell-content-list-item-status ${getStatusClass(goods)}`"
               >
-                {{ getJXSDesc(goods) ?? (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc }}
+                {{ getStatusDesc(goods) }}
               </view>
               <view class="quality-cell-content-list-item-value"
                 >￥{{ goods.amount }}
@@ -154,34 +154,38 @@ import { useBasicsData } from '@/store/basicsData';
 
 const initBasicsData = useBasicsData();
 
-const getJXSClass = (goods: any) => {
+const getStatusClass = (goods: any) => {
   if (goods.billKindCode === BILL_KIND_CODE.JXS) {
     if (goods.recrefund === 'Y') {
-      return 'B';
-    }
-    if (goods.reclaimed === 'Y') {
       return 'B';
     }
     if (goods.refunded === 'Y') {
       return 'B';
     }
-    return '';
+    if (goods.reclaimed === 'Y') {
+      return 'B';
+    }
+    return 'A';
   }
-  return '';
+  return (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.className;
 };
 
-const getJXSDesc = (goods: any) => {
+const getStatusDesc = (goods: any) => {
   if (goods.billKindCode === BILL_KIND_CODE.JXS) {
     if (goods.recrefund === 'Y') {
+      return '已销退';
+    }
+    if (goods.refunded === 'Y') {
       return '已销退';
     }
     if (goods.reclaimed === 'Y') {
       return '已回收';
     }
-    if (goods.refunded === 'Y') {
-      return '已销退';
-    }
+
+    return '销售';
   }
+
+  return (BILL_KIND_CODE_DESC as any)[goods.billKindCode]?.desc;
 };
 
 const defaultGoodsImg = `${staticUrl}img/goods.png`;
