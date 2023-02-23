@@ -6,7 +6,7 @@
       }`"
     >
       <view class="name" :style="{ color: couponItem.showMainColor }">
-        {{ item.name || item.couponName }}
+        {{ item?.name || item?.couponName }}
       </view>
       <view class="handle" v-if="showStatus">
         <slot

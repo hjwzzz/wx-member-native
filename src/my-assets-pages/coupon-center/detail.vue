@@ -41,7 +41,7 @@
       :visible="modelShow"
       :type="getResult"
       @ok="onConfirm"
-      @cancel="modelShow = false"
+      @cancel="onCancel"
     />
   </CustomPage>
 </template>
@@ -68,6 +68,10 @@ const modelShow = ref(false);
 const getResult = ref('success');
 const onConfirm = () => {
   Router.goCodePage('coupon');
+};
+const onCancel = () => {
+  modelShow.value = false;
+  getDetail();
 };
 const ticketData: Ref<any> = ref({});
 const getCoupon = async () => {
