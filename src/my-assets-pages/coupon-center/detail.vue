@@ -1,16 +1,15 @@
 <template>
-  <CustomPage>
+  <CustomPage bottom>
     <view class="detail">
       <view class="coupon-box">
-        <CouponItem
-          :item="ticketData"
-          :showStatus="ticketData.couponStatus === 'EFFECTIVE'"
-        >
+        <!-- :showStatus="ticketData.couponStatus === 'EFFECTIVE'" -->
+        <CouponItem :item="ticketData" :showStatus="true">
           <template #bottom-left>
             <text>
-              有效期：{{ ticketData.cutValidTime }}至{{
+              <!-- 有效期：{{ ticketData.cutValidTime }}至{{
                 ticketData.cutExpireTime
-              }}
+              }} -->
+              {{ ticketData.couponValidTime }}
             </text>
           </template>
         </CouponItem>
@@ -24,18 +23,17 @@
         </view>
       </view>
     </view>
-
-    <view class="btn-box">
+    <view class="center-box btn-box">
       <view
-        class="btn-item"
+        class="center-box btn-item"
         :style="{
           background: isDisabled ? '#D8D9E0' : initBasicsData.mainColor,
         }"
         @click="getCoupon()"
       >
-        <!-- <template v-if="info.restrictStatus === 1">已领取</template>
-        <template v-else-if="info.surplus === 0">已领完</template>
-        <template v-else>立即领取</template> -->
+        <text v-if="ticketData.restrictStatus === 1">已领取</text>
+        <text v-else-if="ticketData.surplus === 0">已领完</text>
+        <text v-else>立即领取</text>
       </view>
     </view>
 
@@ -119,8 +117,10 @@ onLoad((options: any) => {
   couponOptions.value = options;
   couponId.value = id;
 
+  // D3E5A47EE8F32753
+
   if (!id) {
-    const scene = String(options?.scene || wx.getLaunchOptionsSync().scene);
+    const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
     const couponDetailNum = options?.num;
     console.log('scene', scene);
     if (scene) {
@@ -149,8 +149,8 @@ const getParamData = async (scene: any, ops = {}) => {
 };
 
 const getDetail = async () => {
-  const params = { centerId: couponId.value };
-  const res = await getCouponCenterDetailFront(params);
+  // const params = { centerId: couponId.value };
+  const res = await getCouponCenterDetailFront(couponId.value);
   if (res.code === 0) {
     console.log('res.data', res.data);
     ticketData.value = res.data;
@@ -204,23 +204,30 @@ const getDetail = async () => {
     }
   }
 }
+
+.center-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .btn-box {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 10rpx 32rpx;
+  height: 100rpx;
   background-color: #fff;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  .btn-item {
+    height: 80rpx;
+    width: 80vw;
+    color: #fff;
+    font-size: 28rpx;
+    border-radius: 200rpx;
+  }
 }
-.btn-item {
-  display: block;
-  height: 80rpx;
-  color: #fff;
-  font-size: 28rpx;
-  line-height: 80rpx;
-  text-align: center;
-  border-radius: 200rpx;
-}
+
 .coupon-box {
   padding: 30rpx 30rpx 0;
 }
