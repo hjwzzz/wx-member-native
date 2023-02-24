@@ -192,7 +192,7 @@ const defaultGoodsImg = `${staticUrl}img/goods.png`;
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
 
-const getQuantityCount = (list: any[]) => list.reduce((acc, cur) => Number(acc) + Number(cur.quantity), 0);
+const getQuantityCount = (list: any[]) => list.reduce((acc, cur) => Number(acc) + Number(cur.quantity) || '-', 0);
 
 const getNumLabel = (code: BILL_KIND_CODE) => {
   if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.REF].includes(code)) {
