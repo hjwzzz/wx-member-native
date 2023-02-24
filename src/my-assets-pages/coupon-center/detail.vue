@@ -47,13 +47,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onShareAppMessage, onLoad } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
-import { computed, onMounted, ref, Ref } from 'vue';
-import { richImage, onShareCoupon } from '@/utils/util';
+import { computed, ref, Ref } from 'vue';
+import { richImage } from '@/utils/util';
 // import { queryCouponPageFront } from '@/my-assets-pages/api/coupon';
 import { useBasicsData } from '@/store/basicsData';
-import { staticUrl } from '@/utils/config';
+// import { staticUrl } from '@/utils/config';
 import Router from '@/utils/router';
 import Storage from '@/utils/storage';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
@@ -121,25 +121,35 @@ onLoad((options: any) => {
   couponOptions.value = options;
   couponId.value = id;
 
-  // D3E5A47EE8F32753
-
-  if (!id) {
-    const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
-    const couponDetailNum = options?.num;
-    console.log('scene', scene);
-    if (scene) {
-      uni.setStorageSync('couponDetailNum', scene);
-      getParamData(scene);
-    } else if (couponDetailNum) {
-      uni.setStorageSync('couponDetailNum', couponDetailNum);
-      getParamData(couponDetailNum, options);
-    } else {
-      const data = uni.getStorageSync('couponDetailNum');
-      getParamData(data);
-    }
-  } else {
-    getDetail();
+  if (couponId.value) {
+    return getDetail();
   }
+
+  const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
+  if (scene) {
+    uni.setStorageSync('couponDetailscene', scene);
+    getParamData(scene);
+  } else {
+    const m_scene = uni.getStorageSync('couponDetailscene');
+    getParamData(m_scene);
+  }
+
+  // if (!id) {
+  //   const couponDetailNum = options?.num;
+  //   console.log('scene', scene);
+  //   if (scene) {
+  //     uni.setStorageSync('couponDetailNum', scene);
+  //     getParamData(scene);
+  //   } else if (couponDetailNum) {
+  //     uni.setStorageSync('couponDetailNum', couponDetailNum);
+  //     getParamData(couponDetailNum, options);
+  //   } else {
+  //     const data = uni.getStorageSync('couponDetailNum');
+  //     getParamData(data);
+  //   }
+  // } else {
+  //   getDetail();
+  // }
   // couponName.value = options.name;
   // couponStatus.value = options.status;
   // createdtatus();
@@ -156,7 +166,7 @@ const getDetail = async () => {
   // const params = { centerId: couponId.value };
   const res = await getCouponCenterDetailFront(couponId.value);
   if (res.code === 0) {
-    console.log('res.data', res.data);
+    // console.log('res.data', res.data);
     ticketData.value = res.data;
     // Object.assign(ticketData, res.data);
   }
