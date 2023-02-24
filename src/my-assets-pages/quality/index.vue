@@ -43,8 +43,12 @@
                 >{{ getNumLabel(goods.billKindCode) }}：{{ goods.number }}
               </view>
               <view
-                v-if="![PROD_CODE.GIFT, PROD_CODE.OMAT].includes(goods.prodCode)"
-                :class="`quality-cell-content-list-item-status ${getStatusClass(goods)}`"
+                v-if="
+                  ![PROD_CODE.GIFT, PROD_CODE.OMAT].includes(goods.prodCode)
+                "
+                :class="`quality-cell-content-list-item-status ${getStatusClass(
+                  goods
+                )}`"
               >
                 {{ getStatusDesc(goods) }}
               </view>
@@ -74,12 +78,15 @@
         </view>
 
         <view class="quality-cell-footer">
-          <view class="quality-cell-footer-count"
-            >总计(数量)：{{ item.details?.length || 0 }}</view
-          >
+          <view class="quality-cell-footer-count">
+            总计(数量)：{{ getQuantityCount(item.details) }}
+          </view>
           <view class="quality-cell-footer-value">
             <text>合计：</text>
-            <text class="quality-cell-footer-value-content" :style="{color: initBasicsData.mainColor}">
+            <text
+              class="quality-cell-footer-value-content"
+              :style="{ color: initBasicsData.mainColor }"
+            >
               ￥{{ item.realAmt || 0 }}
             </text>
           </view>
@@ -93,11 +100,10 @@
             </view>
             <view
               class="quality-cell-footer-handle-btn detail"
-              :style="{background: initBasicsData.mainColor}"
+              :style="{ background: initBasicsData.mainColor }"
               @click="goDetail(index, item)"
               >查看详情
-              </view
-            >
+            </view>
           </view>
         </view>
       </view>
@@ -185,6 +191,8 @@ const getStatusDesc = (goods: any) => {
 const defaultGoodsImg = `${staticUrl}img/goods.png`;
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
+
+const getQuantityCount = (list: any[]) => list.reduce((acc, cur) => Number(acc) + Number(cur.quantity), 0);
 
 const getNumLabel = (code: BILL_KIND_CODE) => {
   if ([BILL_KIND_CODE.REC, BILL_KIND_CODE.REF].includes(code)) {
@@ -377,7 +385,6 @@ const popupDeleteConfirm = async () => {
     getWarrantyList();
   }, 800);
   popupDeleteRef.value.close();
-
 };
 const popupDeleteClose = () => {
   popupDeleteRef.value.close();

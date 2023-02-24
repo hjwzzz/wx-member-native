@@ -96,6 +96,7 @@ const handleSaveAddress = () => {
 
       .right {
         display: flex;
+        align-items: center;
 
         .right-text {
           height: 40rpx;

@@ -113,6 +113,7 @@ const handleSaveAddress = async () => {
 
       .right {
         display: flex;
+        align-items: center;
 
         .right-text {
           height: 40rpx;
