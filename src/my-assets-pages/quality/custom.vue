@@ -14,7 +14,7 @@ onLoad(async (options: any) => {
     url.value = `${res.data.url}?n=${options.n}&t=${options.t}&a=${options.a}&e=${options.e}`;
   } else {
     uni.showToast({
-      title: '暂无在EMP配置门店',
+      title: '请联系商家配置门店质保单模板',
       duration: 3000,
       icon: 'none',
     });
