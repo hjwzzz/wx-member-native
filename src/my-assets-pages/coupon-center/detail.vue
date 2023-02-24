@@ -73,6 +73,7 @@ const onCancel = () => {
   modelShow.value = false;
   getDetail();
 };
+
 const ticketData: Ref<any> = ref({});
 const getCoupon = async () => {
   if (!initBasicsData.checkLogin) {
@@ -82,6 +83,7 @@ const getCoupon = async () => {
       confirmText: '立即登录',
       success: res => {
         if (res.confirm) {
+          initBasicsData.setCouponPopularizeScene(saveScene.value);
           Router.goCodePage('login');
         }
       },
@@ -115,6 +117,7 @@ const isDisabled = computed(() => !(ticketData.value.surplus && !ticketData.valu
 
 const couponId = ref('');
 const couponOptions = ref({});
+const saveScene = ref('');
 
 onLoad((options: any) => {
   const { id = '' } = options;
@@ -128,12 +131,15 @@ onLoad((options: any) => {
   const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
   if (scene) {
     uni.setStorageSync('couponDetailscene', scene);
+    saveScene.value = scene;
     getParamData(scene);
   } else {
-    const m_scene = uni.getStorageSync('couponDetailscene');
+    const m_scene =
+      uni.getStorageSync('couponDetailscene') ||
+      initBasicsData.couponPopularizeScene;
     getParamData(m_scene);
   }
-
+  // couponPopularizeScene
   // if (!id) {
   //   const couponDetailNum = options?.num;
   //   console.log('scene', scene);
