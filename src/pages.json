@@ -219,6 +219,12 @@
           }
         },
         {
+          "path": "coupon-center/detail",
+          "style": {
+            "navigationBarTitleText": "优惠券"
+          }
+        },
+        {
           "path": "my-coupon/index",
           "style": {
             "navigationBarTitleText": "我的优惠券"
