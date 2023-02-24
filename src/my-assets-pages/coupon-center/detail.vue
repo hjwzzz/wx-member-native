@@ -2,8 +2,8 @@
   <CustomPage bottom>
     <view class="detail">
       <view class="coupon-box">
-        <!-- :showStatus="ticketData.couponStatus === 'EFFECTIVE'" -->
-        <CouponItem :item="ticketData" :showStatus="true">
+        <!-- :showStatus="ticketData.couponStatus === 'EFFECTIVE'"  isDisabled-->
+        <CouponItem :item="ticketData" :showStatus="!isDisabled">
           <template #bottom-left>
             <text>
               <!-- 有效期：{{ ticketData.cutValidTime }}至{{
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import { computed, ref, Ref } from 'vue';
 import { richImage } from '@/utils/util';
@@ -119,16 +119,22 @@ const couponId = ref('');
 const couponOptions = ref({});
 const saveScene = ref('');
 
+onShow(() => {
+  if (saveScene.value) {
+    getParamData(saveScene.value);
+  }
+});
+
 onLoad((options: any) => {
+  initBasicsData.setCouponPopularizeScene('');
   const { id = '' } = options;
   couponOptions.value = options;
   couponId.value = id;
-
   if (couponId.value) {
     return getDetail();
   }
-
   const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
+  // console.log('scene', scene);
   if (scene) {
     uni.setStorageSync('couponDetailscene', scene);
     saveScene.value = scene;
