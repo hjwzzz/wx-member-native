@@ -281,11 +281,22 @@ import { onShow } from '@dcloudio/uni-app';
 import { computed, ref, watch } from 'vue';
 import Lunar from '@/utils/date';
 import router from '@/utils/router';
-import { mergeFullAddress } from '@/utils/util';
 import { IPrivateFieldItem, IInfoField } from '@/api/types/server';
 import UserIcon from '@/pages/login/UserIcon.vue';
 import CalendarPicker from '@/components/Birthcalendar/index.vue';
 import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
+
+const mergeFullAddress = (i: any, prefix = ''): string => {
+  const {
+    [prefix ? `${prefix}Province` : 'province']: province,
+    [prefix ? `${prefix}City` : 'city']: city,
+    [prefix ? `${prefix}District` : 'district']: district,
+    [prefix ? `${prefix}Address` : 'address']: address,
+  } = i;
+  // 详细地址
+  return [province, city, district, address].filter(Boolean)
+    .join('/');
+};
 
 
 const BirthCalendarPickerRef = ref();

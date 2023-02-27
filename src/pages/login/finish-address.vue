@@ -41,10 +41,8 @@ import { onLoad } from '@dcloudio/uni-app';
 import { ref, unref } from 'vue';
 
 onLoad((e: any) => {
-  if (e.address) {
-    detail.value = e.address;
-    index.value = e.area.split(',');
-  }
+  detail.value = e.address;
+  index.value = e.area.split(',');
 });
 const index = ref([]);
 const detail = ref('');
@@ -107,6 +105,13 @@ const handleSaveAddress = () => {
           margin-right: 16rpx;
           max-width: 510rpx;
           overflow: hidden;
+
+          .uni-input {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+          }
         }
       }
     }

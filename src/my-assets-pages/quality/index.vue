@@ -64,7 +64,7 @@
               @click="item.expand = true"
             >
               展开全部
-              <uni-icons type="bottom" size="14"></uni-icons>
+              <uni-icons type="bottom" size="14" color="#B7B8C4"></uni-icons>
             </view>
             <view
               v-else
@@ -72,7 +72,7 @@
               @click="item.expand = false"
             >
               收起全部
-              <uni-icons type="top" size="14"></uni-icons>
+              <uni-icons type="top" size="14" color="#B7B8C4"></uni-icons>
             </view>
           </template>
         </view>
@@ -199,7 +199,7 @@ const getNumLabel = (code: BILL_KIND_CODE) => {
     return '回收编号';
   }
 
-  return '条形码';
+  return '条码号';
 };
 
 const enum PROD_CODE {
