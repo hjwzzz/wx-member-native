@@ -105,6 +105,13 @@ const handleSaveAddress = () => {
           margin-right: 16rpx;
           max-width: 510rpx;
           overflow: hidden;
+
+          .uni-input {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+          }
         }
       }
     }
