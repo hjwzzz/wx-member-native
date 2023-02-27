@@ -12,7 +12,7 @@
                   @change="(e:any)=>index = e.target.value"
                   :value="index"
                 >
-                  <view class="uni-input">{{ index.join('/') }}</view>
+                  <view class="uni-input">{{ index.filter(Boolean).join('/') || '请选择' }}</view>
                 </picker>
               </view>
               <uni-icons
@@ -63,7 +63,7 @@ const queryInfo = async () => {
   }
 };
 const showregion = ref(false);
-const index = ref(['广东省', '深圳市', '罗湖区']);
+const index = ref<string[]>([]);
 const detail = ref('');
 const handleSaveAddress = async () => {
   const [province, city, district] = index.value;
@@ -113,6 +113,7 @@ const handleSaveAddress = async () => {
 
       .right {
         display: flex;
+        align-items: center;
 
         .right-text {
           height: 40rpx;
@@ -123,6 +124,13 @@ const handleSaveAddress = async () => {
           margin-right: 16rpx;
           max-width: 510rpx;
           // overflow: hidden;
+
+          .uni-input {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+          }
         }
       }
     }

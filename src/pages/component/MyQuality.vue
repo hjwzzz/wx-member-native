@@ -47,6 +47,8 @@ import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
 import NoneData from './NoneData.vue';
+import { onShow } from '@dcloudio/uni-app';
+
 const initBasicsData = useBasicsData();
 
 interface Props {
@@ -100,6 +102,15 @@ watch(
     }
   }
 );
+
+onShow(() => {
+  if (initBasicsData.checkLogin) {
+    getPolicyList();
+    return;
+  }
+  policyList.records = [];
+  policyList.totalRecord = 0;
+});
 </script>
 
 <style lang="scss" scoped>
