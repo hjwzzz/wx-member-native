@@ -81,12 +81,12 @@
               </view>
               <view
                 v-show="
-                  info.code === 'REGIST_REQUIRED_ADDRESS' && memberInfo.address
+                  info.code === 'REGIST_REQUIRED_ADDRESS'
                 "
                 class="guid"
               >
                 <text class="letter">
-                  {{ memberInfoAddressDet }}/{{ memberInfo.address }}
+                  {{ memberInfoAddressDet }}
                 </text>
               </view>
               <!-- 性别 -->
@@ -326,8 +326,8 @@ const maritalValue = ref('0');
 const memberInfo = ref<any>({});
 const selectedShop = ref<any>({});
 const memberInfoAddressDet = computed(() => {
-  const { province = '', city = '', district = '' } = memberInfo.value;
-  return [province, city, district].filter(Boolean)
+  const { province = '', city = '', district = '', address = '' } = memberInfo.value;
+  return [province, city, district, address].filter(Boolean)
     .join('/');
 });
 const showAnnday = ref('');
