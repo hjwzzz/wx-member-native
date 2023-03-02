@@ -33,18 +33,18 @@
             <view class="foolt">
               <view class="left">
                 <view class="topTo" :style="{ color: styleObj.topTo }">
-                  储值金额({{ styleObj.unit || '' }})
+                  累计充值
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
-                  {{ styleObj.value || 0 }}
+                  {{ styleObj.totalValueIn || 0 }}
                 </view>
               </view>
               <view class="right">
                 <view class="topTo" :style="{ color: styleObj.topTo }">
-                  赠送金额({{ styleObj.unit || '' }})
+                  累计赠送
                 </view>
                 <view class="bottomTo" :style="{ color: styleObj.bottomTo }">
-                  {{ styleObj.bonus || 0 }}
+                  {{ styleObj.totalBonusIn || 0 }}
                 </view>
               </view>
             </view>
@@ -66,14 +66,18 @@
                     {{ timeValue }}
                   </view>
                   <view class="right">
-                    <view class="r1" v-if="current === 0 || current === 1">
+                    <!-- v-if="current === 0 || current === 1" -->
+                    <view class="r1">
                       收入：<text class="yuan">
                         {{ totalInOfMonth }}
                       </text>
                     </view>
-                    <view class="r2" v-if="current === 0 || current === 2">
+                    <!--v-if="current === 0 || current === 2" -->
+                    <view class="r2">
                       支出：<text class="yuan">
-                        {{ totalOutOfMonth }}
+                        {{
+                          current === 1 || current === 2 ? 0 : totalOutOfMonth
+                        }}
                       </text>
                     </view>
                   </view>
@@ -88,17 +92,12 @@
                 >
                   <view class="top">
                     <view class="left">
-                      <text v-if="item.remark">
-                        {{ getText(item.remark) || '' }}
+                      <text v-if="item.opReason">
+                        {{ getText(item.opReason) || '' }}
                       </text>
                     </view>
-                    <view
-                      class="bottwo"
-                      :class="{
-                        income: item.opKind && item.opKind === 'BON_IN',
-                      }"
-                    >
-                      {{ incomeFun(item.opKind) }}{{ item.realValue }}
+                    <view class="bottwo">
+                      {{ item.realValue }}
                     </view>
                   </view>
                   <view class="bottom">
@@ -185,11 +184,11 @@ const tabList = [
     key: 0,
   },
   {
-    name: '收入',
+    name: '充值',
     key: 1,
   },
   {
-    name: '支出',
+    name: '赠送',
     key: 2,
   },
 ];
@@ -210,6 +209,7 @@ onMounted(() => {
   styleObj.value = res || {};
   queryDepDetailPageFun();
   getPointHistoryTotal();
+  // refreshDepListFun();
 });
 
 const onRefresh = () => {
@@ -242,7 +242,7 @@ const queryDepDetailPageFun = async () => {
     acctId: styleObj.value.id,
     curPage: page.value,
     startTime: timeValue.value,
-    opKind: opKind.value,
+    opReason: opKind.value,
     pageSize: 5000,
   };
   dataList.value = [];
@@ -278,22 +278,58 @@ const getPointHistoryTotal = async () => {
   const body = {
     acctId: styleObj.value.id,
     curPage: page.value,
+    pageSize: 5000,
     startTime: timeValue.value,
-    opKind: opKind.value,
+    opReason: opKind.value,
   };
   const res: any = await getDepositHistoryTotalFront(body);
   totalInOfMonth.value = res.data.totalInOfMonth || 0;
   totalOutOfMonth.value = res.data.totalOutOfMonth || 0;
 };
 
+// <a-select-option value="XCHG">兑现</a-select-option>
+// <a-select-option value="REC">收回</a-select-option>
+// <a-select-option value="BACK">返还</a-select-option>
+
+// <a-select-option value="DIFF">补差</a-select-option>
+// <a-select-option value="PRF">结息</a-select-option>
+// <a-select-option value="MAN">手动</a-select-option>
+// <a-select-option value="IMP">导入</a-select-option>
+// <a-select-option value="CHRG">充值</a-select-option>
+// <a-select-option value="GIVE">赠送</a-select-option>
+// <a-select-option value="CHRG_RET">充值退账</a-select-option>
+// <a-select-option value="GIVE_RET">赠送退账</a-select-option>
+// <a-select-option value="CHRG_DEC">充值扣减</a-select-option>
+// <a-select-option value="GIVE_DEC">赠送扣减</a-select-option>
+// <a-select-option value="CHRG_REC">充值退回</a-select-option>
+//  <a-select-option value="GIVE_REC">赠送退回</a-select-option>
+
 // 截取字符串
 const getText = (str: any) => {
-  let result = '';
-  result = str.substring(0, 12);
-  if (result.length >= 12) {
-    return `${result}...`;
-  }
-  return result;
+  const showText: any = {
+    XCHG: '兑现',
+    REC: '收回',
+    BACK: '返还',
+    DIFF: '补差',
+    PRF: '结息',
+    MAN: '手动',
+    IMP: '导入',
+    CHRG: '充值',
+    GIVE: '赠送',
+    CHRG_RET: '充值退账',
+    GIVE_RET: '赠送退账',
+    CHRG_DEC: '充值扣减',
+    GIVE_DEC: '赠送扣减',
+    CHRG_REC: '赠送退回',
+    GIVE_REC: '赠送退回',
+  };
+
+  // let result = '';
+  // result = str.substring(0, 12);
+  // if (result.length >= 12) {
+  //   return `${result}...`;
+  // }
+  return showText[str] || '--';
 };
 
 // 刷新接口
@@ -329,7 +365,8 @@ const changeTabs = ({ index }: any) => {
   current.value = index;
   page.value = 1;
   dataList.value = [];
-  opKind.value = index === 0 ? '' : index === 1 ? 'IN' : 'OUT';
+  // CHRG：充值 GIVE：赠送
+  opKind.value = index === 0 ? '' : index === 1 ? 'CHRG' : 'GIVE';
   dataList.value = [];
   queryDepDetailPageFun();
 };
