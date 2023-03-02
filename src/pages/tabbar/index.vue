@@ -1,6 +1,7 @@
 <template>
   <CustomPage bottom>
     <!-- 首页轮播图 -->
+    <Rotation> </Rotation>
     <view
       class="banner-show-background"
       :style="{
@@ -206,6 +207,8 @@ import {
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
+import Rotation from '../component/Rotation.vue';
+
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
