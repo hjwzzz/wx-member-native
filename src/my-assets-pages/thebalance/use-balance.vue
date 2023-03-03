@@ -96,8 +96,11 @@
                         {{ getText(item.opReason) || '' }}
                       </text>
                     </view>
-                    <view class="bottwo">
-                      {{ item.realValue }}
+                    <view
+                      class="bottwo"
+                      :class="showColor(item.realValue) ? 'income' : ''"
+                    >
+                      {{ incomeFun(item.realValue) }}
                     </view>
                   </view>
                   <view class="bottom">
@@ -347,12 +350,14 @@ const refreshDepListFun = async () => {
 };
 
 // 收入还是支出
-const incomeFun = (opKind: any) => {
-  if (opKind === 'BON_IN') {
-    return '+';
+const incomeFun = (val: any) => {
+  if (Number(val) > 0) {
+    return `+${val}`;
   }
-  return '-';
+  return val;
 };
+// 收入还是支出
+const showColor = (val: any) => Number(val) > 0;
 
 // 日期确认返回值
 const changeDate = (time: string) => {
@@ -601,12 +606,12 @@ const detail = (item: any) => {
 
       .imagewu {
         text-align: center;
-        margin-top: 80rpx;
+        margin-top: 50rpx;
 
         /* margin-bottom: ; */
         .image {
-          width: 320rpx;
-          height: 320rpx;
+          width: 280rpx;
+          height: 280rpxs;
         }
 
         .wujilu {

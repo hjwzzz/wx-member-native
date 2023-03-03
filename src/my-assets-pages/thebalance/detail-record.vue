@@ -7,7 +7,7 @@
             <image
               :src="staticUrl + 'img/shourumingxi.png'"
               mode=""
-              v-if="dataObj.opKind.code === 'BON_IN'"
+              v-if="showImage(dataObj.realValue)"
             ></image>
             <image
               :src="staticUrl + 'img/yuerzhichu.png'"
@@ -19,20 +19,20 @@
             {{ dataObj.remark || '' }}
           </view> -->
           <view class="yuermoss">
-            {{ incomeFun(dataObj.opKind) }}{{ dataObj.realValue }}
+            {{ incomeFun(dataObj.realValue) }}
           </view>
         </view>
         <view class="bottom">
           <view class="danhao">
             <view class="left"> 流水号 </view>
             <view class="right">
-              {{ dataObj.relatedNo || "" }}
+              {{ dataObj.relatedNo || '' }}
             </view>
           </view>
           <view class="shijian">
             <view class="left"> 交易时间 </view>
             <view class="right">
-              {{ dataObj.createTime || "" }}
+              {{ dataObj.createTime || '' }}
             </view>
           </view>
           <view class="shijian">
@@ -44,7 +44,7 @@
           <view class="shijian">
             <view class="left"> 备注 </view>
             <view class="right">
-              {{ dataObj.remark || "" }}
+              {{ dataObj.remark || '' }}
             </view>
           </view>
         </view>
@@ -90,12 +90,21 @@ onMounted(() => {
 const getType = (typeCode: keyof typeof typeMap) => typeMap[typeCode] ?? '';
 
 // 收入还是支出
-const incomeFun = (opKind: any) => {
-  if (opKind === 'BON_IN') {
-    return '+';
+// const incomeFun = (opKind: any) => {
+//   if (opKind === 'BON_IN') {
+//     return '+';
+//   }
+//   return '-';
+// };
+
+const incomeFun = (val: any) => {
+  if (Number(val) > 0) {
+    return `+${val}`;
   }
-  return '-';
+  return val;
 };
+// 收入还是支出
+const showImage = (val: any) => Number(val) > 0;
 </script>
 
 <style lang="scss" scoped>
