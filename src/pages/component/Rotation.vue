@@ -5,16 +5,18 @@
     field="content"
     :mode="'round'"
   > -->
-  <view class="custom-dots">
+  <!--custom-style1=>默认滚动     custom-style2=>滑动    custom-style3=>居中   -->
+  <view class="custom-dots custom-style3">
     <!-- :indicator-dots="bannerList.length > 1"
       indicator-color="#D8D9E0"
       :indicator-active-color="initBasicsData.mainColor" -->
+
+    <!--  previous-margin="46rpx"
+      next-margin="46rpx" -->
     <swiper
       style="height: 600rpx"
       :autoplay="true"
       circular
-      previous-margin="46rpx"
-      next-margin="46rpx"
       @change="swiperChange"
     >
       <block v-for="(item, index) in bannerList" :key="index">
@@ -99,10 +101,15 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <style lang="scss" scoped>
+.swiper-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .custom-dots {
   position: relative;
   .custom-dots-box {
-    width: 100vw;
+    // width: 100%;
     position: absolute;
     bottom: 18rpx;
     display: flex;
@@ -141,20 +148,25 @@ const props = withDefaults(defineProps<Props>(), {
   }
 }
 
-.swiper-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.custom-style1 {
+}
+.custom-style2 {
+  .swiper-item-view {
+    width: calc(100% - 30rpx) !important;
+    height: 100%;
+  }
+  .swiper-item-image {
+    width: 100%;
+    // width: calc(100% - 80rpx) !important;
+    height: 600rpx;
+  }
 }
 
-.swiper-item-view {
-  width: calc(100% - 30rpx) !important;
-  height: 100%;
-}
-
-.swiper-item-image {
-  width: 100%;
-  // width: calc(100% - 80rpx) !important;
-  height: 600rpx;
+.custom-style3 {
+  padding-left: 100rpx;
+  padding-right: 100rpx;
+  .custom-dots-box {
+    width: calc(100% - 200rpx);
+  }
 }
 </style>
