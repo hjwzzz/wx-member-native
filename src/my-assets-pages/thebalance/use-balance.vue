@@ -611,7 +611,7 @@ const detail = (item: any) => {
         /* margin-bottom: ; */
         .image {
           width: 280rpx;
-          height: 280rpxs;
+          height: 280rpx;
         }
 
         .wujilu {
