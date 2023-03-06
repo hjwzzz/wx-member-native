@@ -140,7 +140,7 @@ const showImage = (val: any) => Number(val) > 0;
     .bottom {
       margin-top: 40rpx;
       padding: 0 30rpx 30rpx;
-      font-size: 24rpx;
+      font-size: 28rpx;
       .shijian {
         margin-top: 40rpx;
       }
