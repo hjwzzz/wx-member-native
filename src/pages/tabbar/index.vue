@@ -1,7 +1,12 @@
 <template>
   <CustomPage bottom>
     <!-- 首页轮播图 -->
-    <Rotation> </Rotation>
+    <!-- <Rotation> </Rotation> -->
+    <!-- 质保单 -->
+    <!-- <MyQualitys> </MyQualitys> -->
+    <!-- 今日金价 -->
+    <TodayGoldPrices> </TodayGoldPrices>
+
     <view
       class="banner-show-background"
       :style="{
@@ -208,6 +213,10 @@ import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
 import Rotation from '../component/Rotation.vue';
+import MyQualitys from '../component/MyQualitys.vue';
+import TodayGoldPrices from '../component/TodayGoldPrices.vue';
+
+//
 
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';

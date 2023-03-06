@@ -5,8 +5,8 @@
     field="content"
     :mode="'round'"
   > -->
-  <!--custom-style1=>默认滚动     custom-style2=>滑动    custom-style3=>居中   -->
-  <view class="custom-dots custom-style3">
+  <!--custom-style1=>默认滚动     custom-style2=>滑动       -->
+  <view class="custom-dots custom-style1">
     <!-- :indicator-dots="bannerList.length > 1"
       indicator-color="#D8D9E0"
       :indicator-active-color="initBasicsData.mainColor" -->
@@ -159,14 +159,6 @@ const props = withDefaults(defineProps<Props>(), {
     width: 100%;
     // width: calc(100% - 80rpx) !important;
     height: 600rpx;
-  }
-}
-
-.custom-style3 {
-  padding-left: 100rpx;
-  padding-right: 100rpx;
-  .custom-dots-box {
-    width: calc(100% - 200rpx);
   }
 }
 </style>
