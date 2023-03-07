@@ -28,9 +28,7 @@
             mode="aspectFill"
           />
           <text class="text">门店：</text>
-          <text class="store-name"
-            >金千金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝金千枝枝</text
-          >
+          <text class="store-name">金千金千枝金千枝金千枝金千枝金千枝</text>
         </view>
         <view class="policy-card-item-text">
           <image
