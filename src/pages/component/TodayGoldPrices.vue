@@ -72,7 +72,7 @@
             <view class="gold-price-style3-center">
               <image
                 class="gold-price-icon-image"
-                :src="staticUrl + 'img/store.png'"
+                :src="staticUrl + 'img/retrieve-price.png'"
                 mode="aspectFill"
               />
             </view>
@@ -100,7 +100,7 @@
             <view class="gold-price-style3-center">
               <image
                 class="gold-price-icon-image"
-                :src="staticUrl + 'img/store.png'"
+                :src="staticUrl + 'img/sell-price.png'"
                 mode="aspectFill"
               />
             </view>

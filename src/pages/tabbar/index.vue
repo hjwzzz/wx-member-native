@@ -46,7 +46,8 @@
     </view>
 
     <view class="customer-diy">
-      <memberCard> </memberCard>
+      <!-- <TodayGoldPrices> </TodayGoldPrices> -->
+      <!-- <memberCard> </memberCard> -->
       <block
         v-for="(items, index) in dataList.wmMainRspVo?.panelList"
         :key="index"
