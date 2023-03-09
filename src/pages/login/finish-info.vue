@@ -382,6 +382,12 @@ onLoad(async e => {
       num,
       inviteMid,
     });
+  } else if (channel && guideUid) {
+    queryWriteInfo({
+      channel,
+      guideUid,
+      inviteMid,
+    });
   } else {
     queryWriteInfo({});
   }
