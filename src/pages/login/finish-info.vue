@@ -361,10 +361,16 @@ const inactiveMemberControl = reactive({
 
 onLoad(async e => {
   lastPage.value = e.p || '';
-  const channel = e.channel || uni.getStorageSync('c');
-  // const channel = 'WELCOME_MSG';
+  const regData = Storage.getRegData() || {};
+  if (Object.keys(regData).length) {
+    Storage.removeRegData();
+  }
+  const channel = regData.channel || uni.getStorageSync('c');
+
+  // const  = 'WELCOME_MSG';
   // const guideUid = '1281D5F2-1C91-E399-D46C-0761DCD3BB89';
-  const guideUid = e.guide;
+  const guideUid = regData.guide;
+
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
   isActivity.value = !!(channel && num);

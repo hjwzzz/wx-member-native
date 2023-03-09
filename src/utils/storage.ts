@@ -101,5 +101,15 @@ class Storage {
   static removeDistList() {
     return uni.removeStorageSync('distList');
   }
+  // 完善资料门店列表处理
+  static setRegData(obj: any) {
+    uni.setStorageSync('regData', obj);
+  }
+  static getRegData() {
+    return uni.getStorageSync('regData');
+  }
+  static removeRegData() {
+    return uni.removeStorageSync('regData');
+  }
 }
 export default Storage;
