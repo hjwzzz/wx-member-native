@@ -369,7 +369,7 @@ onLoad(async e => {
 
   // const  = 'WELCOME_MSG';
   // const guideUid = '1281D5F2-1C91-E399-D46C-0761DCD3BB89';
-  const guideUid = regData.guide;
+  const guideUid = regData.guideUid;
 
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');

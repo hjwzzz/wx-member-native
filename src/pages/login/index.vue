@@ -75,13 +75,13 @@ const logo = ref('');
 const protocol = reactive<Protocol>({});
 const agreeProto = ref(false);
 
-onLoad(({ c, num, inviteMid, channel, guideUid }) => {
+onLoad(({ c, num, inviteMid, channel, guide }) => {
   // 邀请信息
   c && uni.setStorageSync('c', c);
   num && uni.setStorageSync('num', num);
   inviteMid && uni.setStorageSync('inviteMid', inviteMid);
   uni.removeStorageSync('isMember');
-  Storage.setRegData({ channel, guideUid });
+  Storage.setRegData({ channel, guideUid: guide });
 });
 onMounted(() => {
   getMemberEula();
