@@ -91,5 +91,15 @@ class Storage {
   static getBottomNavList() {
     return uni.getStorageSync('bottomNavList');
   }
+  // 完善资料门店列表处理
+  static setDistList(value: any[]) {
+    uni.setStorageSync('distList', value);
+  }
+  static getDistList() {
+    return uni.getStorageSync('distList');
+  }
+  static removeDistList() {
+    return uni.removeStorageSync('distList');
+  }
 }
 export default Storage;
