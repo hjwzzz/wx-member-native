@@ -5,6 +5,13 @@
     <!-- 质保单 -->
     <!-- <MyQualitys> </MyQualitys> -->
     <!-- 今日金价 -->
+    <!-- <TodayGoldPrices> </TodayGoldPrices> -->
+    <!-- 会员卡 -->
+    <!-- <memberCard> </memberCard> -->
+    <!-- 附近门店 -->
+    <!-- <NearbyStore> </NearbyStore> -->
+    <!-- 图片 -->
+    <!-- <CustomImage> </CustomImage> -->
 
     <view
       class="banner-show-background"
@@ -46,8 +53,37 @@
     </view>
 
     <view class="customer-diy">
+      <!-- CustomImage -->
       <!-- <TodayGoldPrices> </TodayGoldPrices> -->
       <!-- <memberCard> </memberCard> -->
+      <!-- <NearbyStore> </NearbyStore> -->
+      <MyQualitys> </MyQualitys>
+      <CustomImage> </CustomImage>
+      <uni-notice-bar
+        show-icon
+        scrollable
+        show-get-more
+        text="uni-app 版正式发布，开发一次，同时发布iOS、Android、H5、微信小程序、支付宝小程序、百度小程序、头条小程序等7大平台。"
+      />
+      <view class="bulletin">
+        <view class="bulletin-box">
+          <text class="iconfont icon-gonggao icon-text"> </text>
+          <text class="bulletin-text">11111</text>
+        </view>
+        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+      </view>
+      <uni-notice-bar
+        show-icon
+        scrollable
+        show-get-more
+        text="uni-app 版正式发布，开发一次，同时发布iOS、Android、H5、微信小程序、支付宝小程序、百度小程序、头条小程序等7大平台。"
+      >
+        <template #icon>
+          <text class="iconfont icon-gonggao icon-text"> </text>
+        </template>
+      </uni-notice-bar>
+
+      <!--  -->
       <block
         v-for="(items, index) in dataList.wmMainRspVo?.panelList"
         :key="index"
@@ -218,7 +254,8 @@ import MyQualitys from '../component/MyQualitys.vue';
 import TodayGoldPrices from '../component/TodayGoldPrices.vue';
 import Coupon from '../component/Coupon.vue';
 import memberCard from '../component/memberCard.vue';
-
+import NearbyStore from '../component/NearbyStore.vue';
+import CustomImage from '../component/CustomImage.vue';
 //
 
 import Tabbar from '@/components/Tabbar/index.vue';

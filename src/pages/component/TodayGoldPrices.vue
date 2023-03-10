@@ -1,8 +1,9 @@
 <template>
+  <!-- grid-price-none 无数据显示 -->
   <view class="grid-price">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title || '今日金价' }}</text>
+        <text class="title">{{ props.title }}</text>
         <text class="title-unit">(元/克)</text>
       </view>
       <view class="right" @click="more">
@@ -11,8 +12,8 @@
       </view>
     </view>
 
-    <!--<view class="gold-price-style1">
-       <view class="gold-price-style1-text gold-price-style1-item1"
+    <!-- <view class="gold-price-style1">
+      <view class="gold-price-style1-text gold-price-style1-item1"
         >销售金价
       </view>
       <view class="gold-price-style1-text gold-price-style1-item2"
@@ -22,8 +23,7 @@
         >销售金价
       </view>
     </view> -->
-
-    <!-- <view class="gold-price-style2">
+    <view class="gold-price-style2">
       <view class="gold-price-style2-store">
         <text class="gold-price-style2-store-name"> 金千枝店</text>
         <text class="gold-price-style2-store-time"> 2022年08月09日</text>
@@ -59,10 +59,10 @@
           <view class="gold-price-style2-item-price">¥405.49</view>
         </view>
       </view>
-    </view> -->
+    </view>
 
     <!--  -->
-    <view class="gold-price-style3">
+    <!-- <view class="gold-price-style3">
       <view class="gold-price-style3-store nowrap">
         <text class="gold-price-style3-store-name nowrap"> 金千枝店</text>
       </view>
@@ -122,7 +122,7 @@
           </view>
         </view>
       </view>
-    </view>
+    </view> -->
 
     <!-- <view v-if="goldPrice?.length && showed">
       <swiper
@@ -167,7 +167,7 @@
         </swiper-item>
       </swiper>
     </view>
-    <NoneData v-else></NoneData>-->
+  -->
   </view>
 </template>
 
@@ -177,7 +177,6 @@ import { getGoldPriceByPage } from '@/pages/api/server';
 import Router from '@/utils/router';
 import { ref, Ref, onMounted, watch } from 'vue';
 import { staticUrl } from '@/utils/config';
-import NoneData from './NoneData.vue';
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 
@@ -402,12 +401,13 @@ const _getGoldPriceByPage = async () => {
     display: flex;
     justify-content: flex-start;
     margin-top: 25rpx;
-    padding-top: 20rpx;
-    padding-bottom: 45rpx;
+    padding-top: 10rpx;
+    padding-bottom: 35rpx;
     border-bottom: 1rpx solid #ebebeb;
   }
   .gold-price-style3-item:last-child {
     border-bottom: 0rpx solid white;
+    padding-bottom: 5rpx;
   }
   .gold-price-style3-item-left {
     display: flex;
@@ -454,6 +454,9 @@ const _getGoldPriceByPage = async () => {
   }
 }
 
+.grid-price-none {
+  padding-bottom: 30rpx !important;
+}
 .grid-price {
   font-size: 28rpx;
   // width: 630rpx;

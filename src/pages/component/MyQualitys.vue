@@ -1,4 +1,5 @@
 <template>
+  <!--grid-price-none  -->
   <view class="grid-policy-act" @click="toDetail">
     <view class="header">
       <view class="header-left">
@@ -15,7 +16,7 @@
         <view class="policy-card-item-text policy-card-item-one">
           <image
             class="icon-image"
-            :src="staticUrl + 'img/store.png'"
+            :src="staticUrl + 'img/icon-011.png'"
             mode="aspectFill"
           />
           <text class="text">单号：</text>
@@ -24,7 +25,7 @@
         <view class="policy-card-item-text">
           <image
             class="icon-image"
-            :src="staticUrl + 'img/store.png'"
+            :src="staticUrl + 'img/icon-009.png'"
             mode="aspectFill"
           />
           <text class="text">门店：</text>
@@ -33,7 +34,7 @@
         <view class="policy-card-item-text">
           <image
             class="icon-image"
-            :src="staticUrl + 'img/store.png'"
+            :src="staticUrl + 'img/icon-006.png'"
             mode="aspectFill"
           />
           <text class="text">时间：</text>
@@ -156,8 +157,8 @@ onShow(() => {
 
 <style lang="scss" scoped>
 .policy-card {
-  padding-top: 20rpx;
-  padding-bottom: 20rpx;
+  padding-top: 25rpx;
+  padding-bottom: 30rpx;
   // width: 350px;
   // display: flex;
   // justify-content: flex-start;
@@ -247,11 +248,13 @@ onShow(() => {
   height: 24rpx;
   width: 24rpx;
 }
-
+.grid-price-none {
+  padding-bottom: 30rpx !important;
+}
 .grid-policy-act {
   // width: 690rpx;
   padding: 30rpx;
-  padding-bottom: 10rpx;
+  padding-bottom: 0rpx;
   margin: 30rpx 0rpx;
   background: #fff;
   border-radius: 16rpx;

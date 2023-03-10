@@ -19,7 +19,7 @@
       >
         <view class="content-header">
           <view class="circel">
-            <image class="image" :src="imageUrl" mode="scaleToFill" />
+            <image class="image" :src="showImage(index)" mode="scaleToFill" />
             <view class="badge" v-if="prize.status === 0 && texcCnt > 0">
               {{ texcCnt > 99 ? '99+' : texcCnt }}
             </view>
@@ -27,7 +27,7 @@
               {{ notGetCnt > 99 ? '99+' : notGetCnt }}
             </view>
           </view>
-          <view class="icon iconfont icon-color" :class="prize.img"></view>
+          <!-- <view class="icon iconfont icon-color" :class="prize.img"></view> -->
         </view>
         <view class="content-footer">{{ prize.name }}</view>
       </view>
@@ -40,7 +40,11 @@ import { staticUrl } from '@/utils/config';
 
 import { computed } from 'vue';
 
-const imageUrl = `${staticUrl}img/circle.png`;
+// const imageUrl = `${staticUrl}img/circle.png`;
+// icon-012 icon-018  icon-017  icon-016
+const baseIcon = ['012', '018', '017', '016'];
+const showImage = (index: number) => `${staticUrl}img/icon-${baseIcon[index]}.png`;
+
 interface Props {
   title?: string;
   item?: any;
