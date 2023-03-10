@@ -102,8 +102,8 @@ class Storage {
     return uni.removeStorageSync('distList');
   }
   // 完善资料门店列表处理
-  static setRegData(obj: any) {
-    uni.setStorageSync('regData', obj);
+  static setRegData(str: string) {
+    uni.setStorageSync('regData', str);
   }
   static getRegData() {
     return uni.getStorageSync('regData');
