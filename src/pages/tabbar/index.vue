@@ -57,22 +57,15 @@
       <!-- <TodayGoldPrices> </TodayGoldPrices> -->
       <!-- <memberCard> </memberCard> -->
       <!-- <NearbyStore> </NearbyStore> -->
-      <MyQualitys> </MyQualitys>
-      <CustomImage> </CustomImage>
-      <uni-notice-bar
+      <!-- <MyQualitys> </MyQualitys> -->
+      <!-- <CustomImage> </CustomImage> -->
+      <!-- <uni-notice-bar
         show-icon
         scrollable
         show-get-more
         text="uni-app 版正式发布，开发一次，同时发布iOS、Android、H5、微信小程序、支付宝小程序、百度小程序、头条小程序等7大平台。"
-      />
-      <view class="bulletin">
-        <view class="bulletin-box">
-          <text class="iconfont icon-gonggao icon-text"> </text>
-          <text class="bulletin-text">11111</text>
-        </view>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-      </view>
-      <uni-notice-bar
+      /> -->
+      <!-- <uni-notice-bar
         show-icon
         scrollable
         show-get-more
@@ -81,7 +74,7 @@
         <template #icon>
           <text class="iconfont icon-gonggao icon-text"> </text>
         </template>
-      </uni-notice-bar>
+      </uni-notice-bar> -->
 
       <!--  -->
       <block
@@ -128,42 +121,47 @@
           </swiper>
         </view>
         <!-- 快捷导航 -->
-        <view
-          class="quick-nav"
-          v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length"
-        >
-          <swiper
-            :style="{ height: swiperVavHeight + 'rpx' }"
-            class=""
-            :indicator-dots="swiperVav.length > 1"
-            indicator-color="#D8D9E0"
-            :indicator-active-color="initBasicsData.mainColor"
-            circular
+
+        <view v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length">
+          <!-- <QuickNavigation
+            :swiperVavHeight="swiperVavHeight"
+            :swiperVav="swiperVav"
           >
-            <swiper-item
-              class="swiper-item"
-              v-for="(navs, index) in swiperVav"
-              :key="index"
+          </QuickNavigation> -->
+          <view class="quick-nav">
+            <swiper
+              :style="{ height: swiperVavHeight + 'rpx' }"
+              class=""
+              :indicator-dots="swiperVav.length > 1"
+              indicator-color="#D8D9E0"
+              :indicator-active-color="initBasicsData.mainColor"
+              circular
             >
-              <view
-                class="item-shop"
-                v-for="(item, index) in navs"
+              <swiper-item
+                class="swiper-item"
+                v-for="(navs, index) in swiperVav"
                 :key="index"
-                @click="handleEntryUrl(item)"
               >
-                <view class="item-header">
-                  <image
-                    class="item-header-image"
-                    :src="
-                      item.icoUrl || `${staticUrl}img/item-avatar-default.png`
-                    "
-                    mode=""
-                  ></image>
+                <view
+                  class="item-shop"
+                  v-for="(item, index) in navs"
+                  :key="index"
+                  @click="handleEntryUrl(item)"
+                >
+                  <view class="item-header">
+                    <image
+                      class="item-header-image"
+                      :src="
+                        item.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                      "
+                      mode=""
+                    ></image>
+                  </view>
+                  <view class="item-text">{{ item.title }}</view>
                 </view>
-                <view class="item-text">{{ item.title }}</view>
-              </view>
-            </swiper-item>
-          </swiper>
+              </swiper-item>
+            </swiper>
+          </view>
         </view>
         <!-- 富文本 -->
         <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
@@ -256,6 +254,7 @@ import Coupon from '../component/Coupon.vue';
 import memberCard from '../component/memberCard.vue';
 import NearbyStore from '../component/NearbyStore.vue';
 import CustomImage from '../component/CustomImage.vue';
+import QuickNavigation from '../component/QuickNavigation.vue';
 //
 
 import Tabbar from '@/components/Tabbar/index.vue';

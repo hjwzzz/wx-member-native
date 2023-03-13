@@ -88,7 +88,7 @@ import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
-import NoneData from './NoneData.vue';
+// import NoneData from './NoneData.vue';
 import { onShow } from '@dcloudio/uni-app';
 
 const initBasicsData = useBasicsData();

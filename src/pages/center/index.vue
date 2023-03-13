@@ -3,7 +3,30 @@
     :page-style="'overflow:' + (menberCodePopupVisible ? 'hidden' : 'visible')"
   ></page-meta>
   <CustomPage bottom>
-    <view class="user" :style="{ backgroundImage: `url( ${showToImage} )` }">
+    <view
+      class="page-top-show"
+      :style="{
+        backgroundImage: `url( ${showToImageBG} )`,
+        paddingTop: headHeight + 'rpx',
+      }"
+    >
+      <view
+        class="page-top-title"
+        :style="{
+          top: menuInfoTopShow + 'px',
+          height: menuInfoHeightShow + 'px',
+        }"
+      >
+        个人中心
+      </view>
+      <memberCard
+        :userInfo="userInfo"
+        :loginList="loginList"
+        @showCode="showMenberCodePopup"
+      >
+      </memberCard>
+    </view>
+    <!-- <view class="user" :style="{ backgroundImage: `url( ${showToImage} )` }">
       <view class="login-info">
         <view class="user-info">
           <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
@@ -52,7 +75,6 @@
             />
           </view>
         </view>
-        <!--  -->
         <view class="login-list">
           <block v-for="(item, index) in loginList" :key="index">
             <view
@@ -68,7 +90,6 @@
           </block>
         </view>
       </view>
-      <!-- 查看权益 @click="handleFixedSysUrl('benefits')" -->
       <view
         class="boot-equity"
         v-if="initBasicsData.checkLogin"
@@ -87,7 +108,13 @@
           <uni-icons type="arrowright" size="14" color="#975d17"></uni-icons>
         </view>
       </view>
-    </view>
+    </view> -->
+
+    <block v-for="(item, index) in panelList" :key="index">
+      <!-- 这个组件-多个样式需要和图片导航配合 -->
+      <GridList v-if="item.kind === entryType.EN" :item="item"> </GridList>
+    </block>
+
     <view class="reveal-grid">
       <block v-for="(item, index) in panelList" :key="index">
         <view class="grid-list" v-if="item.kind === entryType.EN">
@@ -205,11 +232,21 @@
         />
       </view>
       <view class="content">
-        <view class="content-text" >
+        <view class="content-text">
           <view class="content-text-code">{{ menberCode }}</view>
-          <view   class="content-text-desc">
-            <img class="icon" v-if="!showFullMenberCode" @click="viewFullMenberCode" :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`" >
-            <img class="icon" v-else :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`"  @click="hideFullMenberCode">
+          <view class="content-text-desc">
+            <img
+              class="icon"
+              v-if="!showFullMenberCode"
+              @click="viewFullMenberCode"
+              :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-close.png`"
+            />
+            <img
+              class="icon"
+              v-else
+              :src="`${imageUrl}img/%E7%9C%BC%E7%9D%9B-open.png`"
+              @click="hideFullMenberCode"
+            />
           </view>
         </view>
         <view class="content-qrcode">
@@ -235,13 +272,7 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import {
-  ref,
-  reactive,
-  Ref,
-  watch,
-  computed,
-} from 'vue';
+import { ref, reactive, Ref, watch, computed } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
   getMemberCenterIndex,
@@ -264,7 +295,10 @@ import ContentMall from '../component/ContentMall.vue';
 import MyPrizes from '../component/MyPrizes.vue';
 import MyService from '../component/MyService.vue';
 import MyQuality from '../component/MyQuality.vue';
+import GridList from '../component/GridList.vue';
+//
 import BrCode128 from '@/utils/barcode.js';
+import memberCard from '../component/memberCard.vue';
 
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
@@ -296,11 +330,34 @@ const bannerList: Ref<any> = ref([]);
 const srvProshowNum = ref(1);
 const policyListNum = ref(0);
 
+// "navigationStyle": "custom" height
+const headHeight: any = ref(100);
+const menuInfoTopShow: any = ref(0);
+const menuInfoHeightShow: any = ref(0);
 onShow(() => {
   getMemberCentertIndex();
   getBannerData();
+
+  uni.getSystemInfo({
+    success: res => {
+      const rr = uni.getMenuButtonBoundingClientRect();
+      const menuInfoTop = rr.top;
+      const menuInfoBottom = rr.bottom;
+      menuInfoTopShow.value = menuInfoTop;
+      menuInfoHeightShow.value = rr.height;
+
+      const showHeight =
+        Number(menuInfoTop) +
+        Number(menuInfoBottom) -
+        Number(res.statusBarHeight) +
+        10;
+      headHeight.value = showHeight * 2;
+    },
+  });
   // getGoldPriceByPage();
 });
+const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
+const showToImageBG = ref(deFImage1);
 
 const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
 const showToImage = ref(deFImage);
@@ -361,7 +418,6 @@ const getBannerData = async () => {
   }
 };
 
-
 // 显示红点
 const showRedDot = (item: any, entry: any, text: string) => {
   const code = ['sign', 'coupon'].includes(entry.code);
@@ -369,7 +425,6 @@ const showRedDot = (item: any, entry: any, text: string) => {
   const showType = item.param.showType === text;
   return code && red && showType;
 };
-
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });
@@ -421,12 +476,7 @@ const drawCanvas = () => {
 
   const dpi = windowWidth / 375;
 
-  BrCode128(
-    barCodeCanvasContent,
-    menberCodeInfo.barCode,
-    305 * dpi,
-    110
-  );
+  BrCode128(barCodeCanvasContent, menberCodeInfo.barCode, 305 * dpi, 110);
 };
 
 const GetBarCodeIntervalId = ref(0);
@@ -474,10 +524,31 @@ const viewFullMenberCode = () => {
 const hideFullMenberCode = () => {
   showFullMenberCode.value = false;
 };
-
 </script>
 
 <style lang="scss" scoped>
+.page-top-show {
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  width: calc(100vw - 40rpx);
+  min-height: 330rpx;
+  background: linear-gradient(180deg, #f5debb, #f4f5f7);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  position: relative;
+  .page-top-title {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #000000;
+  }
+}
+
 .user {
   width: 100%;
   height: 400rpx;

@@ -2,21 +2,34 @@
   <!--  member-card-style1   member-card-style2 -->
   <view class="member-card member-card-style1">
     <view class="member-card-top">
-      <view class="member-card-top-user">
+      <view
+        class="member-card-top-user"
+        @click="handleEntryUrl({ code: 'userInfo' })"
+      >
         <view class="member-card-avatar">
           <image
             class="member-card-avatar-image"
-            :src="staticUrl + 'img/person.png'"
+            :src="
+              initBasicsData.checkLogin && userInfo.avatarUrl
+                ? userInfo.avatarUrl
+                : staticUrl + 'img/person.png'
+            "
             mode="scaleToFill"
           />
         </view>
-        <text class="member-card-name nowrap">
-          金千枝金千枝金千枝金千枝金千枝
+        <text class="member-card-name nowrap" v-if="initBasicsData.checkLogin">
+          {{ userInfo.nickName || '' }}
         </text>
+        <view v-else class="info-btn" @click.stop="Router.goCodePage('reg')">
+          请先登录
+        </view>
       </view>
       <view class="member-card-top-right">
-        <!-- sing-style1-2     sing-style0-3-->
-        <view class="member-card-top-right-sing sing-style1-2">
+        <!-- sing-style1-2     sing-style0-3  sign-->
+        <view
+          class="member-card-top-right-sing sing-style1-2"
+          @click="handleEntryUrl({ code: 'sign' })"
+        >
           <image
             class="member-card-top-right-sing-image"
             :src="staticUrl + 'img/sign-icon1.png'"
@@ -28,20 +41,34 @@
           class="member-card-top-right-image"
           :src="staticUrl + 'img/qr-icon2.png'"
           mode="scaleToFill"
+          @click="emits('showCode')"
+          v-if="initBasicsData.checkLogin"
         />
+
         <image
           class="member-card-top-right-image"
           :src="staticUrl + 'img/set-icon2.png'"
           mode="scaleToFill"
+          @click="handleEntryUrl({ code: 'installCenter' })"
         />
       </view>
     </view>
     <view class="member-card-list">
-      <view class="member-card-list-item">
-        <view class="member-card-list-item-price nowrap"> 2.12w </view>
-        <view class="member-card-list-item-name"> 积分 </view>
-      </view>
-      <view class="member-card-list-item">
+      <!-- {{ props.loginList }} -->
+      <block v-for="(item, index) in props.loginList" :key="index">
+        <!-- {{ item }} -->
+        <view
+          class="member-card-list-item"
+          v-if="item.showed"
+          @click="handleEntryUrl(item)"
+        >
+          <view class="member-card-list-item-price nowrap"
+            >{{ item.accountValue !== ' ' ? item.accountValue : 0 }}
+          </view>
+          <view class="member-card-list-item-name"> {{ item.title }} </view>
+        </view>
+      </block>
+      <!-- <view class="member-card-list-item">
         <view class="member-card-list-item-price nowrap"> 10000.00 </view>
         <view class="member-card-list-item-name"> 余额 </view>
       </view>
@@ -52,10 +79,10 @@
       <view class="member-card-list-item">
         <view class="member-card-list-item-price nowrap"> 2.12w </view>
         <view class="member-card-list-item-name"> 积分 </view>
-      </view>
+      </view> -->
     </view>
     <!--  style1   style2 -->
-    <view class="member-card-bottom">
+    <view class="member-card-bottom" v-if="initBasicsData.checkLogin">
       <view class="member-card-bottom-box">
         <view class="card-start-center">
           <image
@@ -63,11 +90,11 @@
             :src="staticUrl + 'img/member-icon1.png'"
             mode="scaleToFill"
           />
-          <text class="member-card-bottom-member-name nowrap"
-            >黄金会员黄金会员黄金会员黄金会员黄金会员
+          <text class="member-card-bottom-member-name nowrap">
+            {{ userInfo.curLevelName || '' }}
           </text>
         </view>
-        <view class="card-start-center">
+        <view class="card-start-center" @click="handleFixedSysUrl()">
           <text class="member-card-bottom-member-ri-text"> 查看权益</text>
           <image
             class="member-card-bottom-member-ri"
@@ -87,7 +114,7 @@
       </view>
     </view>
   </view>
-  <view class="member-card member-card-style2">
+  <!-- <view class="member-card member-card-style2">
     <view class="member-card-top">
       <view class="member-card-top-user">
         <view class="member-card-avatar">
@@ -112,12 +139,12 @@
         </view>
         <image
           class="member-card-top-right-image"
-          :src="staticUrl + 'img/qr-icon2.png'"
+          :src="staticUrl + 'img/qr-icon3.png'"
           mode="scaleToFill"
         />
         <image
           class="member-card-top-right-image"
-          :src="staticUrl + 'img/set-icon2.png'"
+          :src="staticUrl + 'img/set-icon3.png'"
           mode="scaleToFill"
         />
       </view>
@@ -171,9 +198,9 @@
         </view>
       </view>
     </view>
-  </view>
-
-  <view class="member-card member-card-style3">
+  </view> -->
+  <!--   member-card-bottom-style-btn -->
+  <!-- <view class="member-card member-card-style3">
     <view class="member-card-top">
       <view class="member-card-top-user">
         <view class="member-card-avatar">
@@ -226,7 +253,7 @@
         <view class="member-card-list-item-name"> 积分 </view>
       </view>
     </view>
-    <!--   member-card-bottom-style-btn -->
+
     <view class="member-card-bottom-style-btn">
       <view class="member-card-bottom-btn">
         <view class="card-start-center member-card-bottom-btn-zz">
@@ -258,61 +285,84 @@
         />
       </view>
     </view>
-  </view>
+  </view> -->
 </template>
 
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue';
-import { queryWarrantyListPageFront } from '@/api/server';
+// import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
-import { onShow } from '@dcloudio/uni-app';
-
+// import { onShow } from '@dcloudio/uni-app';
+import { handleEntryUrl } from '@/utils/util';
 const initBasicsData = useBasicsData();
 
 interface Props {
-  title?: string;
-  item?: any;
-  policyListNum?: number;
+  // title?: string;
+  // item?: any;
+  // policyListNum?: number;
+  userInfo: any;
+  loginList: any;
 }
 const props = withDefaults(defineProps<Props>(), {
-  item: () => ({}),
-  policyListNum: 0,
+  userInfo: () => ({}),
+  loginList: () => [],
+  // policyListNum: 0,
 });
+const emits = defineEmits(['showCode']);
 
-const policyList: any = reactive({ totalRecord: 0, records: [] });
-
-const toDetail = () => {
-  //  uni.navigateTo({ url });
-  Router.goCodePage('warranty');
+const handleFixedSysUrl = () => {
+  uni.navigateTo({ url: '/pages/member-equity/index' });
 };
 
-const getPolicyList = async () => {
-  if (!initBasicsData.checkLogin) {
-    return;
-  }
-  const res = await queryWarrantyListPageFront({
-    mid: initBasicsData.useMid,
-    curPage: 1,
-    pageSize: props.policyListNum,
-  });
-  if (res.code === 0 && res.data) {
-    Object.assign(policyList, res.data);
-  }
-};
+// const showCode = () => {
 
-onShow(() => {
-  if (initBasicsData.checkLogin) {
-    getPolicyList();
-    return;
-  }
-  policyList.records = [];
-  policyList.totalRecord = 0;
-});
+// };
+// const policyList: any = reactive({ totalRecord: 0, records: [] });
+
+// const toDetail = () => {
+//   Router.goCodePage('warranty');
+// };
+
+// const getPolicyList = async () => {
+//   if (!initBasicsData.checkLogin) {
+//     return;
+//   }
+//   const res = await queryWarrantyListPageFront({
+//     mid: initBasicsData.useMid,
+//     curPage: 1,
+//     pageSize: props.policyListNum,
+//   });
+//   if (res.code === 0 && res.data) {
+//     Object.assign(policyList, res.data);
+//   }
+// };
+
+// onShow(() => {
+//   if (initBasicsData.checkLogin) {
+//     getPolicyList();
+//     return;
+//   }
+//   policyList.records = [];
+//   policyList.totalRecord = 0;
+// });
 </script>
 
 <style lang="scss" scoped>
+.info-btn {
+  width: 176rpx;
+  height: 60rpx;
+  margin-left: 20rpx;
+  font-size: 28rpx;
+  font-weight: 400;
+  line-height: 60rpx;
+  color: #fff;
+  text-align: center;
+  background: #ff547b;
+  border-radius: 30rpx;
+}
+
 .nowrap {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -340,7 +390,7 @@ onShow(() => {
 .member-card {
   margin-bottom: 30rpx;
   font-size: 28rpx;
-  min-height: 360rpx;
+  min-height: 300rpx;
   border-radius: 8px;
 
   .card-start-center {
