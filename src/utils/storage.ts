@@ -101,15 +101,15 @@ class Storage {
   static removeDistList() {
     return uni.removeStorageSync('distList');
   }
-  // 完善资料门店列表处理
+  // 欢迎语进入完善资料门店列表处理
   static setRegData(str: string) {
-    uni.setStorageSync('regData', str);
+    uni.setStorageSync('welcomeGuide', str);
   }
   static getRegData() {
-    return uni.getStorageSync('regData');
+    return uni.getStorageSync('welcomeGuide');
   }
   static removeRegData() {
-    return uni.removeStorageSync('regData');
+    return uni.removeStorageSync('welcomeGuide');
   }
 }
 export default Storage;

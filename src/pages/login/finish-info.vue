@@ -359,18 +359,19 @@ const inactiveMemberControl = reactive({
   canModifyAddress: true,
 });
 
+// 欢迎语进入导购Id
+let guideData: any = null;
 onLoad(async e => {
   lastPage.value = e.p || '';
-  const regStr = Storage.getRegData();
-  if (regStr) {
+  guideData = Storage.getRegData();
+  if (guideData) {
     Storage.removeRegData();
   }
   const channel = uni.getStorageSync('c');
 
   // const  = 'WELCOME_MSG';
   // const guideUid = '1281D5F2-1C91-E399-D46C-0761DCD3BB89';
-  const guideUid = regStr;
-  // console.log(333, guideUid);
+  const guideUid = guideData;
 
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
@@ -501,8 +502,8 @@ const queryWriteInfo = async (p = {}) => {
       canModifyDist,
       belongUid,
       belongUser,
-      distId: distList?.length === 1 ? distList[0]?.distId : '',
-      storeName: distList?.length === 1 ? distList[0]?.distName : '',
+      distId: distList?.length >= 1 ? distList[0]?.distId : '',
+      storeName: distList?.length >= 1 ? distList[0]?.distName : '',
     });
 
     // 如果是未激活会员，且是扫推广码的
@@ -524,10 +525,10 @@ const queryWriteInfo = async (p = {}) => {
         belongUser && (memberInfo.value.belongUser = belongUser);
         // storeName && (selectedShop.value.storeName = storeName);
         selectedShop.value.storeName =
-          distList?.length === 1 ? distList[0]?.distName : '';
+          distList?.length >= 1 ? distList[0]?.distName : '';
         // distId && (selectedShop.value.distId = distId);
         selectedShop.value.distId =
-          distList?.length === 1 ? distList[0]?.distId : '';
+          distList?.length >= 1 ? distList[0]?.distId : '';
         // 如果未激活会员有门店没有导购，
       } else if (
         selectedShop.value.storeName &&
@@ -539,7 +540,7 @@ const queryWriteInfo = async (p = {}) => {
         // if (distId && selectedShop.value.distId === distId) {
         if (
           selectedShop.value.distId ===
-          (distList?.length === 1 ? distList[0]?.distId : '')
+          (distList?.length >= 1 ? distList[0]?.distId : '')
         ) {
           belongUid && (memberInfo.value.belongUid = belongUid);
           belongUser && (memberInfo.value.belongUser = belongUser);
@@ -555,10 +556,10 @@ const queryWriteInfo = async (p = {}) => {
         if (belongUid && memberInfo.value.belongUid === belongUid) {
           // storeName && (selectedShop.value.storeName = storeName);
           selectedShop.value.storeName =
-            distList?.length === 1 ? distList[0]?.distName : '';
+            distList?.length >= 1 ? distList[0]?.distName : '';
           // distId && (selectedShop.value.distId = distId);
           selectedShop.value.distId =
-            distList?.length === 1 ? distList[0]?.distId : '';
+            distList?.length >= 1 ? distList[0]?.distId : '';
         }
       }
     } else {
@@ -566,14 +567,14 @@ const queryWriteInfo = async (p = {}) => {
       belongUser && (memberInfo.value.belongUser = belongUser);
       // storeName && (selectedShop.value.storeName = storeName);
       selectedShop.value.storeName =
-        distList?.length === 1 ? distList[0]?.distName : '';
+        distList?.length >= 1 ? distList[0]?.distName : '';
       // distId && (selectedShop.value.distId = distId);
       selectedShop.value.distId =
-        distList?.length === 1 ? distList[0]?.distId : '';
+        distList?.length >= 1 ? distList[0]?.distId : '';
     }
 
     if (!isInactiveMember.value && isActivity.value) {
-      distList?.length === 1 && await queryNearShop(distList[0]?.distId);
+      distList?.length >= 1 && await queryNearShop(distList[0]?.distId);
     }
 
     if (!selectedShop.value.distId && !selectedShop.value.storeName) {
@@ -672,10 +673,12 @@ const handle = (item: any) => {
         if (e.distId !== selectedShop.value.distId) {
           activeData.value.canModifySaler = true;
           inactiveMemberControl.canModifySaler = true;
-          Object.assign(memberInfo.value, {
-            belongUid: '',
-            belongUser: '',
-          });
+          if (!guideData) {
+            Object.assign(memberInfo.value, {
+              belongUid: '',
+              belongUser: '',
+            });
+					}
         }
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
