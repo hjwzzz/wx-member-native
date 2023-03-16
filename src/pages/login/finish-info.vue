@@ -360,18 +360,17 @@ const inactiveMemberControl = reactive({
 });
 
 // 欢迎语进入导购Id
-let guideData: any = null;
+const guideData = ref<string>('');
 onLoad(async e => {
   lastPage.value = e.p || '';
-  guideData = Storage.getRegData();
-  if (guideData) {
+  guideData.value = Storage.getRegData();
+  if (guideData.value) {
     Storage.removeRegData();
   }
   const channel = uni.getStorageSync('c');
 
   // const  = 'WELCOME_MSG';
   // const guideUid = '1281D5F2-1C91-E399-D46C-0761DCD3BB89';
-  const guideUid = guideData;
 
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
@@ -383,11 +382,11 @@ onLoad(async e => {
       num,
       inviteMid,
     });
-  } else if (guideUid) {
+  } else if (guideData.value) {
     // console.log(444);
     queryWriteInfo({
       channel: 'WELCOME_MSG',
-      guideUid,
+      guideUid: guideData.value,
       inviteMid,
     });
   } else {
@@ -588,6 +587,7 @@ const queryWriteInfo = async (p = {}) => {
 };
 
 const handle = (item: any) => {
+  console.log('item', item);
   if (isInactiveMember.value) {
     if (item.code === BIRTH_DAY && !inactiveMemberControl.canModifyBirth) {
       return;
@@ -673,7 +673,7 @@ const handle = (item: any) => {
         if (e.distId !== selectedShop.value.distId) {
           activeData.value.canModifySaler = true;
           inactiveMemberControl.canModifySaler = true;
-          if (!guideData) {
+          if (!guideData.value) {
             Object.assign(memberInfo.value, {
               belongUid: '',
               belongUser: '',
@@ -691,27 +691,29 @@ const handle = (item: any) => {
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
-      // 更新导购
-      uni.$once('updateGuide', e => {
-        if (!e.uid) return;
-        Object.assign(memberInfo.value, {
-          belongUid: e.uid,
-          belongUser: e.name,
+      if (!guideData.value) {
+        // 更新导购
+        uni.$once('updateGuide', e => {
+          if (!e.uid) return;
+          Object.assign(memberInfo.value, {
+            belongUid: e.uid,
+            belongUser: e.name,
+          });
         });
-      });
-      if (selectedShop.value.distId) {
-        router.goCodePage(
-          'chooseGuide',
-          `?id=${selectedShop.value.distId}&uid=${
-            memberInfo.value.belongUid || ''
-          }`
-        );
-        return;
-      }
-      uni.showModal({
-        content: '请先选门店',
-        showCancel: false,
-      });
+        if (selectedShop.value.distId) {
+          router.goCodePage(
+            'chooseGuide',
+            `?id=${selectedShop.value.distId}&uid=${
+              memberInfo.value.belongUid || ''
+            }`
+          );
+          return;
+        }
+        uni.showModal({
+          content: '请先选门店',
+          showCancel: false,
+        });
+			}
       break;
     }
     case BIRTH_DAY: {
