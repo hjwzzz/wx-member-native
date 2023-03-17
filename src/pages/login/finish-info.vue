@@ -479,8 +479,8 @@ const queryWriteInfo = async (p = {}) => {
       canModifyDist,
       uid: belongUid,
       uname: belongUser,
-      distId,
-      distName: storeName,
+      // distId,
+      // distName: storeName,
       distList,
     } = data;
     distListArr.value = distList;
@@ -587,7 +587,6 @@ const queryWriteInfo = async (p = {}) => {
 };
 
 const handle = (item: any) => {
-  console.log('item', item);
   if (isInactiveMember.value) {
     if (item.code === BIRTH_DAY && !inactiveMemberControl.canModifyBirth) {
       return;
@@ -667,6 +666,9 @@ const handle = (item: any) => {
 
   switch (item.code) {
     case 'REGIST_REQUIRED_STORE': {
+      if (guideData.value && distListArr.value.length === 1) {
+        return;
+      }
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
         Storage.removeDistList();
@@ -678,7 +680,7 @@ const handle = (item: any) => {
               belongUid: '',
               belongUser: '',
             });
-					}
+          }
         }
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
@@ -691,7 +693,10 @@ const handle = (item: any) => {
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
-      if (!guideData.value) {
+      if (
+        !guideData.value ||
+        guideData.value && !memberInfo.value.belongUser
+      ) {
         // 更新导购
         uni.$once('updateGuide', e => {
           if (!e.uid) return;
@@ -713,7 +718,7 @@ const handle = (item: any) => {
           content: '请先选门店',
           showCancel: false,
         });
-			}
+      }
       break;
     }
     case BIRTH_DAY: {
