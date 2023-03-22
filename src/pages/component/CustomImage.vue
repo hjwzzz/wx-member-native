@@ -1,47 +1,73 @@
 <template>
-  <!-- 轮播图 -->
-  <!-- <view class="custom-dots">
-    <swiper
-      style="height: 250rpx"
-      :autoplay="false"
-      circular
-      @change="swiperChange"
-      class="coupon-swiper"
+  <view :style="props.items?.param?.doOut?.style" class="custom-box">
+    <!-- 轮播图 -->
+    <view
+      class="custom-dots"
+      v-if="props.items?.param?.doOut?.fixedStyle === 0"
     >
-      <swiper-item class="swiper-item">
-        <view class="swiper-item-list"> 11</view>
-      </swiper-item>
-      <swiper-item class="swiper-item">
-        <view class="swiper-item-list">22 </view>
-      </swiper-item>
-    </swiper>
-    <view class="custom-dots-box dots-round">
-      <view
-        class="custom-dots-show"
-        v-for="(_, index) in 2"
-        :key="index"
-        :style="{
-          background:
-            currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
-        }"
-      />
+      <swiper
+        :style="{ height: props.items?.param?.doOut?.style.height }"
+        :autoplay="false"
+        circular
+        @change="swiperChange"
+        class="coupon-swiper"
+      >
+        <swiper-item
+          class="swiper-item"
+          v-for="(item, index) in props.items?.param?.doOut?.images"
+          :key="index"
+        >
+          <view class="swiper-item-list">
+            <image
+              class="swiper-item-image"
+              :src="item.icoUrl"
+              mode="aspectFill"
+            >
+            </image>
+          </view>
+        </swiper-item>
+      </swiper>
+      <view class="custom-dots-box dots-round">
+        <view
+          class="custom-dots-show"
+          v-for="(_, index) in props.items?.param?.doOut?.images"
+          :key="index"
+          :style="{
+            background:
+              currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
+          }"
+        />
+      </view>
     </view>
-  </view> -->
-  <!-- 纵向平铺 -->
-  <!-- <view class="image-direction"> </view> -->
+    <!-- 纵向平铺 -->
+    <view
+      class="image-direction"
+      v-if="props.items?.param?.doOut?.fixedStyle === 1"
+    >
+      <view
+        class="direction-item-list"
+        v-for="(item, index) in props.items?.param?.doOut?.images"
+        :key="index"
+        :style="{ height: props.items?.param?.doOut?.style.height }"
+      >
+        <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
+        </image>
+      </view>
+    </view>
 
-  <!-- 横向平铺 -->
-  <!-- <view class="image-broadwise">
+    <!-- 横向平铺 -->
+    <!-- <view class="image-broadwise">
     <view class="image-broadwise-item"> </view>
     <view class="image-broadwise-item"> </view>
   </view> -->
 
-  <!-- 横向滑动 -->
-  <view class="image-broadwise-slither">
+    <!-- 横向滑动 -->
+    <!-- <view class="image-broadwise-slither">
     <view class="image-broadwise-slither-item"> </view>
     <view class="image-broadwise-slither-item"> </view>
     <view class="image-broadwise-slither-item"> </view>
     <view class="image-broadwise-slither-item"> </view>
+  </view> -->
   </view>
 </template>
 
@@ -56,15 +82,9 @@ import { onShow } from '@dcloudio/uni-app';
 const initBasicsData = useBasicsData();
 
 interface Props {
-  title?: string;
-  item?: any;
-  policyListNum?: number;
+  items?: any;
 }
-// const props = withDefaults(defineProps<Props>(), {
-//   title: '优惠券',
-//   item: () => ({}),
-//   policyListNum: 0,
-// });
+const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
 
 const currentIndex = ref(0);
 const swiperChange = e => {
@@ -81,12 +101,16 @@ const toDetail = () => {
 </script>
 
 <style lang="scss" scoped>
+.custom-box {
+  overflow: hidden;
+}
+
 .custom-dots {
   position: relative;
 
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
   .coupon-swiper {
-    border-radius: 16rpx;
+    // border-radius: 16rpx;
     overflow: hidden;
   }
   .swiper-item {
@@ -97,10 +121,14 @@ const toDetail = () => {
   .swiper-item-list {
     display: flex;
     justify-content: flex-start;
-    background: #e04838;
+    // background: #e04838;
     width: 100%;
     height: 100%;
     border-radius: 16rpx;
+    .swiper-item-image {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .custom-dots-box {
@@ -131,6 +159,18 @@ const toDetail = () => {
 //     grid-template-columns: repeat(v-bind('props.columnNumber'), 1fr);
 //     grid-gap: 10px;
 
+.image-direction {
+  z-index: 99;
+  .direction-item-list {
+    width: 100%;
+    height: 100%;
+  }
+  .swiper-item-image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .image-broadwise {
   // padding: 20rpx;
   // display: flex;
@@ -155,7 +195,7 @@ const toDetail = () => {
   // flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
   .image-broadwise-slither-item {
     flex-shrink: 0;
     width: 280rpx;

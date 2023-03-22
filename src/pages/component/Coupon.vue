@@ -332,6 +332,7 @@ onShow(() => {
   position: relative;
   padding-top: 30rpx;
   padding-bottom: 50rpx;
+
   .coupon-swiper {
     border-radius: 16rpx;
     overflow: hidden;

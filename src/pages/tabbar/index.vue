@@ -1,5 +1,7 @@
 <template>
-  <CustomPage bottom>
+  <!--#949494 pageBackground-->
+
+  <CustomPage :background="'#949494'" bottom>
     <!-- 首页轮播图 -->
     <!-- <Rotation> </Rotation> -->
     <!-- 质保单 -->
@@ -13,20 +15,20 @@
     <!-- 图片 -->
     <!-- <CustomImage> </CustomImage> -->
 
-    <view
+    <!-- <view
       class="banner-show-background"
       :style="{
         marginBottom: bannerList?.length > 0 ? '54rpx' : '30rpx',
       }"
     >
-      <view
+     <view
         class="back-img"
         :style="{
           background: topBgImageUrl,
         }"
       >
       </view>
-      <view class="banner">
+     <view class="banner">
         <swiper
           style="height: 300rpx"
           :indicator-dots="bannerList.length > 1"
@@ -50,7 +52,76 @@
           </block>
         </swiper>
       </view>
-    </view>
+  </view> -->
+    <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
+    <block v-for="(items, index) in panelList" :key="index">
+      <!-- 轮播图 -->
+      <!-- <Rotation
+        v-if="items.kind === 'swiper' || items.kind === 'SWIPER'"
+        :items="items"
+      /> -->
+      <!-- 广告 -->
+      <!-- <NoticeBar v-if="items.kind === 'NOTICE'" :items="items" /> -->
+      <!-- 图片-或者广告 -->
+      <!-- <CustomImage v-if="items.kind === 'BANNER'" :items="items" /> -->
+      <!-- 分割线-占位 -->
+      <!-- <CutView
+        v-if="items.kind === 'DIVIDER' || items.kind === 'PARTITION'"
+        :items="items"
+      /> -->
+      <!-- 预约服务 -->
+      <!-- <MyService
+        v-if="items.kind === 'RES_SVC'"
+        :items="items"
+        :title="items.param.title"
+        :srvProshowNum="items.param.showNum"
+      /> -->
+      <!-- 我的奖品 -->
+      <!-- <MyPrizes
+        v-if="items.kind === 'MY_AWARD'"
+        :item="items"
+        :items="items"
+        :title="items.param.title"
+        @handle="handleMyPrizes"
+      /> -->
+      <!-- 标题头  -->
+      <Title v-if="items.kind === 'TITLE'" :items="items"> </Title>
+      <!-- 今日金价 -->
+      <TodayGoldPrices
+        v-if="items.kind === 'DIALOG'"
+        :title="items.param.title"
+        :items="items"
+        type="WM_HOME"
+      />
+      <!-- 文本 -->
+      <CustomText v-if="items.kind === 'TEXT'" :items="items" />
+      <!-- 富文本 -->
+
+      <view
+        class="des-html"
+        v-if="items.kind === 'RICH_TEXT'"
+        :style="items.param?.doOut?.style"
+      >
+        <mp-html
+          v-if="items.param.content"
+          :copy-link="false"
+          :content="richImage(items.param.content)"
+          @linktap="linktap"
+        />
+      </view>
+      <!-- 推荐礼品 -->
+      <ContentMall
+        v-if="items.kind === 'REC_GIFTS'"
+        :title="items.param.title"
+        :items="items"
+      />
+      <!--  附近门店  NearbyStore   -->
+      <NearbyStore
+        v-if="items.kind === 'NEAR_STORE'"
+        :title="items.param.title"
+        :items="items"
+      />
+    </block>
 
     <view class="customer-diy">
       <!-- CustomImage -->
@@ -77,12 +148,12 @@
       </uni-notice-bar> -->
 
       <!--  -->
-      <block
-        v-for="(items, index) in dataList.wmMainRspVo?.panelList"
-        :key="index"
-      >
+      <block v-for="(items, index) in panelList" :key="index">
         <!-- 提示    -->
-        <view
+        <view v-if="items.kind === 'NOTICE'">
+          ---------------------------
+        </view>
+        <!-- <view
           class="bulletin"
           v-if="items.kind === 'NOTICE'"
           @click="goMoreNotice(items.param, items.updateTime)"
@@ -92,9 +163,9 @@
             <text class="bulletin-text">{{ items.param.title }}</text>
           </view>
           <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-        </view>
+        </view> -->
         <!-- 广告图 -->
-        <view
+        <!-- <view
           class="ad-banner-list"
           v-else-if="items.kind === 'BANNER' && adBannerList.length"
         >
@@ -119,7 +190,7 @@
               </swiper-item>
             </block>
           </swiper>
-        </view>
+        </view> -->
         <!-- 快捷导航 -->
 
         <view v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length">
@@ -164,7 +235,7 @@
           </view>
         </view>
         <!-- 富文本 -->
-        <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
+        <!-- <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
           <mp-html
             v-if="items.param.content"
             :copy-link="false"
@@ -172,18 +243,18 @@
             @linktap="linktap"
           />
           <NoneData v-else> </NoneData>
-        </view>
+        </view> -->
         <!-- 今日金价 -->
-        <TodayGoldPrice
+        <!-- <TodayGoldPrice
           v-else-if="items.kind === 'GOLD_PRICE'"
           :title="items.param.title"
           type="WM_HOME"
-        ></TodayGoldPrice>
+        ></TodayGoldPrice> -->
         <!-- 积分商城推荐  -->
-        <ContentMall
+        <!-- <ContentMall
           v-else-if="items.kind === 'REC_GIFTS'"
           :title="items.param.title"
-        ></ContentMall>
+        ></ContentMall> -->
       </block>
     </view>
   </CustomPage>
@@ -239,11 +310,14 @@ import {
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
+import { getSysUi } from '@/api/server';
+import Router from '@/utils/router';
 import {
-  getWmIndex,
+  // getWmIndex,
   queryHomBannerListFront,
   queryPopup,
 } from '@/pages/api/index';
+import Storage from '@/utils/storage';
 import NoneData from '../component/NoneData.vue';
 import TodayGoldPrice from '../component/TodayGoldPrice.vue';
 import ContentMall from '../component/ContentMall.vue';
@@ -255,7 +329,13 @@ import memberCard from '../component/memberCard.vue';
 import NearbyStore from '../component/NearbyStore.vue';
 import CustomImage from '../component/CustomImage.vue';
 import QuickNavigation from '../component/QuickNavigation.vue';
-//
+import NoticeBar from '../component/NoticeBar.vue';
+import CutView from '../component/CutView.vue';
+import MyService from '../component/MyService.vue';
+import MyPrizes from '../component/MyPrizes.vue';
+import Title from '../component/Title.vue';
+import CustomText from '../component/CustomText.vue';
+// getSysUi CutView  MyPrizes
 
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
@@ -268,6 +348,12 @@ const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 // onMounted(() => {
 // });
+
+// const getSysUiInfo = async () => {
+//   const aw = await getSysUi({ opsId: Storage.getOpsId(), kind: 'WM_MAIN' });
+//   console.log('getSysUiInfo', aw);
+// };
+
 onLoad(() => {
   queryPopupFun();
 });
@@ -281,6 +367,10 @@ onShow(() => {
 
 const linktap = (e: any) => {
   uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+};
+
+const handleMyPrizes = (index: number) => {
+  Router.goCodePage('my_prize', `?tab=${index}`);
 };
 
 // const shareObj: Ref<any> = ref({});
@@ -305,11 +395,20 @@ const dataList: Ref<any> = ref({});
 const adBannerList: Ref<any> = ref([]);
 // const goldPrice: Ref<any> = ref([]);
 // const todayGoldPriceShowed = ref(false);
+// panelList
+// 新轮播图
+// const swiperImgList: Ref<any> = ref([]);
 // 页面数据
+const panelList: Ref<any> = ref([]);
+const pageBackground = ref('');
 const getPageDate = async () => {
-  const result = await getWmIndex('');
+  // const result = await getWmIndex('');
+  const result = await getSysUi({ opsId: Storage.getOpsId(), kind: 'WM_HOME' });
+  console.log('result', result);
+  panelList.value = result.data.panelList || [];
+  pageBackground.value = result.data.param.doOut.style.background;
+  //
   const banner = result.data?.bannerList || [];
-
   dataList.value = result.data;
   bannerList.value = banner;
 
@@ -317,7 +416,7 @@ const getPageDate = async () => {
   // console.log(result);
   uni.setNavigationBarTitle({
     // 设置顶部bar的标题
-    title: result.data.wmMainRspVo?.param?.title,
+    title: result.data.param?.title,
   });
 
   getPanelList();
@@ -590,6 +689,20 @@ const goMoreNotice = (item: any, noticTime: any) => {
   }
 
   .des-html img {
+    width: 50%;
+  }
+}
+
+.des-html {
+  // width: 630rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  font-size: 28rpx;
+  font-weight: 400;
+  color: #646771;
+  background: #fff;
+  // border-radius: 16rpx;
+  img {
     width: 50%;
   }
 }

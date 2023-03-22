@@ -1,9 +1,9 @@
 <template>
   <!-- grid-price-none 无数据显示 -->
-  <view class="grid-price">
+  <view class="grid-price" :style="props.items?.param?.doOut?.style">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title }}</text>
+        <text class="title">{{ props.title || '今日金价' }}</text>
         <text class="title-unit">(元/克)</text>
       </view>
       <view class="right" @click="more">
@@ -12,18 +12,24 @@
       </view>
     </view>
 
-    <!-- <view class="gold-price-style1">
+    <view
+      class="gold-price-style1"
+      v-if="props.items?.param?.doOut?.fixedStyle === 0"
+    >
       <view class="gold-price-style1-text gold-price-style1-item1"
         >销售金价
       </view>
       <view class="gold-price-style1-text gold-price-style1-item2"
         >回收金价
       </view>
-      <view class="gold-price-style1-text gold-price-style1-item3"
+      <!-- <view class="gold-price-style1-text gold-price-style1-item3"
         >销售金价
-      </view>
-    </view> -->
-    <view class="gold-price-style2">
+      </view> -->
+    </view>
+    <view
+      class="gold-price-style2"
+      v-if="props.items?.param?.doOut?.fixedStyle === 1"
+    >
       <view class="gold-price-style2-store">
         <text class="gold-price-style2-store-name"> 金千枝店</text>
         <text class="gold-price-style2-store-time"> 2022年08月09日</text>
@@ -62,7 +68,10 @@
     </view>
 
     <!--  -->
-    <!-- <view class="gold-price-style3">
+    <view
+      class="gold-price-style3"
+      v-if="props.items?.param?.doOut?.fixedStyle === 2"
+    >
       <view class="gold-price-style3-store nowrap">
         <text class="gold-price-style3-store-name nowrap"> 金千枝店</text>
       </view>
@@ -122,9 +131,9 @@
           </view>
         </view>
       </view>
-    </view> -->
-
-    <!-- <view v-if="goldPrice?.length && showed">
+    </view>
+    <!-- && showed -->
+    <view v-if="goldPrice?.length">
       <swiper
         class="swiper"
         :autoplay="true"
@@ -167,7 +176,6 @@
         </swiper-item>
       </swiper>
     </view>
-  -->
   </view>
 </template>
 
@@ -184,6 +192,7 @@ interface Props {
   title?: string;
   // showed?: boolean;
   // goldPrice?: any;
+  items: any;
   type: string;
 }
 
@@ -191,6 +200,7 @@ const distId: Ref<string> = ref('');
 const props = withDefaults(defineProps<Props>(), {
   title: '今日金价',
   type: '',
+  items: () => ({}),
   // showed: false,
   // goldPrice: [],
 });
@@ -463,7 +473,7 @@ const _getGoldPriceByPage = async () => {
   padding: 30rpx;
   padding-bottom: 0rpx;
   // margin-top: 30rpx;
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
   background: #fff;
   border-radius: 16rpx;
 

@@ -1,13 +1,30 @@
 <template>
-  <view class="nearby-store">
+  <view class="nearby-store" :style="props.items.param.doOut.style">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title }}</text>
+        <text
+          class="title"
+          :style="{
+            color: colorText,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ props.title }}</text
+        >
         <text class="number"></text>
       </view>
       <view class="right" @click="onMall">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: colorText,
+          }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="colorText || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
 
@@ -23,9 +40,20 @@
       </view>
 
       <view class="nearby-store-info">
-        <view class="nearby-store-info-name nowrap">金千枝万山旗舰店 </view>
+        <view
+          class="nearby-store-info-name nowrap"
+          :style="{
+            color: colorText,
+          }"
+          >金千枝万山旗舰店
+        </view>
         <view class="nearby-store-info-text">
-          <view class="nearby-store-info-text-left">
+          <view
+            class="nearby-store-info-text-left"
+            :style="{
+              color: colorText,
+            }"
+          >
             <view class="nearby-store-info-text-left-item nowrap">
               <image
                 class="nearby-store-info-img"
@@ -33,7 +61,9 @@
                 mode="aspectFill"
               >
               </image>
-              <text class="nowrap"> 深圳市罗湖区文锦北路文锦广场A座17层 </text>
+              <text class="nowrap">
+                深圳市罗湖区文锦北路文锦广场A座17层深圳市罗湖区文锦北路文锦广场A座17层
+              </text>
             </view>
             <view class="nearby-store-info-text-left-item nowrap">
               <image
@@ -54,14 +84,21 @@
               <text class="nowrap"> 周一至周日09:30-14:00，16:30-24:00 </text>
             </view>
           </view>
-          <view class="nearby-store-info-text-right">
-            <view class="nearby-store-info-text-right-text">
-              <image
-                class="nearby-store-info-store-dh"
-                :src="`${staticUrl}img/store-dh.png`"
-                mode="aspectFill"
-              >
-              </image>
+          <view
+            class="nearby-store-info-text-right"
+            :style="{
+              color: colorText,
+            }"
+          >
+            <view class="nearby-store-info-text-right-box">
+              <view class="nearby-store-info-text-right-text">
+                <image
+                  class="nearby-store-info-store-dh"
+                  :src="`${staticUrl}img/store-dh.png`"
+                  mode="aspectFill"
+                >
+                </image>
+              </view>
             </view>
             <view class="nearby-store-info-text-right-text">到这去 </view>
           </view>
@@ -73,15 +110,22 @@
 
 <script setup lang="ts">
 import { queryMemberRecommend } from '@/api/points-mall';
-import { onMounted, ref, Ref } from 'vue';
+import { computed, onMounted, ref, Ref } from 'vue';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
+
 interface Props {
   title?: string;
+  items?: any;
 }
-const props = withDefaults(defineProps<Props>(), { title: '附近门店' });
+const props = withDefaults(defineProps<Props>(), {
+  title: '附近门店',
+  items: () => ({}),
+});
 const initBasicsData = useBasicsData();
+
+const colorText = computed(() => props.items?.param?.doOut?.special?.color || '');
 
 // onMounted(() => {
 //   getMemberRecommend();
@@ -119,9 +163,9 @@ const onMallDetail = (id: string) => {
 }
 .nearby-store {
   padding: 30rpx;
-  margin-bottom: 30rpx;
-  background: #fff;
-  border-radius: 16rpx;
+  // margin-bottom: 30rpx;
+  // background: #fff;
+  // border-radius: 16rpx;
   font-size: 28rpx;
 
   .header {
@@ -211,8 +255,7 @@ const onMallDetail = (id: string) => {
       }
     }
     .nearby-store-info-text-right {
-      padding-left: 44rpx;
-      width: 76rpx;
+      width: 110rpx;
       flex-shrink: 0;
       font-size: 20rpx;
       color: #646771;
@@ -224,9 +267,15 @@ const onMallDetail = (id: string) => {
         height: 64rpx;
         width: 64rpx;
       }
+      .nearby-store-info-text-right-box {
+        // padding-left: 24rpx;
+        display: flex;
+        justify-content: center;
+      }
       .nearby-store-info-text-right-text {
         display: flex;
         justify-content: center;
+        padding-left: 24rpx;
       }
     }
   }

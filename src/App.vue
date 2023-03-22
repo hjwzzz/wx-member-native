@@ -53,6 +53,11 @@ page {
   word-break: break-all;
 }
 
+.uni-notice-bar-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
 .text-break {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -64,7 +69,11 @@ page {
   word-wrap: break-word;
   white-space: pre-warp;
 }
-
+.nowrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .text-line-two {
   display: -webkit-box;
   -webkit-box-orient: vertical;
