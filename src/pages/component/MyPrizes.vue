@@ -1,5 +1,12 @@
 <template>
-  <view class="grid-prize" :style="props.items?.param?.doOut?.style">
+  <view
+    class="grid-prize"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header" @click="emits('handle', 0)">
       <view class="left">
         <text

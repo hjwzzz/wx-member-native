@@ -82,7 +82,16 @@ const fixedStyleIndex = computed(() => props.items?.param?.doOut?.fixedStyle || 
 // 点数类型
 const specialStyle = computed(() => props.items?.param?.doOut?.special?.fixedStyle || 0);
 
-const boxStyle = computed(() => props.items?.param?.doOut?.style || {});
+const boxStyle = computed(() => {
+  if (props.items?.param?.doOut?.style) {
+    return {
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+  }
+  return {};
+});
 // const bannerList = [
 //   { imgUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg' },
 //   { imgUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg' },
@@ -115,6 +124,7 @@ const swiperChange = (e: any) => {
   position: relative;
   overflow: hidden;
   margin-bottom: 30rpx;
+  background-size: cover;
   .custom-dots-box {
     // width: 100%;
     position: absolute;

@@ -1,5 +1,12 @@
 <template>
-  <view class="nearby-store" :style="props.items.param.doOut.style">
+  <view
+    class="nearby-store"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
         <text

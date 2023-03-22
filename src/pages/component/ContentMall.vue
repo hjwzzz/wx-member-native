@@ -1,5 +1,14 @@
 <template>
-  <view class="grid-gift" :style="props.items.param.doOut.style">
+  <!--  backgroundSize: 'cover',
+      backgroundPosition: 'center', -->
+  <view
+    class="grid-gift"
+    :style="{
+      ...props.items.param.doOut.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
         <text
