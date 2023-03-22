@@ -471,112 +471,274 @@ const queryNearShop = async (distId: any) => {
 };
 const distListArr = ref<any>([]);
 const queryWriteInfo = async (p = {}) => {
-  // const obj = {
-  // code: 0,
-  // msg: '成功',
-  // data: {
-  //     list: [
-  //       {
-  //         code: 'REGIST_REQUIRED_AVATAR',
-  //         name: '头像',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 1,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_NICKNAME',
-  //         name: '昵称',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 2,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_NAME',
-  //         name: '姓名',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 3,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_GENDER',
-  //         name: '性别',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 4,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_BIRTH',
-  //         name: '生日',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 5,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_MDAY',
-  //         name: '纪念日',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 6,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_ADDRESS',
-  //         name: '地址',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 7,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_STORE',
-  //         name: '门店',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 8,
-  //       },
-  //       {
-  //         code: 'REGIST_REQUIRED_SELLER',
-  //         name: '导购',
-  //         show: 'Y',
-  //         required: 'N',
-  //         seq: 9,
-  //       },
-  //     ],
-  //     openRegist: 'Y',
-  //     uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
-  //     openFocusStore: 'Y',
-  //     openFocusGuide: 'Y',
-  //     activePerfectData: 'Y',
-  //     distList: [
-  //       {
-  //         distId: 'DB3B0209-D621-694F-EE06-066CB5B680CB',
-  //         distName: '文锦广场分销商',
-  //         uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
-  //         uname: '黄家伍',
-  //       },
-  //       {
-  //         distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
-  //         distName: '水贝店',
-  //         uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
-  //         uname: '黄家伍',
-  //       },
-  //       {
-  //         distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
-  //         distName: '水贝店',
-  //         uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
-  //         uname: '黄家伍',
-  //       },
-  //       {
-  //         distId: '723F3C26-1E05-2C31-7AF4-08677672D218',
-  //         distName: '深圳金千枝',
-  //         uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
-  //         uname: '黄家伍',
-  //       },
-  //     ],
-  //     uname: '黄家伍',
-  //     canModifyDist: false,
-  //     canModifySaler: false,
-  // },
-  // ts: 1679301106,
-  // };
+  /*const obj = {
+  code: 0,
+  msg: '成功',
+  data: {
+      list: [
+        {
+          code: 'REGIST_REQUIRED_AVATAR',
+          name: '头像',
+          show: 'Y',
+          required: 'N',
+          seq: 1,
+        },
+        {
+          code: 'REGIST_REQUIRED_NICKNAME',
+          name: '昵称',
+          show: 'Y',
+          required: 'N',
+          seq: 2,
+        },
+        {
+          code: 'REGIST_REQUIRED_NAME',
+          name: '姓名',
+          show: 'Y',
+          required: 'N',
+          seq: 3,
+        },
+        {
+          code: 'REGIST_REQUIRED_GENDER',
+          name: '性别',
+          show: 'Y',
+          required: 'N',
+          seq: 4,
+        },
+        {
+          code: 'REGIST_REQUIRED_BIRTH',
+          name: '生日',
+          show: 'Y',
+          required: 'N',
+          seq: 5,
+        },
+        {
+          code: 'REGIST_REQUIRED_MDAY',
+          name: '纪念日',
+          show: 'Y',
+          required: 'N',
+          seq: 6,
+        },
+        {
+          code: 'REGIST_REQUIRED_ADDRESS',
+          name: '地址',
+          show: 'Y',
+          required: 'N',
+          seq: 7,
+        },
+        {
+          code: 'REGIST_REQUIRED_STORE',
+          name: '门店',
+          show: 'Y',
+          required: 'N',
+          seq: 8,
+        },
+        {
+          code: 'REGIST_REQUIRED_SELLER',
+          name: '导购',
+          show: 'Y',
+          required: 'N',
+          seq: 9,
+        },
+      ],
+      openRegist: 'Y',
+      uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+      openFocusStore: 'Y',
+      openFocusGuide: 'Y',
+      activePerfectData: 'Y',
+      distList: [
+        {
+          distId: 'DB3B0209-D621-694F-EE06-066CB5B680CB',
+          distName: '文锦广场分销商',
+          uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+          uname: '黄家伍',
+        },
+        {
+          distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
+          distName: '水贝店',
+          uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+          uname: '黄家伍',
+        },
+        {
+          distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
+          distName: '水贝店',
+          uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+          uname: '黄家伍',
+        },
+        {
+          distId: '723F3C26-1E05-2C31-7AF4-08677672D218',
+          distName: '深圳金千枝',
+          uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+          uname: '黄家伍',
+        },
+      ],
+      uname: '黄家伍',
+      canModifyDist: false,
+      canModifySaler: false,
+  },
+  ts: 1679301106,
+  };*/
+	/*const obj = {
+    "code": 0,
+    "msg": "成功",
+    "data": {
+      "list": [
+        {
+					"code": "REGIST_REQUIRED_AVATAR",
+					"name": "头像",
+					"show": "Y",
+					"required": "N",
+					"seq": 1
+				},
+				{
+					"code": "REGIST_REQUIRED_NICKNAME",
+					"name": "昵称",
+					"show": "Y",
+					"required": "N",
+					"seq": 2
+				},
+				{
+					"code": "REGIST_REQUIRED_NAME",
+					"name": "姓名",
+					"show": "Y",
+					"required": "N",
+					"seq": 3
+				},
+				{
+					"code": "REGIST_REQUIRED_STORE",
+					"name": "门店",
+					"show": "Y",
+					"required": "N",
+					"seq": 4
+				},
+				{
+        "code": "REGIST_REQUIRED_SELLER",
+        "name": "导购",
+        "show": "Y",
+        "required": "N",
+        "seq": 5
+      },
+				{
+					"code": "REGIST_REQUIRED_GENDER",
+					"name": "性别",
+					"show": "Y",
+					"required": "N",
+					"seq": 6
+				},
+				{
+					"code": "REGIST_REQUIRED_ADDRESS",
+					"name": "地址",
+					"show": "Y",
+					"required": "N",
+					"seq": 7
+				},
+				{
+					"code": "REGIST_REQUIRED_BIRTH",
+					"name": "生日",
+					"show": "Y",
+					"required": "N",
+					"seq": 8
+				},
+				{
+					"code": "REGIST_REQUIRED_MDAY",
+					"name": "纪念日",
+					"show": "Y",
+					"required": "N",
+					"seq": 9
+				}
+      ],
+      "openRegist": "Y",
+      "openFocusStore": "Y",
+      "openFocusGuide": "Y",
+      "activePerfectData": "N",
+      "canModifyDist": true,
+      "canModifySaler": true
+    },
+    "ts": 1679395745
+  }*/
+	/*const obj = {
+    "code": 0,
+    "msg": "成功",
+    "data": {
+      "list": [
+        {
+					"code": "REGIST_REQUIRED_AVATAR",
+					"name": "头像",
+					"show": "Y",
+					"required": "N",
+					"seq": 1
+				},
+				{
+					"code": "REGIST_REQUIRED_NICKNAME",
+					"name": "昵称",
+					"show": "Y",
+					"required": "N",
+					"seq": 2
+				},
+				{
+					"code": "REGIST_REQUIRED_NAME",
+					"name": "姓名",
+					"show": "Y",
+					"required": "N",
+					"seq": 3
+				},
+				{
+					"code": "REGIST_REQUIRED_STORE",
+					"name": "门店",
+					"show": "Y",
+					"required": "N",
+					"seq": 4
+				},
+				{
+					"code": "REGIST_REQUIRED_SELLER",
+					"name": "导购",
+					"show": "Y",
+					"required": "N",
+					"seq": 5
+				},
+				{
+					"code": "REGIST_REQUIRED_GENDER",
+					"name": "性别",
+					"show": "Y",
+					"required": "N",
+					"seq": 6
+				},
+				{
+					"code": "REGIST_REQUIRED_ADDRESS",
+					"name": "地址",
+					"show": "Y",
+					"required": "N",
+					"seq": 7
+				},
+				{
+					"code": "REGIST_REQUIRED_BIRTH",
+					"name": "生日",
+					"show": "Y",
+					"required": "N",
+					"seq": 8
+				},
+				{
+					"code": "REGIST_REQUIRED_MDAY",
+					"name": "纪念日",
+					"show": "Y",
+					"required": "N",
+					"seq": 9
+				}
+      ],
+      "openRegist": "Y",
+      "distId": "F02542E0-91B9-719C-4778-04E620CFA3C4",
+      "uid": "E7394D25-72CC-32B3-B888-0764A7872966",
+      "distName": "沙井京基谢瑞麟",
+      "openFocusStore": "Y",
+      "openFocusGuide": "Y",
+      "scanType": "FINALLY",
+      "activePerfectData": "N",
+      "uname": "江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳",
+      "canModifyDist": true,
+      "canModifySaler": true
+    },
+    "ts": 1679450949
+  }*/
+
   // const { code, data } = obj;
 
   const { code, data } = await queryRegistRequiredSettingNew(p);
@@ -587,11 +749,10 @@ const queryWriteInfo = async (p = {}) => {
       canModifyDist,
       uid: belongUid,
       uname: belongUser,
-      // distId,
-      // distName: storeName,
-      distList,
+      distId,
+      distName: storeName,
     } = data;
-    distListArr.value = distList;
+
     const index = l.findIndex((item: any) => item.code === MDAY);
 
     if (index !== -1) {
@@ -609,8 +770,8 @@ const queryWriteInfo = async (p = {}) => {
       canModifyDist,
       belongUid,
       belongUser,
-      distId: distList?.length >= 1 ? distList[0]?.distId : '',
-      storeName: distList?.length >= 1 ? distList[0]?.distName : '',
+      distId,
+      storeName,
     });
 
     // 如果是未激活会员，且是扫推广码的
@@ -630,12 +791,8 @@ const queryWriteInfo = async (p = {}) => {
       ) {
         belongUid && (memberInfo.value.belongUid = belongUid);
         belongUser && (memberInfo.value.belongUser = belongUser);
-        // storeName && (selectedShop.value.storeName = storeName);
-        selectedShop.value.storeName =
-          distList?.length >= 1 ? distList[0]?.distName : '';
-        // distId && (selectedShop.value.distId = distId);
-        selectedShop.value.distId =
-          distList?.length >= 1 ? distList[0]?.distId : '';
+        storeName && (selectedShop.value.storeName = storeName);
+        distId && (selectedShop.value.distId = distId);
         // 如果未激活会员有门店没有导购，
       } else if (
         selectedShop.value.storeName &&
@@ -644,11 +801,7 @@ const queryWriteInfo = async (p = {}) => {
       ) {
         // 判断推广码的门店是不是跟未激活会员的门店相同
         // 相同，用推广码的导购
-        // if (distId && selectedShop.value.distId === distId) {
-        if (
-          selectedShop.value.distId ===
-          (distList?.length >= 1 ? distList[0]?.distId : '')
-        ) {
+        if (distId && selectedShop.value.distId === distId) {
           belongUid && (memberInfo.value.belongUid = belongUid);
           belongUser && (memberInfo.value.belongUser = belongUser);
         }
@@ -661,27 +814,19 @@ const queryWriteInfo = async (p = {}) => {
         // 判断推广码的导购是不是跟未激活会员的导购相同
         // 相同，用推广码的门店
         if (belongUid && memberInfo.value.belongUid === belongUid) {
-          // storeName && (selectedShop.value.storeName = storeName);
-          selectedShop.value.storeName =
-            distList?.length >= 1 ? distList[0]?.distName : '';
-          // distId && (selectedShop.value.distId = distId);
-          selectedShop.value.distId =
-            distList?.length >= 1 ? distList[0]?.distId : '';
+          storeName && (selectedShop.value.storeName = storeName);
+          distId && (selectedShop.value.distId = distId);
         }
       }
     } else {
       belongUid && (memberInfo.value.belongUid = belongUid);
       belongUser && (memberInfo.value.belongUser = belongUser);
-      // storeName && (selectedShop.value.storeName = storeName);
-      selectedShop.value.storeName =
-        distList?.length >= 1 ? distList[0]?.distName : '';
-      // distId && (selectedShop.value.distId = distId);
-      selectedShop.value.distId =
-        distList?.length >= 1 ? distList[0]?.distId : '';
+      storeName && (selectedShop.value.storeName = storeName);
+      distId && (selectedShop.value.distId = distId);
     }
 
     if (!isInactiveMember.value && isActivity.value) {
-      distList?.length >= 1 && await queryNearShop(distList[0]?.distId);
+      distId && await queryNearShop(distId);
     }
 
     if (!selectedShop.value.distId && !selectedShop.value.storeName) {
@@ -691,6 +836,19 @@ const queryWriteInfo = async (p = {}) => {
     if (!memberInfo.value.belongUid && !memberInfo.value.belongUser) {
       inactiveMemberControl.canModifySaler = true;
     }
+
+    //欢迎语
+    if (guideData.value) {
+      distListArr.value = data?.distList;
+      Object.assign(activeData.value, {
+        canModifySaler,
+        canModifyDist,
+        belongUid,
+        belongUser,
+        distId: data?.distList?.length >= 1 ? data?.distList[0]?.distId : '',
+        storeName: data?.distList?.length >= 1 ? data?.distList[0]?.distName : '',
+      });
+		}
   }
 };
 
