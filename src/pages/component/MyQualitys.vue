@@ -1,6 +1,10 @@
 <template>
   <!--grid-price-none  -->
-  <view class="grid-policy-act" @click="toDetail">
+  <view
+    class="grid-policy-act"
+    @click="toDetail"
+    :style="props.items.param.doOut.style"
+  >
     <view class="header">
       <view class="header-left">
         <text class="title">{{ title || '质保单' }}</text>
@@ -12,6 +16,45 @@
       </view>
     </view>
     <view class="policy-card">
+      <view class="policy-card-item">
+        <view class="policy-card-item-text policy-card-item-one">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-011.png'"
+            mode="aspectFill"
+          />
+          <text class="text">单号：</text>
+          <text class="store-name">Z451265545089354</text>
+        </view>
+        <view class="policy-card-item-text">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-009.png'"
+            mode="aspectFill"
+          />
+          <text class="text">门店：</text>
+          <text class="store-name">金千金千枝金千枝金千枝金千枝金千枝</text>
+        </view>
+        <view class="policy-card-item-text">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-006.png'"
+            mode="aspectFill"
+          />
+          <text class="text">时间：</text>
+          <text class="text">2022-05-18 10:10:10</text>
+          <text class="text-num">数量：</text>
+          <text class="text">2件</text>
+        </view>
+        <view class="policy-card-item-btn">
+          <view class="policy-card-item-btn-info">
+            <text>总计：</text>
+            <text class="num-infos">￥</text>
+            <text class="num-info-price">200000</text>
+          </view>
+          <view class="policy-card-item-btn-name"> 详情 </view>
+        </view>
+      </view>
       <view class="policy-card-item">
         <view class="policy-card-item-text policy-card-item-one">
           <image
@@ -97,6 +140,7 @@ interface Props {
   title?: string;
   item?: any;
   policyListNum?: number;
+  items?: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '质保单',
@@ -159,6 +203,8 @@ onShow(() => {
 .policy-card {
   padding-top: 25rpx;
   padding-bottom: 30rpx;
+
+  // margin-right: -30rpx;
   // width: 350px;
   // display: flex;
   // justify-content: flex-start;
@@ -171,7 +217,8 @@ onShow(() => {
   flex-wrap: nowrap;
   align-items: center;
   .policy-card-item {
-    width: 600rpx;
+    // width: 600rpx;
+    width: calc(90%);
     height: 300rpx;
     background: #ffffff;
     border: 2rpx solid #f4f5f7;
@@ -180,7 +227,7 @@ onShow(() => {
     margin-right: 20rpx;
   }
   .store-name {
-    width: 420rpx;
+    width: calc(60%);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -255,9 +302,9 @@ onShow(() => {
   // width: 690rpx;
   padding: 30rpx;
   padding-bottom: 0rpx;
-  margin: 30rpx 0rpx;
-  background: #fff;
-  border-radius: 16rpx;
+  // margin: 30rpx 0rpx;
+  // background: #fff;
+  // border-radius: 16rpx;
 
   .header {
     display: flex;

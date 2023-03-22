@@ -14,6 +14,8 @@
     <!-- <NearbyStore> </NearbyStore> -->
     <!-- 图片 -->
     <!-- <CustomImage> </CustomImage> -->
+    <!-- 附近门店 -->
+    <!-- <NearbyStore> </NearbyStore> -->
 
     <!-- <view
       class="banner-show-background"
@@ -56,34 +58,34 @@
     <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
     <block v-for="(items, index) in panelList" :key="index">
       <!-- 轮播图 -->
-      <!-- <Rotation
+      <Rotation
         v-if="items.kind === 'swiper' || items.kind === 'SWIPER'"
         :items="items"
-      /> -->
+      />
       <!-- 广告 -->
-      <!-- <NoticeBar v-if="items.kind === 'NOTICE'" :items="items" /> -->
+      <NoticeBar v-if="items.kind === 'NOTICE'" :items="items" />
       <!-- 图片-或者广告 -->
-      <!-- <CustomImage v-if="items.kind === 'BANNER'" :items="items" /> -->
+      <CustomImage v-if="items.kind === 'BANNER'" :items="items" />
       <!-- 分割线-占位 -->
-      <!-- <CutView
+      <CutView
         v-if="items.kind === 'DIVIDER' || items.kind === 'PARTITION'"
         :items="items"
-      /> -->
+      />
       <!-- 预约服务 -->
-      <!-- <MyService
+      <MyService
         v-if="items.kind === 'RES_SVC'"
         :items="items"
         :title="items.param.title"
         :srvProshowNum="items.param.showNum"
-      /> -->
+      />
       <!-- 我的奖品 -->
-      <!-- <MyPrizes
+      <MyPrizes
         v-if="items.kind === 'MY_AWARD'"
         :item="items"
         :items="items"
         :title="items.param.title"
         @handle="handleMyPrizes"
-      /> -->
+      />
       <!-- 标题头  -->
       <Title v-if="items.kind === 'TITLE'" :items="items"> </Title>
       <!-- 今日金价 -->
@@ -121,38 +123,20 @@
         :title="items.param.title"
         :items="items"
       />
+
+      <!--  质保单 -->
+      <MyQualitys
+        v-if="items.kind === 'WARRANTY'"
+        :title="items.param.title"
+        :items="items"
+      />
     </block>
 
     <view class="customer-diy">
-      <!-- CustomImage -->
-      <!-- <TodayGoldPrices> </TodayGoldPrices> -->
-      <!-- <memberCard> </memberCard> -->
-      <!-- <NearbyStore> </NearbyStore> -->
-      <!-- <MyQualitys> </MyQualitys> -->
-      <!-- <CustomImage> </CustomImage> -->
-      <!-- <uni-notice-bar
-        show-icon
-        scrollable
-        show-get-more
-        text="uni-app 版正式发布，开发一次，同时发布iOS、Android、H5、微信小程序、支付宝小程序、百度小程序、头条小程序等7大平台。"
-      /> -->
-      <!-- <uni-notice-bar
-        show-icon
-        scrollable
-        show-get-more
-        text="uni-app 版正式发布，开发一次，同时发布iOS、Android、H5、微信小程序、支付宝小程序、百度小程序、头条小程序等7大平台。"
-      >
-        <template #icon>
-          <text class="iconfont icon-gonggao icon-text"> </text>
-        </template>
-      </uni-notice-bar> -->
-
       <!--  -->
       <block v-for="(items, index) in panelList" :key="index">
         <!-- 提示    -->
-        <view v-if="items.kind === 'NOTICE'">
-          ---------------------------
-        </view>
+        <view v-if="items.kind === 'NOTICE'"> </view>
         <!-- <view
           class="bulletin"
           v-if="items.kind === 'NOTICE'"
