@@ -96,7 +96,7 @@ const showRedDot = (entry: any) => {
   padding: 20 30rpx;
   overflow: hidden;
   // background: #fff;
-  border-radius: 16rpx;
+  // border-radius: 16rpx;
   // margin-bottom: 30rpx;
 
   .wrapper-list {

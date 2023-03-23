@@ -15,137 +15,53 @@
     <view
       class="gold-price-style1"
       v-if="props.items?.param?.doOut?.fixedStyle === 0"
+      :class="!showRecovery && !showSale ? 'gold-price-style1-hide' : ''"
     >
-      <view class="gold-price-style1-text gold-price-style1-item1"
-        >销售金价
+      <view
+        class="gold-price-style1-text"
+        :class="
+          showType === 'new'
+            ? 'gold-price-style1-item1'
+            : 'gold-price-style1-item2'
+        "
+        v-if="showRecovery && showSale"
+        @click="showType = 'new'"
+      >
+        销售金价
       </view>
-      <view class="gold-price-style1-text gold-price-style1-item2"
-        >回收金价
+      <view
+        class="gold-price-style1-text"
+        :class="
+          showType === 'old'
+            ? 'gold-price-style1-item1'
+            : 'gold-price-style1-item2'
+        "
+        v-if="showRecovery"
+        @click="showType = 'old'"
+      >
+        回收金价
       </view>
-      <!-- <view class="gold-price-style1-text gold-price-style1-item3"
-        >销售金价
-      </view> -->
+      <view
+        class="gold-price-style1-text gold-price-style1-item3"
+        v-if="!showRecovery && showSale"
+      >
+        销售金价
+      </view>
     </view>
     <view
-      class="gold-price-style2"
-      v-if="props.items?.param?.doOut?.fixedStyle === 1"
+      v-if="props.items?.param?.doOut?.fixedStyle === 0"
+      style="position: relative"
     >
-      <view class="gold-price-style2-store">
-        <text class="gold-price-style2-store-name"> 金千枝店</text>
-        <text class="gold-price-style2-store-time"> 2022年08月09日</text>
-      </view>
-      <view class="gold-price-style2-tab">
-        <view class="gold-price-style2-tabs act-tabs"> 销售金价</view>
-        <view class="gold-price-style2-tabs"> 回收金价</view>
-      </view>
-      <view class="gold-price-style2-list">
-        <view class="gold-price-style2-item">
-          <view class="gold-price-style2-item-info">
-            <view class="gold-price-style2-item-name">千足金 </view>
-            <view class="gold-price-style2-item-pz"> 品牌：金千枝</view>
-          </view>
-          <view class="gold-price-style2-item-price">¥405.49</view>
-        </view>
-        <view class="gold-price-style2-item">
-          <view class="gold-price-style2-item-info">
-            <view class="gold-price-style2-item-name"
-              >千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金
-            </view>
-            <view class="gold-price-style2-item-pz"> 品牌：金千枝</view>
-          </view>
-          <view class="gold-price-style2-item-price">¥405.49</view>
-        </view>
-        <view class="gold-price-style2-item">
-          <view class="gold-price-style2-item-info">
-            <view class="gold-price-style2-item-name"
-              >千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金千足金
-            </view>
-            <view class="gold-price-style2-item-pz"> 品牌：金千枝</view>
-          </view>
-          <view class="gold-price-style2-item-price">¥405.49</view>
-        </view>
-      </view>
-    </view>
-
-    <!--  -->
-    <view
-      class="gold-price-style3"
-      v-if="props.items?.param?.doOut?.fixedStyle === 2"
-    >
-      <view class="gold-price-style3-store nowrap">
-        <text class="gold-price-style3-store-name nowrap"> 金千枝店</text>
-      </view>
-      <view class="gold-price-style3-item">
-        <view class="gold-price-style3-item-left">
-          <view class="gold-price-style3-item-left-type">
-            <view class="gold-price-style3-center">
-              <image
-                class="gold-price-icon-image"
-                :src="staticUrl + 'img/retrieve-price.png'"
-                mode="aspectFill"
-              />
-            </view>
-            <view class="gold-price-style3-center">
-              <text class=""> 销售金价 </text>
-            </view>
-          </view>
-        </view>
-        <view class="gold-price-style3-item-right">
-          <view class="gold-price-style3-item-right-info">
-            <text class="gold-price-style3-item-right-name"> 大量进口 </text>
-            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
-          </view>
-          <view class="gold-price-style3-item-right-info">
-            <text class="gold-price-style3-item-right-name nowrap">
-              大量进口大量进口大量进口大量进口大量进口
-            </text>
-            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
-          </view>
-        </view>
-      </view>
-      <view class="gold-price-style3-item">
-        <view class="gold-price-style3-item-left">
-          <view class="gold-price-style3-item-left-type">
-            <view class="gold-price-style3-center">
-              <image
-                class="gold-price-icon-image"
-                :src="staticUrl + 'img/sell-price.png'"
-                mode="aspectFill"
-              />
-            </view>
-            <view class="gold-price-style3-center">
-              <text class=""> 回收金价 </text>
-            </view>
-          </view>
-        </view>
-        <view class="gold-price-style3-item-right">
-          <view class="gold-price-style3-item-right-info">
-            <text class="gold-price-style3-item-right-name"> 大量进口 </text>
-            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
-          </view>
-          <view class="gold-price-style3-item-right-info">
-            <text class="gold-price-style3-item-right-name nowrap">
-              大量进口大量进口大量进口大量进口大量进口
-            </text>
-            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- && showed -->
-    <view v-if="goldPrice?.length">
       <swiper
+        v-if="showRecovery || showSale"
         class="swiper"
         :autoplay="true"
         :circular="true"
         :interval="2000"
         :duration="500"
-        :indicator-dots="goldPrice?.length > 1"
-        indicator-color="#D8D9E0"
-        :indicator-active-color="initBasicsData.mainColor"
-        style="height: 250rpx"
+        @change="swiperChange"
       >
-        <swiper-item v-for="(price, index) in goldPrice" :key="index">
+        <swiper-item v-for="(price, index) in listPrice" :key="index">
           <view class="swiper-item uni-bg-red">
             <view class="content-detail">
               <view class="detail-header">
@@ -175,7 +91,175 @@
           </view>
         </swiper-item>
       </swiper>
+
+      <block v-if="listPrice.length > 1">
+        <view
+          class="custom-dots-box dots-round"
+          v-if="showRecovery || showSale"
+        >
+          <view
+            class="custom-dots-show"
+            v-for="(_, index) in listPrice"
+            :key="index"
+            :style="{
+              background:
+                currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
+            }"
+          />
+        </view>
+      </block>
     </view>
+
+    <view
+      class="gold-price-style2"
+      v-if="props.items?.param?.doOut?.fixedStyle === 1"
+    >
+      <view class="gold-price-style2-store" v-if="showRecovery || showSale">
+        <text class="gold-price-style2-store-name"> {{ showDistName }}</text>
+        <text class="gold-price-style2-store-time"> {{ showDateSet }}</text>
+      </view>
+      <view class="gold-price-style2-store-hide" v-else> </view>
+
+      <view
+        class="gold-price-style2-tab"
+        :class="!showRecovery && !showSale ? 'gold-price-style2-tab-hide' : ''"
+      >
+        <view
+          class="gold-price-style2-tabs"
+          :class="showType === 'new' ? 'act-tabs' : ''"
+          @click="showType = 'new'"
+          v-if="showSale"
+        >
+          销售金价
+        </view>
+        <view
+          class="gold-price-style2-tabs"
+          :class="showType === 'old' ? 'act-tabs' : ''"
+          @click="showType = 'old'"
+          v-if="showRecovery"
+        >
+          回收金价
+        </view>
+      </view>
+      <view class="gold-price-style2-list" v-if="showRecovery || showSale">
+        <view
+          class="gold-price-style2-item"
+          v-for="(item, index) in listPrice"
+          :key="index"
+        >
+          <view class="gold-price-style2-item-info">
+            <view class="gold-price-style2-item-name">{{ item.met }} </view>
+            <view
+              class="gold-price-style2-item-pz"
+              v-if="props.items?.param?.showBrand"
+            >
+              品牌：{{ item.brandName || '--' }}
+            </view>
+          </view>
+          <view class="gold-price-style2-item-price">
+            ¥{{ item.metCtn || '--' }}
+          </view>
+        </view>
+        <!--  -->
+      </view>
+    </view>
+
+    <!--  -->
+    <view
+      class="gold-price-style3"
+      v-if="props.items?.param?.doOut?.fixedStyle === 2"
+    >
+      <view
+        class="gold-price-style3-store nowrap"
+        v-if="showRecovery || showSale"
+      >
+        <text class="gold-price-style3-store-name nowrap">
+          {{ showDistName }}
+        </text>
+      </view>
+      <view class="gold-price-style3-store-hide" v-else> </view>
+
+      <!--  -->
+
+      <view class="gold-price-style3-item" v-if="showSale">
+        <view class="gold-price-style3-item-left">
+          <view class="gold-price-style3-item-left-type">
+            <view class="gold-price-style3-center">
+              <image
+                class="gold-price-icon-image"
+                :src="staticUrl + 'img/retrieve-price.png'"
+                mode="aspectFill"
+              />
+            </view>
+            <view class="gold-price-style3-center">
+              <text class=""> 销售金价 </text>
+            </view>
+          </view>
+        </view>
+        <view class="gold-price-style3-item-right">
+          <view
+            class="gold-price-style3-item-right-info"
+            v-for="(item, index) in goldPrice"
+            :key="index"
+          >
+            <text class="gold-price-style3-item-right-name">
+              {{ item.met }}
+            </text>
+            <text class="gold-price-style3-item-right-price">
+              ¥{{ item.metCtn || '--' }}
+            </text>
+          </view>
+          <!-- <view class="gold-price-style3-item-right-info">
+            <text class="gold-price-style3-item-right-name nowrap">
+              大量进口大量进口大量进口大量进口大量进口
+            </text>
+            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
+          </view> -->
+        </view>
+      </view>
+
+      <view class="gold-price-style3-item" v-if="showRecovery">
+        <view class="gold-price-style3-item-left">
+          <view class="gold-price-style3-item-left-type">
+            <view class="gold-price-style3-center">
+              <image
+                class="gold-price-icon-image"
+                :src="staticUrl + 'img/sell-price.png'"
+                mode="aspectFill"
+              />
+            </view>
+            <view class="gold-price-style3-center">
+              <text class=""> 回收金价 </text>
+            </view>
+          </view>
+        </view>
+        <view class="gold-price-style3-item-right">
+          <view
+            class="gold-price-style3-item-right-info"
+            v-for="(item, index) in oldGoldPrice"
+            :key="index"
+          >
+            <text class="gold-price-style3-item-right-name">
+              {{ item.met }}
+            </text>
+            <text class="gold-price-style3-item-right-price">
+              ¥{{ item.metCtn || '--' }}
+            </text>
+          </view>
+          <!-- <view class="gold-price-style3-item-right-info">
+            <text class="gold-price-style3-item-right-name"> 大量进口 </text>
+            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
+          </view>
+          <view class="gold-price-style3-item-right-info">
+            <text class="gold-price-style3-item-right-name nowrap">
+              大量进口大量进口大量进口大量进口大量进口
+            </text>
+            <text class="gold-price-style3-item-right-price"> ¥405.49 </text>
+          </view> -->
+        </view>
+      </view>
+    </view>
+    <!-- && showed -->
   </view>
 </template>
 
@@ -183,7 +267,7 @@
 import { useBasicsData } from '@/store/basicsData';
 import { getGoldPriceByPage } from '@/pages/api/server';
 import Router from '@/utils/router';
-import { ref, Ref, onMounted, watch } from 'vue';
+import { ref, Ref, onMounted, watch, computed } from 'vue';
 import { staticUrl } from '@/utils/config';
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
@@ -208,8 +292,24 @@ const more = () => {
   Router.goCodePage('gold_price', `?distId=${distId.value}`);
 };
 
+// props.items?.param?.showRecoveryOfGold ||
+//           props.items?.param?.showSalesOfGlod
+//
+const showRecovery = computed(() => props.items?.param?.showRecoveryOfGold);
+const showSale = computed(() => props.items?.param?.showSalesOfGlod);
+
 const showed = ref(false);
 const goldPrice = ref<any>([]);
+const oldGoldPrice = ref<any>([]);
+const showType = ref(props.items?.param?.showSalesOfGlod ? 'new' : 'old');
+// props.items?.param?.showSalesOfGlod
+// showType = 'new'
+const currentIndex = ref(0);
+const swiperChange = (e: any) => {
+  currentIndex.value = e.detail.current;
+};
+const listPrice = computed(() => (showType.value === 'new' ? goldPrice.value : oldGoldPrice.value));
+
 onMounted(() => {
   _getGoldPriceByPage();
 });
@@ -221,46 +321,90 @@ watch(
       _getGoldPriceByPage();
     } else {
       goldPrice.value = [];
+      oldGoldPrice.value = [];
     }
   }
 );
 
+const showDistName = ref('');
+const showDateSet = ref('');
+// dateSet
 const _getGoldPriceByPage = async () => {
   if (!initBasicsData.checkLogin) {
     goldPrice.value = [];
+    oldGoldPrice.value = [];
     return;
   }
+  // props.items?.param?.showNum
   const res = await getGoldPriceByPage(props.type);
   if (res.code === 0 && res.data) {
     const {
       branPriceList,
+      branOldPriceList,
       param,
       uiParam: todayGoldPrice,
       distId: id,
+      distName,
+      dateSet,
     } = res.data;
     // this.uiParam = uiParam;
     const { showNum } = param;
     const result: any = [];
+    const oldResult: any = [];
     distId.value = id;
+    showDistName.value = distName;
+    showDateSet.value = dateSet;
 
     branPriceList.map((item: unknown, index: number) => {
       if (index < showNum) {
         result.push(item);
       }
     });
+    branOldPriceList.map((item: unknown, index: number) => {
+      if (index < showNum) {
+        oldResult.push(item);
+      }
+    });
     showed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
     goldPrice.value = result;
+    oldGoldPrice.value = oldResult;
     // console.log('goldPrice', result);
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.custom-dots-box {
+  // width: 100%;
+  position: absolute;
+  bottom: 30rpx;
+  left: 0rpx;
+  right: 0rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-dots-show {
+  border-radius: 6rpx;
+  margin-left: 5rpx;
+  margin-right: 5rpx;
+}
+.dots-round {
+  z-index: 200px;
+  .custom-dots-show {
+    width: 24rpx;
+    height: 6rpx;
+  }
+}
 .nowrap {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
+}
+.gold-price-style1-hide {
+  height: 0rpx !important;
 }
 .gold-price-style1 {
   height: 100rpx;
@@ -268,6 +412,7 @@ const _getGoldPriceByPage = async () => {
   justify-content: space-between;
   align-items: center;
   font-size: 28rpx;
+  margin-top: 20rpx;
 
   .gold-price-style1-text {
     display: flex;
@@ -295,6 +440,7 @@ const _getGoldPriceByPage = async () => {
 
 .gold-price-style2 {
   font-size: 28rpx;
+  padding-top: 10rpx;
   .gold-price-style2-store {
     padding-left: 20rpx;
     padding-right: 20rpx;
@@ -307,6 +453,10 @@ const _getGoldPriceByPage = async () => {
     height: 80rpx;
     background: #f7f8f9;
     border-radius: 8rpx;
+    margin-bottom: 20rpx;
+  }
+  .gold-price-style2-store-hide {
+    height: 0rpx;
   }
   .gold-price-style2-store-name {
     width: 370rpx;
@@ -324,6 +474,9 @@ const _getGoldPriceByPage = async () => {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+  }
+  .gold-price-style2-tab-hide {
+    height: 20rpx;
   }
   .gold-price-style2-tabs {
     margin-right: 20rpx;
@@ -403,6 +556,9 @@ const _getGoldPriceByPage = async () => {
     background: #f7f8f9;
     border-radius: 40rpx;
   }
+  .gold-price-style3-store-hide {
+    height: 28rpx;
+  }
   .gold-price-style3-store-name {
     color: #323338;
   }
@@ -475,7 +631,7 @@ const _getGoldPriceByPage = async () => {
   // margin-top: 30rpx;
   // margin-bottom: 30rpx;
   background: #fff;
-  border-radius: 16rpx;
+  // border-radius: 16rpx;
 
   .header {
     display: flex;

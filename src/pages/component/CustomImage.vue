@@ -73,11 +73,11 @@
 
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue';
-import { queryWarrantyListPageFront } from '@/api/server';
-import { staticUrl } from '@/utils/config';
+// import { queryWarrantyListPageFront } from '@/api/server';
+// import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
-import { onShow } from '@dcloudio/uni-app';
+// import { onShow } from '@dcloudio/uni-app';
 
 const initBasicsData = useBasicsData();
 

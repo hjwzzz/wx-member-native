@@ -1,17 +1,74 @@
 <template>
-  <view class="coupon-act" @click="toDetail">
+  <view
+    class="coupon-act"
+    @click="toDetail"
+    :style="props.items.param?.doOut?.style"
+  >
     <view class="header">
       <view class="header-left">
-        <text class="title">{{ title }}</text>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ title }}</text
+        >
       </view>
       <view class="right">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
 
-    <!-- <view class="coupon-card">
-      <view class="coupon-card-item">
+    <!--    props.items.param.doOut.fixedStyle === 0 ||
+      props.items.param.doOut.fixedStyle === 1 -->
+
+    <view class="coupon-card" v-if="props.items.param.doOut.fixedStyle === 0">
+      <view
+        class="coupon-card-item"
+        v-for="(cou, index) in props.items.param?.coupons"
+        :key="index"
+      >
+        <view class="coupon-card-item-text coupon-card-item-price">
+          <block v-if="coupon1.includes(cou.prodCode?.code || cou.prod)">
+            <text class="coupon-card-item-price-unit">￥ </text>
+            <text class="coupon-card-item-price-num">
+              {{ cou.paramVo?.discount || '' }}
+            </text>
+          </block>
+          <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
+            <text class="coupon-card-item-price-unit">随机金额 </text>
+          </block>
+          <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
+            <text class="coupon-card-item-price-num">
+              {{ cou.paramVo?.discount || '' }}
+            </text>
+            <text class="coupon-card-item-price-unit">折 </text>
+          </block>
+          <!-- <text class="coupon-card-item-price-unit">￥ </text>
+          <text class="coupon-card-item-price-num"> 100</text> -->
+        </view>
+        <view class="coupon-card-item-text coupon-card-item-info">
+          {{ showCondition(cou) }}
+        </view>
+        <view class="coupon-card-item-text">
+          <view class="coupon-card-item-text coupon-card-item-btn">
+            理科领取
+          </view>
+        </view>
+      </view>
+      <!-- <view class="coupon-card-item">
         <view class="coupon-card-item-text coupon-card-item-price">
           <text class="coupon-card-item-price-unit">￥ </text>
           <text class="coupon-card-item-price-num"> 100</text>
@@ -40,25 +97,10 @@
             理科领取
           </view>
         </view>
-      </view>
-      <view class="coupon-card-item">
-        <view class="coupon-card-item-text coupon-card-item-price">
-          <text class="coupon-card-item-price-unit">￥ </text>
-          <text class="coupon-card-item-price-num"> 100</text>
-        </view>
-        <view class="coupon-card-item-text coupon-card-item-info"
-          >满199可用
-        </view>
+      </view> -->
+    </view>
 
-        <view class="coupon-card-item-text">
-          <view class="coupon-card-item-text coupon-card-item-btn">
-            理科领取
-          </view>
-        </view>
-      </view>
-    </view> -->
-
-    <view class="custom-dots">
+    <view class="custom-dots" v-if="props.items.param.doOut.fixedStyle === 1">
       <swiper
         style="height: 250rpx"
         :autoplay="false"
@@ -66,109 +108,57 @@
         @change="swiperChange"
         class="coupon-swiper"
       >
-        <swiper-item class="swiper-item">
-          <view class="swiper-item-list">
-            <view class="coupon-card-item-swiper">
+        <swiper-item
+          class="swiper-item"
+          v-for="(item, index) in couponsList"
+          :key="index"
+        >
+          <view
+            class="swiper-item-list"
+            :style="{
+              background:
+                props.items?.param?.doOut?.special?.couponColor || '#e04838',
+            }"
+          >
+            <view
+              class="coupon-card-item-swiper"
+              v-for="(cou, cl) in item"
+              :key="cl"
+            >
               <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
+                <block v-if="coupon1.includes(cou.prodCode?.code || cou.prod)">
+                  <text class="coupon-card-item-price-unit">￥ </text>
+                  <text class="coupon-card-item-price-num">
+                    {{ cou.paramVo?.discount || '' }}
+                  </text>
+                </block>
+                <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
+                  <text class="coupon-card-item-price-unit">随机金额 </text>
+                </block>
+                <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
+                  <text class="coupon-card-item-price-num">
+                    {{ cou.paramVo?.discount || '' }}
+                  </text>
+                  <text class="coupon-card-item-price-unit">折 </text>
+                </block>
               </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
+              <view class="coupon-card-item-text coupon-card-item-info">
+                {{ showCondition(cou) }}
               </view>
 
               <view class="coupon-card-item-text">
                 <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
-                </view>
-              </view>
-            </view>
-            <view class="coupon-card-item-swiper">
-              <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
-              </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
-              </view>
-
-              <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
-                </view>
-              </view>
-            </view>
-            <view class="coupon-card-item-swiper">
-              <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
-              </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
-              </view>
-
-              <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
-                </view>
-              </view>
-            </view>
-          </view>
-        </swiper-item>
-        <swiper-item class="swiper-item">
-          <view class="swiper-item-list">
-            <view class="coupon-card-item-swiper">
-              <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
-              </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
-              </view>
-
-              <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
-                </view>
-              </view>
-            </view>
-            <view class="coupon-card-item-swiper">
-              <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
-              </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
-              </view>
-
-              <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
-                </view>
-              </view>
-            </view>
-            <view class="coupon-card-item-swiper">
-              <view class="coupon-card-item-text coupon-card-item-price">
-                <text class="coupon-card-item-price-unit">￥ </text>
-                <text class="coupon-card-item-price-num"> 100</text>
-              </view>
-              <view class="coupon-card-item-text coupon-card-item-info"
-                >满199可用
-              </view>
-
-              <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
-                  理科领取
+                  立刻领取
                 </view>
               </view>
             </view>
           </view>
         </swiper-item>
       </swiper>
-      <view class="custom-dots-box dots-round">
+      <view class="custom-dots-box dots-round" v-if="couponsList.length > 0">
         <view
           class="custom-dots-show"
-          v-for="(_, index) in 2"
+          v-for="(_, index) in couponsList"
           :key="index"
           :style="{
             background:
@@ -177,94 +167,141 @@
         />
       </view>
     </view>
-
-    <!-- <view
-      class="content"
-      v-for="(policy, index) in policyList.records"
-      :key="index"
-    >
-    </view>
-    <NoneData v-if="!policyList.totalRecord" /> -->
   </view>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue';
+import { reactive, watch, ref, computed } from 'vue';
 import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
 import NoneData from './NoneData.vue';
-import { onShow } from '@dcloudio/uni-app';
 
 const initBasicsData = useBasicsData();
 
 interface Props {
   title?: string;
+  items?: any;
   item?: any;
   policyListNum?: number;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '优惠券',
+  items: () => ({}),
   item: () => ({}),
   policyListNum: 0,
 });
 
 const currentIndex = ref(0);
-const swiperChange = e => {
-  console.log(e);
+const swiperChange = (e: any) => {
   currentIndex.value = e.detail.current;
 };
 
-const policyList: any = reactive({ totalRecord: 0, records: [] });
+// props.items.param?.coupons
+const couponsList = computed(() => {
+  if (props.items.param?.coupons) {
+    let arr: any = [];
+    const listArr: any = [];
+    props.items.param?.coupons.map((item: any) => {
+      arr.push(item);
+      if (arr.length === 8) {
+        listArr.push([...arr]);
+        arr = [];
+      }
+    });
+
+    if (arr.length !== 0) {
+      listArr.push([...arr]);
+      arr = [];
+    }
+    return listArr;
+  }
+  return [];
+});
+
+// 根据类型显示金额
+// 满减券 || 工费抵扣券
+const coupon1 = ['full_reduction_coupon', 'labor_cost_deduction_coupon'];
+//  随机券
+const coupon2 = ['random_money_coupon'];
+// 折扣券 || 工费折扣券
+const coupon3 = ['discount_coupon', 'labor_cost_discount_coupon'];
+const condition1 = [
+  'full_reduction_coupon',
+  'discount_coupon',
+  'random_money_coupon',
+];
+// 工费抵扣券 工费折扣券
+const condition2 = [
+  'labor_cost_deduction_coupon',
+  'labor_cost_discount_coupon',
+];
+
+const showCondition = (item: any) => {
+  console.log('item', item);
+  const code = item.prodCode?.code || item.prod || '';
+  // laborChargesType
+  const threshold = item.paramVo?.threshold || '';
+  const labor = item.paramVo?.laborChargesType || '';
+  if (condition1.includes(code)) {
+    return threshold ? `满${threshold}可用` : '满任意金额可用';
+  } else if (condition2.includes(code)) {
+    const text = labor === 'g' ? '克' : '元';
+    return threshold ? `满${threshold}${text}可用` : `满任意${text}可用`;
+  }
+  return '';
+};
+
+// const policyList: any = reactive({ totalRecord: 0, records: [] });
 
 const toDetail = () => {
   //  uni.navigateTo({ url });
-  Router.goCodePage('warranty');
+  // Router.goCodePage('warranty');
 };
 
-const getPolicyList = async () => {
-  if (!initBasicsData.checkLogin) {
-    return;
-  }
-  const res = await queryWarrantyListPageFront({
-    mid: initBasicsData.useMid,
-    curPage: 1,
-    pageSize: props.policyListNum,
-  });
-  if (res.code === 0 && res.data) {
-    Object.assign(policyList, res.data);
-  }
-};
+// const getPolicyList = async () => {
+//   if (!initBasicsData.checkLogin) {
+//     return;
+//   }
+//   const res = await queryWarrantyListPageFront({
+//     mid: initBasicsData.useMid,
+//     curPage: 1,
+//     pageSize: props.policyListNum,
+//   });
+//   if (res.code === 0 && res.data) {
+//     Object.assign(policyList, res.data);
+//   }
+// };
 // policyListNum 有值再去请求
-watch(
-  () => props.policyListNum,
-  () => {
-    getPolicyList();
-  },
-  { immediate: true }
-);
-// 登录请求
-watch(
-  () => initBasicsData.checkLogin,
-  (bool: boolean) => {
-    if (bool) {
-      getPolicyList();
-    } else {
-      policyList.records = [];
-      policyList.totalRecord = 0;
-    }
-  }
-);
+// watch(
+//   () => props.policyListNum,
+//   () => {
+//     getPolicyList();
+//   },
+//   { immediate: true }
+// );
+// // 登录请求
+// watch(
+//   () => initBasicsData.checkLogin,
+//   (bool: boolean) => {
+//     if (bool) {
+//       getPolicyList();
+//     } else {
+//       policyList.records = [];
+//       policyList.totalRecord = 0;
+//     }
+//   }
+// );
 
-onShow(() => {
-  if (initBasicsData.checkLogin) {
-    getPolicyList();
-    return;
-  }
-  policyList.records = [];
-  policyList.totalRecord = 0;
-});
+// onShow(() => {
+//   if (initBasicsData.checkLogin) {
+//     getPolicyList();
+//     return;
+//   }
+//   policyList.records = [];
+//   policyList.totalRecord = 0;
+// });
 </script>
 
 <style lang="scss" scoped>
@@ -345,7 +382,7 @@ onShow(() => {
   .swiper-item-list {
     display: flex;
     justify-content: flex-start;
-    background: #e04838;
+
     width: 660rpx;
     border-radius: 16rpx;
   }
@@ -419,9 +456,9 @@ onShow(() => {
   // width: 690rpx;
   padding: 30rpx;
   padding-bottom: 10rpx;
-  margin: 30rpx 0rpx;
-  background: #fff;
-  border-radius: 16rpx;
+  // margin: 30rpx 0rpx;
+  // background: #fff;
+  // border-radius: 16rpx;
 
   .header {
     display: flex;

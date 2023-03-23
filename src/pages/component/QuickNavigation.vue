@@ -1,34 +1,49 @@
 <template>
-  <!-- 一行排列-滑动 quickLine -->
-  <view class="quick-line">
-    <!-- {{ quickLine }} -->
-    <view
-      class="quick-line-item"
-      v-for="(item, index) in quickLine"
-      :key="index"
-      @click="handleEntryUrl(item)"
-    >
-      <view class="item-header">
-        <image
-          class="item-header-image"
-          :src="item.icoUrl || `${staticUrl}img/item-avatar-default.png`"
-          mode=""
-        ></image>
+  <!-- 一行排列-滑动  -->
+  <view
+    class="quick-line"
+    :style="props.items.param.doOut.style"
+    v-if="props.items.param.doOut.fixedStyle === 0"
+  >
+    <block v-for="(item, index) in props.items.param.linkList" :key="index">
+      <view
+        class="quick-line-item"
+        v-if="item.showed"
+        @click="handleEntryUrl(item)"
+      >
+        <view class="item-header">
+          <image
+            class="item-header-image"
+            :src="item.icoUrl || `${staticUrl}img/item-avatar-default.png`"
+            mode=""
+          ></image>
+        </view>
+        <view
+          class="item-text"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+          >{{ item.title }}</view
+        >
       </view>
-      <view class="item-text">{{ item.title }}</view>
-    </view>
+    </block>
   </view>
 
   <!-- 两行排列-swiper -->
-  <!-- <view class="quick-swiper">
+  <view
+    class="quick-swiper"
+    :style="props.items.param.doOut.style"
+    v-if="props.items.param.doOut.fixedStyle === 1"
+  >
+    <!--   -->
     <swiper
-      :style="{ height: props.swiperVavHeight + 'rpx' }"
       circular
       @change="swiperChange"
+      :style="{ height: props.swiperVavHeight + 'rpx' }"
     >
       <swiper-item
         class="swiper-item"
-        v-for="(navs, index) in props.swiperVav"
+        v-for="(navs, index) in quickLine"
         :key="index"
       >
         <view
@@ -44,14 +59,20 @@
               mode=""
             ></image>
           </view>
-          <view class="item-text">{{ item.title }}</view>
+          <view
+            class="item-text"
+            :style="{
+              color: props.items?.param?.doOut?.special?.color,
+            }"
+            >{{ item.title }}</view
+          >
         </view>
       </swiper-item>
     </swiper>
-    <view class="custom-dots-box dots-round" v-if='props.swiperVav.length > 1'>
+    <view class="custom-dots-box dots-round" v-if="quickLine.length > 1">
       <view
         class="custom-dots-show"
-        v-for="(_, index) in props.swiperVav"
+        v-for="(_, index) in quickLine"
         :key="index"
         :style="{
           background:
@@ -59,39 +80,49 @@
         }"
       />
     </view>
-  </view> -->
+  </view>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-import Router from '@/utils/router';
+import { handleEntryUrl } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 
 interface Props {
   swiperVavHeight?: number;
-  swiperVav: any;
+  // swiperVav: any;
+  items?: any;
 }
 const props = withDefaults(defineProps<Props>(), {
-  swiperVavHeight: 180,
-  swiperVav: () => [],
+  swiperVavHeight: 360,
+  // swiperVav: () => [],
+  items: () => ({}),
 });
 
-const handleEntryUrl = (item: any) => {
-  console.log('item', item);
-};
-
 const quickLine = computed(() => {
-  console.log('props.swiperVav', props.swiperVav);
+  if (props.items.param?.linkList) {
+    let arr: any = [];
+    const listArr: any = [];
+    props.items.param?.linkList.map((item: any) => {
+      if (item.showed) {
+        arr.push(item);
+      }
+      if (arr.length === 8) {
+        listArr.push([...arr]);
+        arr = [];
+      }
+    });
 
-  let arr: any = [];
-  props.swiperVav.map((item: any) => {
-    arr = [...arr, ...item];
-  });
-  console.log('props.swiperVav', JSON.stringify(arr));
-  return arr;
+    if (arr.length !== 0) {
+      listArr.push([...arr]);
+      arr = [];
+    }
+    return listArr;
+  }
+  return [];
 });
 
 const currentIndex = ref(0);
@@ -106,9 +137,9 @@ const swiperChange = (e: any) => {
   padding-bottom: 30rpx;
   padding-left: 20rpx;
   padding-right: 20rpx;
-  margin-bottom: 30rpx;
-  background: #fff;
-  border-radius: 16rpx;
+  // margin-bottom: 30rpx;
+  // background: #fff;
+  // border-radius: 16rpx;
 
   display: flex;
   overflow-x: auto;
@@ -147,6 +178,7 @@ const swiperChange = (e: any) => {
   background: #fff;
   border-radius: 16rpx;
   position: relative;
+  padding-bottom: 40rpx;
 
   .item-shop {
     display: inline-block;

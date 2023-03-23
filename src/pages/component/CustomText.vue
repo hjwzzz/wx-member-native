@@ -8,8 +8,7 @@
           : 500,
       }"
     >
-      {{ props.items?.param?.title }}dfsjjklsadhflsda fildsaj
-      flkasjas按属地划分空间撒大黄蜂舒服了接口的撒后即可家乐福很骄傲聚少离多复健科大煞风景客户sad副科级撒大海
+      {{ props.items?.param?.title }}
     </view>
   </view>
 </template>

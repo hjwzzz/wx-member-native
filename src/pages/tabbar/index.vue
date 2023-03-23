@@ -87,7 +87,7 @@
       <Title v-if="items.kind === 'TITLE'" :items="items"> </Title>
       <!-- 今日金价 -->
       <TodayGoldPrices
-        v-if="items.kind === 'POP_IMAGE'"
+        v-if="items.kind === 'GOLD_PRICE'"
         :title="items.param.title"
         :items="items"
         type="WM_HOME"
@@ -129,6 +129,9 @@
       />
       <!-- 视频  -->
       <CustomVideo v-if="items.kind === 'VIDEO'" :items="items" />
+
+      <!-- 优惠券  -->
+      <Coupon v-if="items.kind === 'COUPON'" :items="items" />
     </block>
 
     <view class="customer-diy">
@@ -308,10 +311,10 @@ import Rotation from '../component/Rotation.vue';
 import MyQualitys from '../component/MyQualitys.vue';
 import TodayGoldPrices from '../component/TodayGoldPrices.vue';
 import Coupon from '../component/Coupon.vue';
-import memberCard from '../component/memberCard.vue';
+// import memberCard from '../component/memberCard.vue';
 import NearbyStore from '../component/NearbyStore.vue';
 import CustomImage from '../component/CustomImage.vue';
-import QuickNavigation from '../component/QuickNavigation.vue';
+// import QuickNavigation from '../component/QuickNavigation.vue';
 import NoticeBar from '../component/NoticeBar.vue';
 import CutView from '../component/CutView.vue';
 import MyService from '../component/MyService.vue';
@@ -320,7 +323,7 @@ import Title from '../component/Title.vue';
 import CustomText from '../component/CustomText.vue';
 import CustomVideo from '../component/CustomVideo.vue';
 import CustomQuick from '../component/CustomQuick.vue';
-// getSysUi CutView  MyPrizes  CustomVideo
+// getSysUi CutView  MyPrizes  CustomVideo  Coupon
 
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
