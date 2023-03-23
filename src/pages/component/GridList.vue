@@ -1,11 +1,17 @@
 <template>
-  <view class="grid-list">
-    <!--宫格-列表    GONGGE  LIST -->
+  <view class="grid-list" :style="props.items.param.doOut.style">
+    <!--宫格-列表    GONGGE  LIST   v-if="props.items.param.showType"-->
+    <!--   props.items.param.doOut.fixedStyle === 2 ||
+      props.items.param.doOut.fixedStyle === 3 -->
     <view
-      v-if="item.param.showType"
-      :class="item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'"
+      :class="
+        props.items.param.doOut.fixedStyle === 3
+          ? 'wrapper-list'
+          : 'wrapper-grid'
+      "
     >
-      <block v-for="(entry, index) in item.param.linkList" :key="index">
+      <!--  border-bottom: solid 1rpx rgba(255, 255, 255, 0.3);   -->
+      <block v-for="(entry, index) in props.items.param.linkList" :key="index">
         <view
           class="list-item"
           @click="handleEntryUrl(entry)"
@@ -17,17 +23,34 @@
               :src="entry.icoUrl || `${staticUrl}img/item-avatar-default.png`"
               mode="aspectFit"
             />
-            <view class="badge" v-if="showRedDot(item, entry, 'GONGGE')" />
+            <view
+              class="badge"
+              v-if="
+                showRedDot(entry) && props.items.param.doOut.fixedStyle === 2
+              "
+            />
           </view>
-          <view class="item-name">
+          <view
+            class="item-name"
+            :style="{
+              color: props.items?.param?.doOut?.special?.color,
+            }"
+          >
             {{ entry.title }}
-            <view class="badge" v-if="showRedDot(item, entry, 'LIST')" />
+            <view
+              class="badge"
+              v-if="
+                showRedDot(entry) && props.items.param.doOut.fixedStyle === 3
+              "
+            />
           </view>
+
+          <!--   v-if="item.param.showType == 'LIST'"   props.items.param.doOut.fixedStyle === 3-->
           <uni-icons
-            v-if="item.param.showType == 'LIST'"
+            v-if="props.items.param.doOut.fixedStyle === 3"
             type="arrowright"
             size="14"
-            color="#B7B8C4"
+            :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
           />
         </view>
       </block>
@@ -36,78 +59,45 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue';
+// import { reactive, watch, ref } from 'vue';
 // import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
-import { useBasicsData } from '@/store/basicsData';
-import Router from '@/utils/router';
+// import { useBasicsData } from '@/store/basicsData';
+// import Router from '@/utils/router';
 // import { onShow } from '@dcloudio/uni-app';
 import { handleEntryUrl } from '@/utils/util';
-const initBasicsData = useBasicsData();
+// const initBasicsData = useBasicsData();
 
 interface Props {
   // title?: string;
-  item?: any;
+  items?: any;
   // policyListNum?: number;
 }
 const props = withDefaults(defineProps<Props>(), {
-  item: () => ({}),
+  items: () => ({}),
   // policyListNum: 0,
 });
-const emits = defineEmits(['showCode']);
+// const emits = defineEmits(['showCode']);
 
-const handleFixedSysUrl = () => {
-  uni.navigateTo({ url: '/pages/member-equity/index' });
-};
-
+// const handleFixedSysUrl = () => {
+//   uni.navigateTo({ url: '/pages/member-equity/index' });
+// };
 // 显示红点
-const showRedDot = (item: any, entry: any, text: string) => {
+const showRedDot = (entry: any) => {
   const code = ['sign', 'coupon'].includes(entry.code);
   const red = entry.showRedDot === 'Y';
-  const showType = item.param.showType === text;
-  return code && red && showType;
+  // const showType = item.param.showType === text;
+  return code && red;
 };
-
-// const showCode = () => {
-
-// };
-// const policyList: any = reactive({ totalRecord: 0, records: [] });
-
-// const toDetail = () => {
-//   Router.goCodePage('warranty');
-// };
-
-// const getPolicyList = async () => {
-//   if (!initBasicsData.checkLogin) {
-//     return;
-//   }
-//   const res = await queryWarrantyListPageFront({
-//     mid: initBasicsData.useMid,
-//     curPage: 1,
-//     pageSize: props.policyListNum,
-//   });
-//   if (res.code === 0 && res.data) {
-//     Object.assign(policyList, res.data);
-//   }
-// };
-
-// onShow(() => {
-//   if (initBasicsData.checkLogin) {
-//     getPolicyList();
-//     return;
-//   }
-//   policyList.records = [];
-//   policyList.totalRecord = 0;
-// });
 </script>
 
 <style lang="scss" scoped>
 .grid-list {
   padding: 20 30rpx;
   overflow: hidden;
-  background: #fff;
+  // background: #fff;
   border-radius: 16rpx;
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
 
   .wrapper-list {
     padding: 0rpx 30rpx;
@@ -118,7 +108,7 @@ const showRedDot = (item: any, entry: any, text: string) => {
       width: 100%;
       height: 100rpx;
       line-height: 100rpx;
-      border-bottom: solid 1rpx #f8f8f8;
+      border-bottom: solid 1rpx rgba(255, 255, 255, 0.3);
       // padding: 0 20rpx;
       .item-icon {
         width: 48rpx;

@@ -56,21 +56,18 @@
       </view>
   </view> -->
     <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
+
     <block v-for="(items, index) in panelList" :key="index">
       <!-- 轮播图 -->
-      <Rotation
-        v-if="items.kind === 'swiper' || items.kind === 'SWIPER'"
-        :items="items"
-      />
+      <Rotation v-if="items.kind === 'SWIPER'" :items="items" />
+      <!-- 快捷导航-图片导航  -->
+      <CustomQuick v-if="items.kind === 'QUICK_NAV'" :items="items" />
       <!-- 广告 -->
       <NoticeBar v-if="items.kind === 'NOTICE'" :items="items" />
       <!-- 图片-或者广告 -->
       <CustomImage v-if="items.kind === 'BANNER'" :items="items" />
       <!-- 分割线-占位 -->
-      <CutView
-        v-if="items.kind === 'DIVIDER' || items.kind === 'PARTITION'"
-        :items="items"
-      />
+      <CutView v-if="items.kind === 'PARTITION'" :items="items" />
       <!-- 预约服务 -->
       <MyService
         v-if="items.kind === 'RES_SVC'"
@@ -90,7 +87,7 @@
       <Title v-if="items.kind === 'TITLE'" :items="items"> </Title>
       <!-- 今日金价 -->
       <TodayGoldPrices
-        v-if="items.kind === 'DIALOG'"
+        v-if="items.kind === 'POP_IMAGE'"
         :title="items.param.title"
         :items="items"
         type="WM_HOME"
@@ -117,7 +114,7 @@
         :title="items.param.title"
         :items="items"
       />
-      <!--  附近门店  NearbyStore   -->
+      <!--  附近门店   -->
       <NearbyStore
         v-if="items.kind === 'NEAR_STORE'"
         :title="items.param.title"
@@ -130,6 +127,8 @@
         :title="items.param.title"
         :items="items"
       />
+      <!-- 视频  -->
+      <CustomVideo v-if="items.kind === 'VIDEO'" :items="items" />
     </block>
 
     <view class="customer-diy">
@@ -319,7 +318,9 @@ import MyService from '../component/MyService.vue';
 import MyPrizes from '../component/MyPrizes.vue';
 import Title from '../component/Title.vue';
 import CustomText from '../component/CustomText.vue';
-// getSysUi CutView  MyPrizes
+import CustomVideo from '../component/CustomVideo.vue';
+import CustomQuick from '../component/CustomQuick.vue';
+// getSysUi CutView  MyPrizes  CustomVideo
 
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';

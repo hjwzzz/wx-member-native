@@ -213,6 +213,7 @@ const onMallDetail = (id: string) => {
 
   .nearby-store-box {
     padding-top: 30rpx;
+    // background-color: rgba(255, 255, 255, 0.8);
   }
 
   .nearby-store-image {
