@@ -1,5 +1,7 @@
 <template>
-  <page-meta :page-style="'overflow:'+(birthCalendarPickerShow ? 'hidden' : 'visible' )"></page-meta>
+  <page-meta
+    :page-style="'overflow:' + (birthCalendarPickerShow ? 'hidden' : 'visible')"
+  ></page-meta>
   <CustomPage>
     <view class="info">
       <view
@@ -31,7 +33,7 @@
               <view v-show="info.code == BIRTH_DAY" class="radio">
                 <radio-group class="selecte-redio" @change="radioChange">
                   <label
-                    v-for="(item) in items"
+                    v-for="item in items"
                     :key="item.value"
                     class="selecte-redio"
                     style="transform: scale(0.7)"
@@ -80,9 +82,7 @@
                 <text>{{ memberInfo.belongUser }}</text>
               </view>
               <view
-                v-show="
-                  info.code === 'REGIST_REQUIRED_ADDRESS'
-                "
+                v-show="info.code === 'REGIST_REQUIRED_ADDRESS'"
                 class="guid"
               >
                 <text class="letter">
@@ -258,6 +258,7 @@ import userIcon from './UserIcon.vue';
 import Lunar from '@/utils/date';
 import CalendarPicker from '@/components/Birthcalendar/index.vue';
 import { CALENDAR_TYPE } from '@/components/Birthcalendar/index.type';
+import Storage from '@/utils/storage';
 
 const initBasicsData = useBasicsData();
 
@@ -267,26 +268,31 @@ const birthCalendarPickerShow = ref(false);
 
 const birthCalendarPickerDate = ref('');
 
-watch(() => birthCalendarPickerShow.value, () => {
-  if (birthCalendarPickerShow.value) {
-    BirthCalendarPickerRef.value?.open();
-  } else {
-    BirthCalendarPickerRef.value?.close();
+watch(
+  () => birthCalendarPickerShow.value,
+  () => {
+    if (birthCalendarPickerShow.value) {
+      BirthCalendarPickerRef.value?.open();
+    } else {
+      BirthCalendarPickerRef.value?.close();
+    }
   }
-});
-
+);
 
 const AnndayCalendarPickerRef = ref();
 
 const anndayCalendarPickerShow = ref(false);
 
-watch(() => anndayCalendarPickerShow.value, () => {
-  if (anndayCalendarPickerShow.value) {
-    AnndayCalendarPickerRef.value?.open();
-  } else {
-    AnndayCalendarPickerRef.value?.close();
+watch(
+  () => anndayCalendarPickerShow.value,
+  () => {
+    if (anndayCalendarPickerShow.value) {
+      AnndayCalendarPickerRef.value?.open();
+    } else {
+      AnndayCalendarPickerRef.value?.close();
+    }
   }
-});
+);
 
 const list = ref<any>([]);
 const items = [
@@ -326,7 +332,12 @@ const maritalValue = ref('0');
 const memberInfo = ref<any>({});
 const selectedShop = ref<any>({});
 const memberInfoAddressDet = computed(() => {
-  const { province = '', city = '', district = '', address = '' } = memberInfo.value;
+  const {
+    province = '',
+    city = '',
+    district = '',
+    address = '',
+  } = memberInfo.value;
   return [province, city, district, address].filter(Boolean)
     .join('/');
 });
@@ -348,9 +359,19 @@ const inactiveMemberControl = reactive({
   canModifyAddress: true,
 });
 
+// 欢迎语进入导购Id
+const guideData = ref<string>('');
 onLoad(async e => {
   lastPage.value = e.p || '';
+  guideData.value = Storage.getRegData();
+  if (guideData.value) {
+    Storage.removeRegData();
+  }
   const channel = uni.getStorageSync('c');
+
+  // const  = 'WELCOME_MSG';
+  // const guideUid = '1281D5F2-1C91-E399-D46C-0761DCD3BB89';
+
   const num = uni.getStorageSync('num');
   const inviteMid = uni.getStorageSync('inviteMid');
   isActivity.value = !!(channel && num);
@@ -361,12 +382,18 @@ onLoad(async e => {
       num,
       inviteMid,
     });
+  } else if (guideData.value) {
+    // console.log(444);
+    queryWriteInfo({
+      channel: 'WELCOME_MSG',
+      guideUid: guideData.value,
+      inviteMid,
+    });
   } else {
     queryWriteInfo({});
   }
 });
 const queryMemeberInfo = async () => {
-
   let data: any;
 
   if (isInactiveMember.value) {
@@ -375,13 +402,19 @@ const queryMemeberInfo = async () => {
     data = res.data;
 
     Object.assign(
-      inactiveMemberControl, {
+      inactiveMemberControl,
+      {
         canModifyBirth: !data.birthSolar,
         canModifyName: !data.name,
         canModifySex: !data.sex,
         canModifyMarital: !data.annday,
         canModifyAnnday: !data.annday,
-        canModifyAddress: !(data.province || data.city || data.district || data.address),
+        canModifyAddress: !(
+          data.province ||
+          data.city ||
+          data.district ||
+          data.address
+        ),
       },
       isActivity.value
         ? {
@@ -393,7 +426,6 @@ const queryMemeberInfo = async () => {
           canModifySaler: !(data.belongUid && data.belongUser),
         }
     );
-
   } else {
     const res = await getMemberInfo('');
     data = res.data;
@@ -437,12 +469,370 @@ const queryNearShop = async (distId: any) => {
     selectedShop.value.distId = '';
   }
 };
+const distListArr = ref<any>([]);
 const queryWriteInfo = async (p = {}) => {
+  /*const obj = {
+		code: 0,
+		msg: '成功',
+		data: {
+				list: [
+					{
+						code: 'REGIST_REQUIRED_AVATAR',
+						name: '头像',
+						show: 'Y',
+						required: 'N',
+						seq: 1,
+					},
+					{
+						code: 'REGIST_REQUIRED_NICKNAME',
+						name: '昵称',
+						show: 'Y',
+						required: 'N',
+						seq: 2,
+					},
+					{
+						code: 'REGIST_REQUIRED_NAME',
+						name: '姓名',
+						show: 'Y',
+						required: 'N',
+						seq: 3,
+					},
+					{
+						code: 'REGIST_REQUIRED_GENDER',
+						name: '性别',
+						show: 'Y',
+						required: 'N',
+						seq: 4,
+					},
+					{
+						code: 'REGIST_REQUIRED_BIRTH',
+						name: '生日',
+						show: 'Y',
+						required: 'N',
+						seq: 5,
+					},
+					{
+						code: 'REGIST_REQUIRED_MDAY',
+						name: '纪念日',
+						show: 'Y',
+						required: 'N',
+						seq: 6,
+					},
+					{
+						code: 'REGIST_REQUIRED_ADDRESS',
+						name: '地址',
+						show: 'Y',
+						required: 'N',
+						seq: 7,
+					},
+					{
+						code: 'REGIST_REQUIRED_STORE',
+						name: '门店',
+						show: 'Y',
+						required: 'N',
+						seq: 8,
+					},
+					{
+						code: 'REGIST_REQUIRED_SELLER',
+						name: '导购',
+						show: 'Y',
+						required: 'N',
+						seq: 9,
+					},
+				],
+				openRegist: 'Y',
+				uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+				openFocusStore: 'Y',
+				openFocusGuide: 'Y',
+				activePerfectData: 'Y',
+				distList: [
+					{
+						distId: 'DB3B0209-D621-694F-EE06-066CB5B680CB',
+						distName: '文锦广场分销商',
+						uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+						uname: '黄家伍',
+					},
+					{
+						distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
+						distName: '水贝店',
+						uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+						uname: '黄家伍',
+					},
+					{
+						distId: '3E6FB25F-1042-3C3C-FE7B-058D8919453C',
+						distName: '水贝店',
+						uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+						uname: '黄家伍',
+					},
+					{
+						distId: '723F3C26-1E05-2C31-7AF4-08677672D218',
+						distName: '深圳金千枝',
+						uid: '1281D5F2-1C91-E399-D46C-0761DCD3BB89',
+						uname: '黄家伍',
+					},
+				],
+				uname: '黄家伍',
+				canModifyDist: false,
+				canModifySaler: false,
+		},
+		ts: 1679301106,
+  };*/
+	/*const obj = {
+    "code": 0,
+    "msg": "成功",
+    "data": {
+      "list": [
+        {
+					"code": "REGIST_REQUIRED_AVATAR",
+					"name": "头像",
+					"show": "Y",
+					"required": "N",
+					"seq": 1
+				},
+				{
+					"code": "REGIST_REQUIRED_NICKNAME",
+					"name": "昵称",
+					"show": "Y",
+					"required": "N",
+					"seq": 2
+				},
+				{
+					"code": "REGIST_REQUIRED_NAME",
+					"name": "姓名",
+					"show": "Y",
+					"required": "N",
+					"seq": 3
+				},
+				{
+					"code": "REGIST_REQUIRED_STORE",
+					"name": "门店",
+					"show": "Y",
+					"required": "N",
+					"seq": 4
+				},
+				{
+        "code": "REGIST_REQUIRED_SELLER",
+        "name": "导购",
+        "show": "Y",
+        "required": "N",
+        "seq": 5
+      },
+				{
+					"code": "REGIST_REQUIRED_GENDER",
+					"name": "性别",
+					"show": "Y",
+					"required": "N",
+					"seq": 6
+				},
+				{
+					"code": "REGIST_REQUIRED_ADDRESS",
+					"name": "地址",
+					"show": "Y",
+					"required": "N",
+					"seq": 7
+				},
+				{
+					"code": "REGIST_REQUIRED_BIRTH",
+					"name": "生日",
+					"show": "Y",
+					"required": "N",
+					"seq": 8
+				},
+				{
+					"code": "REGIST_REQUIRED_MDAY",
+					"name": "纪念日",
+					"show": "Y",
+					"required": "N",
+					"seq": 9
+				}
+      ],
+      "openRegist": "Y",
+      "openFocusStore": "Y",
+      "openFocusGuide": "Y",
+      "activePerfectData": "N",
+      "canModifyDist": true,
+      "canModifySaler": true
+    },
+    "ts": 1679395745
+  }*/
+	/*const obj = {
+    "code": 0,
+    "msg": "成功",
+    "data": {
+      "list": [
+        {
+					"code": "REGIST_REQUIRED_AVATAR",
+					"name": "头像",
+					"show": "Y",
+					"required": "N",
+					"seq": 1
+				},
+				{
+					"code": "REGIST_REQUIRED_NICKNAME",
+					"name": "昵称",
+					"show": "Y",
+					"required": "N",
+					"seq": 2
+				},
+				{
+					"code": "REGIST_REQUIRED_NAME",
+					"name": "姓名",
+					"show": "Y",
+					"required": "N",
+					"seq": 3
+				},
+				{
+					"code": "REGIST_REQUIRED_STORE",
+					"name": "门店",
+					"show": "Y",
+					"required": "N",
+					"seq": 4
+				},
+				{
+					"code": "REGIST_REQUIRED_SELLER",
+					"name": "导购",
+					"show": "Y",
+					"required": "N",
+					"seq": 5
+				},
+				{
+					"code": "REGIST_REQUIRED_GENDER",
+					"name": "性别",
+					"show": "Y",
+					"required": "N",
+					"seq": 6
+				},
+				{
+					"code": "REGIST_REQUIRED_ADDRESS",
+					"name": "地址",
+					"show": "Y",
+					"required": "N",
+					"seq": 7
+				},
+				{
+					"code": "REGIST_REQUIRED_BIRTH",
+					"name": "生日",
+					"show": "Y",
+					"required": "N",
+					"seq": 8
+				},
+				{
+					"code": "REGIST_REQUIRED_MDAY",
+					"name": "纪念日",
+					"show": "Y",
+					"required": "N",
+					"seq": 9
+				}
+      ],
+      "openRegist": "Y",
+      "distId": "F02542E0-91B9-719C-4778-04E620CFA3C4",
+      "uid": "E7394D25-72CC-32B3-B888-0764A7872966",
+      "distName": "沙井京基谢瑞麟",
+      "openFocusStore": "Y",
+      "openFocusGuide": "Y",
+      "scanType": "FINALLY",
+      "activePerfectData": "N",
+      "uname": "江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳江艳芳",
+      "canModifyDist": true,
+      "canModifySaler": true
+    },
+    "ts": 1679450949
+  }*/
+	/*const obj = {
+    "code": 0,
+    "msg": "成功",
+    "data": {
+      "list": [
+        {
+					"code": "REGIST_REQUIRED_AVATAR",
+					"name": "头像",
+					"show": "Y",
+					"required": "N",
+					"seq": 1
+				},
+				{
+					"code": "REGIST_REQUIRED_NICKNAME",
+					"name": "昵称",
+					"show": "Y",
+					"required": "N",
+					"seq": 2
+				},
+				{
+					"code": "REGIST_REQUIRED_NAME",
+					"name": "姓名",
+					"show": "Y",
+					"required": "N",
+					"seq": 3
+				},
+				{
+					"code": "REGIST_REQUIRED_STORE",
+					"name": "门店",
+					"show": "Y",
+					"required": "N",
+					"seq": 4
+				},
+				{
+					"code": "REGIST_REQUIRED_SELLER",
+					"name": "导购",
+					"show": "Y",
+					"required": "N",
+					"seq": 5
+				},
+				{
+					"code": "REGIST_REQUIRED_GENDER",
+					"name": "性别",
+					"show": "Y",
+					"required": "N",
+					"seq": 6
+				},
+				{
+					"code": "REGIST_REQUIRED_ADDRESS",
+					"name": "地址",
+					"show": "Y",
+					"required": "N",
+					"seq": 7
+				},
+				{
+					"code": "REGIST_REQUIRED_BIRTH",
+					"name": "生日",
+					"show": "Y",
+					"required": "N",
+					"seq": 8
+				},
+				{
+					"code": "REGIST_REQUIRED_MDAY",
+					"name": "纪念日",
+					"show": "Y",
+					"required": "N",
+					"seq": 9
+				}
+      ],
+      "openRegist": "Y",
+      "uid": "D532D1A8-6630-0979-DF63-08D9EF317808",
+      "openFocusStore": "Y",
+      "openFocusGuide": "Y",
+      "activePerfectData": "N",
+      "distList": [
+        {
+					"distId": "B3B8E6AD-4873-8506-74F1-0734263C4A29",
+					"distName": "陈群第一门店",
+					"uid": "D532D1A8-6630-0979-DF63-08D9EF317808",
+					"uname": "陈群测试"
+				}
+      ],
+      "uname": "陈群测试",
+      "canModifyDist": false,
+      "canModifySaler": false
+    },
+    "ts": 1679562436
+  }*/
+
+  // const { code, data } = obj;
+
   const { code, data } = await queryRegistRequiredSettingNew(p);
   if (code === 0 && data) {
     const {
       list: l,
-
       canModifySaler,
       canModifyDist,
       uid: belongUid,
@@ -450,6 +840,7 @@ const queryWriteInfo = async (p = {}) => {
       distId,
       distName: storeName,
     } = data;
+
     const index = l.findIndex((item: any) => item.code === MDAY);
 
     if (index !== -1) {
@@ -473,18 +864,29 @@ const queryWriteInfo = async (p = {}) => {
 
     // 如果是未激活会员，且是扫推广码的
     if (isInactiveMember.value && isActivity.value) {
-
-      if (selectedShop.value.storeName && selectedShop.value.distId && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+      if (
+        selectedShop.value.storeName &&
+        selectedShop.value.distId &&
+        memberInfo.value.belongUid &&
+        memberInfo.value.belongUser
+      ) {
         return;
       }
       // 如果未激活会员没有门店和导购，用推广码的门店和导购
-      if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+      if (
+        (!selectedShop.value.storeName || !selectedShop.value.distId) &&
+        (!memberInfo.value.belongUid || !memberInfo.value.belongUser)
+      ) {
         belongUid && (memberInfo.value.belongUid = belongUid);
         belongUser && (memberInfo.value.belongUser = belongUser);
         storeName && (selectedShop.value.storeName = storeName);
         distId && (selectedShop.value.distId = distId);
         // 如果未激活会员有门店没有导购，
-      } else if (selectedShop.value.storeName && selectedShop.value.distId && (!memberInfo.value.belongUid || !memberInfo.value.belongUser)) {
+      } else if (
+        selectedShop.value.storeName &&
+        selectedShop.value.distId &&
+        (!memberInfo.value.belongUid || !memberInfo.value.belongUser)
+      ) {
         // 判断推广码的门店是不是跟未激活会员的门店相同
         // 相同，用推广码的导购
         if (distId && selectedShop.value.distId === distId) {
@@ -492,7 +894,11 @@ const queryWriteInfo = async (p = {}) => {
           belongUser && (memberInfo.value.belongUser = belongUser);
         }
         // 如果未激活会员有导购没有门店，
-      } else if ((!selectedShop.value.storeName || !selectedShop.value.distId) && (memberInfo.value.belongUid && memberInfo.value.belongUser)) {
+      } else if (
+        (!selectedShop.value.storeName || !selectedShop.value.distId) &&
+        memberInfo.value.belongUid &&
+        memberInfo.value.belongUser
+      ) {
         // 判断推广码的导购是不是跟未激活会员的导购相同
         // 相同，用推广码的门店
         if (belongUid && memberInfo.value.belongUid === belongUid) {
@@ -519,6 +925,22 @@ const queryWriteInfo = async (p = {}) => {
       inactiveMemberControl.canModifySaler = true;
     }
 
+    //欢迎语
+    if (guideData.value) {
+      distListArr.value = data?.distList;
+      Object.assign(activeData.value, {
+        canModifySaler,
+        canModifyDist,
+        belongUid,
+        belongUser,
+        distId: distListArr.value?.length ? distListArr.value[0]?.distId : '',
+        storeName: distListArr.value?.length ? distListArr.value[0]?.distName : '',
+      });
+      if (distListArr.value?.length) {
+        selectedShop.value.storeName = distListArr.value[0]?.distName
+        selectedShop.value.distId = distListArr.value[0]?.distId
+			}
+		}
   }
 };
 
@@ -530,7 +952,10 @@ const handle = (item: any) => {
     if (item.code === MDAY && !inactiveMemberControl.canModifyAnnday) {
       return;
     }
-    if (item.code === 'REGIST_REQUIRED_ADDRESS' && !inactiveMemberControl.canModifyAddress) {
+    if (
+      item.code === 'REGIST_REQUIRED_ADDRESS' &&
+      !inactiveMemberControl.canModifyAddress
+    ) {
       return;
     }
 
@@ -599,19 +1024,26 @@ const handle = (item: any) => {
 
   switch (item.code) {
     case 'REGIST_REQUIRED_STORE': {
+      if (guideData.value && distListArr.value?.length === 1) {
+        return;
+      }
       // 选择门店时，更新归属门店
       uni.$once('chooseStore', e => {
+        Storage.removeDistList();
         if (e.distId !== selectedShop.value.distId) {
           activeData.value.canModifySaler = true;
           inactiveMemberControl.canModifySaler = true;
-          Object.assign(memberInfo.value, {
-            belongUid: '',
-            belongUser: '',
-          });
+          if (!guideData.value) {
+            Object.assign(memberInfo.value, {
+              belongUid: '',
+              belongUser: '',
+            });
+          }
         }
         e.fullAddress = mergeFullAddress(e);
         selectedShop.value = e;
       });
+      Storage.setDistList(distListArr.value);
       router.goCodePage(
         'chooseStore',
         `?belong=true&id=${selectedShop.value.distId || ''}&t=user_info`
@@ -619,27 +1051,32 @@ const handle = (item: any) => {
       break;
     }
     case 'REGIST_REQUIRED_SELLER': {
-      // 更新导购
-      uni.$once('updateGuide', e => {
-        if (!e.uid) return;
-        Object.assign(memberInfo.value, {
-          belongUid: e.uid,
-          belongUser: e.name,
+      if (
+        !guideData.value ||
+        guideData.value && !memberInfo.value.belongUser
+      ) {
+        // 更新导购
+        uni.$once('updateGuide', e => {
+          if (!e.uid) return;
+          Object.assign(memberInfo.value, {
+            belongUid: e.uid,
+            belongUser: e.name,
+          });
         });
-      });
-      if (selectedShop.value.distId) {
-        router.goCodePage(
-          'chooseGuide',
-          `?id=${selectedShop.value.distId}&uid=${
-            memberInfo.value.belongUid || ''
-          }`
-        );
-        return;
+        if (selectedShop.value.distId) {
+          router.goCodePage(
+            'chooseGuide',
+            `?id=${selectedShop.value.distId}&uid=${
+              memberInfo.value.belongUid || ''
+            }`
+          );
+          return;
+        }
+        uni.showModal({
+          content: '请先选门店',
+          showCancel: false,
+        });
       }
-      uni.showModal({
-        content: '请先选门店',
-        showCancel: false,
-      });
       break;
     }
     case BIRTH_DAY: {
@@ -655,7 +1092,9 @@ const handle = (item: any) => {
       const { address, province, city, district } = memberInfo.value;
       router.goCodePage(
         'finishAddress',
-        `?address=${address || ''}&area=${province || ''},${city || ''},${district || ''}`
+        `?address=${address || ''}&area=${province || ''},${city || ''},${
+          district || ''
+        }`
       );
       break;
     }
@@ -882,30 +1321,23 @@ const closeAnndayCalendarPicker = () => {
 };
 
 const confirmBirthCalendarPicker = ({
-  value: {
-    year,
-    month,
-    day
-  },
+  value: { year, month, day },
   type,
-  lunarDesc
+  lunarDesc,
 }: any) => {
   memberInfo.value.birthKind = type;
   birthCalendarPickerDate.value = `${year}-${month}-${day}`;
   memberInfo.value.birthSolar = `${year}-${String(month)
-    .padStart(2, '0')}-${String(day)
+    .padStart(
+      2,
+      '0'
+    )}-${String(day)
     .padStart(2, '0')}`;
   memberInfo.value.birthLunar = lunarDesc;
   closeBirthCalendarPicker();
 };
 
-const confirmAnndayCalendarPicker = ({
-  value: {
-    year,
-    month,
-    day
-  },
-}: any) => {
+const confirmAnndayCalendarPicker = ({ value: { year, month, day } }: any) => {
   memberInfo.value.annday = `${year}-${String(month)
     .padStart(2, '0')}-${String(day)
     .padStart(2, '0')}`;
