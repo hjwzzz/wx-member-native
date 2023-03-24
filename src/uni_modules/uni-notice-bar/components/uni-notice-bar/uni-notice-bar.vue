@@ -364,7 +364,7 @@ export default {
   flex-direction: row;
   align-items: center;
   padding: 10px 12px;
-  margin-bottom: 10px;
+  // margin-bottom: 10px;
 }
 
 .uni-cursor-point {

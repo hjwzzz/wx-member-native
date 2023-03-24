@@ -3,125 +3,120 @@
   <view
     class="grid-policy-act"
     @click="toDetail"
-    :style="props.items.param.doOut.style"
+    :style="props.items.param?.doOut?.style"
   >
     <view class="header">
       <view class="header-left">
-        <text class="title">{{ title || '质保单' }}</text>
-        <view class="number"> ({{ policyList.totalRecord || 0 }}) </view>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ title || '质保单' }}</text
+        >
+        <view
+          class="number"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+        >
+          ({{ policyList.totalRecord || 0 }})
+        </view>
       </view>
       <view class="right">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
-    <view class="policy-card">
-      <view class="policy-card-item">
-        <view class="policy-card-item-text policy-card-item-one">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-011.png'"
-            mode="aspectFill"
-          />
-          <text class="text">单号：</text>
-          <text class="store-name">Z451265545089354</text>
-        </view>
-        <view class="policy-card-item-text">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-009.png'"
-            mode="aspectFill"
-          />
-          <text class="text">门店：</text>
-          <text class="store-name">金千金千枝金千枝金千枝金千枝金千枝</text>
-        </view>
-        <view class="policy-card-item-text">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-006.png'"
-            mode="aspectFill"
-          />
-          <text class="text">时间：</text>
-          <text class="text">2022-05-18 10:10:10</text>
-          <text class="text-num">数量：</text>
-          <text class="text">2件</text>
-        </view>
-        <view class="policy-card-item-btn">
-          <view class="policy-card-item-btn-info">
-            <text>总计：</text>
-            <text class="num-infos">￥</text>
-            <text class="num-info-price">200000</text>
-          </view>
-          <view class="policy-card-item-btn-name"> 详情 </view>
-        </view>
-      </view>
-      <view class="policy-card-item">
-        <view class="policy-card-item-text policy-card-item-one">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-011.png'"
-            mode="aspectFill"
-          />
-          <text class="text">单号：</text>
-          <text class="store-name">Z451265545089354</text>
-        </view>
-        <view class="policy-card-item-text">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-009.png'"
-            mode="aspectFill"
-          />
-          <text class="text">门店：</text>
-          <text class="store-name">金千金千枝金千枝金千枝金千枝金千枝</text>
-        </view>
-        <view class="policy-card-item-text">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/icon-006.png'"
-            mode="aspectFill"
-          />
-          <text class="text">时间：</text>
-          <text class="text">2022-05-18 10:10:10</text>
-          <text class="text-num">数量：</text>
-          <text class="text">2件</text>
-        </view>
-        <view class="policy-card-item-btn">
-          <view class="policy-card-item-btn-info">
-            <text>总计：</text>
-            <text class="num-infos">￥</text>
-            <text class="num-info-price">200000</text>
-          </view>
-          <view class="policy-card-item-btn-name"> 详情 </view>
-        </view>
-      </view>
-    </view>
-    <!-- <view
-      class="content"
-      v-for="(policy, index) in policyList.records"
-      :key="index"
+    <view
+      class="policy-card"
+      v-if="
+        props.items.param.doOut.fixedStyle === 0 && policyList.records.length
+      "
     >
-      <view class="orderId">
-        <view class="title">单号：</view>
-        <view class="text">{{ policy.number }}</view>
-      </view>
-      <view class="shopName">
-        <image
-          class="image icon-image"
-          :src="staticUrl + 'img/store.png'"
-          mode="aspectFill"
-        />
-        <view class="name">{{ policy.storeName }}</view>
-      </view>
-      <view class="orderTime">
-        <image
-          class="image icon-image"
-          :src="staticUrl + 'img/time.png'"
-          mode="aspectFill"
-        />
-        <view class="time">{{ policy.bizTime }}</view>
+      <view
+        class="policy-card-item"
+        v-for="(policy, index) in policyList.records"
+        :key="index"
+      >
+        <view class="policy-card-item-text policy-card-item-one">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-011.png'"
+            mode="aspectFill"
+          />
+          <text class="text">单号：</text>
+          <text class="store-name">{{ policy.number }}</text>
+        </view>
+        <view class="policy-card-item-text">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-009.png'"
+            mode="aspectFill"
+          />
+          <text class="text">门店：</text>
+          <text class="store-name">{{ policy.storeName }}</text>
+        </view>
+        <view class="policy-card-item-text">
+          <image
+            class="icon-image"
+            :src="staticUrl + 'img/icon-006.png'"
+            mode="aspectFill"
+          />
+          <text class="text">时间：</text>
+          <text class="text">{{ policy.bizTime }}</text>
+          <text class="text-num">数量：</text>
+          <text class="text">2件</text>
+        </view>
+        <view class="policy-card-item-btn">
+          <view class="policy-card-item-btn-info">
+            <text>总计：</text>
+            <text class="num-infos">￥</text>
+            <text class="num-info-price">200000</text>
+          </view>
+          <view class="policy-card-item-btn-name"> 详情 </view>
+        </view>
       </view>
     </view>
-    <NoneData v-if="!policyList.totalRecord" /> -->
+    <block v-if="props.items.param.doOut.fixedStyle === 1">
+      <view
+        class="content"
+        v-for="(policy, index) in policyList.records"
+        :key="index"
+      >
+        <view class="orderId">
+          <view class="title">单号：</view>
+          <view class="text">{{ policy.number }}</view>
+        </view>
+        <view class="shopName">
+          <image
+            class="image icon-image"
+            :src="staticUrl + 'img/store.png'"
+            mode="aspectFill"
+          />
+          <view class="name">{{ policy.storeName }}</view>
+        </view>
+        <view class="orderTime">
+          <image
+            class="image icon-image"
+            :src="staticUrl + 'img/time.png'"
+            mode="aspectFill"
+          />
+          <view class="time">{{ policy.bizTime }}</view>
+        </view>
+      </view>
+    </block>
   </view>
 </template>
 
@@ -300,8 +295,8 @@ onShow(() => {
 }
 .grid-policy-act {
   // width: 690rpx;
-  padding: 30rpx;
-  padding-bottom: 0rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
   // margin: 30rpx 0rpx;
   // background: #fff;
   // border-radius: 16rpx;
@@ -309,7 +304,8 @@ onShow(() => {
   .header {
     display: flex;
     justify-content: space-between;
-
+    align-items: center;
+    height: 80rpx;
     .header-left {
       display: flex;
       align-items: center;

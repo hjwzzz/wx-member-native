@@ -40,7 +40,7 @@
         <!-- aspectFit|aspectFill|widthFix -->
         <image
           class="nearby-store-image-show"
-          :src="`${staticUrl}img/store/store-avatar-default.png`"
+          :src="list.url || `${staticUrl}img/store/store-avatar-default.png`"
           mode="aspectFill"
         >
         </image>
@@ -52,7 +52,7 @@
           :style="{
             color: colorText,
           }"
-          >金千枝万山旗舰店
+          >{{ list.storeName }}
         </view>
         <view class="nearby-store-info-text">
           <view
@@ -69,7 +69,7 @@
               >
               </image>
               <text class="nowrap">
-                深圳市罗湖区文锦北路文锦广场A座17层深圳市罗湖区文锦北路文锦广场A座17层
+                {{ list.addr || '--' }}
               </text>
             </view>
             <view class="nearby-store-info-text-left-item nowrap">
@@ -79,7 +79,7 @@
                 mode="aspectFill"
               >
               </image>
-              <text class="nowrap"> 0755-89819966 </text>
+              <text class="nowrap"> {{ list.tel || '--' }} </text>
             </view>
             <view class="nearby-store-info-text-left-item nowrap">
               <image
@@ -96,6 +96,7 @@
             :style="{
               color: colorText,
             }"
+            @click="openLocation(list)"
           >
             <view class="nearby-store-info-text-right-box">
               <view class="nearby-store-info-text-right-text">
@@ -116,11 +117,12 @@
 </template>
 
 <script setup lang="ts">
-import { queryMemberRecommend } from '@/api/points-mall';
-import { computed, onMounted, ref, Ref } from 'vue';
-import Router from '@/utils/router';
-import { useBasicsData } from '@/store/basicsData';
+import { computed, onMounted, ref } from 'vue';
+// import Router from '@/utils/router';
+// import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
+import { getNearStore } from '@/pages/api/nearby-store';
+import { mergeFullAddress } from '@/utils/util';
 
 interface Props {
   title?: string;
@@ -130,10 +132,93 @@ const props = withDefaults(defineProps<Props>(), {
   title: '附近门店',
   items: () => ({}),
 });
-const initBasicsData = useBasicsData();
+// const initBasicsData = useBasicsData();
 
 const colorText = computed(() => props.items?.param?.doOut?.special?.color || '');
 
+const list = ref<any>({});
+const local = ref({
+  lat: 0,
+  lng: 0,
+});
+const coordCur = computed(() => {
+  const { lng, lat } = local.value;
+  return [lng, lat].filter(Boolean)
+    .join(',');
+});
+
+onMounted(() => {
+  uni.showLoading({
+    title: '加载中',
+    mask: true,
+  });
+  uni.getLocation({
+    type: 'wgs84',
+    success: ({ latitude: lat, longitude: lng }) => {
+      local.value = { lat, lng };
+      uni.setStorageSync('location', local.value);
+      updateNearStorePost();
+    },
+    fail: () => {
+      local.value = uni.getStorageSync('location');
+      updateNearStorePost();
+      uni.showModal({
+        title: '提示',
+        content:
+          '微信不能确定你的位置，你可以通过以下操作提高微信的定位精确度: 在位置设置中打开GPS和无线网络',
+      });
+    },
+  });
+});
+
+const updateNearStorePost = async () => {
+  const { code, data } = await getNearStore({
+    distId: '',
+    coordCur: coordCur.value,
+    type: 'store',
+  });
+  if (code === 0) {
+    data.forEach((i: any) => {
+      // 详细地址
+      i.fullAddress = mergeFullAddress(i);
+      // 距离
+      const { range } = i;
+      i.rangeInfo = `${range * 1000}m`;
+      if (range >= 1) i.rangeInfo = `${range}km`;
+      if (!range) i.rangeInfo = '未知';
+    });
+    if (data.length) {
+      list.value = data[0] || {};
+      const address = [
+        list.value.province,
+        list.value.city,
+        list.value.district,
+        list.value.address,
+      ]
+        .filter(Boolean)
+        .join('');
+      list.value.addr = address;
+    }
+  }
+};
+
+const openLocation = (item: any) => {
+  const [lng, lat] = item.coord?.split?.(',') ?? [];
+  if (!item.coord) {
+    uni.showToast({
+      icon: 'none',
+      title: '商家还未设置地理位置',
+    });
+    return;
+  }
+
+  uni.openLocation({
+    latitude: Number(lat),
+    longitude: Number(lng),
+    name: item.storeName,
+    address: item.fullAddress,
+  });
+};
 // onMounted(() => {
 //   getMemberRecommend();
 // });
@@ -144,21 +229,18 @@ const colorText = computed(() => props.items?.param?.doOut?.special?.color || ''
 //   mallList.value = data || [];
 // };
 
-const mallUrl = '/my-assets-pages/point-mall/index';
+// const mallUrl = '/my-assets-pages/point-mall/index';
 const onMall = () => {
   // Router
-  if (!initBasicsData.checkLogin) {
-    return Router.goLogin(mallUrl);
-  }
-  uni.navigateTo({ url: mallUrl });
+  uni.navigateTo({ url: '/pages/nearby-store/index' });
 };
-const onMallDetail = (id: string) => {
-  const url = `${mallUrl}?productId=${id}`;
-  if (!initBasicsData.checkLogin) {
-    return Router.goLogin(url);
-  }
-  uni.navigateTo({ url });
-};
+// const onMallDetail = (id: string) => {
+//   const url = `${mallUrl}?productId=${id}`;
+//   if (!initBasicsData.checkLogin) {
+//     return Router.goLogin(url);
+//   }
+//   uni.navigateTo({ url });
+// };
 </script>
 
 <style lang="scss" scoped>

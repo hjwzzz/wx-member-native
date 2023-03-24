@@ -67,7 +67,7 @@
 // import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import { computed, ref } from 'vue';
-
+import { bannerListClick } from '@/utils/util';
 interface Props {
   items?: any;
 }
@@ -98,10 +98,6 @@ const boxStyle = computed(() => {
 //   { imgUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-3.jpeg' },
 //   { imgUrl: 'https://fastly.jsdelivr.net/npm/@vant/assets/apple-4.jpeg' },
 // ];
-
-const bannerListClick = (item: any) => {
-  console.log(item);
-};
 
 const currentIndex = ref(0);
 const swiperChange = (e: any) => {

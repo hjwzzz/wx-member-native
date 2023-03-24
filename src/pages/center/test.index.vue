@@ -110,6 +110,111 @@
       </view>
     </view> -->
     <CustomFitUp types="WM_CENTER" />
+
+    <block v-for="(item, index) in panelList" :key="index">
+      <!-- 这个组件-多个样式需要和图片导航配合 -->
+      <GridList v-if="item.kind === entryType.EN" :item="item"> </GridList>
+    </block>
+
+    <view class="reveal-grid">
+      <block v-for="(item, index) in panelList" :key="index">
+        <view class="grid-list" v-if="item.kind === entryType.EN">
+          <!-- GONGGE  LIST -->
+          <view
+            v-if="item.param.showType"
+            :class="
+              item.param.showType === 'LIST' ? 'wrapper-list' : 'wrapper-grid'
+            "
+          >
+            <block v-for="(entry, index) in item.param.linkList" :key="index">
+              <view
+                class="list-item"
+                @click="handleEntryUrl(entry)"
+                v-if="entry.showed"
+              >
+                <view class="item-icon">
+                  <image
+                    class="image"
+                    :src="
+                      entry.icoUrl || `${staticUrl}img/item-avatar-default.png`
+                    "
+                    mode="aspectFit"
+                  />
+                  <view
+                    class="badge"
+                    v-if="showRedDot(item, entry, 'GONGGE')"
+                  />
+                </view>
+                <view class="item-name">
+                  {{ entry.title }}
+                  <view class="badge" v-if="showRedDot(item, entry, 'LIST')" />
+                </view>
+                <uni-icons
+                  v-if="item.param.showType == 'LIST'"
+                  type="arrowright"
+                  size="14"
+                  color="#B7B8C4"
+                />
+              </view>
+            </block>
+          </view>
+        </view>
+        <view
+          class="grid-ad"
+          v-else-if="item.kind === entryType.BA && bannerList.length > 0"
+        >
+          <swiper
+            style="height: 180rpx"
+            :indicator-dots="bannerList.length > 1"
+            indicator-color="#D8D9E0"
+            :indicator-active-color="initBasicsData.mainColor"
+            autoplay
+            circular
+          >
+            <block v-for="(entry, index) in bannerList" :key="index">
+              <swiper-item>
+                <image
+                  @click.stop="bannerListClick(entry)"
+                  class="image"
+                  style="height: 180rpx"
+                  :src="entry.image || entry.imgUrl"
+                  mode="aspectFill"
+                ></image>
+              </swiper-item>
+            </block>
+          </swiper>
+        </view>
+        <!-- 今日金价 -->
+        <TodayGoldPrice
+          v-else-if="item.kind === entryType.GO"
+          :title="item.param.title"
+          type="WM_CENTER"
+        />
+        <!-- 积分商品推荐 -->
+        <ContentMall v-else-if="item.kind === entryType.RE" />
+        <!-- 我的奖品 -->
+        <MyPrizes
+          v-else-if="item.kind === entryType.MY"
+          :item="item"
+          :title="item.param.title"
+          @handle="handleMyPrizes"
+        />
+        <!-- 预约服务 -->
+        <MyService
+          v-else-if="item.kind === entryType.RES"
+          :title="item.param.title"
+          :srvProshowNum="srvProshowNum"
+          :srvProList="srvProList"
+        />
+        <!-- 质保单 -->
+        <MyQuality
+          v-else-if="item.kind === entryType.WA"
+          :title="item.param.title"
+          :item="item"
+          :policyListNum="policyListNum"
+        />
+      </block>
+    </view>
   </CustomPage>
   <Tabbar code="wm_center"> </Tabbar>
 

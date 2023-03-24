@@ -37,6 +37,11 @@
     <view class="coupon-card" v-if="props.items.param.doOut.fixedStyle === 0">
       <view
         class="coupon-card-item"
+        :style="{
+          background:
+            props.items?.param?.doOut?.special?.couponColor || '#e04838',
+          color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
+        }"
         v-for="(cou, index) in props.items.param?.coupons"
         :key="index"
       >
@@ -63,7 +68,15 @@
           {{ showCondition(cou) }}
         </view>
         <view class="coupon-card-item-text">
-          <view class="coupon-card-item-text coupon-card-item-btn">
+          <view
+            class="coupon-card-item-text coupon-card-item-btn"
+            :style="{
+              background:
+                props.items?.param?.doOut?.special?.color || '#e04838',
+              color:
+                props.items?.param?.doOut?.special?.couponColor || '#e04838',
+            }"
+          >
             理科领取
           </view>
         </view>
@@ -113,11 +126,16 @@
           v-for="(item, index) in couponsList"
           :key="index"
         >
+          <!-- :style="{
+          background:
+            props.items?.param?.doOut?.special?.couponColor || '#e04838',
+        }" -->
           <view
             class="swiper-item-list"
             :style="{
               background:
                 props.items?.param?.doOut?.special?.couponColor || '#e04838',
+              color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
             }"
           >
             <view
@@ -147,7 +165,16 @@
               </view>
 
               <view class="coupon-card-item-text">
-                <view class="coupon-card-item-text coupon-card-item-btn">
+                <view
+                  class="coupon-card-item-text coupon-card-item-btn"
+                  :style="{
+                    background:
+                      props.items?.param?.doOut?.special?.color || '#e04838',
+                    color:
+                      props.items?.param?.doOut?.special?.couponColor ||
+                      '#e04838',
+                  }"
+                >
                   立刻领取
                 </view>
               </view>
@@ -258,6 +285,8 @@ const showCondition = (item: any) => {
 const toDetail = () => {
   //  uni.navigateTo({ url });
   // Router.goCodePage('warranty');
+  // Router
+  uni.navigateTo({ url: '/my-assets-pages/coupon-center/index' });
 };
 
 // const getPolicyList = async () => {
@@ -322,7 +351,7 @@ const toDetail = () => {
   .coupon-card-item {
     width: 260rpx;
     height: 250rpx;
-    background: #e04838;
+    // background: #e04838;
     border-radius: 16rpx;
     flex-shrink: 0;
     margin-right: 20rpx;
@@ -337,20 +366,20 @@ const toDetail = () => {
       .coupon-card-item-price-unit {
         font-size: 24rpx;
         font-weight: 700;
-        color: #fbe7c3;
+        // color: #fbe7c3;
         margin-top: 25rpx;
         margin-right: -5rpx;
       }
       .coupon-card-item-price-num {
         font-size: 64rpx;
         font-weight: 700;
-        color: #fbe7c3;
+        // color: #fbe7c3;
       }
     }
     .coupon-card-item-info {
       // height: 60rpx;
       font-size: 24rpx;
-      color: #fbe7c3;
+      // color: #fbe7c3;
     }
     .coupon-card-item-btn {
       width: 136rpx;
@@ -359,7 +388,7 @@ const toDetail = () => {
       border-radius: 24rpx;
       font-size: 24rpx;
       font-weight: 400;
-      color: #e04838;
+
       margin-top: 22rpx;
     }
   }
@@ -402,20 +431,20 @@ const toDetail = () => {
       .coupon-card-item-price-unit {
         font-size: 24rpx;
         font-weight: 700;
-        color: #fbe7c3;
+        // color: #fbe7c3;
         margin-top: 25rpx;
         margin-right: -5rpx;
       }
       .coupon-card-item-price-num {
         font-size: 64rpx;
         font-weight: 700;
-        color: #fbe7c3;
+        // color: #fbe7c3;
       }
     }
     .coupon-card-item-info {
       // height: 60rpx;
       font-size: 24rpx;
-      color: #fbe7c3;
+      // color: #fbe7c3;
     }
     .coupon-card-item-btn {
       width: 136rpx;

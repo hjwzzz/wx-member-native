@@ -3,12 +3,36 @@
   <view class="grid-price" :style="props.items?.param?.doOut?.style">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title || '今日金价' }}</text>
-        <text class="title-unit">(元/克)</text>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ props.title || '今日金价' }}</text
+        >
+        <text
+          class="title-unit"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+        >
+          (元/克)
+        </text>
       </view>
       <view class="right" @click="more">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
 
