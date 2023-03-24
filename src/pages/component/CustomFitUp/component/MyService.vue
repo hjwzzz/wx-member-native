@@ -73,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+import { onShow } from '@dcloudio/uni-app';
 import { Ref, watch, ref, onMounted } from 'vue';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { useBasicsData } from '@/store/basicsData';
@@ -137,6 +138,9 @@ const initInfo = debounce(() => {
 // watch(refreshState, () => {
 //   initInfo();
 // });
+onShow(() => {
+  initInfo();
+});
 onMounted(() => {
   initInfo();
 });

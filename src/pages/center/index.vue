@@ -2,12 +2,15 @@
   <page-meta
     :page-style="'overflow:' + (menberCodePopupVisible ? 'hidden' : 'visible')"
   ></page-meta>
-  <CustomPage bottom>
+  <!-- pageBackground.value -->
+  <CustomPage :background="pageBackground || '#949494'" bottom>
     <view
       class="page-top-show"
       :style="{
-        backgroundImage: `url( ${showToImageBG} )`,
+        background: userInfo.background || `url( ${showToImageBG} )`,
         paddingTop: headHeight + 'rpx',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }"
     >
       <view
@@ -26,89 +29,6 @@
       >
       </memberCard>
     </view>
-    <!-- <view class="user" :style="{ backgroundImage: `url( ${showToImage} )` }">
-      <view class="login-info">
-        <view class="user-info">
-          <view class="info-left" @click="handleEntryUrl({ code: 'userInfo' })">
-            <view class="info-img">
-              <image
-                class="image"
-                v-if="initBasicsData.checkLogin && userInfo.avatarUrl"
-                :src="userInfo.avatarUrl"
-                mode="scaleToFill"
-              />
-              <image
-                v-else
-                class="avatar"
-                :src="imageUrl + 'img/person.png'"
-                mode="scaleToFill"
-              />
-            </view>
-            <view v-if="initBasicsData.checkLogin" class="use-info">
-              <text>{{ userInfo.nickName || '' }}</text>
-            </view>
-            <view
-              v-else
-              class="info-btn"
-              @click.stop="Router.goCodePage('reg')"
-            >
-              请先登录
-            </view>
-          </view>
-          <view class="info-right">
-            <view
-              v-if="initBasicsData.checkLogin"
-              class="menber-code"
-              @click="showMenberCodePopup"
-            >
-              <image
-                class="menber-code-icon"
-                :src="`${imageUrl}img/menber-code-qrcode.png`"
-              />
-              <view class="menber-code-desc">会员码</view>
-            </view>
-            <image
-              class="setting"
-              :src="imageUrl + 'img/setInfo.png'"
-              mode="scaleToFill"
-              @click="handleEntryUrl({ code: 'installCenter' })"
-            />
-          </view>
-        </view>
-        <view class="login-list">
-          <block v-for="(item, index) in loginList" :key="index">
-            <view
-              class="login-item"
-              v-if="item.showed"
-              @click="handleEntryUrl(item)"
-            >
-              <view class="item-num">{{
-                item.accountValue !== ' ' ? item.accountValue : 0
-              }}</view>
-              <view class="login-list-item-name">{{ item.title }}</view>
-            </view>
-          </block>
-        </view>
-      </view>
-      <view
-        class="boot-equity"
-        v-if="initBasicsData.checkLogin"
-        @click="handleFixedSysUrl()"
-      >
-        <view class="boot-equity-left">
-          <image
-            class="icon-image"
-            :src="staticUrl + 'img/level.png'"
-            mode="aspectFit"
-          />
-          <view class="text">{{ userInfo.curLevelName || '' }}</view>
-        </view>
-        <view class="boot-equity-right">
-          <text class="text">查看权益</text>
-          <uni-icons type="arrowright" size="14" color="#975d17"></uni-icons>
-        </view>
-      </view>
-    </view> -->
     <CustomFitUp types="WM_CENTER" />
   </CustomPage>
   <Tabbar code="wm_center"> </Tabbar>
@@ -171,71 +91,58 @@ import { onShow } from '@dcloudio/uni-app';
 import { ref, reactive, Ref, watch, computed } from 'vue';
 // import { getIndexAdBannerList } from '@/api/center';
 import {
-  getMemberCenterIndex,
+  // getMemberCenterIndex,
   queryMemberCenterBannerListFront,
   getBarCodeRequest,
   GetBarCodeRequestRes,
   sendKeyExpiredBarCodeRequest,
 } from '@/pages/api/center';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
-//
+import { getSysUi } from '@/api/server';
+import Storage from '@/utils/storage';
 // import { queryGoldPriceByPage } from '@/api/server';
-
-import { bannerListClick, handleEntryUrl } from '@/utils/util';
+// import { bannerListClick, handleEntryUrl } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
 import Tabbar from '@/components/Tabbar/index.vue';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
 
-// import TodayGoldPrice from '../component/TodayGoldPrice.vue';
-// import ContentMall from '../component/ContentMall.vue';
-// import MyPrizes from '../component/MyPrizes.vue';
-// import MyService from '../component/MyService.vue';
-// import MyQuality from '../component/MyQuality.vue';
-// import GridList from '../component/GridList.vue';
-//
 import BrCode128 from '@/utils/barcode.js';
 import memberCard from '../component/memberCard.vue';
 
 const imageUrl = staticUrl;
 const initBasicsData = useBasicsData();
-const entryType = {
-  BA: 'BANNER',
-  EN: 'ENTRANCE',
-  GO: 'GOLD_PRICE',
-  MY: 'MY_AWARD',
-  NO: 'NOTICE',
-  QR: 'ORDER',
-  QU: 'QUICK_NAV',
-  RE: 'REC_GIFTS',
-  REC: 'REC_GOODS',
-  RES: 'RES_SVC',
-  RI: 'RICH_TEXT',
-  WA: 'WARRANTY',
-};
-const userInfo = reactive({
-  avatarUrl: '',
-  nickName: '',
-  name: '',
-  curLevelName: '',
-});
-const loginList: Ref<any> = ref([]);
-const panelList: Ref<any> = ref([]);
+// const entryType = {
+//   BA: 'BANNER',
+//   EN: 'ENTRANCE',
+//   GO: 'GOLD_PRICE',
+//   MY: 'MY_AWARD',
+//   NO: 'NOTICE',
+//   QR: 'ORDER',
+//   QU: 'QUICK_NAV',
+//   RE: 'REC_GIFTS',
+//   REC: 'REC_GOODS',
+//   RES: 'RES_SVC',
+//   RI: 'RICH_TEXT',
+//   WA: 'WARRANTY',
+// };
+
+// const panelList: Ref<any> = ref([]);
 const bannerList: Ref<any> = ref([]);
 // const goldPrice: Ref<any> = ref([]);
 // const todayGoldPriceShowed = ref(false);
-const srvProshowNum = ref(1);
-const policyListNum = ref(0);
+// const srvProshowNum = ref(1);
+// const policyListNum = ref(0);
 
 // "navigationStyle": "custom" height
 const headHeight: any = ref(100);
 const menuInfoTopShow: any = ref(0);
 const menuInfoHeightShow: any = ref(0);
 onShow(() => {
-  getMemberCentertIndex();
+  getPageDate();
+  // getMemberCentertIndex();
   getBannerData();
-
   uni.getSystemInfo({
     success: res => {
       const rr = uni.getMenuButtonBoundingClientRect();
@@ -252,51 +159,97 @@ onShow(() => {
       headHeight.value = showHeight * 2;
     },
   });
-  // getGoldPriceByPage();
 });
 const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
 const showToImageBG = ref(deFImage1);
 
-const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
-const showToImage = ref(deFImage);
-const getMemberCentertIndex = async () => {
-  const res = await getMemberCenterIndex('');
-  if (res.code === 0 && res.data) {
-    const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
-    const quickNavList = wmCenterRspVo.param?.quickNavList || [];
-    const panelListItem: any = wmCenterRspVo.panelList;
-    showToImage.value = wmCenterRspVo.param.topBgImageUrl || deFImage;
-    const srvObj =
-      panelListItem.find((item: any) => item.kind === entryType.RES) || {};
-    const policyList =
-      panelListItem.find((item: any) => item.kind === entryType.WA) || {};
+// const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
+// const showToImage = ref(deFImage);
+// const getMemberCentertIndex = async () => {
+//   const res = await getMemberCenterIndex('');
+//   if (res.code === 0 && res.data) {
+//     const { avatarUrl, nickName, name, wmCenterRspVo, curLevelName } = res.data;
+//     const quickNavList = wmCenterRspVo.param?.quickNavList || [];
+//     const panelListItem: any = wmCenterRspVo.panelList;
+//     showToImage.value = wmCenterRspVo.param.topBgImageUrl || deFImage;
+//     const srvObj =
+//       panelListItem.find((item: any) => item.kind === entryType.RES) || {};
+//     const policyList =
+//       panelListItem.find((item: any) => item.kind === entryType.WA) || {};
 
-    srvProshowNum.value = srvObj.param?.showNum || 1;
-    policyListNum.value = policyList.param?.showNum || 0;
-    userInfo.avatarUrl = avatarUrl || '';
-    userInfo.nickName = nickName || name;
-    userInfo.curLevelName = curLevelName;
-    loginList.value = quickNavList;
-    panelList.value = panelListItem;
-    getMemberRecommend();
+//     srvProshowNum.value = srvObj.param?.showNum || 1;
+//     policyListNum.value = policyList.param?.showNum || 0;
+//     userInfo.avatarUrl = avatarUrl || '';
+//     userInfo.nickName = nickName || name;
+//     userInfo.curLevelName = curLevelName;
+//     loginList.value = quickNavList;
+//     panelList.value = panelListItem;
+//     getMemberRecommend();
+//   }
+// };
+
+const pageBackground = ref('#f5f5f5');
+const userInfo = reactive({
+  avatarUrl: '',
+  nickName: '',
+  name: '',
+  curLevelName: '',
+  memberCardInfo: '',
+  showGrowthValue: false,
+  showSignIn: false,
+  doOut: { style: {}, fixedStyle: 0 },
+  background: '',
+});
+const loginList: Ref<any> = ref([]);
+
+const getPageDate = async () => {
+  const { data } = await getSysUi({
+    opsId: Storage.getOpsId(),
+    kind: 'WM_CENTER',
+  });
+  const { param, panelList } = data;
+  pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
+  loginList.value = param?.quickNavList || [];
+
+  //  获取基本信息
+  const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
+  const memberCardInfo = panelList.find(getMenber) || {};
+  userInfo.memberCardInfo = memberCardInfo.param.title;
+  userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue;
+  userInfo.showSignIn = memberCardInfo.param.showSignIn;
+  userInfo.doOut = memberCardInfo.param.doOut;
+
+  userInfo.background =
+    userInfo.doOut?.fixedStyle === 2
+      ? null
+      : memberCardInfo.param.doOut.style.background;
+
+  if (memberCardInfo.param.doOut.style.background) {
+    delete memberCardInfo.param.doOut.style.background;
   }
+  // doOut doOut
+
+  // console.log('parddddddddddddam', memberCardInfo);
+  // console.log('param', param);
+  // console.log('panelList', panelList);
+  //
 };
 
 // 预约服务
-const srvProList: Ref<any> = ref([]);
-const getMemberRecommend = async () => {
-  if (initBasicsData.checkLogin) {
-    const servPage = await queryServiceBookPageFront({
-      mid: initBasicsData.useMid,
-      curPage: 1,
-      pageSize: srvProshowNum.value,
-      status: '',
-    });
-    srvProList.value = servPage.data?.records || [];
-  } else {
-    srvProList.value = [];
-  }
-};
+// const srvProList: Ref<any> = ref([]);
+// const getMemberRecommend = async () => {
+//   if (initBasicsData.checkLogin) {
+//     const servPage = await queryServiceBookPageFront({
+//       mid: initBasicsData.useMid,
+//       curPage: 1,
+//       pageSize: srvProshowNum.value,
+//       status: '',
+//     });
+//     srvProList.value = servPage.data?.records || [];
+//   } else {
+//     srvProList.value = [];
+//   }
+// };
 
 // 获取广告
 const getBannerData = async () => {
@@ -317,19 +270,19 @@ const getBannerData = async () => {
 };
 
 // 显示红点
-const showRedDot = (item: any, entry: any, text: string) => {
-  const code = ['sign', 'coupon'].includes(entry.code);
-  const red = entry.showRedDot === 'Y';
-  const showType = item.param.showType === text;
-  return code && red && showType;
-};
+// const showRedDot = (item: any, entry: any, text: string) => {
+//   const code = ['sign', 'coupon'].includes(entry.code);
+//   const red = entry.showRedDot === 'Y';
+//   const showType = item.param.showType === text;
+//   return code && red && showType;
+// };
 
-const handleFixedSysUrl = () => {
-  uni.navigateTo({ url: '/pages/member-equity/index' });
-};
-const handleMyPrizes = (index: number) => {
-  Router.goCodePage('my_prize', `?tab=${index}`);
-};
+// const handleFixedSysUrl = () => {
+//   uni.navigateTo({ url: '/pages/member-equity/index' });
+// };
+// const handleMyPrizes = (index: number) => {
+//   Router.goCodePage('my_prize', `?tab=${index}`);
+// };
 
 const MenberCodePopupRef = ref<any>();
 
@@ -426,11 +379,12 @@ const hideFullMenberCode = () => {
 
 <style lang="scss" scoped>
 .page-top-show {
-  padding-left: 20rpx;
-  padding-right: 20rpx;
-  width: calc(100vw - 40rpx);
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  padding-bottom: 30rpx;
+  width: calc(100vw - 60rpx);
   min-height: 330rpx;
-  background: linear-gradient(180deg, #f5debb, #f4f5f7);
+  // background: linear-gradient(180deg, #f5debb, #f4f5f7);
   background-repeat: no-repeat;
   background-size: 100% 100%;
   position: relative;

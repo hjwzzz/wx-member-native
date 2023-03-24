@@ -1,4 +1,6 @@
 <template>
+  <!-- userInfo.doOut?.fixedStyle -->
+  <!--  member-card-style1   member-card-style2 -->
   <view
     class="member-card"
     :class="`member-card-style${userInfo.doOut?.fixedStyle + 1}`"
@@ -86,7 +88,21 @@
           <view class="member-card-list-item-name"> {{ item.title }} </view>
         </view>
       </block>
+      <!-- <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 10000.00 </view>
+        <view class="member-card-list-item-name"> 余额 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 99+ </view>
+        <view class="member-card-list-item-name"> 优惠券 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 2.12w </view>
+        <view class="member-card-list-item-name"> 积分 </view>
+      </view> -->
     </view>
+    <!--  style1   style2 -->
+    <!--   userInfo.doOut?.fixedStyle === 0 || userInfo.doOut?.fixedStyle === 1 -->
     <block v-if="initBasicsData.checkLogin">
       <view
         class="member-card-bottom"
@@ -158,23 +174,201 @@
       </view>
     </block>
   </view>
+  <!-- <view class="member-card member-card-style2">
+    <view class="member-card-top">
+      <view class="member-card-top-user">
+        <view class="member-card-avatar">
+          <image
+            class="member-card-avatar-image"
+            :src="staticUrl + 'img/person.png'"
+            mode="scaleToFill"
+          />
+        </view>
+        <text class="member-card-name nowrap">
+          金千枝金千枝金千枝金千枝金千枝
+        </text>
+      </view>
+      <view class="member-card-top-right">
+        <view class="member-card-top-right-sing sing-style1-2">
+          <image
+            class="member-card-top-right-sing-image"
+            :src="staticUrl + 'img/sign-icon1.png'"
+            mode="scaleToFill"
+          />
+          <text class="member-card-top-right-sing-text"> 签到</text>
+        </view>
+        <image
+          class="member-card-top-right-image"
+          :src="staticUrl + 'img/qr-icon3.png'"
+          mode="scaleToFill"
+        />
+        <image
+          class="member-card-top-right-image"
+          :src="staticUrl + 'img/set-icon3.png'"
+          mode="scaleToFill"
+        />
+      </view>
+    </view>
+    <view class="member-card-list">
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 2.12w </view>
+        <view class="member-card-list-item-name"> 积分 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 10000.00 </view>
+        <view class="member-card-list-item-name"> 余额 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 99+ </view>
+        <view class="member-card-list-item-name"> 优惠券 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 2.12w </view>
+        <view class="member-card-list-item-name"> 积分 </view>
+      </view>
+    </view>
+    <view class="member-card-bottom">
+      <view class="member-card-bottom-box">
+        <view class="card-start-center">
+          <image
+            class="member-card-bottom-member-icon"
+            :src="staticUrl + 'img/member-icon1.png'"
+            mode="scaleToFill"
+          />
+          <text class="member-card-bottom-member-name nowrap"
+            >黄金会员黄金会员黄金会员黄金会员黄金会员
+          </text>
+        </view>
+        <view class="card-start-center">
+          <text class="member-card-bottom-member-ri-text"> 查看权益</text>
+          <image
+            class="member-card-bottom-member-ri"
+            :src="staticUrl + 'img/member-r2.png'"
+            mode="scaleToFill"
+          />
+        </view>
+      </view>
+      <view class="">
+        <view class="member-card-bottom-bar">
+          <view class="member-card-bottom-bar-act"> </view>
+        </view>
+        <view class="member-card-bottom-other">
+          <text>成长值100/2000 </text>
+          <text>距下一等级还需2000 </text>
+        </view>
+      </view>
+    </view>
+  </view> -->
+  <!--   member-card-bottom-style-btn -->
+  <!-- <view class="member-card member-card-style3">
+    <view class="member-card-top">
+      <view class="member-card-top-user">
+        <view class="member-card-avatar">
+          <image
+            class="member-card-avatar-image"
+            :src="staticUrl + 'img/person.png'"
+            mode="scaleToFill"
+          />
+        </view>
+        <text class="member-card-name nowrap">
+          金千枝金千枝金千枝金千枝金千枝
+        </text>
+      </view>
+      <view class="member-card-top-right">
+        <view class="member-card-top-right-sing sing-style0-3">
+          <image
+            class="member-card-top-right-sing-image"
+            :src="staticUrl + 'img/sign-icon2.png'"
+            mode="scaleToFill"
+          />
+          <text class="member-card-top-right-sing-text"> 签到</text>
+        </view>
+        <image
+          class="member-card-top-right-image"
+          :src="staticUrl + 'img/qr-icon1.png'"
+          mode="scaleToFill"
+        />
+        <image
+          class="member-card-top-right-image"
+          :src="staticUrl + 'img/set-icon1.png'"
+          mode="scaleToFill"
+        />
+      </view>
+    </view>
+    <view class="member-card-list">
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 2.12w </view>
+        <view class="member-card-list-item-name"> 积分 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 10000.00 </view>
+        <view class="member-card-list-item-name"> 余额 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 99+ </view>
+        <view class="member-card-list-item-name"> 优惠券 </view>
+      </view>
+      <view class="member-card-list-item">
+        <view class="member-card-list-item-price nowrap"> 2.12w </view>
+        <view class="member-card-list-item-name"> 积分 </view>
+      </view>
+    </view>
+
+    <view class="member-card-bottom-style-btn">
+      <view class="member-card-bottom-btn">
+        <view class="card-start-center member-card-bottom-btn-zz">
+          <image
+            class="member-card-bottom-member-icon"
+            :src="staticUrl + 'img/member-icon1.png'"
+            mode="scaleToFill"
+          />
+          <text class="member-card-bottom-member-name nowrap"
+            >黄金会员黄金会员黄金会员黄金会员黄金会员
+          </text>
+        </view>
+        <view class="">
+          <view class="member-card-bottom-bar">
+            <view class="member-card-bottom-bar-act"> </view>
+          </view>
+          <view class="member-card-bottom-other">
+            <text>成长值100/2000 </text>
+            <text>距下一等级还需2000 </text>
+          </view>
+        </view>
+      </view>
+      <view class="member-card-bottom-style-btn-text">
+        <text class="member-card-bottom-member-btn-text"> 查看权益</text>
+        <image
+          class="member-card-bottom-member-ri"
+          :src="staticUrl + 'img/member-r1.png'"
+          mode="scaleToFill"
+        />
+      </view>
+    </view>
+  </view> -->
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { reactive, watch, ref, computed } from 'vue';
+// import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
+// import { onShow } from '@dcloudio/uni-app';
 import { handleEntryUrl } from '@/utils/util';
 const initBasicsData = useBasicsData();
 
 interface Props {
+  // title?: string;
+  // item?: any;
+  // policyListNum?: number;
   userInfo: any;
   loginList: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   userInfo: () => ({}),
   loginList: () => [],
+  // policyListNum: 0,
 });
 const emits = defineEmits(['showCode']);
 
@@ -184,6 +378,7 @@ const handleFixedSysUrl = () => {
 
 // showIcon.qrIcon
 const showIcon = computed(() => {
+  //  <!--0=2  1=3 2=1   userInfo.doOut?.fixedStyle  qr-icon-->
   if (props.userInfo.doOut?.fixedStyle === 0) {
     return { qrIcon: 2 };
   }
@@ -195,6 +390,43 @@ const showIcon = computed(() => {
   }
   return { qrIcon: 2 };
 });
+
+// <!-- userInfo.doOut?.fixedStyle -->
+//   <!--  member-card-style1   member-card-style2 -->
+
+// const memberCardStyle = computed(() => `member-card-style${userInfo.doOut?.fixedStyle + 1}`);
+
+// const showCode = () => {
+
+// };
+// const policyList: any = reactive({ totalRecord: 0, records: [] });
+
+// const toDetail = () => {
+//   Router.goCodePage('warranty');
+// };
+
+// const getPolicyList = async () => {
+//   if (!initBasicsData.checkLogin) {
+//     return;
+//   }
+//   const res = await queryWarrantyListPageFront({
+//     mid: initBasicsData.useMid,
+//     curPage: 1,
+//     pageSize: props.policyListNum,
+//   });
+//   if (res.code === 0 && res.data) {
+//     Object.assign(policyList, res.data);
+//   }
+// };
+
+// onShow(() => {
+//   if (initBasicsData.checkLogin) {
+//     getPolicyList();
+//     return;
+//   }
+//   policyList.records = [];
+//   policyList.totalRecord = 0;
+// });
 </script>
 
 <style lang="scss" scoped>

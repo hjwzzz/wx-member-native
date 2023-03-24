@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, Ref, onMounted } from 'vue';
+import { ref, Ref } from 'vue';
 import Router from '@/utils/router';
 import Storage from '@/utils/storage';
 import { getSysUi } from '@/api/server';
@@ -133,16 +133,16 @@ const dataList: Ref<any> = ref({});
 // const swiperImgList: Ref<any> = ref([]);
 // 页面数据
 const panelList: Ref<any> = ref([]);
-const pageBackground = ref('');
+// const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
   const result = await getSysUi({
     opsId: Storage.getOpsId(),
     kind: props.types,
   });
-  console.log('result', result);
+  // console.log('result', result);
   panelList.value = result.data.panelList || [];
-  pageBackground.value = result.data.param.doOut.style.background;
+  // pageBackground.value = result.data.param?.doOut?.style?.background ||  ''
   //
   const banner = result.data?.bannerList || [];
   dataList.value = result.data;
