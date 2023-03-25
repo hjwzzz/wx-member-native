@@ -1,8 +1,5 @@
 <template>
   <view class="grid-list" :style="props.items?.param?.doOut?.style">
-    <!--宫格-列表    GONGGE  LIST   v-if="props.items.param.showType"-->
-    <!--   props.items.param.doOut.fixedStyle === 2 ||
-      props.items.param.doOut.fixedStyle === 3 -->
     <view
       :class="
         props.items.param.doOut.fixedStyle === 3
@@ -10,7 +7,6 @@
           : 'wrapper-grid'
       "
     >
-      <!--  border-bottom: solid 1rpx rgba(255, 255, 255, 0.3);   -->
       <block
         v-for="(entry, index) in props.items?.param?.linkList"
         :key="index"

@@ -1,5 +1,6 @@
 <template>
-  <view :style="props.items?.param?.doOut?.style" class="custom-box">
+  <!-- height:416px; -->
+  <view :style="styles" class="custom-box">
     <!-- 轮播图 -->
     <view
       class="custom-dots"
@@ -72,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue';
+import { reactive, computed, ref } from 'vue';
 // import { queryWarrantyListPageFront } from '@/api/server';
 // import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
@@ -85,6 +86,16 @@ interface Props {
   items?: any;
 }
 const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
+
+const styles = computed(() => {
+  if (props.items?.param?.doOut?.style) {
+    const { height, ...item } = props.items.param.doOut.style;
+    console.log(height);
+    return item;
+  }
+
+  return {};
+});
 
 const currentIndex = ref(0);
 const swiperChange = e => {

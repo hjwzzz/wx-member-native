@@ -73,7 +73,11 @@
     <CustomVideo v-if="items.kind === 'VIDEO'" :items="items" />
 
     <!-- 优惠券  -->
-    <Coupon v-if="items.kind === 'COUPON'" :items="items" />
+    <Coupon
+      v-if="items.kind === 'COUPON'"
+      :items="items"
+      :title="items.param.title"
+    />
   </block>
 </template>
 

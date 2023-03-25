@@ -7,7 +7,10 @@
     <!-- background-size: cover -->
     <view
       class="title-box-text nowrap"
-      :style="props.items?.param?.doOut?.special"
+      :style="{
+        ...props.items?.param?.doOut?.special,
+        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : 500,
+      }"
     >
       {{ props.items?.param.title }}
     </view>
@@ -18,7 +21,15 @@
     class="boxs title-box1"
     @click="handleEntryUrl(props.items?.param?.site)"
   >
-    <view class="title-box-text nowrap"> {{ props.items?.param.title }}</view>
+    <view
+      class="title-box-text nowrap"
+      :style="{
+        ...props.items?.param?.doOut?.special,
+        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : 500,
+      }"
+    >
+      {{ props.items?.param.title }}</view
+    >
     <uni-icons
       type="arrowright"
       size="14"

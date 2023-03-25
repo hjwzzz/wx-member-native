@@ -9,7 +9,7 @@
       scrollable
       show-get-more
       :text="props.items.param.title"
-      :background-color="props.items.param.doOut.style.background"
+      :background-color="props.items.param.doOut.style.background || '#fff'"
       :color="props.items.param.doOut.special.color"
       :moreColor="props.items.param.doOut.special.color"
     >
@@ -62,6 +62,7 @@ const goMoreNotice = (item: any, noticTime: any) => {
 <style lang="scss" scoped>
 .notice-bars {
   overflow: hidden;
+  background-color: #fff;
   :deep(.uni-noticebar) {
     margin-bottom: 0px;
   }
