@@ -50,6 +50,7 @@ import {
   onShareAppMessage,
   onShow,
   onLoad,
+  onReady,
 } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
@@ -82,6 +83,9 @@ const initBasicsData = useBasicsData();
 onLoad(() => {
   queryPopupFun();
 });
+
+// onReady(() => {});
+
 onShow(() => {
   // getPageDate();
   getAdBannerList();

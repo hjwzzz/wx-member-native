@@ -69,6 +69,7 @@ import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad, onUnload } from '@dcloudio/uni-app';
 import Router from '@/utils/router';
+import { getByOpsIdAndKind } from '@/api/server';
 
 const initBasicsData = useBasicsData();
 const logo = ref('');
@@ -104,9 +105,16 @@ const jsCodeLogin = async () => {
 
 // 用户协议
 const getMemberEula = async () => {
-  const { data } = await getMemberEulaRequest();
-  logo.value = data.logo;
-  Object.assign(protocol, data);
+  const res = await getByOpsIdAndKind('WM_REG');
+  // console.log('getByOpsIdAnwwwdKind', res);
+  if (res.data.param.logo || res.data.param) {
+    logo.value = res.data.param.logo;
+    Object.assign(protocol, res.data.param);
+  } else {
+    const { data } = await getMemberEulaRequest();
+    logo.value = data.logo;
+    Object.assign(protocol, data);
+  }
 };
 const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);
@@ -158,7 +166,8 @@ const autoCompleteInfo = async ({ phone, wmid }: any) => {
     activePerfectData: 'N',
     nickName: `${phone.substr(0, 4)}***${phone.substr()
       .substr(-3, 3)}`,
-    avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    avatarUrl:
+      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
     wmid,
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
@@ -212,7 +221,7 @@ const wxPhoneLogin = async (params: any) => {
       }
       autoCompleteInfo({
         phone,
-        wmid
+        wmid,
       });
 
       return;
@@ -225,7 +234,7 @@ const wxPhoneLogin = async (params: any) => {
       }
       autoCompleteInfo({
         phone,
-        wmid
+        wmid,
       });
     } else {
       uni.showModal({

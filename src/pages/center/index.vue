@@ -97,14 +97,14 @@ import {
   GetBarCodeRequestRes,
   sendKeyExpiredBarCodeRequest,
 } from '@/pages/api/center';
-import { queryServiceBookPageFront } from '@/api/reservation-service';
+// import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { getByOpsIdAndKind } from '@/api/server';
-import Storage from '@/utils/storage';
+// import Storage from '@/utils/storage';
 // import { queryGoldPriceByPage } from '@/api/server';
 // import { bannerListClick, handleEntryUrl } from '@/utils/util';
 import { staticUrl } from '@/utils/config';
-import { useBasicsData } from '@/store/basicsData';
-import Router from '@/utils/router';
+// import { useBasicsData } from '@/store/basicsData';
+// import Router from '@/utils/router';
 import Tabbar from '@/components/Tabbar/index.vue';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
 
@@ -112,7 +112,7 @@ import BrCode128 from '@/utils/barcode.js';
 import memberCard from '../component/memberCard.vue';
 
 const imageUrl = staticUrl;
-const initBasicsData = useBasicsData();
+// const initBasicsData = useBasicsData();
 // const entryType = {
 //   BA: 'BANNER',
 //   EN: 'ENTRANCE',
@@ -219,9 +219,7 @@ const getPageDate = async () => {
   userInfo.avatarUrl = param.avatarUrl;
   userInfo.curLevelName = param.curLevelName;
   userInfo.nickName = param.nickName;
-
-  console.log('userInfo', memberCardInfo.param);
-
+  // console.log('userInfo', memberCardInfo.param);
   userInfo.background =
     userInfo.doOut?.fixedStyle === 2
       ? null
@@ -230,12 +228,6 @@ const getPageDate = async () => {
   if (memberCardInfo.param.doOut.style.background) {
     delete memberCardInfo.param.doOut.style.background;
   }
-  // doOut doOut
-
-  // console.log('parddddddddddddam', memberCardInfo);
-  // console.log('param', param);
-  // console.log('panelList', panelList);
-  //
 };
 
 // 预约服务
@@ -404,328 +396,6 @@ const hideFullMenberCode = () => {
   }
 }
 
-.user {
-  width: 100%;
-  height: 400rpx;
-  // background-image: url('https://static.jqzplat.com/web/c_default_center_bg.jpg');
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-
-  .login-info {
-    height: 295rpx;
-  }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 40rpx 30rpx;
-
-    .info-left {
-      display: flex;
-      align-items: center;
-
-      .info-img {
-        width: 100rpx;
-        height: 100rpx;
-        overflow: hidden;
-        border: 4rpx solid #fff;
-        border-radius: 70rpx;
-
-        .image {
-          width: 100rpx;
-          height: 100rpx;
-        }
-
-        .avatar {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .info-btn {
-        width: 176rpx;
-        height: 60rpx;
-        margin-left: 20rpx;
-        font-size: 28rpx;
-        font-weight: 400;
-        line-height: 60rpx;
-        color: #fff;
-        text-align: center;
-        background: #ff547b;
-        border-radius: 30rpx;
-      }
-
-      .use-info {
-        margin-left: 20rpx;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    .info-right {
-      display: flex;
-      align-items: center;
-
-      .menber-code {
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 32rpx;
-        display: flex;
-        align-items: center;
-        padding: 16rpx 24rpx 18rpx 22rpx;
-        box-sizing: border-box;
-        margin-right: 20rpx;
-
-        .menber-code-icon {
-          width: 30rpx;
-          height: 30rpx;
-          margin-right: 12rpx;
-        }
-        .menber-code-desc {
-          font-size: 24rpx;
-          color: #323338;
-          line-height: 1;
-        }
-      }
-
-      .setting {
-        width: 64rpx;
-        height: 64rpx;
-        background: rgb(255 255 255 / 50%);
-        border-radius: 32rpx;
-      }
-    }
-  }
-
-  .login-list {
-    display: flex;
-    justify-content: space-around;
-
-    .login-item {
-      text-align: center;
-
-      .item-num {
-        height: 44rpx;
-        font-size: 32rpx;
-        font-weight: 800;
-        line-height: 44rpx;
-        color: #323338;
-      }
-
-      .login-list-item-name {
-        height: 28rpx;
-        font-size: 20rpx;
-        font-weight: 400;
-        line-height: 28rpx;
-        color: #b7b8c4;
-      }
-    }
-  }
-}
-
-.boot-equity {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 630rpx;
-  height: 104rpx;
-  padding: 0 30rpx;
-  margin: 0 auto;
-  background: linear-gradient(90deg, #ffefd2 0%, #ffddad 100%);
-  border-radius: 16rpx 16rpx 0rpx 0rpx;
-
-  .boot-equity-left {
-    display: flex;
-    align-items: center;
-    height: 104rpx;
-
-    .icon-image {
-      width: 32rpx;
-      height: 32rpx;
-    }
-    // .icon {
-    //   // display: inline-block;
-    //   width: 32rpx;
-    //   height: 32rpx;
-    //   // overflow: hidden;
-    //   margin-top: -4 + rpx;
-    //   .image {
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-    // }
-
-    .text {
-      height: 40rpx;
-      margin-left: 12rpx;
-      font-size: 28rpx;
-      font-weight: 800;
-      line-height: 40rpx;
-      color: #975d17;
-    }
-  }
-
-  .boot-equity-right {
-    display: flex;
-    align-items: center;
-    height: 104rpx;
-    // :deep(.uni-icons) {
-    //   margin-top: -8rpx;
-    // }
-    .text {
-      width: 96rpx;
-      height: 32rpx;
-      margin-right: 6rpx;
-      font-size: 24rpx;
-      font-weight: 400;
-      line-height: 32rpx;
-      color: #975d17;
-      margin-top: 2rpx;
-    }
-  }
-}
-
-.reveal-grid {
-  position: relative;
-  // z-index: 999;
-  // width: 750rpx;
-  // padding: 30rpx;
-  padding-left: 30rpx;
-  padding-right: 30rpx;
-  padding-top: 35rpx;
-  margin-top: -5rpx;
-  background: #f5f5f5;
-  box-shadow: 0px -10rpx 20rpx -10rpx rgba(0, 0, 0, 0.1);
-  border-radius: 16rpx 16rpx 0px 0px;
-}
-
-.grid-list {
-  padding: 20 30rpx;
-  overflow: hidden;
-  background: #fff;
-  border-radius: 16rpx;
-  margin-bottom: 30rpx;
-
-  .wrapper-list {
-    padding: 0rpx 30rpx;
-
-    .list-item {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      height: 100rpx;
-      line-height: 100rpx;
-      border-bottom: solid 1rpx #f8f8f8;
-      // padding: 0 20rpx;
-      .item-icon {
-        width: 48rpx;
-        height: 48rpx;
-        margin-right: 30rpx;
-        overflow: hidden;
-        line-height: 48rpx;
-        background: #fff;
-        border-radius: 12rpx;
-
-        .image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .item-name {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        padding-right: 12rpx;
-        font-size: 28rpx;
-        .badge {
-          width: 20rpx;
-          height: 20rpx;
-          background: #ff4c4c;
-          border-radius: 16rpx;
-        }
-      }
-
-      .more {
-        width: 10rpx;
-        color: #b7b8c4;
-      }
-    }
-
-    .list-item:last-child {
-      border-bottom: none;
-    }
-  }
-
-  .wrapper-grid {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    width: 100%;
-    height: 100%;
-    padding: 20rpx 0;
-
-    .list-item {
-      position: relative;
-      display: inline-block;
-      width: 25%;
-      padding: 20rpx 0;
-      text-align: center;
-
-      .badge {
-        position: absolute;
-        top: 14rpx;
-        right: 38rpx;
-        z-index: 100;
-        width: 20rpx;
-        height: 20rpx;
-        background: #ff4c4c;
-        border-radius: 16rpx;
-      }
-
-      .item-icon {
-        width: 88rpx;
-        height: 88rpx;
-        margin: 0 auto;
-        overflow: hidden;
-        border-radius: 22rpx;
-
-        .image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .item-name {
-        width: 100%;
-        height: 34rpx;
-        margin-top: 16rpx;
-        font-size: 24rpx;
-        font-weight: 400;
-        line-height: 34rpx;
-        color: #323338;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-  }
-}
-
-.grid-ad {
-  width: 690rpx;
-  // height: 180rpx;
-  margin: 30rpx 0rpx;
-  overflow: hidden;
-  // line-height: 180rpx;
-  border-radius: 16rpx;
-
-  .image {
-    width: 100%;
-    height: 100%;
-  }
-}
 .menber-code-popup {
   :deep(.uni-popup) {
     z-index: 99999;

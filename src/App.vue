@@ -6,11 +6,16 @@ import {
   // getWeMemberNavFront,
   // getLogo,
 } from '@/api/server';
+import { getByOpsIdAndKind } from '@/api/server';
 
 import { useBasicsData } from '@/store/basicsData';
 // import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
+// uni.setNavigationBarColor({
+//   frontColor: '#ffffff',
+//   backgroundColor: '#ff547b',
+// });
 
 // 获取基础数据
 const initData = async () => {
@@ -18,18 +23,28 @@ const initData = async () => {
   //   queryWmColorThemeFront(),
   //   getWeMemberNavFront(),
   // ]);
-
-  const getWmColorThemeRes = await queryWmColorThemeFront();
+  const getWmColorTheme: any = await getByOpsIdAndKind('WM_THEME');
+  // console.log('getWmColorTheme', getWmColorTheme.data.style.mainColor);
+  if (getWmColorTheme.data.style.mainColor) {
+    initBasicsData.setMainColor(getWmColorTheme.data.style.mainColor);
+    initBasicsData.setColorTheme(getWmColorTheme.data.style);
+  } else {
+    const getWmColorThemeRes = await queryWmColorThemeFront();
+    if (getWmColorThemeRes.data) {
+      initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
+      initBasicsData.setColorTheme(getWmColorThemeRes.data);
+    }
+  }
 
   // if (getWmmeberNavRequestRes.data) {
   //   const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
   //   initBasicsData.setBottomNavList(bottomNavList);
   //   initBasicsData.setLevitationNavList(levitationNavList?.reverse());
   // }
-  if (getWmColorThemeRes.data) {
-    initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
-    initBasicsData.setColorTheme(getWmColorThemeRes.data);
-  }
+  // if (getWmColorThemeRes.data) {
+  //   initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
+  //   initBasicsData.setColorTheme(getWmColorThemeRes.data);
+  // }
 };
 
 onLaunch(() => {

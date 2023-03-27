@@ -3,6 +3,7 @@
     class="member-card"
     :class="`member-card-style${userInfo.doOut?.fixedStyle + 1}`"
   >
+    <!--  -->
     <view class="member-card-top">
       <view
         class="member-card-top-user"
@@ -119,10 +120,15 @@
             <view class="member-card-bottom-bar-act"> </view>
           </view>
           <view class="member-card-bottom-other">
-            <text>成长值100/2000 </text>
-            <text>距下一等级还需2000 </text>
+            <text
+              >成长值{{ memberLevel.growth }}/{{ memberLevel.allGrowth }}
+            </text>
+            <text>距下一等级还需{{ memberLevel.nextUpgradeGrowth }} </text>
           </view>
         </view>
+        <!--  memberLevel.growth: 0,
+  nextUpgradeGrowth: 0,
+  allGrowth: computed(() => memberLevel.growth + memberLevel.nextUpgradeGrowth), -->
       </view>
       <!--  -->
       <view class="member-card-bottom-style-btn" v-else>
@@ -141,9 +147,17 @@
             <view class="member-card-bottom-bar">
               <view class="member-card-bottom-bar-act"> </view>
             </view>
+            <!--  <text
+              >成长值{{ memberLevel.growth }}/{{ memberLevel.allGrowth }}
+            </text>
+            <text>距下一等级还需{{ memberLevel.nextUpgradeGrowth }} </text> -->
             <view class="member-card-bottom-other">
-              <text>成长值100/2000 </text>
-              <text>距下一等级还需2000 </text>
+              <text
+                >成长值{{ memberLevel.growth }}/{{
+                  memberLevel.allGrowth
+                }}</text
+              >
+              <text>距下一等级还需{{ memberLevel.nextUpgradeGrowth }} </text>
             </view>
           </view>
         </view>
@@ -161,11 +175,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
+import { computed, reactive } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
 import { handleEntryUrl } from '@/utils/util';
+import { getMemberLevelRights } from '@/pages/api/member-equity';
+
 const initBasicsData = useBasicsData();
 
 interface Props {
@@ -177,6 +194,24 @@ const props = withDefaults(defineProps<Props>(), {
   loginList: () => [],
 });
 const emits = defineEmits(['showCode']);
+
+onShow(() => {
+  getMemberLevel();
+  // console.log('getMemberLevel1111111111111111');
+});
+
+const memberLevel: any = reactive({
+  growth: 0,
+  nextUpgradeGrowth: 0,
+  allGrowth: computed(() => memberLevel.growth + memberLevel.nextUpgradeGrowth),
+});
+const getMemberLevel = async () => {
+  const res = await getMemberLevelRights('');
+  memberLevel.growth = res.data?.growth || 0;
+  memberLevel.nextUpgradeGrowth = res.data?.nextUpgradeGrowth || 0;
+  // getMemberLevelRights
+};
+// getMemberLevel();
 
 const handleFixedSysUrl = () => {
   uni.navigateTo({ url: '/pages/member-equity/index' });

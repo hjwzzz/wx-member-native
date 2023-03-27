@@ -155,8 +155,30 @@ const setSelected = (index: number, item: any) => {
 
 onShow(() => {
   getWmmeberNav();
+  geThemeColor();
 });
-// getSysUi
+// getSysUi   WM_THEME
+const geThemeColor = async () => {
+  // console.log('getWmmeberNav');
+  const { data } = await getByOpsIdAndKind('WM_THEME');
+
+  if (data.style) {
+    initBasicsData.setMainColor(data.style.mainColor);
+    initBasicsData.setColorTheme(data.style);
+  }
+
+  // console.log('WM_THEME', data);
+  //   // bottomNavListShow   levitationNavListShow       setBottomNavListShow  setLevitationNavListShow
+  // if (data.param) {
+  //   initBasicsData.setBottomNavList(data.param.bottomNavList);
+  //   initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
+  //   initBasicsData.setBottomNavListShow(data.param.bottomNavShowed);
+  //   initBasicsData.setLevitationNavListShow(data.param.llevitationNavShowed);
+  // }
+  // const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  // initActiveTab.setCurrent(active || 0);
+  initTab();
+};
 const getWmmeberNav = async () => {
   // console.log('getWmmeberNav');
   const { data } = await getByOpsIdAndKind('WM_BTMNAV');

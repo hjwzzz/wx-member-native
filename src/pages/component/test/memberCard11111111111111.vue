@@ -101,6 +101,7 @@
         <view class="member-card-list-item-name"> 积分 </view>
       </view> -->
     </view>
+
     <!--  style1   style2 -->
     <!--   userInfo.doOut?.fixedStyle === 0 || userInfo.doOut?.fixedStyle === 1 -->
     <block v-if="initBasicsData.checkLogin">
@@ -122,7 +123,7 @@
             </text>
           </view>
           <view class="card-start-center" @click="handleFixedSysUrl()">
-            <text class="member-card-bottom-member-ri-text"> 查看权益</text>
+            <text class="member-card-bottom-member-ri-text"> 查看权益1--2</text>
             <image
               class="member-card-bottom-member-ri"
               :src="staticUrl + 'img/member-r2.png'"

@@ -51,7 +51,7 @@
       v-if="items.kind === 'GOLD_PRICE' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
-      type="WM_HOME"
+      :type="types"
     />
     <!-- 文本 -->
     <CustomText
@@ -101,7 +101,6 @@
     <Coupon
       v-if="items.kind === 'COUPON' && items.visible === 'Y'"
       :items="items"
-      :title="items.param.title"
     />
   </block>
 </template>

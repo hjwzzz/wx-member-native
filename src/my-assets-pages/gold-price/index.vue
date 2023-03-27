@@ -1,28 +1,35 @@
 <template>
-  <CustomPage>
-    <view class="gold-price">
-      <view class="banner" v-if="bannerList?.length > 0">
-        <swiper
-          style="height: 300rpx"
-          :indicator-dots="bannerList?.length > 1"
+  <CustomPage background="#f7f3ed">
+    <view class="gold-price" v-if="showPriceKind.doOut.fixedStyle === 0">
+      <view class="banner custom-dots" v-if="bannerList?.length > 0">
+        <!--  :indicator-dots="bannerList?.length > 1"
           indicator-color="#D8D9E0"
-          :indicator-active-color="initBasicsData.mainColor"
-          autoplay
-          circular
-        >
+          :indicator-active-color="initBasicsData.mainColor" -->
+        <swiper style="height: 300rpx" @change="swiperChange" autoplay circular>
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
             @click.stop="bannerListClick(item)"
           >
             <image
-              class=""
+              class="banner-image"
               style="height: 300rpx; width: 690rpx"
-              :src="item.imgUrl"
+              :src="item.icoUrl"
               mode="aspectFill"
             ></image>
           </swiper-item>
         </swiper>
+        <view class="custom-dots-box dots-round" v-if="bannerList.length > 0">
+          <view
+            class="custom-dots-show"
+            v-for="(_, index) in bannerList"
+            :key="index"
+            :style="{
+              background:
+                currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
+            }"
+          />
+        </view>
       </view>
 
       <view class="shop" @click="onChooseStore" v-if="goldPriceDatas?.store">
@@ -83,15 +90,13 @@
           <view class="stopText">暂无金价信息</view>
         </view>
       </view>
-      <!-- wuyuer.png -->
-      <view
-        class="remark-box"
-        v-if="goldPriceDatas?.param?.remarkShowed === 'Y'"
-      >
+      <!-- wuyuer.png   showPriceKind.remark     showPriceKind.remarkShowed==='Y'-->
+
+      <view class="remark-box" v-if="showPriceKind.remarkShowed === 'Y'">
         <mp-html
-          v-if="goldPriceDatas.param.remark"
+          v-if="showPriceKind.remark"
           :copy-link="false"
-          :content="richImage(goldPriceDatas.param.remark)"
+          :content="richImage(showPriceKind.remark)"
           @linktap="linktap"
         />
         <view class="content" v-else>
@@ -101,15 +106,161 @@
         </view>
       </view>
     </view>
+
+    <view v-if="showPriceKind.doOut.fixedStyle === 1">
+      <view class="banner-style custom-dots" v-if="bannerList?.length > 0">
+        <!--  :indicator-dots="bannerList?.length > 1"
+          indicator-color="#D8D9E0"
+          :indicator-active-color="initBasicsData.mainColor" -->
+        <swiper style="height: 400rpx" @change="swiperChange" autoplay circular>
+          <swiper-item
+            v-for="(item, index) in bannerList"
+            :key="index"
+            @click.stop="bannerListClick(item)"
+          >
+            <image
+              class="banner-image"
+              style="height: 400rpx; width: 100%"
+              :src="item.icoUrl"
+              mode="aspectFill"
+            ></image>
+          </swiper-item>
+        </swiper>
+        <view class="custom-dots-box dots-round" v-if="bannerList.length > 0">
+          <view
+            class="custom-dots-show"
+            v-for="(_, index) in bannerList"
+            :key="index"
+            :style="{
+              background:
+                currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
+            }"
+          />
+        </view>
+      </view>
+      <view
+        class="shop-style"
+        @click="onChooseStore"
+        v-if="goldPriceDatas?.store"
+      >
+        <view class="name text-break">{{
+          goldPriceDatas.store.name || goldPriceDatas.store.distName
+        }}</view>
+        <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
+      </view>
+      <!--  showPriceKind.todayGoldPriceShowed==='Y'   showPriceKind.recoveryGoldPriceShowed==='Y'  -->
+
+      <view class="show-price-box">
+        <view
+          class="gold-price-style3-item"
+          v-if="showPriceKind.todayGoldPriceShowed === 'Y'"
+        >
+          <view class="gold-price-style3-item-left">
+            <view class="gold-price-style3-item-left-type">
+              <view class="gold-price-style3-center">
+                <image
+                  class="gold-price-icon-image"
+                  :src="staticUrl + 'img/retrieve-price.png'"
+                  mode="aspectFill"
+                />
+              </view>
+              <view class="gold-price-style3-center">
+                <text class=""> 销售金价 </text>
+              </view>
+            </view>
+          </view>
+          <!-- goldPriceDatas.metalPrices      goldPriceDatas.oldmatMetalPrices -->
+          <view class="gold-price-style3-item-right">
+            <view
+              class="gold-price-style3-item-right-info"
+              v-for="(item, index) in goldPriceDatas.metalPrices"
+              :key="index"
+            >
+              <text class="gold-price-style3-item-right-name">
+                {{ item.met }}
+              </text>
+              <text class="gold-price-style3-item-right-price">
+                ¥{{ item.metCtn || '--' }}
+              </text>
+            </view>
+          </view>
+        </view>
+
+        <view
+          class="gold-price-style3-item"
+          v-if="showPriceKind.recoveryGoldPriceShowed === 'Y'"
+        >
+          <view class="gold-price-style3-item-left">
+            <view class="gold-price-style3-item-left-type">
+              <view class="gold-price-style3-center">
+                <image
+                  class="gold-price-icon-image"
+                  :src="staticUrl + 'img/sell-price.png'"
+                  mode="aspectFill"
+                />
+              </view>
+              <view class="gold-price-style3-center">
+                <text class=""> 回收金价 </text>
+              </view>
+            </view>
+          </view>
+          <view class="gold-price-style3-item-right">
+            <view
+              class="gold-price-style3-item-right-info"
+              v-for="(item, index) in goldPriceDatas.oldmatMetalPrices"
+              :key="index"
+            >
+              <text class="gold-price-style3-item-right-name">
+                {{ item.met }}
+              </text>
+              <text class="gold-price-style3-item-right-price">
+                ¥{{ item.metCtn || '--' }}
+              </text>
+            </view>
+          </view>
+        </view>
+
+
+        <view class="content-page" v-if="!goldPriceDatas?.param">
+          <view class="empty empty-page">
+            <image
+              width="250rpx"
+              height="250rpx"
+              class="emptyIcon"
+              mode="aspectFill"
+              :src="`${staticUrl}img/themoney.png`"
+            ></image>
+
+            <view class="stopText">暂无金价信息</view>
+          </view>
+        </view>
+        <!-- wuyuer.png   showPriceKind.remark     showPriceKind.remarkShowed==='Y'-->
+
+        <view class="remark-box" v-if="showPriceKind.remarkShowed === 'Y'">
+          <mp-html
+            v-if="showPriceKind.remark"
+            :copy-link="false"
+            :content="richImage(showPriceKind.remark)"
+            @linktap="linktap"
+          />
+          <view class="content" v-else>
+            <view class="empty-wrapper">
+              <view class="empty"> 暂无数据 </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </CustomPage>
 </template>
 
 <script setup lang="ts">
-import { computed, Ref, ref } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { queryShareSett } from '@/api/index';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { richImage, bannerListClick } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
+import { getByOpsIdAndKind } from '@/api/server';
 
 // import {
 //   // getGoldPriceAdBannerList,
@@ -131,15 +282,65 @@ import { useBasicsData } from '@/store/basicsData';
 const initBasicsData = useBasicsData();
 
 onLoad((e: any) => {
-  console.log('onLoad((e: any) ', e);
+  // console.log('onLoad((e: any) ', e);
   isShare();
-  getBannerList();
+  // getBannerList();
   getGoldPrice(e.distId);
+  getPriceKind();
 });
 const bannerList: Ref<any[]> = ref([]);
 const list = ref<any[]>([]);
 const goldPriceDatas = ref<any>({});
 const current = ref(0);
+
+const currentIndex = ref(0);
+const swiperChange = (e: any) => {
+  currentIndex.value = e.detail.current;
+};
+
+const showPriceKind = reactive({
+  defaultShow: 'AUTO',
+  doOut: { style: {}, images: [], fixedStyle: 0 },
+  laborCostShowed: 'Y',
+  memberView: 'ALL',
+  recoveryGoldPriceShowed: 'Y',
+  remark: '<p>321321321</p>',
+  remarkShowed: 'N',
+  todayGoldPriceShowed: 'Y',
+});
+
+//  showPriceKind.todayGoldPriceShowed==='Y'   showPriceKind.recoveryGoldPriceShowed==='Y'
+
+//
+
+// 会员可查看 memberView     value="BELONG">归属门店  value="ALL">全部门店金价<
+// 默认展示 defaultShow   value="BELONG">归属门       value="AUTO">系统自动
+// 今日金 todayGoldPriceShowed     "Y">展示  value="N">隐藏
+// 回收金 recoveryGoldPriceShowed  value="Y">展示   value="N">隐藏
+// 工费展示  laborCostShowed  ="Y">展示  ue="N">隐藏
+// 备注说明"   value="Y">展示   n value="N">隐藏</a
+
+// getByOpsIdAndKind
+const getPriceKind = async () => {
+  const { data } = await getByOpsIdAndKind('WM_GPRICE');
+  bannerList.value = data.param.doOut.images || [];
+  Object.assign(showPriceKind, data.param);
+
+  list.value = [];
+  if (data.param) {
+    if (data.param.todayGoldPriceShowed === 'Y') {
+      list.value.push({ name: '今日金价', key: 'metalPrices' });
+    }
+    if (data.param.recoveryGoldPriceShowed === 'Y') {
+      list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+    }
+    if (list.value.length) {
+      showText.value = list.value[0].key;
+    }
+  }
+
+  // console.log('getByOpsIdAndKind', res);
+};
 
 // const bannerClick = (item: any) => {
 
@@ -185,10 +386,10 @@ const showText = ref('metalPrices');
 const showTabs = computed(() => list.value.map(i => i.name));
 const showData = computed(() => goldPriceDatas.value[showText.value]);
 
-const getBannerList = async () => {
-  const res = await queryGoldPriceBannerListFront('');
-  bannerList.value = res.data;
-};
+// const getBannerList = async () => {
+//   const res = await queryGoldPriceBannerListFront('');
+//   bannerList.value = res.data;
+// };
 
 const setItemKey = ({ item }: any) => {
   showText.value = item.key;
@@ -219,19 +420,19 @@ const getGoldPrice = async (id = '') => {
   const { code, data } = await getSaleMetalPrice({ distId });
 
   if (code === 0) {
-    list.value = [];
+    // list.value = [];
     goldPriceDatas.value = data;
-    if (data.param) {
-      if (data.param.todayGoldPriceShowed === 'Y') {
-        list.value.push({ name: '今日金价', key: 'metalPrices' });
-      }
-      if (data.param.recoveryGoldPriceShowed === 'Y') {
-        list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
-      }
-      if (list.value.length) {
-        showText.value = list.value[0].key;
-      }
-    }
+    // if (data.param) {
+    //   if (data.param.todayGoldPriceShowed === 'Y') {
+    //     list.value.push({ name: '今日金价', key: 'metalPrices' });
+    //   }
+    //   if (data.param.recoveryGoldPriceShowed === 'Y') {
+    //     list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+    //   }
+    //   if (list.value.length) {
+    //     showText.value = list.value[0].key;
+    //   }
+    // }
   }
 };
 
@@ -253,6 +454,37 @@ onShareTimeline(() => shareTimeline(shareData.value));
 <style scoped lang="scss">
 .banner {
   position: unset;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.banner-style {
+}
+
+.custom-dots {
+  position: relative;
+  .custom-dots-box {
+    // width: 100%;
+    position: absolute;
+    bottom: 18rpx;
+    left: 0rpx;
+    right: 0rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .custom-dots-show {
+    border-radius: 6rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+  }
+  .dots-round {
+    z-index: 200px;
+    .custom-dots-show {
+      width: 24rpx;
+      height: 6rpx;
+    }
+  }
 }
 
 .content-page {
@@ -280,17 +512,25 @@ onShareTimeline(() => shareTimeline(shareData.value));
 }
 .gold-price {
   padding: 30rpx;
-  background: #f5f5f5;
 }
-.shop {
-  margin: 30rpx 0;
+
+// .gold-price-style {
+//   background: #f5f5f5;
+// }
+.shop-style {
+  // margin: 30rpx 0;
+  // border-top-left-radius: 40rpx;
+  // border-top-right-radius: 40rpx;
+  margin-top: 0rpx;
   background: #ffffff;
   display: flex;
   justify-content: space-between;
   height: 98rpx;
   align-items: center;
   padding: 0 30rpx;
-  border-radius: 16rpx;
+  // width: 80vw;
+  // border-radius: 16rpx;
+  z-index: 999;
   .name {
     font-size: 28rpx;
     font-weight: 400;
@@ -301,9 +541,13 @@ onShareTimeline(() => shareTimeline(shareData.value));
 .empty-page {
   min-height: 410rpx;
 }
+
+.show-price-box {
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+}
 .price-box {
   background: #ffffff;
-
   margin: 30rpx 0;
   border-radius: 16rpx;
 
@@ -394,5 +638,65 @@ onShareTimeline(() => shareTimeline(shareData.value));
 .emptyIcon {
   width: 250rpx;
   height: 250rpx;
+}
+
+.gold-price-style3-item {
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 25rpx;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+  padding-right: 30rpx;
+  padding-left: 30rpx;
+  // border-bottom: 1rpx solid #ebebeb;
+}
+// .gold-price-style3-item:last-child {
+//   border-bottom: 0rpx solid white;
+//   padding-bottom: 5rpx;
+// }
+.gold-price-style3-item-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150rpx;
+  color: #c1a975;
+  flex-shrink: 0;
+  // background-color: red;
+  .gold-price-icon-image {
+    height: 72rpx;
+    width: 72rpx;
+  }
+
+  .gold-price-style3-item-left-type {
+    width: 150rpx;
+  }
+  .gold-price-style3-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.gold-price-style3-item-right {
+  flex-grow: 1;
+  .gold-price-style3-item-right-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70rpx;
+  }
+  .gold-price-style3-item-right-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: #646771;
+    width: 280rpx;
+  }
+  .gold-price-style3-item-right-price {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #dbb866;
+  }
+  // background-color: rgb(186, 186, 186);
 }
 </style>
