@@ -28,7 +28,10 @@
       :next-margin="fixedStyleIndex === 0 ? '0rpx' : '46rpx'"
     >
       <block v-for="(item, index) in bannerList" :key="index">
-        <swiper-item class="swiper-item" @click.stop="bannerListClick(item)">
+        <swiper-item
+          class="swiper-item"
+          @click.stop="bannerListClickImage(item)"
+        >
           <view class="swiper-item-view">
             <image class="swiper-item-image" :src="item.icoUrl" mode="widthFix">
             </image>
@@ -40,8 +43,8 @@
     <!-- dots-roun dots-dot  nav-->
     <view
       v-if="specialStyle === 0 || specialStyle === 1"
-      class="custom-dots-box dots-dot"
-      :class="specialStyle === 0 ? 'dots-dot' : 'dots-roun'"
+      class="custom-dots-box"
+      :class="specialStyle === 0 ? 'dots-dot' : 'dots-round'"
     >
       <view
         class="custom-dots-show"
@@ -67,7 +70,8 @@
 // import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import { computed, ref } from 'vue';
-import { bannerListClick } from '@/utils/util';
+import { bannerListClickImage } from '@/utils/util';
+// import { bannerListClickImage } from '@/utils/util';
 interface Props {
   items?: any;
 }

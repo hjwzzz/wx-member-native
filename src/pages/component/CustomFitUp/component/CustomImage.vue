@@ -2,12 +2,9 @@
   <!-- height:416px; -->
   <view :style="styles" class="custom-box">
     <!-- 轮播图 -->
-    <view
-      class="custom-dots"
-      v-if="props.items?.param?.doOut?.fixedStyle === 0"
-    >
+    <view class="custom-dots" v-if="fixedStyles === 0">
       <swiper
-        :style="{ height: props.items?.param?.doOut?.style.height }"
+        :style="{ height: heights }"
         :autoplay="false"
         circular
         @change="swiperChange"
@@ -15,7 +12,7 @@
       >
         <swiper-item
           class="swiper-item"
-          v-for="(item, index) in props.items?.param?.doOut?.images"
+          v-for="(item, index) in listImage"
           :key="index"
         >
           <view class="swiper-item-list">
@@ -23,6 +20,7 @@
               class="swiper-item-image"
               :src="item.icoUrl"
               mode="aspectFill"
+              @click="bannerListClickImage(item)"
             >
             </image>
           </view>
@@ -31,7 +29,7 @@
       <view class="custom-dots-box dots-round">
         <view
           class="custom-dots-show"
-          v-for="(_, index) in props.items?.param?.doOut?.images"
+          v-for="(_, index) in listImage"
           :key="index"
           :style="{
             background:
@@ -41,15 +39,13 @@
       </view>
     </view>
     <!-- 纵向平铺 -->
-    <view
-      class="image-direction"
-      v-if="props.items?.param?.doOut?.fixedStyle === 1"
-    >
+    <view class="image-direction" v-if="fixedStyles === 1">
       <view
         class="direction-item-list"
-        v-for="(item, index) in props.items?.param?.doOut?.images"
+        v-for="(item, index) in listImage"
         :key="index"
-        :style="{ height: props.items?.param?.doOut?.style.height }"
+        :style="{ height: heights }"
+        @click="bannerListClickImage(item)"
       >
         <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
         </image>
@@ -57,18 +53,40 @@
     </view>
 
     <!-- 横向平铺 -->
-    <!-- <view class="image-broadwise">
-    <view class="image-broadwise-item"> </view>
-    <view class="image-broadwise-item"> </view>
-  </view> -->
+    <view class="image-broadwise" v-if="fixedStyles === 2">
+      <view
+        class="image-broadwise-item"
+        v-for="(item, index) in listImage"
+        :key="index"
+        :style="{ height: heights }"
+        @click="bannerListClickImage(item)"
+      >
+        <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
+        </image>
+      </view>
+      <!-- <view class="image-broadwise-item"> </view> -->
+    </view>
 
     <!-- 横向滑动 -->
-    <!-- <view class="image-broadwise-slither">
-    <view class="image-broadwise-slither-item"> </view>
-    <view class="image-broadwise-slither-item"> </view>
-    <view class="image-broadwise-slither-item"> </view>
-    <view class="image-broadwise-slither-item"> </view>
-  </view> -->
+    <view class="image-broadwise-slither" v-if="fixedStyles === 3">
+      <view
+        class="image-broadwise-slither-item"
+        v-for="(item, index) in listImage"
+        :key="index"
+        :style="{ height: heights }"
+        @click="bannerListClickImage(item)"
+      >
+        <image
+          class="swiper-item-slither-image"
+          :src="item.icoUrl"
+          mode="aspectFill"
+        >
+        </image>
+      </view>
+      <!-- <view class="image-broadwise-slither-item"> </view>
+      <view class="image-broadwise-slither-item"> </view>
+      <view class="image-broadwise-slither-item"> </view> -->
+    </view>
   </view>
 </template>
 
@@ -79,6 +97,7 @@ import { reactive, computed, ref } from 'vue';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
 // import { onShow } from '@dcloudio/uni-app';
+import { bannerListClickImage } from '@/utils/util';
 
 const initBasicsData = useBasicsData();
 
@@ -90,12 +109,33 @@ const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
 const styles = computed(() => {
   if (props.items?.param?.doOut?.style) {
     const { height, ...item } = props.items.param.doOut.style;
-    console.log(height);
-    return item;
+    // console.log(height);    backgroundSize: 'cover',
+    //  backgroundPosition: 'center', background-position: center;
+    return {
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      ...item,
+    };
   }
 
   return {};
 });
+
+const listImage = computed(() => props.items?.param?.doOut?.images || []);
+const heights = computed(() => props.items?.param?.doOut?.special.height || '400rpx');
+const fixedStyles = computed(() => {
+  if (!props.items?.param?.doOut?.fixedStyle) {
+    return 0;
+  }
+  if (props.items?.param?.doOut?.fixedStyle) {
+    return props.items.param.doOut.fixedStyle;
+  }
+  return 0;
+});
+
+// props.items?.param?.doOut?.fixedStyle
+
+// props.items?.param?.doOut?.style.height
 
 const currentIndex = ref(0);
 const swiperChange = e => {
@@ -192,11 +232,18 @@ const toDetail = () => {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 18rpx;
   .image-broadwise-item {
-    // width: 48.5%;
+    width: 100%;
     height: 144rpx;
     background: #ffffff;
     border-radius: 8px;
     margin-bottom: 20rpx;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    .swiper-item-image {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
@@ -211,9 +258,15 @@ const toDetail = () => {
     flex-shrink: 0;
     width: 280rpx;
     height: 280rpx;
-    background: red;
-    border-radius: 14rpx;
+    // background: red;
     margin-right: 20rpx;
+    overflow: hidden;
+    border-radius: 14rpx;
+    .swiper-item-slither-image {
+      height: 100%;
+      width: 100%;
+      border-radius: 14rpx;
+    }
   }
 }
 </style>

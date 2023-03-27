@@ -115,9 +115,15 @@
             />
           </view>
         </view>
-        <view class="">
+        <!-- showGrowthValue: false
+showSignIn: false -->
+        <view class="" v-if="userInfo.showGrowthValue">
           <view class="member-card-bottom-bar">
-            <view class="member-card-bottom-bar-act"> </view>
+            <view
+              class="member-card-bottom-bar-act"
+              :style="{ width: memberLevel.percentage }"
+            >
+            </view>
           </view>
           <view class="member-card-bottom-other">
             <text
@@ -139,24 +145,27 @@
               :src="staticUrl + 'img/member-icon1.png'"
               mode="scaleToFill"
             />
-            <text class="member-card-bottom-member-name nowrap"
-              >黄金会员黄金会员黄金会员黄金会员黄金会员
+            <text class="member-card-bottom-member-name nowrap">
+              {{ userInfo.curLevelName || '' }}
             </text>
           </view>
-          <view class="">
+          <view class="" v-if="userInfo.showGrowthValue">
             <view class="member-card-bottom-bar">
-              <view class="member-card-bottom-bar-act"> </view>
+              <!-- percentage -->
+              <view
+                class="member-card-bottom-bar-act"
+                :style="{ width: memberLevel.percentage }"
+              >
+              </view>
             </view>
             <!--  <text
               >成长值{{ memberLevel.growth }}/{{ memberLevel.allGrowth }}
             </text>
             <text>距下一等级还需{{ memberLevel.nextUpgradeGrowth }} </text> -->
             <view class="member-card-bottom-other">
-              <text
-                >成长值{{ memberLevel.growth }}/{{
-                  memberLevel.allGrowth
-                }}</text
-              >
+              <text>
+                成长值{{ memberLevel.growth }}/{{ memberLevel.allGrowth }}
+              </text>
               <text>距下一等级还需{{ memberLevel.nextUpgradeGrowth }} </text>
             </view>
           </view>
@@ -204,6 +213,13 @@ const memberLevel: any = reactive({
   growth: 0,
   nextUpgradeGrowth: 0,
   allGrowth: computed(() => memberLevel.growth + memberLevel.nextUpgradeGrowth),
+  percentage: computed(() => {
+    if (memberLevel.allGrowth > 0) {
+      const allGr = memberLevel.growth / memberLevel.allGrowth * 100;
+      return `${allGr}%`;
+    }
+    return '0%';
+  }),
 });
 const getMemberLevel = async () => {
   const res = await getMemberLevelRights('');

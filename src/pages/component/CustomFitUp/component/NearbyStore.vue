@@ -88,7 +88,9 @@
                 mode="aspectFill"
               >
               </image>
-              <text class="nowrap"> 周一至周日09:30-14:00，16:30-24:00 </text>
+              <text class="nowrap">
+                {{ showTime(list) }}
+              </text>
             </view>
           </view>
           <view
@@ -135,6 +137,16 @@ const props = withDefaults(defineProps<Props>(), {
 // const initBasicsData = useBasicsData();
 
 const colorText = computed(() => props.items?.param?.doOut?.special?.color || '');
+const showTime = (list: any) => {
+  //     {{ list.businessTimeRange }}{{ showTime(list.timeList) }}
+  if (!list.businessTimeRange && !list.timeList) {
+    return '--';
+  }
+  if (Array.isArray(list.timeList)) {
+    return list.businessTimeRange + list.timeList.join(',');
+  }
+  return list.businessTimeRange;
+};
 
 const list = ref<any>({});
 const local = ref({
