@@ -3,7 +3,7 @@ import { onLaunch, onPageNotFound } from '@dcloudio/uni-app';
 // import { provide, ref } from 'vue';
 import {
   queryWmColorThemeFront,
-  getWeMemberNavFront,
+  // getWeMemberNavFront,
   // getLogo,
 } from '@/api/server';
 
@@ -14,16 +14,18 @@ const initBasicsData = useBasicsData();
 
 // 获取基础数据
 const initData = async () => {
-  const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
-    queryWmColorThemeFront(),
-    getWeMemberNavFront(),
-  ]);
+  // const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
+  //   queryWmColorThemeFront(),
+  //   getWeMemberNavFront(),
+  // ]);
 
-  if (getWmmeberNavRequestRes.data) {
-    const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
-    initBasicsData.setBottomNavList(bottomNavList);
-    initBasicsData.setLevitationNavList(levitationNavList?.reverse());
-  }
+  const getWmColorThemeRes = await queryWmColorThemeFront();
+
+  // if (getWmmeberNavRequestRes.data) {
+  //   const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
+  //   initBasicsData.setBottomNavList(bottomNavList);
+  //   initBasicsData.setLevitationNavList(levitationNavList?.reverse());
+  // }
   if (getWmColorThemeRes.data) {
     initBasicsData.setMainColor(getWmColorThemeRes.data.mainColor);
     initBasicsData.setColorTheme(getWmColorThemeRes.data);
@@ -33,7 +35,7 @@ const initData = async () => {
 onLaunch(() => {
   // Storage.removeEpid();
   initData();
-  console.log(uni.getAccountInfoSync());
+  // console.log(uni.getAccountInfoSync());
 });
 
 onPageNotFound(Router.compatibilityOldPage);

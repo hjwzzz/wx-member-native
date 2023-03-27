@@ -1,46 +1,68 @@
 <template>
   <block v-for="(items, index) in panelList" :key="index">
     <!-- 轮播图 -->
-    <Rotation v-if="items.kind === 'SWIPER'" :items="items" />
+    <Rotation
+      v-if="items.kind === 'SWIPER' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 快捷导航-图片导航  -->
-    <CustomQuick v-if="items.kind === 'QUICK_NAV'" :items="items" />
+    <CustomQuick
+      v-if="items.kind === 'QUICK_NAV' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 广告 -->
-    <NoticeBar v-if="items.kind === 'NOTICE'" :items="items" />
+    <NoticeBar
+      v-if="items.kind === 'NOTICE' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 图片-或者广告 -->
-    <CustomImage v-if="items.kind === 'BANNER'" :items="items" />
+    <CustomImage
+      v-if="items.kind === 'BANNER' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 分割线-占位 -->
-    <CutView v-if="items.kind === 'PARTITION'" :items="items" />
+    <CutView
+      v-if="items.kind === 'PARTITION' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 预约服务 -->
     <MyService
-      v-if="items.kind === 'RES_SVC'"
+      v-if="items.kind === 'RES_SVC' && items.visible === 'Y'"
       :items="items"
       :title="items.param.title"
       :srvProshowNum="items.param.showNum"
     />
     <!-- 我的奖品 -->
     <MyPrizes
-      v-if="items.kind === 'MY_AWARD'"
+      v-if="items.kind === 'MY_AWARD' && items.visible === 'Y'"
       :item="items"
       :items="items"
       :title="items.param.title"
       @handle="handleMyPrizes"
     />
     <!-- 标题头  -->
-    <Title v-if="items.kind === 'TITLE'" :items="items"> </Title>
+    <Title
+      v-if="items.kind === 'TITLE' && items.visible === 'Y'"
+      :items="items"
+    >
+    </Title>
     <!-- 今日金价 -->
     <TodayGoldPrices
-      v-if="items.kind === 'GOLD_PRICE'"
+      v-if="items.kind === 'GOLD_PRICE' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
       type="WM_HOME"
     />
     <!-- 文本 -->
-    <CustomText v-if="items.kind === 'TEXT'" :items="items" />
+    <CustomText
+      v-if="items.kind === 'TEXT' && items.visible === 'Y'"
+      :items="items"
+    />
     <!-- 富文本 -->
 
     <view
       class="des-html"
-      v-if="items.kind === 'RICH_TEXT'"
+      v-if="items.kind === 'RICH_TEXT' && items.visible === 'Y'"
       :style="items.param?.doOut?.style"
     >
       <mp-html
@@ -52,29 +74,32 @@
     </view>
     <!-- 推荐礼品 -->
     <ContentMall
-      v-if="items.kind === 'REC_GIFTS'"
+      v-if="items.kind === 'REC_GIFTS' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
     />
     <!--  附近门店   -->
     <NearbyStore
-      v-if="items.kind === 'NEAR_STORE'"
+      v-if="items.kind === 'NEAR_STORE' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
     />
 
     <!--  质保单 -->
     <MyQualitys
-      v-if="items.kind === 'WARRANTY'"
+      v-if="items.kind === 'WARRANTY' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
     />
     <!-- 视频  -->
-    <CustomVideo v-if="items.kind === 'VIDEO'" :items="items" />
+    <CustomVideo
+      v-if="items.kind === 'VIDEO' && items.visible === 'Y'"
+      :items="items"
+    />
 
     <!-- 优惠券  -->
     <Coupon
-      v-if="items.kind === 'COUPON'"
+      v-if="items.kind === 'COUPON' && items.visible === 'Y'"
       :items="items"
       :title="items.param.title"
     />
@@ -86,7 +111,7 @@ import { onShow } from '@dcloudio/uni-app';
 import { ref, Ref } from 'vue';
 import Router from '@/utils/router';
 import Storage from '@/utils/storage';
-import { getSysUi } from '@/api/server';
+import { getByOpsIdAndKind } from '@/api/server';
 import { richImage } from '@/utils/util';
 
 import ContentMall from './component/ContentMall.vue';
@@ -117,6 +142,9 @@ onShow(() => {
 // onMounted(() => {
 //   getPageDate();
 // });
+// sysUiFront
+// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsldAndKind
+// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
 
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
@@ -140,10 +168,7 @@ const panelList: Ref<any> = ref([]);
 // const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
-  const result = await getSysUi({
-    opsId: Storage.getOpsId(),
-    kind: props.types,
-  });
+  const result = await getByOpsIdAndKind(props.types);
   // console.log('result', result);
   panelList.value = result.data.panelList || [];
   // pageBackground.value = result.data.param?.doOut?.style?.background ||  ''

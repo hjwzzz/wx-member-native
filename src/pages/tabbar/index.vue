@@ -54,7 +54,7 @@ import {
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
-import { getSysUi } from '@/api/server';
+// import { getByOpsIdAndKind } from '@/api/server';
 import Router from '@/utils/router';
 import {
   // getWmIndex,
@@ -75,6 +75,9 @@ const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 // onMounted(() => {
 // });
+
+// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
+// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
 
 onLoad(() => {
   queryPopupFun();
@@ -141,7 +144,7 @@ const queryPopupFun = async () => {
 // 弹窗广告图
 const getWmAlertAdBannerListFun = async () => {
   const res = await queryWeMemberAlertBannerListFront('');
-  const floatAds = res?.data.splice(0, 3) || [];
+  const floatAds = res?.data?.splice(0, 3) || [];
   floatAdsPopup.value = floatAds.map((item: any) => ({
     image: item.imgUrl,
     title: item.name,

@@ -48,10 +48,13 @@
 </template>
 
 <script setup lang="ts">
+import { onShow } from '@dcloudio/uni-app';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useBasicsData, useActiveTab } from '@/store/basicsData';
 import Router from '@/utils/router';
+import Storage from '@/utils/storage';
 import { staticUrl } from '@/utils/config';
+import { getByOpsIdAndKind } from '@/api/server';
 
 const initBasicsData = useBasicsData();
 const initActiveTab = useActiveTab();
@@ -68,7 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const tabBarList = computed(() => {
   const list = initBasicsData.bottomNavList;
-  initTab();
+  // initTab();
   return list;
 });
 const tabBarStyle = reactive({
@@ -145,10 +148,40 @@ const setSelected = (index: number, item: any) => {
   Router.goCodePage(item.code);
 };
 
-onMounted(() => {
-  // initTab(initBasicsData.bottomNavList);
-  initTab();
+// onMounted(() => {
+//   initTab(initBasicsData.bottomNavList);
+//   initTab();
+// });
+
+onShow(() => {
+  getWmmeberNav();
 });
+// getSysUi
+const getWmmeberNav = async () => {
+  // console.log('getWmmeberNav');
+  const { data } = await getByOpsIdAndKind('WM_BTMNAV');
+  //   // bottomNavListShow   levitationNavListShow       setBottomNavListShow  setLevitationNavListShow
+  if (data.param) {
+    initBasicsData.setBottomNavList(data.param.bottomNavList);
+    initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
+    initBasicsData.setBottomNavListShow(data.param.bottomNavShowed);
+    initBasicsData.setLevitationNavListShow(data.param.llevitationNavShowed);
+  }
+  // const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  // initActiveTab.setCurrent(active || 0);
+  initTab();
+};
+
+// const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
+//     queryWmColorThemeFront(),
+//     getWeMemberNavFront(),
+//   ]);
+
+//   if (getWmmeberNavRequestRes.data) {
+//     const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
+//     initBasicsData.setBottomNavList(bottomNavList);
+//     initBasicsData.setLevitationNavList(levitationNavList?.reverse());
+//   }
 
 const initTab = () => {
   // list?: any
@@ -166,6 +199,9 @@ const initTab = () => {
   // selected.value = initActiveTab.current;
 
   const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  console.log(' props.code', props.code);
+  console.log(' active', active);
+  console.log(' bottomNavList', initBasicsData.bottomNavList);
   initActiveTab.setCurrent(active || 0);
 };
 </script>

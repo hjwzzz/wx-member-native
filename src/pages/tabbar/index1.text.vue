@@ -201,7 +201,7 @@ import {
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
-import { getSysUi } from '@/api/server';
+import { getByOpsIdAndKind } from '@/api/server';
 import Router from '@/utils/router';
 import {
   // getWmIndex,
@@ -296,7 +296,10 @@ const panelList: Ref<any> = ref([]);
 const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
-  const result = await getSysUi({ opsId: Storage.getOpsId(), kind: 'WM_HOME' });
+  const result = await getByOpsIdAndKind({
+    opsId: Storage.getOpsId(),
+    kind: 'WM_HOME',
+  });
   console.log('result', result);
   panelList.value = result.data.panelList || [];
   pageBackground.value = result.data.param.doOut.style.background;
@@ -453,7 +456,7 @@ const queryPopupFun = async () => {
 // 弹窗广告图
 const getWmAlertAdBannerListFun = async () => {
   const res = await queryWeMemberAlertBannerListFront('');
-  const floatAds = res?.data.splice(0, 3) || [];
+  const floatAds = res?.data?.splice(0, 3) || [];
   floatAdsPopup.value = floatAds.map((item: any) => ({
     image: item.imgUrl,
     title: item.name,

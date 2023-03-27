@@ -98,7 +98,7 @@ import {
   sendKeyExpiredBarCodeRequest,
 } from '@/pages/api/center';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
-import { getSysUi } from '@/api/server';
+import { getByOpsIdAndKind } from '@/api/server';
 import Storage from '@/utils/storage';
 // import { queryGoldPriceByPage } from '@/api/server';
 // import { bannerListClick, handleEntryUrl } from '@/utils/util';
@@ -203,10 +203,7 @@ const userInfo = reactive({
 const loginList: Ref<any> = ref([]);
 
 const getPageDate = async () => {
-  const { data } = await getSysUi({
-    opsId: Storage.getOpsId(),
-    kind: 'WM_CENTER',
-  });
+  const { data } = await getByOpsIdAndKind('WM_CENTER');
   const { param, panelList } = data;
   pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
   loginList.value = param?.quickNavList || [];
@@ -218,6 +215,12 @@ const getPageDate = async () => {
   userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue;
   userInfo.showSignIn = memberCardInfo.param.showSignIn;
   userInfo.doOut = memberCardInfo.param.doOut;
+
+  userInfo.avatarUrl = param.avatarUrl;
+  userInfo.curLevelName = param.curLevelName;
+  userInfo.nickName = param.nickName;
+
+  console.log('userInfo', memberCardInfo.param);
 
   userInfo.background =
     userInfo.doOut?.fixedStyle === 2
