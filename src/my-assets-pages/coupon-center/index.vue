@@ -129,13 +129,13 @@ const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   curPage: 1,
 });
 
-const getAdvertFront = async () => {
-  const { data } = await queryAdvertFront('');
-  if (!data) {
-    return;
-  }
-  advertList.value = data;
-};
+// const getAdvertFront = async () => {
+//   const { data } = await queryAdvertFront('');
+//   if (!data) {
+//     return;
+//   }
+//   advertList.value = data;
+// };
 
 const currentIndex = ref(0);
 const swiperChange = (e: any) => {
@@ -144,7 +144,21 @@ const swiperChange = (e: any) => {
 const showCouponList: any = ref([]);
 const getcouponKind = async () => {
   const res = await getByOpsIdAndKind('WM_COU_CT');
-  showCouponList.value = res.data?.param?.doOut?.images || [];
+
+  if (res.data?.param?.doOut?.images) {
+    showCouponList.value = res.data?.param?.doOut?.images || [];
+  } else {
+    const { data } = await queryAdvertFront('');
+    if (!data) {
+      return;
+    }
+    showCouponList.value = data;
+  }
+  // const { data } = await queryAdvertFront('');
+  // if (!data) {
+  //   return;
+  // }
+  // advertList.value = data;
   // console.log('WM_COU_CT', dddd);
 };
 
@@ -166,7 +180,7 @@ const queryReceiveCenterListFront = async () => {
 };
 
 onMounted(() => {
-  getAdvertFront();
+  // getAdvertFront();
   getcouponKind();
   queryReceiveCenterListFront();
 

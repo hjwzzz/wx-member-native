@@ -5,16 +5,16 @@
     @click="goMoreNotice(props.items.param, props.items.updateTime)"
   >
     <uni-notice-bar
-      show-icon
+      :show-icon="true"
       scrollable
       show-get-more
-      :text="props.items.param.title"
-      :background-color="props.items.param.doOut.style.background || '#fff'"
-      :color="props.items.param.doOut.special.color"
-      :moreColor="props.items.param.doOut.special.color"
+      :text="props.items.param?.title"
+      :background-color="props.items.param?.doOut?.style?.background || '#fff'"
+      :color="props.items.param?.doOut?.special?.color"
+      :moreColor="props.items.param?.doOut?.special?.color"
     >
       <!--  -->
-      <template #icon>
+      <template #icon v-if="props.items.param?.icoUrl">
         <image
           class="uni-notice-bar-icon"
           :src="props.items.param.icoUrl"

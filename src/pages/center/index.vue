@@ -140,6 +140,7 @@ const headHeight: any = ref(100);
 const menuInfoTopShow: any = ref(0);
 const menuInfoHeightShow: any = ref(0);
 onShow(() => {
+  console.log('1111111111111111111getPageDate11');
   getPageDate();
   // getMemberCentertIndex();
   getBannerData();
@@ -189,7 +190,7 @@ const showToImageBG = ref(deFImage1);
 // };
 
 const pageBackground = ref('#f5f5f5');
-const userInfo = reactive({
+const userInfo: any = reactive({
   avatarUrl: '',
   nickName: '',
   name: '',
@@ -197,7 +198,21 @@ const userInfo = reactive({
   memberCardInfo: '',
   showGrowthValue: false,
   showSignIn: false,
-  doOut: { style: {}, fixedStyle: 0 },
+  doOut: {
+    fixedStyle: 0,
+    special: {
+      color: '#8c7373',
+      fontSize: '32rpx',
+    },
+    style: {
+      borderRadius: '10rpx',
+      marginBottom: '30rpx',
+      marginLeft: '30rpx',
+      marginRight: '30rpx',
+      marginTop: '30rpx',
+      background: '#fff',
+    },
+  },
   background: '',
 });
 const loginList: Ref<any> = ref([]);
@@ -208,18 +223,42 @@ const getPageDate = async () => {
   pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
   loginList.value = param?.quickNavList || [];
 
+  if (param) {
+    userInfo.avatarUrl = param.avatarUrl;
+    userInfo.curLevelName = param.curLevelName;
+    userInfo.nickName = param.nickName;
+  }
+
   //  获取基本信息
   const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
   const memberCardInfo = panelList.find(getMenber) || {};
-  userInfo.memberCardInfo = memberCardInfo.param.title;
-  userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue;
-  userInfo.showSignIn = memberCardInfo.param.showSignIn;
+  if (!memberCardInfo.param) {
+    return;
+  }
+  userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
+  userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
   userInfo.doOut = memberCardInfo.param.doOut;
 
-  userInfo.avatarUrl = param.avatarUrl;
-  userInfo.curLevelName = param.curLevelName;
-  userInfo.nickName = param.nickName;
-  // console.log('userInfo', memberCardInfo.param);
+  // if (!memberCardInfo.param.doOut) {
+  //   userInfo.doOut = {
+  //     fixedStyle: 0,
+  //     special: {
+  //       color: '#8c7373',
+  //       fontSize: '32rpx',
+  //     },
+  //     style: {
+  //       borderRadius: '10rpx',
+  //       marginBottom: '30rpx',
+  //       marginLeft: '30rpx',
+  //       marginRight: '30rpx',
+  //       marginTop: '30rpx',
+  //       background: '#fff',
+  //     },
+  //   };
+  // }
+
+  console.log('userInfo1', memberCardInfo.param);
+  console.log('userInfo2', userInfo);
   userInfo.background =
     userInfo.doOut?.fixedStyle === 2
       ? null

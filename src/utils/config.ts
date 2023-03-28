@@ -4,12 +4,12 @@ const h5Url = import.meta.env.VITE_APP_WXURL;
 const imgUrl = import.meta.env.VITE_APP_IMGBASEURL;
 
 // 线上mini地址
-// const devBaseUrl = `${baseUrl}/jwx-mini-program`;
+const devBaseUrl = `${baseUrl}/jwx-mini-program`;
 //
 // 本地开发地址
 // const devBaseUrl = 'http://192.168.20.116:10301';
 // const devBaseUrl = 'http://192.168.20.83:10301';
-const devBaseUrl = 'http://192.168.20.8:10301';
+// const devBaseUrl = 'http://192.168.20.8:10301';
 
 //
 // const devBaseUrl = import.meta.env.VITE_APP_BASEURLDEV;

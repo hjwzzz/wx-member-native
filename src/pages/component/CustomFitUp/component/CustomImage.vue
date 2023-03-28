@@ -91,7 +91,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue';
+import { queryMemberCenterBannerListFront } from '@/pages/api/center';
+import { queryHomBannerListFront } from '@/pages/api/index';
+
+import { reactive, computed, ref, onMounted } from 'vue';
 // import { queryWarrantyListPageFront } from '@/api/server';
 // import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
@@ -103,9 +106,13 @@ const initBasicsData = useBasicsData();
 
 interface Props {
   items?: any;
+  types: string;
 }
-const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
-
+const props = withDefaults(defineProps<Props>(), {
+  items: () => ({}),
+  types: 'WM_CENTER',
+});
+// props.types==='WM_CENTER'
 const styles = computed(() => {
   if (props.items?.param?.doOut?.style) {
     const { height, ...item } = props.items.param.doOut.style;
@@ -121,7 +128,7 @@ const styles = computed(() => {
   return {};
 });
 
-const listImage = computed(() => props.items?.param?.doOut?.images || []);
+const listImage = computed(() => props.items?.param?.doOut?.images || oldListImage.value);
 const heights = computed(() => props.items?.param?.doOut?.special.height || '400rpx');
 const fixedStyles = computed(() => {
   if (!props.items?.param?.doOut?.fixedStyle) {
@@ -137,18 +144,44 @@ const fixedStyles = computed(() => {
 
 // props.items?.param?.doOut?.style.height
 
+// 获取广告  props.types==='WM_CENTER'
+
+onMounted(() => {
+  getBannerData();
+});
+
+const oldListImage: any = ref([]);
+const getBannerData = async () => {
+  const res =
+    props.types === 'WM_CENTER'
+      ? await queryHomBannerListFront('')
+      : await queryMemberCenterBannerListFront('');
+  if (res.code === 0 && res.data) {
+    const result: any = [];
+    res.data.map((item: any) => {
+      result.push({
+        icoUrl: item.imgUrl,
+        title: '',
+        h5Url: item.h5Url,
+        miniUrl: item.miniUrl,
+        url: item.url,
+      });
+    });
+    oldListImage.value = result;
+  }
+};
+
 const currentIndex = ref(0);
-const swiperChange = e => {
-  console.log(e);
+const swiperChange = (e: any) => {
   currentIndex.value = e.detail.current;
 };
 
-const policyList: any = reactive({ totalRecord: 0, records: [] });
+// const policyList: any = reactive({ totalRecord: 0, records: [] });
 
-const toDetail = () => {
-  //  uni.navigateTo({ url });
-  Router.goCodePage('warranty');
-};
+// const toDetail = () => {
+//   //  uni.navigateTo({ url });
+//   Router.goCodePage('warranty');
+// };
 </script>
 
 <style lang="scss" scoped>

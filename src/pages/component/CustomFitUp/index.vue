@@ -19,6 +19,7 @@
     <CustomImage
       v-if="items.kind === 'BANNER' && items.visible === 'Y'"
       :items="items"
+      :types="types"
     />
     <!-- 分割线-占位 -->
     <CutView
@@ -167,9 +168,37 @@ const panelList: Ref<any> = ref([]);
 // const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
+  // console.log('33333333333333333333333333333333333333333');
   const result = await getByOpsIdAndKind(props.types);
   // console.log('result', result);
-  panelList.value = result.data.panelList || [];
+  if (result.data.panelList) {
+    // doOut
+    const comList = result.data.panelList.map((item: any) => {
+      if (!item.param.doOut) {
+        item.param.doOut = {
+          fixedStyle: 0,
+          special: {
+            color: '#8c7373',
+            fontSize: '32rpx',
+          },
+          style: {
+            borderRadius: '10rpx',
+            marginBottom: '30rpx',
+            marginLeft: '30rpx',
+            marginRight: '30rpx',
+            marginTop: '30rpx',
+            background: '#fff',
+          },
+        };
+      }
+
+      return item;
+    });
+
+    // console.log('item', comList);
+    panelList.value = comList || [];
+  }
+
   // pageBackground.value = result.data.param?.doOut?.style?.background ||  ''
   //
   const banner = result.data?.bannerList || [];
@@ -178,10 +207,12 @@ const getPageDate = async () => {
 
   // console.log('bannerList', bannerList.value);
   // console.log(result);
-  uni.setNavigationBarTitle({
-    // 设置顶部bar的标题
-    title: result.data.param?.title,
-  });
+  if (result.data.param?.title) {
+    uni.setNavigationBarTitle({
+      // 设置顶部bar的标题
+      title: result.data.param?.title,
+    });
+  }
 
   getPanelList();
 };
