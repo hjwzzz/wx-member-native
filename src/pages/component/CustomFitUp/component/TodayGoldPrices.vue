@@ -429,6 +429,7 @@ const _getGoldPriceByPage = async () => {
 }
 .gold-price-style1-hide {
   height: 0rpx !important;
+  margin-top: 0rpx !important;
 }
 .gold-price-style1 {
   height: 100rpx;
@@ -481,6 +482,7 @@ const _getGoldPriceByPage = async () => {
   }
   .gold-price-style2-store-hide {
     height: 0rpx;
+    margin-top: 0rpx !important;
   }
   .gold-price-style2-store-name {
     width: 370rpx;
@@ -500,7 +502,8 @@ const _getGoldPriceByPage = async () => {
     align-items: center;
   }
   .gold-price-style2-tab-hide {
-    height: 20rpx;
+    height: 0rpx;
+    margin-top: 0rpx !important;
   }
   .gold-price-style2-tabs {
     margin-right: 20rpx;
@@ -582,6 +585,7 @@ const _getGoldPriceByPage = async () => {
   }
   .gold-price-style3-store-hide {
     height: 28rpx;
+    margin-top: 0rpx !important;
   }
   .gold-price-style3-store-name {
     color: #323338;
@@ -650,7 +654,9 @@ const _getGoldPriceByPage = async () => {
 .grid-price {
   font-size: 28rpx;
   // width: 630rpx;
-  padding: 30rpx;
+  // padding: 30rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
   padding-bottom: 0rpx;
   // margin-top: 30rpx;
   // margin-bottom: 30rpx;
@@ -660,7 +666,8 @@ const _getGoldPriceByPage = async () => {
   .header {
     display: flex;
     justify-content: space-between;
-
+    align-items: center;
+    height: 80rpx;
     .left {
       display: flex;
       align-items: center;

@@ -104,7 +104,7 @@ const getMemberRecommend = async () => {
     const servPage = await queryServiceBookPageFront({
       mid: initBasicsData.useMid,
       curPage: 1,
-      pageSize: props.srvProshowNum,
+      pageSize: props.srvProshowNum || 4,
       status: '',
     });
     srvProList.value = servPage.data?.records || [];
