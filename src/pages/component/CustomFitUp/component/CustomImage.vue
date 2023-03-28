@@ -26,7 +26,7 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="custom-dots-box dots-round">
+      <view class="custom-dots-box dots-round" v-if="listImage.length > 1">
         <view
           class="custom-dots-show"
           v-for="(_, index) in listImage"

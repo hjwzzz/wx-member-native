@@ -20,7 +20,7 @@
           ></image>
         </swiper-item>
       </swiper>
-      <view class="custom-dots-box dots-round" v-if="showCouponList.length > 0">
+      <view class="custom-dots-box dots-round" v-if="showCouponList.length > 1">
         <view
           class="custom-dots-show"
           v-for="(_, index) in showCouponList"

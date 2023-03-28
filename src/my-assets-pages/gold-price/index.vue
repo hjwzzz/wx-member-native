@@ -19,7 +19,7 @@
             ></image>
           </swiper-item>
         </swiper>
-        <view class="custom-dots-box dots-round" v-if="bannerList.length > 0">
+        <view class="custom-dots-box dots-round" v-if="bannerList.length > 1">
           <view
             class="custom-dots-show"
             v-for="(_, index) in bannerList"
@@ -126,7 +126,7 @@
             ></image>
           </swiper-item>
         </swiper>
-        <view class="custom-dots-box dots-round" v-if="bannerList.length > 0">
+        <view class="custom-dots-box dots-round" v-if="bannerList.length > 1">
           <view
             class="custom-dots-show"
             v-for="(_, index) in bannerList"
@@ -485,7 +485,21 @@ onShareTimeline(() => shareTimeline(shareData.value));
 
 .banner-style {
 }
-
+.shop {
+  margin: 30rpx 0;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  height: 98rpx;
+  align-items: center;
+  padding: 0 30rpx;
+  border-radius: 16rpx;
+  .name {
+    font-size: 28rpx;
+    font-weight: 400;
+    color: #323338;
+  }
+}
 .custom-dots {
   position: relative;
   .custom-dots-box {

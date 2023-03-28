@@ -182,7 +182,7 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="custom-dots-box dots-round" v-if="couponsList.length > 0">
+      <view class="custom-dots-box dots-round" v-if="couponsList.length > 1">
         <view
           class="custom-dots-show"
           v-for="(_, index) in couponsList"

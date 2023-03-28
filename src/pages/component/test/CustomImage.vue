@@ -27,7 +27,10 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="custom-dots-box dots-round">
+      <view
+        class="custom-dots-box dots-round"
+        v-if="props.items?.param?.doOut?.images.length > 1"
+      >
         <view
           class="custom-dots-show"
           v-for="(_, index) in props.items?.param?.doOut?.images"
