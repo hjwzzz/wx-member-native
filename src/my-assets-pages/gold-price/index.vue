@@ -150,8 +150,7 @@
         />
         <view class="name text-break">
           {{ goldPriceDatas.store.name || goldPriceDatas.store.distName }}
-          11111111111111111111111111111111111111111111111111111111111111111</view
-        >
+        </view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
       <!--  showPriceKind.todayGoldPriceShowed==='Y'   showPriceKind.recoveryGoldPriceShowed==='Y'  -->
