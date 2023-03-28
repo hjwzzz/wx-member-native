@@ -77,7 +77,7 @@
                 props.items?.param?.doOut?.special?.couponColor || '#e04838',
             }"
           >
-            理科领取
+            立刻领取
           </view>
         </view>
       </view>

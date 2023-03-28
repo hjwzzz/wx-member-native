@@ -143,9 +143,15 @@
         @click="onChooseStore"
         v-if="goldPriceDatas?.store"
       >
-        <view class="name text-break">{{
-          goldPriceDatas.store.name || goldPriceDatas.store.distName
-        }}</view>
+        <image
+          class="shop-style-image"
+          :src="staticUrl + `img/icon-008.png`"
+          mode="scaleToFill"
+        />
+        <view class="name text-break">
+          {{ goldPriceDatas.store.name || goldPriceDatas.store.distName }}
+          11111111111111111111111111111111111111111111111111111111111111111</view
+        >
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
       </view>
       <!--  showPriceKind.todayGoldPriceShowed==='Y'   showPriceKind.recoveryGoldPriceShowed==='Y'  -->
@@ -482,7 +488,12 @@ onShareTimeline(() => shareTimeline(shareData.value));
   border-radius: 16rpx;
   overflow: hidden;
 }
-
+.shop-style-image {
+  width: 48rpx;
+  height: 48rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
 .banner-style {
 }
 .shop {

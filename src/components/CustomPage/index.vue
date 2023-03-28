@@ -46,6 +46,7 @@ const background = computed(() => props.background);
   overflow: scroll;
 }
 .custom-page {
+  overflow: scroll;
   .custom-page-box1 {
     min-height: calc(100vh - 110rpx - constant(safe-area-inset-bottom));
     min-height: calc(100vh - 110rpx - env(safe-area-inset-bottom));
