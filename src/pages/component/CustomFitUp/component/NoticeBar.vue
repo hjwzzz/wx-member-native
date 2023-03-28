@@ -13,11 +13,10 @@
       :color="props.items.param?.doOut?.special?.color"
       :moreColor="props.items.param?.doOut?.special?.color"
     >
-      <!--  -->
-      <template #icon v-if="props.items.param?.icoUrl">
+      <template #icon>
         <image
           class="uni-notice-bar-icon"
-          :src="props.items.param.icoUrl"
+          :src="props.items.param?.icoUrl || icons"
           mode="aspectFill"
         >
         </image>
@@ -28,12 +27,16 @@
 
 <script setup lang="ts">
 // import { reactive, watch, ref } from 'vue';
-// import { staticUrl } from '@/utils/config';
+import { staticUrl } from '@/utils/config';
 // import { useBasicsData } from '@/store/basicsData';
 // import Router from '@/utils/router';
 // import { onShow } from '@dcloudio/uni-app';
 
 // const initBasicsData = useBasicsData();
+
+// staticUrl + `img/qr-icon${showIcon.qrIcon}.png`  icon-010
+
+const icons = `${staticUrl}img/icon-010.png`;
 
 interface Props {
   items?: any;

@@ -152,7 +152,14 @@ const getcouponKind = async () => {
     if (!data) {
       return;
     }
-    showCouponList.value = data;
+    const lData = data.map((item: any) => ({
+      icoUrl: item.imgUrl,
+      title: '',
+      h5Url: item.h5Url,
+      miniUrl: item.miniUrl,
+      url: item.url,
+    }));
+    showCouponList.value = lData;
   }
   // const { data } = await queryAdvertFront('');
   // if (!data) {

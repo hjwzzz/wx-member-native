@@ -220,7 +220,6 @@
           </view>
         </view>
 
-
         <view class="content-page" v-if="!goldPriceDatas?.param">
           <view class="empty empty-page">
             <image
@@ -320,26 +319,45 @@ const showPriceKind = reactive({
 // 工费展示  laborCostShowed  ="Y">展示  ue="N">隐藏
 // 备注说明"   value="Y">展示   n value="N">隐藏</a
 
-// getByOpsIdAndKind
+// getByOpsIdAndKind     images
 const getPriceKind = async () => {
   const { data } = await getByOpsIdAndKind('WM_GPRICE');
-  bannerList.value = data.param.doOut.images || [];
-  Object.assign(showPriceKind, data.param);
-
-  list.value = [];
-  if (data.param) {
-    if (data.param.todayGoldPriceShowed === 'Y') {
-      list.value.push({ name: '今日金价', key: 'metalPrices' });
+  if (data?.param?.doOut?.images) {
+    bannerList.value = data.param.doOut.images || [];
+    Object.assign(showPriceKind, data.param);
+    list.value = [];
+    if (data.param) {
+      if (data.param.todayGoldPriceShowed === 'Y') {
+        list.value.push({ name: '今日金价', key: 'metalPrices' });
+      }
+      if (data.param.recoveryGoldPriceShowed === 'Y') {
+        list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+      }
+      if (list.value.length) {
+        showText.value = list.value[0].key;
+      }
     }
-    if (data.param.recoveryGoldPriceShowed === 'Y') {
-      list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
-    }
-    if (list.value.length) {
-      showText.value = list.value[0].key;
-    }
+  } else {
+    oldData();
+    getBannerList();
   }
+};
 
-  // console.log('getByOpsIdAndKind', res);
+const oldData = () => {
+  setTimeout(() => {
+    const data = goldPriceDatas.value;
+    if (data.param) {
+      if (data.param.todayGoldPriceShowed === 'Y') {
+        list.value.push({ name: '今日金价', key: 'metalPrices' });
+      }
+      if (data.param.recoveryGoldPriceShowed === 'Y') {
+        list.value.push({ name: '回收金价', key: 'oldmatMetalPrices' });
+      }
+      if (list.value.length) {
+        showText.value = list.value[0].key;
+      }
+    }
+  }, 1000);
 };
 
 // const bannerClick = (item: any) => {
@@ -386,10 +404,17 @@ const showText = ref('metalPrices');
 const showTabs = computed(() => list.value.map(i => i.name));
 const showData = computed(() => goldPriceDatas.value[showText.value]);
 
-// const getBannerList = async () => {
-//   const res = await queryGoldPriceBannerListFront('');
-//   bannerList.value = res.data;
-// };
+const getBannerList = async () => {
+  const res = await queryGoldPriceBannerListFront('');
+  const oldImage = res.data.map((item: any) => ({
+    icoUrl: item.imgUrl,
+    title: '',
+    h5Url: item.h5Url,
+    miniUrl: item.miniUrl,
+    url: item.url,
+  }));
+  bannerList.value = oldImage;
+};
 
 const setItemKey = ({ item }: any) => {
   showText.value = item.key;
