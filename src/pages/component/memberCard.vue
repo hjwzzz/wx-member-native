@@ -222,9 +222,12 @@ const memberLevel: any = reactive({
   }),
 });
 const getMemberLevel = async () => {
-  const res = await getMemberLevelRights('');
-  memberLevel.growth = res.data?.growth || 0;
-  memberLevel.nextUpgradeGrowth = res.data?.nextUpgradeGrowth || 0;
+  // initBasicsData
+  if (initBasicsData.checkLogin) {
+    const res = await getMemberLevelRights('');
+    memberLevel.growth = res.data?.growth || 0;
+    memberLevel.nextUpgradeGrowth = res.data?.nextUpgradeGrowth || 0;
+  }
   // getMemberLevelRights
 };
 // getMemberLevel();
