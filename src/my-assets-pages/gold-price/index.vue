@@ -9,7 +9,7 @@
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
-            @click.stop="bannerListClick(item)"
+            @click.stop="bannerListClickImage(item)"
           >
             <image
               class="banner-image"
@@ -116,7 +116,7 @@
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
-            @click.stop="bannerListClick(item)"
+            @click.stop="bannerListClickImage(item)"
           >
             <image
               class="banner-image"
@@ -182,10 +182,11 @@
               :key="index"
             >
               <text class="gold-price-style3-item-right-name">
-                {{ item.met }}
+                {{ item.met }}{{ item.metCtn || ''
+                }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
               <text class="gold-price-style3-item-right-price">
-                ¥{{ item.metCtn || '--' }}
+                ¥{{ item.price || '--' }}
               </text>
             </view>
           </view>
@@ -216,10 +217,11 @@
               :key="index"
             >
               <text class="gold-price-style3-item-right-name">
-                {{ item.met }}
+                {{ item.met }}{{ item.metCtn || ''
+                }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
               <text class="gold-price-style3-item-right-price">
-                ¥{{ item.metCtn || '--' }}
+                ¥{{ item.price || '--' }}
               </text>
             </view>
           </view>
@@ -262,7 +264,7 @@
 import { computed, reactive, Ref, ref } from 'vue';
 import { queryShareSett } from '@/api/index';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
-import { richImage, bannerListClick } from '@/utils/util';
+import { richImage, bannerListClick, bannerListClickImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 import { getByOpsIdAndKind } from '@/api/server';
 

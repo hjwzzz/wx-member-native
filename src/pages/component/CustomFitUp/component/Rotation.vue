@@ -31,8 +31,9 @@
         <swiper-item
           class="swiper-item"
           @click.stop="bannerListClickImage(item)"
+          :style="{ height: boxStyle.height }"
         >
-          <view class="swiper-item-view">
+          <view class="swiper-item-view" :style="{ height: boxStyle.height }">
             <image class="swiper-item-image" :src="item.icoUrl" mode="widthFix">
             </image>
           </view>

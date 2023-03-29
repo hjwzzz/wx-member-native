@@ -45,31 +45,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed } from 'vue';
+import { ref, Ref } from 'vue';
 import {
   onShareTimeline,
   onShareAppMessage,
   onShow,
   onLoad,
-  onReady,
+  // onReady,
 } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
 // import { getByOpsIdAndKind } from '@/api/server';
-import Router from '@/utils/router';
-import {
-  // getWmIndex,
-  // queryHomBannerListFront,
-  queryPopupByType,
-} from '@/pages/api/index';
-import Storage from '@/utils/storage';
+// import Router from '@/utils/router';
+import { queryPopupByType } from '@/pages/api/index';
+// import Storage from '@/utils/storage';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
 import { getByOpsIdAndKind } from '@/api/server';
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
-import { bannerListClick, bannerListClickImage } from '@/utils/util';
+import { bannerListClickImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 import { useBasicsData } from '@/store/basicsData';
 
@@ -77,16 +73,8 @@ const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 // onMounted(() => {
 // });
-
-// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
-// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
-
-onLoad(() => {
-  // queryPopupFun();
-});
-
 // onReady(() => {});
-// POP_IMAGE
+// onLoad(() => {});
 
 onShow(() => {
   getPageDate();
@@ -99,21 +87,15 @@ onShow(() => {
 const newBannerList: any = ref([]);
 const newBanneRadius = ref('0px');
 const pageBackground = ref('#f5f5f5');
-// const maskPopup = ref(false);
-// const everyDay = ref(false);
-// const showPopupImage = computed(() => (everyDay.value ? maskPopup.value : true));
 const getPageDate = async () => {
-  console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
+  // console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
   const { data } = await getByOpsIdAndKind('WM_HOME');
   const { param, panelList } = data;
   pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
 
   //  获取基本信息
   const getMenber = (item: { kind: string }) => item.kind === 'POP_IMAGE';
-
   const memberCardInfo = panelList.find(getMenber) || {};
-
-  console.log('POP_IMAGEmemberCardInfo1', memberCardInfo);
   if (memberCardInfo.visible === 'N') {
     return;
   }
@@ -125,15 +107,14 @@ const getPageDate = async () => {
   newBanneRadius.value = style?.borderRadius || '0rpx';
   const everyDay = special.everyDay ? 'Y' : 'N';
   queryPopupFun(everyDay);
-  console.log('POP_IMAGEmemberCardInfo2', memberCardInfo);
+  // console.log('POP_IMAGEmemberCardInfo2', memberCardInfo);
   let image: any = [];
   if (memberCardInfo.param.doOut.images) {
     image = memberCardInfo.param.doOut.images.filter((item: any) => item.showed);
   }
   newBannerList.value = image;
-  console.log('POP_IMAGE', image);
+  // console.log('POP_IMAGE', image);
 };
-// style:borderRadius: "10rpx"     maskPopup
 
 // icoUrl  showed   special: {everyDay: false} special: {everyDay: true}   visible
 // 设置广告弹窗
@@ -185,23 +166,6 @@ const getShareSet = async () => {
 };
 onShareAppMessage(() => shareAppMessage(shareData.value));
 onShareTimeline(() => shareTimeline(shareData.value));
-
-// const adBannerList: Ref<any> = ref([]);
-// 获取广告
-// const getAdBannerList = async () => {
-//   const result = await queryHomBannerListFront('');
-//   if (result?.data && result?.data.length) {
-//     const list =
-//       result?.data.map((item: any) => ({
-//         ...item,
-//         icoUrl: item.imgUrl,
-//         title: item.title,
-//         url: item.url,
-//       })) || [];
-
-//     adBannerList.value = list;
-//   }
-// };
 </script>
 
 <style lang="scss" scoped>

@@ -7,15 +7,10 @@ import {
   // getLogo,
 } from '@/api/server';
 import { getByOpsIdAndKind } from '@/api/server';
-
 import { useBasicsData } from '@/store/basicsData';
 // import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
-// uni.setNavigationBarColor({
-//   frontColor: '#ffffff',
-//   backgroundColor: '#ff547b',
-// });
 
 // 获取基础数据
 const initData = async () => {
@@ -28,6 +23,21 @@ const initData = async () => {
   if (getWmColorTheme.data.style.mainColor) {
     initBasicsData.setMainColor(getWmColorTheme.data.style.mainColor);
     initBasicsData.setColorTheme(getWmColorTheme.data.style);
+
+    //     navigationBarBackgroundColor: "#EF2734"
+    //     navigationBarTextStyle: "white"
+    //     param.doOut.special.navigationBarBackgroundColor
+    //     param.doOut.special.navigationBarTextStyle
+    if (getWmColorTheme.data.param?.doOut?.special) {
+      const { navigationBarBackgroundColor, navigationBarTextStyle } =
+        getWmColorTheme.data.param.doOut.special;
+
+      console.log('setNavigationBarColor');
+      uni.setNavigationBarColor({
+        frontColor: navigationBarTextStyle || '#ffffff',
+        backgroundColor: navigationBarBackgroundColor || '#ff547b',
+      });
+    }
   } else {
     const getWmColorThemeRes = await queryWmColorThemeFront();
     if (getWmColorThemeRes.data) {

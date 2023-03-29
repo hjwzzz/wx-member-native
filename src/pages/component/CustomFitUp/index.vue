@@ -111,7 +111,7 @@
 import { onShow } from '@dcloudio/uni-app';
 import { ref, Ref } from 'vue';
 import Router from '@/utils/router';
-import Storage from '@/utils/storage';
+// import Storage from '@/utils/storage';
 import { getByOpsIdAndKind } from '@/api/server';
 import { richImage } from '@/utils/util';
 
@@ -131,12 +131,17 @@ import CustomText from './component/CustomText.vue';
 import CustomVideo from './component/CustomVideo.vue';
 import CustomQuick from './component/CustomQuick.vue';
 
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
+
 interface Props {
   types?: any;
 }
 const props = withDefaults(defineProps<Props>(), { types: 'WM_HOME' });
 
 onShow(() => {
+  getThemeKind();
   getPageDate();
 });
 
@@ -154,10 +159,10 @@ const linktap = (e: any) => {
   uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
 };
 
-const bannerList: Ref<any> = ref([]);
-const swiperVav: Ref<any> = ref([]);
-const swiperVavHeight = ref(196);
-const dataList: Ref<any> = ref({});
+// const bannerList: Ref<any> = ref([]);
+// const swiperVav: Ref<any> = ref([]);
+// const swiperVavHeight = ref(196);
+// const dataList: Ref<any> = ref({});
 
 // const goldPrice: Ref<any> = ref([]);
 // const todayGoldPriceShowed = ref(false);
@@ -198,9 +203,9 @@ const getPageDate = async () => {
 
   // pageBackground.value = result.data.param?.doOut?.style?.background ||  ''
   //
-  const banner = result.data?.bannerList || [];
-  dataList.value = result.data;
-  bannerList.value = banner;
+  // const banner = result.data?.bannerList || [];
+  // dataList.value = result.data;
+  // bannerList.value = banner;
 
   // console.log('bannerList', bannerList.value);
   // console.log(result);
@@ -211,7 +216,25 @@ const getPageDate = async () => {
     });
   }
 
-  getPanelList();
+  // getPanelList();
+};
+
+const getThemeKind = async () => {
+  const getWmColorTheme: any = await getByOpsIdAndKind('WM_THEME');
+  // console.log('getWmColorTheme', getWmColorTheme.data.style.mainColor);
+  if (getWmColorTheme.data.style.mainColor) {
+    initBasicsData.setMainColor(getWmColorTheme.data.style.mainColor);
+    initBasicsData.setColorTheme(getWmColorTheme.data.style);
+  }
+  if (getWmColorTheme.data.param?.doOut?.special) {
+    const { navigationBarBackgroundColor, navigationBarTextStyle } =
+      getWmColorTheme.data.param.doOut.special;
+    console.log('setNavigationBarColor');
+    uni.setNavigationBarColor({
+      frontColor: navigationBarTextStyle || '#ffffff',
+      backgroundColor: navigationBarBackgroundColor || '#ff547b',
+    });
+  }
 };
 
 // const bannerIndexFun = (item: any) => {
@@ -236,25 +259,25 @@ const getPageDate = async () => {
 //   Router.goCodePage(url.code || url.systemUrl, param);
 // };
 // QUICK_NAV
-const getPanelList = () => {
-  const panelList = dataList.value.wmMainRspVo?.panelList;
-  if (panelList) {
-    const quickNav: any = panelList.filter((p: any) => p.kind === 'QUICK_NAV');
-    const linkList = quickNav[0].param.linkList;
-    const swiperVavList: any = [];
-    for (let i = 0; i < linkList.length; i += 8) {
-      swiperVavList.push(linkList.slice(i, i + 8));
-    }
-    if (swiperVavList.length) {
-      const len = swiperVavList[0]?.length;
-      const num = Number(String(len / 4)
-        .split('.')[0]) + 1 || 0;
-      const height = (len % 4 === 0 ? len / 4 : num) * 196;
-      swiperVavHeight.value = height;
-    }
-    swiperVav.value = swiperVavList;
-  }
-};
+// const getPanelList = () => {
+//   const panelList = dataList.value.wmMainRspVo?.panelList;
+//   if (panelList) {
+//     const quickNav: any = panelList.filter((p: any) => p.kind === 'QUICK_NAV');
+//     const linkList = quickNav[0].param.linkList;
+//     const swiperVavList: any = [];
+//     for (let i = 0; i < linkList.length; i += 8) {
+//       swiperVavList.push(linkList.slice(i, i + 8));
+//     }
+//     if (swiperVavList.length) {
+//       const len = swiperVavList[0]?.length;
+//       const num = Number(String(len / 4)
+//         .split('.')[0]) + 1 || 0;
+//       const height = (len % 4 === 0 ? len / 4 : num) * 196;
+//       swiperVavHeight.value = height;
+//     }
+//     swiperVav.value = swiperVavList;
+//   }
+// };
 </script>
 
 <style lang="scss" scoped>
