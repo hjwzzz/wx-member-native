@@ -1,9 +1,5 @@
 <template>
-  <view
-    class="coupon-act"
-    @click="toDetail"
-    :style="props.items.param?.doOut?.style"
-  >
+  <view class="coupon-act" :style="props.items.param?.doOut?.style">
     <view class="header">
       <view class="header-left">
         <text
@@ -15,7 +11,7 @@
           >{{ title }}</text
         >
       </view>
-      <view class="right">
+      <view class="right" @click="toDetail">
         <text
           class="more"
           :style="{
@@ -76,6 +72,7 @@
               color:
                 props.items?.param?.doOut?.special?.couponColor || '#e04838',
             }"
+            @click="receiveCoupon(cou)"
           >
             立刻领取
           </view>
@@ -174,6 +171,7 @@
                       props.items?.param?.doOut?.special?.couponColor ||
                       '#e04838',
                   }"
+                  @click="receiveCoupon(cou)"
                 >
                   立刻领取
                 </view>
@@ -195,6 +193,12 @@
       </view>
     </view>
   </view>
+  <CouponResultModal
+    :visible="modelShow"
+    :type="getResult"
+    @ok="onConfirm"
+    @cancel="onCancel"
+  />
 </template>
 
 <script setup lang="ts">
@@ -202,8 +206,11 @@ import { ref, computed } from 'vue';
 // import { queryWarrantyListPageFront } from '@/api/server';
 // import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-// import Router from '@/utils/router';
+import Router from '@/utils/router';
+import Storage from '@/utils/storage';
+import CouponResultModal from '@/pages/component/CouponResultModal/index.vue';
 // import NoneData from './NoneData.vue';
+import { getCouponsFront } from '@/pages/api/coupon';
 
 const initBasicsData = useBasicsData();
 
@@ -246,6 +253,50 @@ const couponsList = computed(() => {
   }
   return [];
 });
+
+// 领取优惠券
+const modelShow = ref(false);
+const getResult = ref('success');
+const receiveCoupon = async (item: any) => {
+  if (!initBasicsData.checkLogin) {
+    return uni.showModal({
+      content: '请先登录账号',
+      cancelText: '暂不登录',
+      confirmText: '立即登录',
+      success: res => {
+        if (res.confirm) {
+          Router.goLogin();
+        }
+      },
+    });
+  }
+  const res = await getCouponsFront({
+    centerId: item.id,
+    couponId: item.couponId,
+    mid: initBasicsData.useMid,
+    relatedAppId: Storage.getJqzAppId(),
+  });
+  if (res.code === 0) {
+    // 领取成功
+    modelShow.value = true;
+    getResult.value = 'success';
+    // queryReceiveCenterListFront();
+  } else if (res.code === 4111) {
+    // 已失效
+    modelShow.value = true;
+    getResult.value = 'invalid';
+  } else if (res.code === 4126) {
+    // 已领完
+    modelShow.value = true;
+    getResult.value = 'over';
+  }
+};
+const onConfirm = () => {
+  if (getResult.value === 'success') {
+    Router.goCodePage('coupon');
+  }
+};
+const onCancel = () => modelShow.value = false;
 
 // 根据类型显示金额
 // 满减券 || 工费抵扣券
