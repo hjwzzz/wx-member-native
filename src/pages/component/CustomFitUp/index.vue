@@ -169,11 +169,9 @@ const panelList: Ref<any> = ref([]);
 // const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
-  // console.log('33333333333333333333333333333333333333333');
   const result = await getByOpsIdAndKind(props.types);
   // console.log('result', result);
   if (result.data.panelList) {
-    // doOut
     const comList = result.data.panelList.map((item: any) => {
       if (!item.param.doOut) {
         item.param.doOut = {
@@ -195,8 +193,6 @@ const getPageDate = async () => {
 
       return item;
     });
-
-    // console.log('item', comList);
     panelList.value = comList || [];
   }
 

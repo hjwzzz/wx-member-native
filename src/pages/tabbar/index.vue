@@ -23,9 +23,10 @@
               :key="index"
             >
               <image
+                :style="{ borderRadius: newBanneRadius }"
                 class="alert-box-image"
-                @click="bannerListClick(item)"
-                :src="item.image"
+                @click="bannerListClickImage(item)"
+                :src="item.icoUrl"
                 mode="aspectFit"
               ></image>
             </swiper-item>
@@ -59,8 +60,8 @@ import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
 import Router from '@/utils/router';
 import {
   // getWmIndex,
-  queryHomBannerListFront,
-  queryPopup,
+  // queryHomBannerListFront,
+  queryPopupByType,
 } from '@/pages/api/index';
 import Storage from '@/utils/storage';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
@@ -68,7 +69,7 @@ import { getByOpsIdAndKind } from '@/api/server';
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
-import { bannerListClick } from '@/utils/util';
+import { bannerListClick, bannerListClickImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 import { useBasicsData } from '@/store/basicsData';
 
@@ -81,7 +82,7 @@ const initBasicsData = useBasicsData();
 // https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
 
 onLoad(() => {
-  queryPopupFun();
+  // queryPopupFun();
 });
 
 // onReady(() => {});
@@ -99,8 +100,8 @@ const newBannerList: any = ref([]);
 const newBanneRadius = ref('0px');
 const pageBackground = ref('#f5f5f5');
 // const maskPopup = ref(false);
-const everyDay = ref(false);
-const showPopupImage = computed(() => (everyDay.value ? maskPopup.value : true));
+// const everyDay = ref(false);
+// const showPopupImage = computed(() => (everyDay.value ? maskPopup.value : true));
 const getPageDate = async () => {
   console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
   const { data } = await getByOpsIdAndKind('WM_HOME');
@@ -122,8 +123,8 @@ const getPageDate = async () => {
   }
   const { style, special } = memberCardInfo.param?.doOut || {};
   newBanneRadius.value = style?.borderRadius || '0rpx';
-  everyDay.value = special.everyDay || false;
-
+  const everyDay = special.everyDay ? 'Y' : 'N';
+  queryPopupFun(everyDay);
   console.log('POP_IMAGEmemberCardInfo2', memberCardInfo);
   let image: any = [];
   if (memberCardInfo.param.doOut.images) {
@@ -140,7 +141,7 @@ const getPageDate = async () => {
 // isOpen: 是否开启弹窗 Y:开启 N:关闭
 // const floatAdsPopup: Ref<any> = ref([]);
 const maskPopup = ref(false);
-const queryPopupFun = async () => {
+const queryPopupFun = async (isOnce: any) => {
   let popupTime = uni.getStorageSync('popupTime');
   if (popupTime === '' || popupTime === null) {
     const num = Math.floor(Math.random() * 10000 + 1);
@@ -148,10 +149,11 @@ const queryPopupFun = async () => {
       .getTime()}-${num}`;
     uni.setStorageSync('popupTime', popupTime);
   }
-  const res = await queryPopup(popupTime);
-  const { isOpen, isShowed } = res.data;
+  // queryPopupByType queryPopup
+  const res = await queryPopupByType({ param: popupTime, isOnce });
+  const { isOpen } = res.data;
   maskPopup.value = false;
-  if (isOpen === 'Y' && isShowed !== 'Y') {
+  if (isOpen === 'Y') {
     maskPopup.value = true;
   }
 };
