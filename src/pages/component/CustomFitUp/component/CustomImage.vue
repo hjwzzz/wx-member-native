@@ -129,7 +129,7 @@ const styles = computed(() => {
 });
 
 const listImage = computed(() => props.items?.param?.doOut?.images || oldListImage.value);
-const heights = computed(() => props.items?.param?.doOut?.special.height || '400rpx');
+const heights = computed(() => props.items?.param?.doOut?.special?.height || '400rpx');
 const fixedStyles = computed(() => {
   if (!props.items?.param?.doOut?.fixedStyle) {
     return 0;

@@ -157,7 +157,7 @@ const getPolicyList = async () => {
   const res = await queryWarrantyListPageFront({
     mid: initBasicsData.useMid,
     curPage: 1,
-    pageSize: props.policyListNum || 1,
+    pageSize: props.policyListNum || 4,
   });
   if (res.code === 0 && res.data) {
     Object.assign(policyList, res.data);

@@ -4,14 +4,14 @@
   </CustomPage>
   <Tabbar code="wm_index"> </Tabbar>
 
-  <view class="home-mask" v-if="maskPopup && floatAdsPopup.length > 0">
+  <view class="home-mask" v-if="maskPopup && newBannerList.length > 0">
     <view class="home-alert">
       <view class="alert-img">
         <view class="alert-box">
           <swiper
             :style="{ height: '680rpx' }"
             class=""
-            :indicator-dots="floatAdsPopup.length > 1"
+            :indicator-dots="newBannerList.length > 1"
             indicator-color="#D8D9E0"
             :indicator-active-color="initBasicsData.mainColor"
             circular
@@ -19,7 +19,7 @@
           >
             <swiper-item
               class="swiper-item"
-              v-for="(item, index) in floatAdsPopup"
+              v-for="(item, index) in newBannerList"
               :key="index"
             >
               <image
@@ -64,7 +64,7 @@ import {
 } from '@/pages/api/index';
 import Storage from '@/utils/storage';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
-
+import { getByOpsIdAndKind } from '@/api/server';
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
@@ -85,50 +85,60 @@ onLoad(() => {
 });
 
 // onReady(() => {});
+// POP_IMAGE
 
 onShow(() => {
-  // getPageDate();
-  getAdBannerList();
+  getPageDate();
+  // getAdBannerList();
   // getGoldPriceByPage();
-  getWmAlertAdBannerListFun();
+  // getWmAlertAdBannerListFun();
   getShareSet();
 });
 
-// const shareObj: Ref<any> = ref({});
-const shareData: Ref<any> = ref([]);
-const getShareSet = async () => {
-  const res = await queryShareSett({ pageName: 'WM_INDEX' });
-  // 控住分享
-  shareHold(res.data);
-  shareData.value = {
-    title: '首页',
-    path: '/pages/tabbar/index',
-    shareObj: res.data,
-  };
-};
-onShareAppMessage(() => shareAppMessage(shareData.value));
-onShareTimeline(() => shareTimeline(shareData.value));
+const newBannerList: any = ref([]);
+const newBanneRadius = ref('0px');
+const pageBackground = ref('#f5f5f5');
+// const maskPopup = ref(false);
+const everyDay = ref(false);
+const showPopupImage = computed(() => (everyDay.value ? maskPopup.value : true));
+const getPageDate = async () => {
+  console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
+  const { data } = await getByOpsIdAndKind('WM_HOME');
+  const { param, panelList } = data;
+  pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
 
-const adBannerList: Ref<any> = ref([]);
+  //  获取基本信息
+  const getMenber = (item: { kind: string }) => item.kind === 'POP_IMAGE';
 
-// 获取广告
-const getAdBannerList = async () => {
-  const result = await queryHomBannerListFront('');
-  if (result?.data && result?.data.length) {
-    const list =
-      result?.data.map((item: any) => ({
-        image: item.imgUrl,
-        title: item.title,
-        url: item.url,
-      })) || [];
-    // console.log('listadBannerLitadBannerList', adBannerList.value);
-    adBannerList.value = list;
+  const memberCardInfo = panelList.find(getMenber) || {};
+
+  console.log('POP_IMAGEmemberCardInfo1', memberCardInfo);
+  if (memberCardInfo.visible === 'N') {
+    return;
   }
+  if (!memberCardInfo.param) {
+    getWmAlertAdBannerListFun();
+    return;
+  }
+  const { style, special } = memberCardInfo.param?.doOut || {};
+  newBanneRadius.value = style?.borderRadius || '0rpx';
+  everyDay.value = special.everyDay || false;
+
+  console.log('POP_IMAGEmemberCardInfo2', memberCardInfo);
+  let image: any = [];
+  if (memberCardInfo.param.doOut.images) {
+    image = memberCardInfo.param.doOut.images.filter((item: any) => item.showed);
+  }
+  newBannerList.value = image;
+  console.log('POP_IMAGE', image);
 };
+// style:borderRadius: "10rpx"     maskPopup
+
+// icoUrl  showed   special: {everyDay: false} special: {everyDay: true}   visible
 // 设置广告弹窗
 // frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出
 // isOpen: 是否开启弹窗 Y:开启 N:关闭
-const floatAdsPopup: Ref<any> = ref([]);
+// const floatAdsPopup: Ref<any> = ref([]);
 const maskPopup = ref(false);
 const queryPopupFun = async () => {
   let popupTime = uni.getStorageSync('popupTime');
@@ -148,13 +158,48 @@ const queryPopupFun = async () => {
 // 弹窗广告图
 const getWmAlertAdBannerListFun = async () => {
   const res = await queryWeMemberAlertBannerListFront('');
-  const floatAds = res?.data?.splice(0, 3) || [];
-  floatAdsPopup.value = floatAds.map((item: any) => ({
-    image: item.imgUrl,
+  // const floatAds = res?.data?.splice(0, 3) || [];
+  // newBannerList.value  floatAdsPopup.value
+  const floatAds = res?.data || [];
+  newBannerList.value = floatAds.map((item: any) => ({
+    ...item,
+    icoUrl: item.icoUrl,
     title: item.name,
     url: item.url,
   }));
 };
+
+// const shareObj: Ref<any> = ref({});
+const shareData: Ref<any> = ref([]);
+const getShareSet = async () => {
+  const res = await queryShareSett({ pageName: 'WM_INDEX' });
+  // 控住分享
+  shareHold(res.data);
+  shareData.value = {
+    title: '首页',
+    path: '/pages/tabbar/index',
+    shareObj: res.data,
+  };
+};
+onShareAppMessage(() => shareAppMessage(shareData.value));
+onShareTimeline(() => shareTimeline(shareData.value));
+
+// const adBannerList: Ref<any> = ref([]);
+// 获取广告
+// const getAdBannerList = async () => {
+//   const result = await queryHomBannerListFront('');
+//   if (result?.data && result?.data.length) {
+//     const list =
+//       result?.data.map((item: any) => ({
+//         ...item,
+//         icoUrl: item.imgUrl,
+//         title: item.title,
+//         url: item.url,
+//       })) || [];
+
+//     adBannerList.value = list;
+//   }
+// };
 </script>
 
 <style lang="scss" scoped>

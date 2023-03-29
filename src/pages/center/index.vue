@@ -238,27 +238,8 @@ const getPageDate = async () => {
   userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
   userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
   userInfo.doOut = memberCardInfo.param.doOut;
-
-  // if (!memberCardInfo.param.doOut) {
-  //   userInfo.doOut = {
-  //     fixedStyle: 0,
-  //     special: {
-  //       color: '#8c7373',
-  //       fontSize: '32rpx',
-  //     },
-  //     style: {
-  //       borderRadius: '10rpx',
-  //       marginBottom: '30rpx',
-  //       marginLeft: '30rpx',
-  //       marginRight: '30rpx',
-  //       marginTop: '30rpx',
-  //       background: '#fff',
-  //     },
-  //   };
-  // }
-
-  console.log('userInfo1', memberCardInfo.param);
-  console.log('userInfo2', userInfo);
+  // console.log('userInfo1', memberCardInfo.param);
+  // console.log('userInfo2', userInfo);
   userInfo.background =
     userInfo.doOut?.fixedStyle === 2
       ? null

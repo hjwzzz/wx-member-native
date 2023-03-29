@@ -91,6 +91,7 @@
       v-if="items.kind === 'WARRANTY' && items.visible === 'Y'"
       :title="items.param.title"
       :items="items"
+      :policyListNum="items.param.showNum"
     />
     <!-- 视频  -->
     <CustomVideo

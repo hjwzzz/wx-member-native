@@ -198,12 +198,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref, computed } from 'vue';
-import { queryWarrantyListPageFront } from '@/api/server';
-import { staticUrl } from '@/utils/config';
+import { ref, computed } from 'vue';
+// import { queryWarrantyListPageFront } from '@/api/server';
+// import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
-import Router from '@/utils/router';
-import NoneData from './NoneData.vue';
+// import Router from '@/utils/router';
+// import NoneData from './NoneData.vue';
 
 const initBasicsData = useBasicsData();
 
@@ -266,7 +266,7 @@ const condition2 = [
 ];
 
 const showCondition = (item: any) => {
-  console.log('item', item);
+  // console.log('item', item);
   const code = item.prodCode?.code || item.prod || '';
   // laborChargesType
   const threshold = item.paramVo?.threshold || '';
