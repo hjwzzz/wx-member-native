@@ -22,6 +22,7 @@
     <swiper
       :style="{ height: boxStyle.height }"
       :autoplay="true"
+      :interval="intervals"
       circular
       @change="swiperChange"
       :previous-margin="fixedStyleIndex === 0 ? '0rpx' : '46rpx'"
@@ -86,6 +87,16 @@ const bannerList = computed(() => props.items?.param?.doOut?.images || []);
 const fixedStyleIndex = computed(() => props.items?.param?.doOut?.fixedStyle || 0);
 // 点数类型
 const specialStyle = computed(() => props.items?.param?.doOut?.special?.fixedStyle || 0);
+
+const intervals = computed(() => {
+  if (
+    props.items?.param?.doOut?.style?.interval &&
+    Number(props.items.param.doOut.style.interval)
+  ) {
+    return Number(props.items.param.doOut.style.interval) * 1000;
+  }
+  return 5000;
+});
 
 const boxStyle = computed(() => {
   if (props.items?.param?.doOut?.style) {

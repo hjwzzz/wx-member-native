@@ -182,9 +182,10 @@ const swiperChange = (e: any) => {
 
   .item-shop {
     display: inline-block;
-    width: 162rpx;
+    width: 25%;
     margin-bottom: 30rpx;
     text-align: center;
+    // flex-grow: 1;
   }
 
   .item-header {
