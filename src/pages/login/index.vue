@@ -114,6 +114,10 @@ const getMemberEula = async () => {
   const { data } = await getMemberEulaRequest();
   logo.value = data.logo;
   Object.assign(protocol, data);
+  if (res.data.param.logo || res.data.param) {
+    logo.value = res.data.param.logo;
+    Object.assign(protocol, res.data.param);
+  }
 };
 const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);
