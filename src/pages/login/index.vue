@@ -75,7 +75,17 @@ const logo = ref('');
 const protocol = reactive<Protocol>({});
 const agreeProto = ref(false);
 
-onLoad(({ c, num, inviteMid }) => {
+onLoad(({ c, num, inviteMid, welcomeGuide }) => {
+  // onLoad(obj => {
+  //   console.log(111, obj);
+  //   const ss = JSON.parse(JSON.stringify(obj));
+  //   console.log(222, ss);
+  //   console.log(333, ss.welcomeGuide);
+  if (welcomeGuide) {
+    // console.log(444, welcomeGuide);
+    Storage.setRegData(welcomeGuide);
+  }
+  // const { c, num, inviteMid } = obj;
   // 邀请信息
   c && uni.setStorageSync('c', c);
   num && uni.setStorageSync('num', num);
@@ -158,7 +168,8 @@ const autoCompleteInfo = async ({ phone, wmid }: any) => {
     activePerfectData: 'N',
     nickName: `${phone.substr(0, 4)}***${phone.substr()
       .substr(-3, 3)}`,
-    avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
+    avatarUrl:
+      'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132',
     wmid,
     relateKind: uni.getStorageSync('c') || undefined,
     relateNumber: uni.getStorageSync('num') || undefined,
@@ -212,7 +223,7 @@ const wxPhoneLogin = async (params: any) => {
       }
       autoCompleteInfo({
         phone,
-        wmid
+        wmid,
       });
 
       return;
@@ -225,7 +236,7 @@ const wxPhoneLogin = async (params: any) => {
       }
       autoCompleteInfo({
         phone,
-        wmid
+        wmid,
       });
     } else {
       uni.showModal({

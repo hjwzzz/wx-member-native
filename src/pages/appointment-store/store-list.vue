@@ -1,7 +1,7 @@
 <template>
   <CustomPage bottom>
     <view class="storesList">
-      <view class="search-bar-bg">
+      <view class="search-bar-bg" v-if="!distList.length">
         <uni-search-bar
           class="search-bar"
           v-model="keyward"
@@ -91,6 +91,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';
 import { staticUrl } from '@/utils/config';
 import { mergeFullAddress } from '@/utils/util';
+import Storage from '@/utils/storage';
 
 const props = defineProps({
   id: { type: String },
@@ -119,25 +120,35 @@ const list = ref<storeType[]>([]);
 const selected = ref<storeType>();
 const isActive = (i: storeType) => i.distId === selected.value?.distId;
 
-onLoad(() => {
-  uni.getLocation({
-    type: 'wgs84',
-    success: ({ latitude: lat, longitude: lng }) => {
-      local.value = { lat, lng };
-      uni.setStorageSync('location', local.value);
-      updateNearStorePost();
-    },
-    fail: () => {
-      local.value = uni.getStorageSync('location');
+const distList = ref<any[]>([]);
 
-      updateNearStorePost();
-      uni.showModal({
-        title: '提示',
-        content:
-          '微信不能确定你的位置，你可以通过以下操作提高微信的定位精确度: 在位置设置中打开GPS和无线网络',
-      });
-    },
-  });
+onLoad(() => {
+  distList.value = Storage.getDistList().length ? Storage.getDistList() : [];
+  if (distList.value.length) {
+    list.value = distList.value.map((item: any) => {
+      item.storeName = item.distName;
+      return item;
+    });
+  } else {
+    uni.getLocation({
+      type: 'wgs84',
+      success: ({ latitude: lat, longitude: lng }) => {
+        local.value = { lat, lng };
+        uni.setStorageSync('location', local.value);
+        updateNearStorePost();
+      },
+      fail: () => {
+        local.value = uni.getStorageSync('location');
+
+        updateNearStorePost();
+        uni.showModal({
+          title: '提示',
+          content:
+            '微信不能确定你的位置，你可以通过以下操作提高微信的定位精确度: 在位置设置中打开GPS和无线网络',
+        });
+      },
+    });
+  }
 });
 
 const local = ref({

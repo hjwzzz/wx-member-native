@@ -38,6 +38,12 @@ export const useBasicsData = defineStore(
     //   useRefreshState.value = !useRefreshState.value;
     // };
 
+    // 推广优惠券场景值
+    const couponPopularizeScene = ref('');
+    const setCouponPopularizeScene = (scene: string) => {
+      couponPopularizeScene.value = scene;
+    };
+
     return {
       useMid,
       mainColor,
@@ -45,11 +51,13 @@ export const useBasicsData = defineStore(
       checkLogin,
       bottomNavList,
       levitationNavList,
+      couponPopularizeScene,
       setUseMid,
       setMainColor,
       setColorTheme,
       setBottomNavList,
       setLevitationNavList,
+      setCouponPopularizeScene,
     };
   },
   { persist: { enabled: true } }
