@@ -52,7 +52,7 @@
           :style="{
             color: colorText,
           }"
-          >{{ list.storeName }}
+          >{{ list.storeName || '' }}
         </view>
         <view class="nearby-store-info-text">
           <view

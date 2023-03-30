@@ -1,10 +1,6 @@
 <template>
   <!--grid-price-none  -->
-  <view
-    class="grid-policy-act"
-    @click="toDetail"
-    :style="props.items.param?.doOut?.style"
-  >
+  <view class="grid-policy-act" :style="props.items.param?.doOut?.style">
     <view class="header">
       <view class="header-left">
         <text
@@ -24,7 +20,7 @@
           ({{ policyList.totalRecord || 0 }})
         </view>
       </view>
-      <view class="right">
+      <view class="right" @click="toDetail">
         <text
           class="more"
           :style="{
@@ -77,7 +73,7 @@
           <text class="text">时间：</text>
           <text class="text">{{ policy.bizTime }}</text>
           <text class="text-num">数量：</text>
-          <text class="text">2件</text>
+          <text class="text">{{ policy.details.length }}件</text>
         </view>
         <view class="policy-card-item-btn">
           <view class="policy-card-item-btn-info">
@@ -85,7 +81,12 @@
             <text class="num-infos">￥</text>
             <text class="num-info-price">200000</text>
           </view>
-          <view class="policy-card-item-btn-name"> 详情 </view>
+          <view
+            class="policy-card-item-btn-name"
+            @click="goDetails(index, policy)"
+          >
+            详情
+          </view>
         </view>
       </view>
     </view>
@@ -118,14 +119,25 @@
       </view>
     </block>
   </view>
+  <uni-popup ref="popupModalRef" :mask-click="false">
+    <view class="slot-content">
+      <view class="slot-content-iamge">
+        <image class="modal-img" :src="staticUrl + 'img/jinggao.png'"></image>
+      </view>
+      <view class="modal-text">抱歉</view>
+      <view class="modal-text text-expire">商家该质保单已过期</view>
+      <view class="slot-content-btn" @click="closePopupModal"> 关闭 </view>
+    </view>
+  </uni-popup>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { reactive, watch, ref } from 'vue';
 import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 import { useBasicsData } from '@/store/basicsData';
 import Router from '@/utils/router';
+import Storage from '@/utils/storage';
 // import NoneData from './NoneData.vue';
 import { onShow } from '@dcloudio/uni-app';
 
@@ -142,6 +154,20 @@ const props = withDefaults(defineProps<Props>(), {
   item: () => ({}),
   policyListNum: 0,
 });
+const popupModalRef = ref<any>(null);
+const closePopupModal = () => {
+  popupModalRef.value.close();
+};
+
+const goDetails = (type: any, item: any) => {
+  if (type === 33) {
+    popupModalRef.value.open();
+  } else {
+    const { warrantyCustUrl: url, id, warrantyKind: kind } = item;
+    const path = '/my-assets-pages/quality/custom';
+    uni.navigateTo({ url: `${path}?url=${url}&n=${id}&t=${Storage.getToken()}&a=${Storage.getJqzAppId()}&e=${Storage.getEpid()}&kind=${kind}` });
+  }
+};
 
 const policyList: any = reactive({ totalRecord: 0, records: [] });
 
@@ -195,6 +221,47 @@ onShow(() => {
 </script>
 
 <style lang="scss" scoped>
+.slot-content {
+  width: 622rpx;
+  min-height: 329rpx;
+  background: #ffffff;
+  border-radius: 16px;
+
+  .modal-img {
+    height: 107rpx;
+    width: 107rpx;
+    object-fit: contain;
+    margin-bottom: 26rpx;
+  }
+
+  .modal-text {
+    text-align: center;
+    font-size: 32rpx;
+    color: #323338;
+  }
+
+  .text-expire {
+    margin-bottom: 48rpx;
+  }
+
+  .slot-content-iamge {
+    display: flex;
+    justify-content: center;
+    padding-top: 60rpx;
+  }
+
+  .slot-content-btn {
+    border-top: 1rpx solid #fafafa;
+    width: 100%;
+    height: 96rpx;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 96rpx;
+    color: var(--main-color);
+  }
+}
+
 .policy-card {
   padding-top: 25rpx;
   padding-bottom: 30rpx;
