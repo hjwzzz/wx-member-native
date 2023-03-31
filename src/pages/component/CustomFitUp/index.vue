@@ -226,15 +226,14 @@ const getThemeKind = async () => {
     initBasicsData.setMainColor(getWmColorTheme.data.style.mainColor);
     initBasicsData.setColorTheme(getWmColorTheme.data.style);
   }
-  if (getWmColorTheme.data.param?.doOut?.special) {
-    const { navigationBarBackgroundColor, navigationBarTextStyle } =
-      getWmColorTheme.data.param.doOut.special;
-    console.log('setNavigationBarColor');
-    uni.setNavigationBarColor({
-      frontColor: navigationBarTextStyle || '#ffffff',
-      backgroundColor: navigationBarBackgroundColor || '#ff547b',
-    });
-  }
+  // if (getWmColorTheme.data.param?.doOut?.special) {
+  //   const { navigationBarBackgroundColor, navigationBarTextStyle } =
+  //     getWmColorTheme.data.param.doOut.special;
+  //   uni.setNavigationBarColor({
+  //     frontColor: navigationBarTextStyle || '#ffffff',
+  //     backgroundColor: navigationBarBackgroundColor || '#ff547b',
+  //   });
+  // }
 };
 
 // const bannerIndexFun = (item: any) => {

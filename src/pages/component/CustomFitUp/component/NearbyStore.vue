@@ -121,10 +121,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 // import Router from '@/utils/router';
-// import { useBasicsData } from '@/store/basicsData';
 import { staticUrl } from '@/utils/config';
 import { getNearStore } from '@/pages/api/nearby-store';
 import { mergeFullAddress } from '@/utils/util';
+import { useBasicsData } from '@/store/basicsData';
+
+const initBasicsData = useBasicsData();
 
 interface Props {
   title?: string;
@@ -184,32 +186,34 @@ onMounted(() => {
 });
 
 const updateNearStorePost = async () => {
-  const { code, data } = await getNearStore({
-    distId: '',
-    coordCur: coordCur.value,
-    type: 'store',
-  });
-  if (code === 0) {
-    data.forEach((i: any) => {
-      // 详细地址
-      i.fullAddress = mergeFullAddress(i);
-      // 距离
-      const { range } = i;
-      i.rangeInfo = `${range * 1000}m`;
-      if (range >= 1) i.rangeInfo = `${range}km`;
-      if (!range) i.rangeInfo = '未知';
+  if (initBasicsData.checkLogin) {
+    const { code, data } = await getNearStore({
+      distId: '',
+      coordCur: coordCur.value,
+      type: 'store',
     });
-    if (data.length) {
-      list.value = data[0] || {};
-      const address = [
-        list.value.province,
-        list.value.city,
-        list.value.district,
-        list.value.address,
-      ]
-        .filter(Boolean)
-        .join('');
-      list.value.addr = address;
+    if (code === 0) {
+      data.forEach((i: any) => {
+        // 详细地址
+        i.fullAddress = mergeFullAddress(i);
+        // 距离
+        const { range } = i;
+        i.rangeInfo = `${range * 1000}m`;
+        if (range >= 1) i.rangeInfo = `${range}km`;
+        if (!range) i.rangeInfo = '未知';
+      });
+      if (data.length) {
+        list.value = data[0] || {};
+        const address = [
+          list.value.province,
+          list.value.city,
+          list.value.district,
+          list.value.address,
+        ]
+          .filter(Boolean)
+          .join('');
+        list.value.addr = address;
+      }
     }
   }
 };

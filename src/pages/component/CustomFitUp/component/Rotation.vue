@@ -34,7 +34,14 @@
           @click.stop="bannerListClickImage(item)"
           :style="{ height: boxStyle.height }"
         >
-          <view class="swiper-item-view" :style="{ height: boxStyle.height }">
+          <view
+            class="swiper-item-view"
+            :style="{
+              height: boxStyle.height,
+              overflow: 'hidden',
+              ...props.items?.param?.doOut?.special,
+            }"
+          >
             <image class="swiper-item-image" :src="item.icoUrl" mode="widthFix">
             </image>
           </view>
@@ -87,6 +94,8 @@ const bannerList = computed(() => props.items?.param?.doOut?.images || []);
 const fixedStyleIndex = computed(() => props.items?.param?.doOut?.fixedStyle || 0);
 // 点数类型
 const specialStyle = computed(() => props.items?.param?.doOut?.special?.fixedStyle || 0);
+
+// borderRadius
 
 const intervals = computed(() => {
   if (

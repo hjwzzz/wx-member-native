@@ -35,8 +35,16 @@
           @click="setSelected(index, item)"
           :style="actionColor(index)"
         >
-          <view class="tarbar-list-li-icon">
-            <view class="iconfont icon-style" :class="item.icoUrl"></view>
+          <view class="tarbar-list-li-icon" :style="actionBackground">
+            <image
+              v-if="item.isIcon === 1"
+              class="tarbar-icon-iamge"
+              :src="actionImage(index, item)"
+              mode="aspectFit"
+            >
+            </image>
+            <text v-else class="iconfont icon-style" :class="item.icoUrl">
+            </text>
           </view>
           <view class="tarbar-list-li-name">
             {{ item.title }}
@@ -114,12 +122,35 @@ const linkNavListFun = (item: any) => {
 };
 
 // 显示颜色
-
 const actionColor = computed(() => (index: number) => {
-  if (initActiveTab.current === index) {
-    return `color:${tabBarStyle.selectedColor}`;
+  if (doOutStyle.custom.type === 0 || doOutStyle.custom.type === '0') {
+    if (initActiveTab.current === index) {
+      return `color:${tabBarStyle.selectedColor}`;
+    }
+    return '';
   }
-  return '';
+  if (initActiveTab.current === index) {
+    return `color:${doOutStyle.special.colorLight}`;
+  }
+  return `color:${doOutStyle.special.colorDark}`;
+});
+// 显示背景颜色
+const actionBackground = computed(() => {
+  if (doOutStyle.custom.type === 0 || doOutStyle.custom.type === '0') {
+    return '';
+  }
+  return `background:${doOutStyle.special.background}`;
+  // if (initActiveTab.current === index) {
+  //   return `background:${doOutStyle.special.background}`;
+  // }
+  // return '';
+});
+// 显示image
+const actionImage = computed(() => (index: number, item: any) => {
+  if (initActiveTab.current === index) {
+    return item.iconLight;
+  }
+  return item.iconDark;
 });
 
 // const emits = defineEmits(['change']);
@@ -157,9 +188,8 @@ onShow(() => {
   getWmmeberNav();
   geThemeColor();
 });
-// getSysUi   WM_THEME
+//
 const geThemeColor = async () => {
-  // console.log('getWmmeberNav');
   const { data } = await getByOpsIdAndKind('WM_THEME');
 
   if (data.style) {
@@ -168,7 +198,6 @@ const geThemeColor = async () => {
   }
 
   // console.log('WM_THEME', data);
-  //   // bottomNavListShow   levitationNavListShow       setBottomNavListShow  setLevitationNavListShow
   // if (data.param) {
   //   initBasicsData.setBottomNavList(data.param.bottomNavList);
   //   initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
@@ -179,15 +208,19 @@ const geThemeColor = async () => {
   // initActiveTab.setCurrent(active || 0);
   initTab();
 };
+
+const doOutStyle: any = reactive({ custom: { type: 0 }, special: {} });
+
 const getWmmeberNav = async () => {
   // console.log('getWmmeberNav');
   const { data } = await getByOpsIdAndKind('WM_BTMNAV');
-  //   // bottomNavListShow   levitationNavListShow       setBottomNavListShow  setLevitationNavListShow
+  // WM_BTMNAV
   if (data.param) {
     initBasicsData.setBottomNavList(data.param.bottomNavList);
     initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
     initBasicsData.setBottomNavListShow(data.param.bottomNavShowed);
     initBasicsData.setLevitationNavListShow(data.param.llevitationNavShowed);
+    Object.assign(doOutStyle, data.param.doOut);
   }
   // const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
   // initActiveTab.setCurrent(active || 0);
@@ -221,9 +254,9 @@ const initTab = () => {
   // selected.value = initActiveTab.current;
 
   const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
-  console.log(' props.code', props.code);
-  console.log(' active', active);
-  console.log(' bottomNavList', initBasicsData.bottomNavList);
+  // console.log(' props.code', props.code);
+  // console.log(' active', active);
+  // console.log(' bottomNavList', initBasicsData.bottomNavList);
   initActiveTab.setCurrent(active || 0);
 };
 </script>
@@ -248,6 +281,11 @@ const initTab = () => {
     bottom: 0;
     padding-bottom: constant(safe-area-inset-bottom);
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .tarbar-icon-iamge {
+    width: 30rpx;
+    height: 30rpx;
   }
 
   .tarbar-list-ul {
