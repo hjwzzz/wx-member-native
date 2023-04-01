@@ -22,12 +22,12 @@
       >
         个人中心
       </view>
-      <memberCard
+      <!-- <memberCard
         :userInfo="userInfo"
         :loginList="loginList"
         @showCode="showMenberCodePopup"
       >
-      </memberCard>
+      </memberCard> -->
     </view>
     <CustomFitUp types="WM_CENTER" />
   </CustomPage>

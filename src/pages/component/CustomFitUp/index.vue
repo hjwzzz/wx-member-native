@@ -1,5 +1,17 @@
 <template>
   <block v-for="(items, index) in panelList" :key="index">
+    <!-- memberCard -->
+    <memberCard
+      v-if="
+        items.kind === 'MEM_CARD' &&
+        items.visible === 'Y' &&
+        props.types === 'WM_CENTER'
+      "
+      :items="items"
+      :userInfo="userInfo"
+      :loginList="loginList"
+      @showCode="onShowCode"
+    />
     <!-- 轮播图 -->
     <Rotation
       v-if="items.kind === 'SWIPER' && items.visible === 'Y'"
@@ -109,12 +121,14 @@
 
 <script setup lang="ts">
 import { onShow } from '@dcloudio/uni-app';
-import { ref, Ref } from 'vue';
+import { ref, Ref, reactive } from 'vue';
 import Router from '@/utils/router';
 // import Storage from '@/utils/storage';
 import { getByOpsIdAndKind } from '@/api/server';
 import { richImage } from '@/utils/util';
 
+//
+import memberCard from './component/memberCard.vue';
 import ContentMall from './component/ContentMall.vue';
 import Rotation from './component/Rotation.vue';
 import MyQualitys from './component/MyQualitys.vue';
@@ -158,6 +172,10 @@ const handleMyPrizes = (index: number) => {
 const linktap = (e: any) => {
   uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
 };
+const emits = defineEmits(['showCode']);
+const onShowCode = () => {
+  emits('showCode');
+};
 
 // const bannerList: Ref<any> = ref([]);
 // const swiperVav: Ref<any> = ref([]);
@@ -171,10 +189,66 @@ const linktap = (e: any) => {
 // const swiperImgList: Ref<any> = ref([]);
 // 页面数据
 const panelList: Ref<any> = ref([]);
+
+const userInfo: any = reactive({
+  avatarUrl: '',
+  nickName: '',
+  name: '',
+  curLevelName: '',
+  memberCardInfo: '',
+  showGrowthValue: false,
+  showSignIn: false,
+  doOut: {
+    fixedStyle: 0,
+    special: {
+      color: '#8c7373',
+      fontSize: '32rpx',
+    },
+    style: {
+      borderRadius: '10rpx',
+      marginBottom: '30rpx',
+      marginLeft: '30rpx',
+      marginRight: '30rpx',
+      marginTop: '30rpx',
+      background: '#fff',
+    },
+  },
+  background: '',
+});
+
+const loginList: any = ref([]);
 // const pageBackground = ref('');
 const getPageDate = async () => {
   // const result = await getWmIndex('');
   const result = await getByOpsIdAndKind(props.types);
+
+  // WM_CENTER
+  if (props.types === 'WM_CENTER') {
+    const { param, panelList } = result.data;
+    loginList.value = param?.quickNavList || [];
+    if (param) {
+      userInfo.avatarUrl = param.avatarUrl;
+      userInfo.curLevelName = param.curLevelName;
+      userInfo.nickName = param.nickName;
+    }
+
+    //  获取基本信息
+    const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
+    const memberCardInfo = panelList.find(getMenber) || {};
+    if (!memberCardInfo.param) {
+      return;
+    }
+    userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
+    userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
+    userInfo.doOut = memberCardInfo.param.doOut;
+    userInfo.background =
+      userInfo.doOut?.fixedStyle === 2
+        ? null
+        : memberCardInfo.param.doOut.style.background;
+    if (memberCardInfo.param.doOut.style.background) {
+      delete memberCardInfo.param.doOut.style.background;
+    }
+  }
   // console.log('result', result);
   if (result.data.panelList) {
     const comList = result.data.panelList.map((item: any) => {
