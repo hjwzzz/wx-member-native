@@ -7,7 +7,17 @@
         class="home-icon home-data"
         @click="linkNavListFun(item)"
       >
-        <view class="iconfont home-icon-style" :class="item.icoUrl" />
+        <!-- iconLight -->
+        <image
+          v-if="item.isIcon === 1"
+          class="float-icon-iamge"
+          :src="item.iconLight"
+          mode="aspectFit"
+        >
+        </image>
+        <text v-else class="iconfont home-icon-style" :class="item.icoUrl">
+        </text>
+        <!-- <view class="iconfont home-icon-style" :class="item.icoUrl" /> -->
       </view>
     </block>
     <view
@@ -262,6 +272,10 @@ const initTab = () => {
 </script>
 
 <style lang="scss" scoped>
+.float-icon-iamge {
+  width: 30rpx;
+  height: 30rpx;
+}
 .tarbar {
   // min-height: 100rpx;
   width: 100%;

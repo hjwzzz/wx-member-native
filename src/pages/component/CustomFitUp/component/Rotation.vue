@@ -108,11 +108,26 @@ const intervals = computed(() => {
 });
 
 const boxStyle = computed(() => {
-  if (props.items?.param?.doOut?.style) {
+  const styles = props.items?.param?.doOut?.style;
+  const {
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    background,
+    borderRadius,
+  } = styles;
+
+  if (styles) {
     return {
-      ...props.items?.param?.doOut?.style,
+      background: background || '#fff',
+      borderRadius: borderRadius || '0px',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
+      paddingTop: marginTop || '0px',
+      paddingBottom: marginBottom || '0px',
+      paddingLeft: marginLeft || '0px',
+      paddingRight: marginRight || '0px',
     };
   }
   return {};

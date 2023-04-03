@@ -23,33 +23,52 @@
   </CustomPage>
   <Tabbar code="wm_index"> </Tabbar>
 
+  <!--   :indicator-dots="newBannerList.length > 1"
+            indicator-color="#D8D9E0"
+            :indicator-active-color="initBasicsData.mainColor" -->
   <view class="home-mask" v-if="maskPopup && newBannerList.length > 0">
     <view class="home-alert">
       <view class="alert-img">
         <view class="alert-box">
-          <swiper
-            :style="{ height: '680rpx' }"
-            class=""
-            :indicator-dots="newBannerList.length > 1"
-            indicator-color="#D8D9E0"
-            :indicator-active-color="initBasicsData.mainColor"
-            circular
-            autoplay
-          >
-            <swiper-item
-              class="swiper-item"
-              v-for="(item, index) in newBannerList"
-              :key="index"
+          <view class="custom-dots">
+            <swiper
+              :style="{ height: '680rpx' }"
+              circular
+              autoplay
+              :interval="5000"
+              @change="swiperChange"
             >
-              <image
-                :style="{ borderRadius: newBanneRadius }"
-                class="alert-box-image"
-                @click="bannerListClickImage(item)"
-                :src="item.icoUrl"
-                mode="aspectFit"
-              ></image>
-            </swiper-item>
-          </swiper>
+              <swiper-item
+                class="swiper-item"
+                v-for="(item, index) in newBannerList"
+                :key="index"
+              >
+                <image
+                  :style="{ borderRadius: newBanneRadius }"
+                  class="alert-box-image"
+                  @click="bannerListClickImage(item)"
+                  :src="item.icoUrl"
+                  mode="aspectFit"
+                ></image>
+              </swiper-item>
+            </swiper>
+            <view
+              class="custom-dots-box dots-round"
+              v-if="newBannerList.length > 1"
+            >
+              <view
+                class="custom-dots-show"
+                v-for="(_, index) in newBannerList"
+                :key="index"
+                :style="{
+                  background:
+                    currentIndex === index
+                      ? initBasicsData.mainColor
+                      : '#bdbdbd',
+                }"
+              />
+            </view>
+          </view>
         </view>
       </view>
       <view class="alert-icon" @click.stop="maskPopup = false">
@@ -160,6 +179,11 @@ const getPageDate = async () => {
   // console.log('POP_IMAGE', image);
 };
 
+const currentIndex = ref(0);
+const swiperChange = (e: any) => {
+  currentIndex.value = e.detail.current;
+};
+
 // icoUrl  showed   special: {everyDay: false} special: {everyDay: true}   visible
 // 设置广告弹窗
 // frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出
@@ -238,6 +262,35 @@ onShareTimeline(() => shareTimeline(shareData.value));
   //   color: #000000;
   // }
 }
+
+.custom-dots {
+  position: relative;
+  // padding-top: 30rpx;
+  // padding-bottom: 50rpx;
+  .custom-dots-box {
+    // width: 100%;
+    position: absolute;
+    bottom: 18rpx;
+    left: 0rpx;
+    right: 0rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .custom-dots-show {
+    border-radius: 6rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+  }
+  .dots-round {
+    z-index: 200px;
+    .custom-dots-show {
+      width: 24rpx;
+      height: 6rpx;
+    }
+  }
+}
+
 .page-top-title {
   position: absolute;
   left: 0px;
