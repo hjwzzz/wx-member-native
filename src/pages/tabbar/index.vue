@@ -1,5 +1,24 @@
 <template>
-  <CustomPage :background="'#949494'" bottom>
+  <CustomPage :backgroundColor="pageBackground" bottom>
+    <view
+      class="page-top-show"
+      :style="{
+        background: `url( ${showToImageBG} ) center top / 100% auto no-repeat`,
+        paddingTop: headHeight + 'rpx',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }"
+    >
+    </view>
+    <view
+      class="page-top-title"
+      :style="{
+        top: menuInfoTopShow + 'px',
+        height: menuInfoHeightShow + 'px',
+      }"
+    >
+      {{ pageTitle }}
+    </view>
     <CustomFitUp types="WM_HOME" />
   </CustomPage>
   <Tabbar code="wm_index"> </Tabbar>
@@ -77,6 +96,23 @@ const initBasicsData = useBasicsData();
 // onLoad(() => {});
 
 onShow(() => {
+  uni.getSystemInfo({
+    success: res => {
+      const rr = uni.getMenuButtonBoundingClientRect();
+      const menuInfoTop = rr.top;
+      const menuInfoBottom = rr.bottom;
+      menuInfoTopShow.value = menuInfoTop;
+      menuInfoHeightShow.value = rr.height;
+
+      const showHeight =
+        Number(menuInfoTop) +
+        Number(menuInfoBottom) -
+        Number(res.statusBarHeight) +
+        10;
+      headHeight.value = showHeight * 2;
+    },
+  });
+
   getPageDate();
   // getAdBannerList();
   // getGoldPriceByPage();
@@ -84,6 +120,12 @@ onShow(() => {
   getShareSet();
 });
 
+const pageTitle = ref('首页');
+const headHeight: Ref<number> = ref(100);
+const menuInfoTopShow: Ref<number> = ref(0);
+const menuInfoHeightShow: Ref<number> = ref(0);
+const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-001.png';
+const showToImageBG = ref(deFImage1);
 const newBannerList: any = ref([]);
 const newBanneRadius = ref('0px');
 const pageBackground = ref('#f5f5f5');
@@ -91,7 +133,9 @@ const getPageDate = async () => {
   // console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
   const { data } = await getByOpsIdAndKind('WM_HOME');
   const { param, panelList } = data;
-  pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
+  pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
+  showToImageBG.value = param?.doOut?.special?.backgroundImage || deFImage1;
+  pageTitle.value = data?.param?.title || '首页';
 
   //  获取基本信息
   const getMenber = (item: { kind: string }) => item.kind === 'POP_IMAGE';
@@ -169,6 +213,42 @@ onShareTimeline(() => shareTimeline(shareData.value));
 </script>
 
 <style lang="scss" scoped>
+.page-top-show {
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  padding-bottom: 30rpx;
+  width: calc(100vw - 60rpx);
+  min-height: 330rpx;
+  // background: linear-gradient(180deg, #f5debb, #f4f5f7);
+  background-repeat: no-repeat;
+  // background-size: 100% 100%;
+  // position: absolute;
+  // left: 0px;
+  // right: 0px;
+  // z-index: 0;
+  // .page-top-title {
+  //   position: absolute;
+  //   left: 0px;
+  //   right: 0px;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   font-size: 28rpx;
+  //   font-weight: 500;
+  //   color: #000000;
+  // }
+}
+.page-top-title {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #000000;
+}
 .home-mask {
   position: fixed;
   top: 0;

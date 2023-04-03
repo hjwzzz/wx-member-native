@@ -3,33 +3,29 @@
     :page-style="'overflow:' + (menberCodePopupVisible ? 'hidden' : 'visible')"
   ></page-meta>
   <!-- pageBackground.value -->
-  <CustomPage :background="pageBackground || '#949494'" bottom>
+  <CustomPage :backgroundColor="pageBackground" bottom>
     <view
       class="page-top-show"
       :style="{
-        background: userInfo.background || `url( ${showToImageBG} )`,
+        background:
+          userInfo.background ||
+          `url( ${showToImageBG} ) center top / 100% auto no-repeat`,
         paddingTop: headHeight + 'rpx',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }"
     >
-      <view
-        class="page-top-title"
-        :style="{
-          top: menuInfoTopShow + 'px',
-          height: menuInfoHeightShow + 'px',
-        }"
-      >
-        个人中心
-      </view>
-      <!-- <memberCard
-        :userInfo="userInfo"
-        :loginList="loginList"
-        @showCode="showMenberCodePopup"
-      >
-      </memberCard> -->
     </view>
-    <CustomFitUp types="WM_CENTER" />
+    <view
+      class="page-top-title"
+      :style="{
+        top: menuInfoTopShow + 'px',
+        height: menuInfoHeightShow + 'px',
+      }"
+    >
+      {{ pageTitle }}
+    </view>
+    <CustomFitUp types="WM_CENTER" @showCode="showMenberCodePopup" />
   </CustomPage>
   <Tabbar code="wm_center"> </Tabbar>
 
@@ -109,7 +105,7 @@ import Tabbar from '@/components/Tabbar/index.vue';
 import CustomFitUp from '../component/CustomFitUp/index.vue';
 
 import BrCode128 from '@/utils/barcode.js';
-import memberCard from '../component/memberCard.vue';
+// import memberCard from '../component/memberCard.vue';
 
 const imageUrl = staticUrl;
 // const initBasicsData = useBasicsData();
@@ -136,11 +132,10 @@ const bannerList: Ref<any> = ref([]);
 // const policyListNum = ref(0);
 
 // "navigationStyle": "custom" height
-const headHeight: any = ref(100);
-const menuInfoTopShow: any = ref(0);
-const menuInfoHeightShow: any = ref(0);
+const headHeight: Ref<number> = ref(100);
+const menuInfoTopShow: Ref<number> = ref(0);
+const menuInfoHeightShow: Ref<number> = ref(0);
 onShow(() => {
-  console.log('1111111111111111111getPageDate11');
   getPageDate();
   // getMemberCentertIndex();
   getBannerData();
@@ -189,6 +184,8 @@ const showToImageBG = ref(deFImage1);
 //   }
 // };
 
+// result.data?.param?.title
+const pageTitle = ref('个人中心');
 const pageBackground = ref('#f5f5f5');
 const userInfo: any = reactive({
   avatarUrl: '',
@@ -215,39 +212,14 @@ const userInfo: any = reactive({
   },
   background: '',
 });
-const loginList: Ref<any> = ref([]);
 
 const getPageDate = async () => {
   const { data } = await getByOpsIdAndKind('WM_CENTER');
-  const { param, panelList } = data;
-  pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
-  loginList.value = param?.quickNavList || [];
-
-  if (param) {
-    userInfo.avatarUrl = param.avatarUrl;
-    userInfo.curLevelName = param.curLevelName;
-    userInfo.nickName = param.nickName;
-  }
-
-  //  获取基本信息
-  const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
-  const memberCardInfo = panelList.find(getMenber) || {};
-  if (!memberCardInfo.param) {
-    return;
-  }
-  userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
-  userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
-  userInfo.doOut = memberCardInfo.param.doOut;
-  // console.log('userInfo1', memberCardInfo.param);
-  // console.log('userInfo2', userInfo);
-  userInfo.background =
-    userInfo.doOut?.fixedStyle === 2
-      ? null
-      : memberCardInfo.param.doOut.style.background;
-
-  if (memberCardInfo.param.doOut.style.background) {
-    delete memberCardInfo.param.doOut.style.background;
-  }
+  const { param } = data;
+  // pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
+  pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
+  showToImageBG.value = param?.doOut?.special?.backgroundImage || deFImage1;
+  pageTitle.value = data?.param?.title || '个人中心';
 };
 
 // 预约服务
@@ -401,19 +373,33 @@ const hideFullMenberCode = () => {
   min-height: 330rpx;
   // background: linear-gradient(180deg, #f5debb, #f4f5f7);
   background-repeat: no-repeat;
-  background-size: 100% 100%;
-  position: relative;
-  .page-top-title {
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28rpx;
-    font-weight: 500;
-    color: #000000;
-  }
+  // background-size: 100% 100%;
+  // position: absolute;
+  // left: 0px;
+  // right: 0px;
+  // z-index: 0;
+  // .page-top-title {
+  //   position: absolute;
+  //   left: 0px;
+  //   right: 0px;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   font-size: 28rpx;
+  //   font-weight: 500;
+  //   color: #000000;
+  // }
+}
+.page-top-title {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #000000;
 }
 
 .menber-code-popup {

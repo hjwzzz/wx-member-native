@@ -1,122 +1,125 @@
 <template>
-  <block v-for="(items, index) in panelList" :key="index">
-    <!-- memberCard -->
-    <memberCard
-      v-if="
-        items.kind === 'MEM_CARD' &&
-        items.visible === 'Y' &&
-        props.types === 'WM_CENTER'
-      "
-      :items="items"
-      :userInfo="userInfo"
-      :loginList="loginList"
-      @showCode="onShowCode"
-    />
-    <!-- 轮播图 -->
-    <Rotation
-      v-if="items.kind === 'SWIPER' && items.visible === 'Y'"
-      :items="items"
-    />
-    <!-- 快捷导航-图片导航  -->
-    <CustomQuick
-      v-if="items.kind === 'QUICK_NAV' && items.visible === 'Y'"
-      :items="items"
-    />
-    <!-- 广告 -->
-    <NoticeBar
-      v-if="items.kind === 'NOTICE' && items.visible === 'Y'"
-      :items="items"
-    />
-    <!-- 图片-或者广告 -->
-    <CustomImage
-      v-if="items.kind === 'BANNER' && items.visible === 'Y'"
-      :items="items"
-      :types="types"
-    />
-    <!-- 分割线-占位 -->
-    <CutView
-      v-if="items.kind === 'PARTITION' && items.visible === 'Y'"
-      :items="items"
-    />
-    <!-- 预约服务 -->
-    <MyService
-      v-if="items.kind === 'RES_SVC' && items.visible === 'Y'"
-      :items="items"
-      :title="items.param.title"
-      :srvProshowNum="items.param.showNum"
-    />
-    <!-- 我的奖品 -->
-    <MyPrizes
-      v-if="items.kind === 'MY_AWARD' && items.visible === 'Y'"
-      :item="items"
-      :items="items"
-      :title="items.param.title"
-      @handle="handleMyPrizes"
-    />
-    <!-- 标题头  -->
-    <Title
-      v-if="items.kind === 'TITLE' && items.visible === 'Y'"
-      :items="items"
-    >
-    </Title>
-    <!-- 今日金价 -->
-    <TodayGoldPrices
-      v-if="items.kind === 'GOLD_PRICE' && items.visible === 'Y'"
-      :title="items.param.title"
-      :items="items"
-      :type="types"
-    />
-    <!-- 文本 -->
-    <CustomText
-      v-if="items.kind === 'TEXT' && items.visible === 'Y'"
-      :items="items"
-    />
-    <!-- 富文本 -->
-
-    <view
-      class="des-html"
-      v-if="items.kind === 'RICH_TEXT' && items.visible === 'Y'"
-      :style="items.param?.doOut?.style"
-    >
-      <mp-html
-        v-if="items.param.content"
-        :copy-link="false"
-        :content="richImage(items.param.content)"
-        @linktap="linktap"
+  <!-- class="custom-fit-up-box" :style="{ top: headHeight + 'px' }" -->
+  <view class="custom-fit-up-box-vnew">
+    <block v-for="(items, index) in panelList" :key="index">
+      <!-- memberCard -->
+      <memberCard
+        v-if="
+          items.kind === 'MEM_CARD' &&
+          items.visible === 'Y' &&
+          props.types === 'WM_CENTER'
+        "
+        :items="items"
+        :userInfo="userInfo"
+        :loginList="loginList"
+        @showCode="onShowCode"
       />
-    </view>
-    <!-- 推荐礼品 -->
-    <ContentMall
-      v-if="items.kind === 'REC_GIFTS' && items.visible === 'Y'"
-      :title="items.param.title"
-      :items="items"
-    />
-    <!--  附近门店   -->
-    <NearbyStore
-      v-if="items.kind === 'NEAR_STORE' && items.visible === 'Y'"
-      :title="items.param.title"
-      :items="items"
-    />
+      <!-- 轮播图 -->
+      <Rotation
+        v-if="items.kind === 'SWIPER' && items.visible === 'Y'"
+        :items="items"
+      />
+      <!-- 快捷导航-图片导航  -->
+      <CustomQuick
+        v-if="items.kind === 'QUICK_NAV' && items.visible === 'Y'"
+        :items="items"
+      />
+      <!-- 广告 -->
+      <NoticeBar
+        v-if="items.kind === 'NOTICE' && items.visible === 'Y'"
+        :items="items"
+      />
+      <!-- 图片-或者广告 -->
+      <CustomImage
+        v-if="items.kind === 'BANNER' && items.visible === 'Y'"
+        :items="items"
+        :types="types"
+      />
+      <!-- 分割线-占位 -->
+      <CutView
+        v-if="items.kind === 'PARTITION' && items.visible === 'Y'"
+        :items="items"
+      />
+      <!-- 预约服务 -->
+      <MyService
+        v-if="items.kind === 'RES_SVC' && items.visible === 'Y'"
+        :items="items"
+        :title="items.param.title"
+        :srvProshowNum="items.param.showNum"
+      />
+      <!-- 我的奖品 -->
+      <MyPrizes
+        v-if="items.kind === 'MY_AWARD' && items.visible === 'Y'"
+        :item="items"
+        :items="items"
+        :title="items.param.title"
+        @handle="handleMyPrizes"
+      />
+      <!-- 标题头  -->
+      <Title
+        v-if="items.kind === 'TITLE' && items.visible === 'Y'"
+        :items="items"
+      >
+      </Title>
+      <!-- 今日金价 -->
+      <TodayGoldPrices
+        v-if="items.kind === 'GOLD_PRICE' && items.visible === 'Y'"
+        :title="items.param.title"
+        :items="items"
+        :type="types"
+      />
+      <!-- 文本 -->
+      <CustomText
+        v-if="items.kind === 'TEXT' && items.visible === 'Y'"
+        :items="items"
+      />
+      <!-- 富文本 -->
 
-    <!--  质保单 -->
-    <MyQualitys
-      v-if="items.kind === 'WARRANTY' && items.visible === 'Y'"
-      :title="items.param.title"
-      :items="items"
-      :policyListNum="items.param.showNum"
-    />
-    <!-- 视频  -->
-    <CustomVideo
-      v-if="items.kind === 'VIDEO' && items.visible === 'Y'"
-      :items="items"
-    />
+      <view
+        class="des-html"
+        v-if="items.kind === 'RICH_TEXT' && items.visible === 'Y'"
+        :style="items.param?.doOut?.style"
+      >
+        <mp-html
+          v-if="items.param.content"
+          :copy-link="false"
+          :content="richImage(items.param.content)"
+          @linktap="linktap"
+        />
+      </view>
+      <!-- 推荐礼品 -->
+      <ContentMall
+        v-if="items.kind === 'REC_GIFTS' && items.visible === 'Y'"
+        :title="items.param.title"
+        :items="items"
+      />
+      <!--  附近门店   -->
+      <NearbyStore
+        v-if="items.kind === 'NEAR_STORE' && items.visible === 'Y'"
+        :title="items.param.title"
+        :items="items"
+      />
 
-    <!-- 优惠券  -->
-    <Coupon
-      v-if="items.kind === 'COUPON' && items.visible === 'Y'"
-      :items="items"
-    />
-  </block>
+      <!--  质保单 -->
+      <MyQualitys
+        v-if="items.kind === 'WARRANTY' && items.visible === 'Y'"
+        :title="items.param.title"
+        :items="items"
+        :policyListNum="items.param.showNum"
+      />
+      <!-- 视频  -->
+      <CustomVideo
+        v-if="items.kind === 'VIDEO' && items.visible === 'Y'"
+        :items="items"
+      />
+
+      <!-- 优惠券  -->
+      <Coupon
+        v-if="items.kind === 'COUPON' && items.visible === 'Y'"
+        :items="items"
+      />
+    </block>
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -154,17 +157,31 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), { types: 'WM_HOME' });
 
+const headHeight = ref(100);
 onShow(() => {
   getThemeKind();
   getPageDate();
+  uni.getSystemInfo({
+    success: res => {
+      const rr = uni.getMenuButtonBoundingClientRect();
+      const menuInfoTop = rr.top;
+      const menuInfoBottom = rr.bottom;
+      const showHeight =
+        Number(menuInfoTop) +
+        Number(menuInfoBottom) -
+        Number(res.statusBarHeight);
+      headHeight.value = showHeight;
+      // const navHeight =
+      //   (rr.top - Number(res.statusBarHeight)) * 2 +
+      //   Number(res.statusBarHeight) +
+      //   rr.height;
+    },
+  });
 });
 
 // onMounted(() => {
 //   getPageDate();
 // });
-// sysUiFront
-// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsldAndKind
-// https://backend.dev.jqzplat.com/jwx-mini-program/sysUiFront/getByOpsIdAndKind
 
 const handleMyPrizes = (index: number) => {
   Router.goCodePage('my_prize', `?tab=${index}`);
@@ -177,16 +194,6 @@ const onShowCode = () => {
   emits('showCode');
 };
 
-// const bannerList: Ref<any> = ref([]);
-// const swiperVav: Ref<any> = ref([]);
-// const swiperVavHeight = ref(196);
-// const dataList: Ref<any> = ref({});
-
-// const goldPrice: Ref<any> = ref([]);
-// const todayGoldPriceShowed = ref(false);
-// panelList
-// 新轮播图
-// const swiperImgList: Ref<any> = ref([]);
 // 页面数据
 const panelList: Ref<any> = ref([]);
 
@@ -241,11 +248,14 @@ const getPageDate = async () => {
     userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
     userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
     userInfo.doOut = memberCardInfo.param.doOut;
-    userInfo.background =
+    // userInfo.background =
+    //   userInfo.doOut?.fixedStyle === 2
+    //     ? null
+    //     : memberCardInfo.param.doOut.style.background;
+    if (
+      memberCardInfo.param.doOut.style.background &&
       userInfo.doOut?.fixedStyle === 2
-        ? null
-        : memberCardInfo.param.doOut.style.background;
-    if (memberCardInfo.param.doOut.style.background) {
+    ) {
       delete memberCardInfo.param.doOut.style.background;
     }
   }
@@ -274,23 +284,12 @@ const getPageDate = async () => {
     });
     panelList.value = comList || [];
   }
-
-  // pageBackground.value = result.data.param?.doOut?.style?.background ||  ''
-  //
-  // const banner = result.data?.bannerList || [];
-  // dataList.value = result.data;
-  // bannerList.value = banner;
-
-  // console.log('bannerList', bannerList.value);
-  // console.log(result);
-  if (result.data.param?.title) {
-    uni.setNavigationBarTitle({
-      // 设置顶部bar的标题
-      title: result.data.param?.title,
-    });
-  }
-
-  // getPanelList();
+  // if (result.data.param?.title) {
+  //   uni.setNavigationBarTitle({
+  //     // 设置顶部bar的标题
+  //     title: result.data?.param?.title,
+  //   });
+  // }
 };
 
 const getThemeKind = async () => {
@@ -309,51 +308,18 @@ const getThemeKind = async () => {
   //   });
   // }
 };
-
-// const bannerIndexFun = (item: any) => {
-//   const url = JSON.parse(item.url || {});
-//   const code = url.code || url.systemUrl;
-//   if (!code && url.appletUrl) {
-//     const miniUrl = item.miniUrl || url.appletUrl;
-//     Router.goNoCodePage(miniUrl);
-//     return;
-//   }
-//   if (!code && url.h5Url) {
-//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-//     return;
-//   }
-
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(url.code || url.systemUrl, param);
-// };
-// QUICK_NAV
-// const getPanelList = () => {
-//   const panelList = dataList.value.wmMainRspVo?.panelList;
-//   if (panelList) {
-//     const quickNav: any = panelList.filter((p: any) => p.kind === 'QUICK_NAV');
-//     const linkList = quickNav[0].param.linkList;
-//     const swiperVavList: any = [];
-//     for (let i = 0; i < linkList.length; i += 8) {
-//       swiperVavList.push(linkList.slice(i, i + 8));
-//     }
-//     if (swiperVavList.length) {
-//       const len = swiperVavList[0]?.length;
-//       const num = Number(String(len / 4)
-//         .split('.')[0]) + 1 || 0;
-//       const height = (len % 4 === 0 ? len / 4 : num) * 196;
-//       swiperVavHeight.value = height;
-//     }
-//     swiperVav.value = swiperVavList;
-//   }
-// };
 </script>
 
 <style lang="scss" scoped>
+.custom-fit-up-box-vnew {
+  margin-top: -370rpx;
+}
+.custom-fit-up-box {
+  z-index: 999;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+}
 .des-html {
   // width: 630rpx;
   padding: 30rpx;

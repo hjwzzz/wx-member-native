@@ -24,8 +24,11 @@ const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
 
 <style lang="scss" scoped>
 .box-video {
+  height: 430rpx;
+  overflow: hidden;
   .videos {
     width: 100%;
+    margin-right: 15px;
   }
 }
 </style>

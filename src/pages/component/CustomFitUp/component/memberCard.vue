@@ -1,6 +1,11 @@
 <template>
   <view
     class="member-card"
+    :style="{
+      ...props.items.param.doOut.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     :class="`member-card-style${userInfo.doOut?.fixedStyle + 1}`"
   >
     <!--  -->
@@ -192,10 +197,12 @@ const initBasicsData = useBasicsData();
 interface Props {
   userInfo: any;
   loginList: any;
+  items: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   userInfo: () => ({}),
   loginList: () => [],
+  items: () => ({}),
 });
 const emits = defineEmits(['showCode']);
 
