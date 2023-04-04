@@ -19,7 +19,7 @@
     v-if="props.items?.param?.doOut?.fixedStyle === 1"
     :style="{ ...props.items?.param?.doOut?.style, backgroundSize: 'cover' }"
     class="boxs title-box1"
-    @click="handleEntryUrl(props.items?.param?.site)"
+    @click="handleUrl(props.items)"
   >
     <view
       class="title-box-text nowrap"
@@ -48,6 +48,12 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
 const initBasicsData = useBasicsData();
+
+// props.items?.param?.site
+const handleUrl = (items: any) => {
+  console.log('items', items);
+  handleEntryUrl(items?.param?.site);
+};
 </script>
 
 <style lang="scss" scoped>

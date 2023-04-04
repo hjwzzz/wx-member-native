@@ -54,7 +54,7 @@
                 </view>
               </view>
               <view class="right">
-                <view class="t">¥{{ item.price }}</view>
+                <view class="t">¥{{ item.price || 0 }}</view>
                 <view
                   class="b"
                   v-if="goldPriceDatas.param.laborCostShowed === 'Y'"
@@ -186,7 +186,7 @@
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
               <text class="gold-price-style3-item-right-price">
-                ¥{{ item.price || '--' }}
+                ¥{{ item.price || 0 }}
               </text>
             </view>
           </view>
@@ -221,7 +221,7 @@
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
               <text class="gold-price-style3-item-right-price">
-                ¥{{ item.price || '--' }}
+                ¥{{ item.price || 0 }}
               </text>
             </view>
           </view>

@@ -38,7 +38,7 @@
 
     <view
       class="gold-price-style1"
-      v-if="props.items?.param?.doOut?.fixedStyle === 0"
+      v-if="props.items?.param?.doOut?.fixedStyle === 0 && showView"
       :class="!showRecovery && !showSale ? 'gold-price-style1-hide' : ''"
     >
       <view
@@ -73,7 +73,7 @@
       </view>
     </view>
     <view
-      v-if="props.items?.param?.doOut?.fixedStyle === 0"
+      v-if="props.items?.param?.doOut?.fixedStyle === 0 && showView"
       style="position: relative"
     >
       <swiper
@@ -104,7 +104,7 @@
               </view>
               <view class="detail-content">
                 <view class="left detail-content-left">
-                  {{ price.price }}
+                  {{ price.price || 0 }}
                 </view>
                 <view class="right">元/克</view>
               </view>
@@ -136,7 +136,7 @@
 
     <view
       class="gold-price-style2"
-      v-if="props.items?.param?.doOut?.fixedStyle === 1"
+      v-if="props.items?.param?.doOut?.fixedStyle === 1 && showView"
     >
       <view class="gold-price-style2-store" v-if="showRecovery || showSale">
         <text class="gold-price-style2-store-name"> {{ showDistName }}</text>
@@ -172,7 +172,9 @@
           :key="index"
         >
           <view class="gold-price-style2-item-info">
-            <view class="gold-price-style2-item-name">{{ item.met }} </view>
+            <view class="gold-price-style2-item-name"
+              >{{ item.met }}{{ item.metCtn }}
+            </view>
             <view
               class="gold-price-style2-item-pz"
               v-if="props.items?.param?.showBrand"
@@ -181,7 +183,7 @@
             </view>
           </view>
           <view class="gold-price-style2-item-price">
-            ¥{{ item.metCtn || '--' }}
+            ¥{{ item.price || 0 }}
           </view>
         </view>
         <!--  -->
@@ -191,7 +193,7 @@
     <!--  -->
     <view
       class="gold-price-style3"
-      v-if="props.items?.param?.doOut?.fixedStyle === 2"
+      v-if="props.items?.param?.doOut?.fixedStyle === 2 && showView"
     >
       <view
         class="gold-price-style3-store nowrap"
@@ -227,10 +229,11 @@
             :key="index"
           >
             <text class="gold-price-style3-item-right-name">
-              {{ item.met }}
+              {{ item.met }}{{ item.metCtn || ''
+              }}{{ item.brandName ? `(${item.brandName})` : '' }}
             </text>
             <text class="gold-price-style3-item-right-price">
-              ¥{{ item.metCtn || '--' }}
+              ¥{{ item.price || 0 }}
             </text>
           </view>
           <!-- <view class="gold-price-style3-item-right-info">
@@ -264,10 +267,11 @@
             :key="index"
           >
             <text class="gold-price-style3-item-right-name">
-              {{ item.met }}
+              {{ item.met }}{{ item.metCtn || ''
+              }}{{ item.brandName ? `(${item.brandName})` : '' }}
             </text>
             <text class="gold-price-style3-item-right-price">
-              ¥{{ item.metCtn || '--' }}
+              ¥{{ item.price || 0 }}
             </text>
           </view>
           <!-- <view class="gold-price-style3-item-right-info">
@@ -333,6 +337,8 @@ const swiperChange = (e: any) => {
   currentIndex.value = e.detail.current;
 };
 const listPrice = computed(() => (showType.value === 'new' ? goldPrice.value : oldGoldPrice.value));
+
+const showView = computed(() => goldPrice.value.length > 0 || oldGoldPrice.value.length > 0);
 
 onMounted(() => {
   _getGoldPriceByPage();
@@ -601,7 +607,7 @@ const _getGoldPriceByPage = async () => {
   }
   .gold-price-style3-item:last-child {
     border-bottom: 0rpx solid white;
-    padding-bottom: 5rpx;
+    padding-bottom: 20rpx;
   }
   .gold-price-style3-item-left {
     display: flex;

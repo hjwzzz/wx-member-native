@@ -8,7 +8,7 @@ import {
 } from '@/api/server';
 import { getByOpsIdAndKind } from '@/api/server';
 import { useBasicsData } from '@/store/basicsData';
-// import Storage from '@/utils/storage';
+import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 const initBasicsData = useBasicsData();
 
@@ -58,7 +58,7 @@ const initData = async () => {
 };
 
 onLaunch(() => {
-  // Storage.removeEpid();
+  Storage.removeEpid();
   initData();
   // console.log(uni.getAccountInfoSync());
 });

@@ -4,6 +4,7 @@
       id="myVideo"
       :src="props.items?.param?.vidoeURL"
       enable-danmu
+      show-mute-btn
       controls
       class="videos"
       :autoplay="props.items?.param?.doOut?.special.autoPlay"
@@ -15,11 +16,22 @@
 </template>
 
 <script setup lang="ts">
-// import { computed, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 interface Props {
   items?: any;
 }
 const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
+
+const myVideoContext: any = ref(null);
+
+onMounted(() => {
+  myVideoContext.value = uni.createVideoContext('myVideo', this);
+  if (props.items?.param?.doOut?.special?.autoPlay) {
+    setTimeout(() => {
+      myVideoContext.value.play();
+    }, 1000);
+  }
+});
 </script>
 
 <style lang="scss" scoped>

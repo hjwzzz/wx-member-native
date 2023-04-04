@@ -2,7 +2,7 @@
   <!-- class="custom-fit-up-box" :style="{ top: headHeight + 'px' }" -->
   <view class="custom-fit-up-box-vnew">
     <block v-for="(items, index) in panelList" :key="index">
-      <!-- memberCard -->
+      <!-- 会员卡 -->
       <memberCard
         v-if="
           items.kind === 'MEM_CARD' &&
@@ -283,6 +283,9 @@ const getPageDate = async () => {
       return item;
     });
     panelList.value = comList || [];
+    // panelList.value = [];
+    // setTimeout(() => {
+    // }, 50);
   }
   // if (result.data.param?.title) {
   //   uni.setNavigationBarTitle({

@@ -196,6 +196,19 @@ export const bannerListClickImage = (item: any) => {
 };
 
 export const handleEntryUrl = (item: any) => {
+  console.log('22222222222', item);
+  // uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+  if (item.urlKind === 'CUSTOMIZE') {
+    if (item.miniUrl) {
+      Router.goNoCodePage(item.miniUrl);
+      return;
+    }
+    if (item.h5Url) {
+      uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+      return;
+    }
+    return;
+  }
   if (!item.code && item.miniUrl) {
     Router.goNoCodePage(item.miniUrl);
     return;
