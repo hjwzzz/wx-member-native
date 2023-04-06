@@ -330,6 +330,7 @@ const showIcon = computed(() => {
         width: 80rpx;
         height: 80rpx;
         border-radius: 50%;
+        flex-shrink: 0;
       }
     }
     .member-card-name {

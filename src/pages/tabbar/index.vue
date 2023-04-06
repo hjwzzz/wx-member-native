@@ -299,7 +299,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
   justify-content: center;
   align-items: center;
   font-size: 28rpx;
-  font-weight: 500;
+  font-weight: 700;
   color: #000000;
 }
 .home-mask {

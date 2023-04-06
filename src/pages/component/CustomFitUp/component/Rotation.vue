@@ -116,6 +116,7 @@ const boxStyle = computed(() => {
     marginRight,
     background,
     borderRadius,
+    height,
   } = styles;
 
   if (styles) {
@@ -128,6 +129,7 @@ const boxStyle = computed(() => {
       paddingBottom: marginBottom || '0px',
       paddingLeft: marginLeft || '0px',
       paddingRight: marginRight || '0px',
+      height,
     };
   }
   return {};

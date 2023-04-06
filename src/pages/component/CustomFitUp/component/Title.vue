@@ -1,7 +1,11 @@
 <template>
   <view
     v-if="props.items?.param?.doOut?.fixedStyle === 0"
-    :style="{ ...props.items?.param?.doOut?.style, backgroundSize: 'cover' }"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     class="boxs title-box"
   >
     <!-- background-size: cover -->
@@ -9,7 +13,7 @@
       class="title-box-text nowrap"
       :style="{
         ...props.items?.param?.doOut?.special,
-        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : 500,
+        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : '',
       }"
     >
       {{ props.items?.param.title }}
@@ -17,7 +21,11 @@
   </view>
   <view
     v-if="props.items?.param?.doOut?.fixedStyle === 1"
-    :style="{ ...props.items?.param?.doOut?.style, backgroundSize: 'cover' }"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     class="boxs title-box1"
     @click="handleUrl(props.items)"
   >
@@ -25,16 +33,26 @@
       class="title-box-text nowrap"
       :style="{
         ...props.items?.param?.doOut?.special,
-        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : 500,
+        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : '',
       }"
     >
       {{ props.items?.param.title }}</view
     >
     <uni-icons
+      v-if="props.items?.param?.doOut?.special?.moreIsIcon"
       type="arrowright"
       size="14"
       :color="props.items?.param?.doOut?.special.iconColor || '#B7B8C4'"
     ></uni-icons>
+    <text
+      v-else
+      class="right-text"
+      :style="{
+        color: props.items?.param?.doOut?.special.iconColor || '#B7B8C4',
+      }"
+    >
+      {{ props.items?.param?.doOut?.special?.rightText || '' }}
+    </text>
   </view>
 </template>
 
@@ -73,6 +91,12 @@ const handleUrl = (items: any) => {
     display: inline-block;
     width: 100%;
   }
+}
+
+.right-text {
+  margin-left: 10rpx;
+  flex-shrink: 0;
+  font-size: 28rpx;
 }
 
 .title-box1 {

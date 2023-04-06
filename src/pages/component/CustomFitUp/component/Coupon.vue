@@ -31,83 +31,55 @@
       props.items.param.doOut.fixedStyle === 1 -->
 
     <view class="coupon-card" v-if="props.items.param.doOut.fixedStyle === 0">
-      <view
-        class="coupon-card-item"
-        :style="{
-          background:
-            props.items?.param?.doOut?.special?.couponColor || '#e04838',
-          color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
-        }"
-        v-for="(cou, index) in props.items.param?.coupons"
-        :key="index"
-      >
-        <view class="coupon-card-item-text coupon-card-item-price">
-          <block v-if="coupon1.includes(cou.prodCode?.code || cou.prod)">
-            <text class="coupon-card-item-price-unit">￥ </text>
-            <text class="coupon-card-item-price-num">
-              {{ cou.paramVo?.discount || '' }}
-            </text>
-          </block>
-          <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
-            <text class="coupon-card-item-price-unit">随机金额 </text>
-          </block>
-          <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
-            <text class="coupon-card-item-price-num">
-              {{ cou.paramVo?.discount || '' }}
-            </text>
-            <text class="coupon-card-item-price-unit">折 </text>
-          </block>
-          <!-- <text class="coupon-card-item-price-unit">￥ </text>
+      <!-- showed -->
+      <block v-for="(cou, index) in props.items.param?.coupons" :key="index">
+        <view
+          v-if="cou.showed"
+          class="coupon-card-item"
+          :style="{
+            background:
+              props.items?.param?.doOut?.special?.couponColor || '#e04838',
+            color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
+          }"
+        >
+          <view class="coupon-card-item-text coupon-card-item-price">
+            <block v-if="coupon1.includes(cou.prodCode?.code || cou.prod)">
+              <text class="coupon-card-item-price-unit">￥ </text>
+              <text class="coupon-card-item-price-num">
+                {{ cou.paramVo?.discount || '' }}
+              </text>
+            </block>
+            <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
+              <text class="coupon-card-item-price-unit">随机金额 </text>
+            </block>
+            <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
+              <text class="coupon-card-item-price-num">
+                {{ cou.paramVo?.discount || '' }}
+              </text>
+              <text class="coupon-card-item-price-unit">折 </text>
+            </block>
+            <!-- <text class="coupon-card-item-price-unit">￥ </text>
           <text class="coupon-card-item-price-num"> 100</text> -->
-        </view>
-        <view class="coupon-card-item-text coupon-card-item-info">
-          {{ showCondition(cou) }}
-        </view>
-        <view class="coupon-card-item-text">
-          <view
-            class="coupon-card-item-text coupon-card-item-btn"
-            :style="{
-              background:
-                props.items?.param?.doOut?.special?.color || '#e04838',
-              color:
-                props.items?.param?.doOut?.special?.couponColor || '#e04838',
-            }"
-            @click="receiveCoupon(cou)"
-          >
-            立刻领取
+          </view>
+          <view class="coupon-card-item-text coupon-card-item-info">
+            {{ showCondition(cou) }}
+          </view>
+          <view class="coupon-card-item-text">
+            <view
+              class="coupon-card-item-text coupon-card-item-btn"
+              :style="{
+                background:
+                  props.items?.param?.doOut?.special?.color || '#e04838',
+                color:
+                  props.items?.param?.doOut?.special?.couponColor || '#e04838',
+              }"
+              @click="receiveCoupon(cou)"
+            >
+              立刻领取
+            </view>
           </view>
         </view>
-      </view>
-      <!-- <view class="coupon-card-item">
-        <view class="coupon-card-item-text coupon-card-item-price">
-          <text class="coupon-card-item-price-unit">￥ </text>
-          <text class="coupon-card-item-price-num"> 100</text>
-        </view>
-        <view class="coupon-card-item-text coupon-card-item-info"
-          >满199可用
-        </view>
-
-        <view class="coupon-card-item-text">
-          <view class="coupon-card-item-text coupon-card-item-btn">
-            理科领取
-          </view>
-        </view>
-      </view>
-      <view class="coupon-card-item">
-        <view class="coupon-card-item-text coupon-card-item-price">
-          <text class="coupon-card-item-price-unit">￥ </text>
-          <text class="coupon-card-item-price-num"> 100</text>
-        </view>
-        <view class="coupon-card-item-text coupon-card-item-info"
-          >满199可用
-        </view>
-
-        <view class="coupon-card-item-text">
-          <view class="coupon-card-item-text coupon-card-item-btn">
-            理科领取
-          </view>
-        </view>
-      </view> -->
+      </block>
     </view>
 
     <view class="custom-dots" v-if="props.items.param.doOut.fixedStyle === 1">
@@ -238,10 +210,13 @@ const couponsList = computed(() => {
     let arr: any = [];
     const listArr: any = [];
     props.items.param?.coupons.map((item: any) => {
-      arr.push(item);
-      if (arr.length === 8) {
-        listArr.push([...arr]);
-        arr = [];
+      //  v-if="cou.showed"
+      if (item.showed) {
+        arr.push(item);
+        if (arr.length === 8) {
+          listArr.push([...arr]);
+          arr = [];
+        }
       }
     });
 

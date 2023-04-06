@@ -3,9 +3,7 @@
     <view
       :style="{
         ...props.items?.param?.doOut?.special,
-        fontWeight: props.items?.param?.doOut?.special.fontWeight
-          ? 'bold'
-          : 500,
+        fontWeight: props.items?.param?.doOut?.special.fontWeight ? 700 : '',
       }"
     >
       {{ props.items?.param?.title }}

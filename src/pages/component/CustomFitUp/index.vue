@@ -117,6 +117,7 @@
       <Coupon
         v-if="items.kind === 'COUPON' && items.visible === 'Y'"
         :items="items"
+        :title="items.param.title"
       />
     </block>
   </view>
