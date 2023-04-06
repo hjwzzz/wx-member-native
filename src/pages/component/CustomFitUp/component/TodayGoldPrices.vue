@@ -382,7 +382,7 @@ const _getGoldPriceByPage = async () => {
     const result: any = [];
     const oldResult: any = [];
     distId.value = id;
-    showDistName.value = distName;
+
     showDateSet.value = dateSet;
 
     branPriceList.map((item: unknown, index: number) => {
@@ -395,6 +395,16 @@ const _getGoldPriceByPage = async () => {
         oldResult.push(item);
       }
     });
+    let newName = '';
+
+    branPriceList.forEach((item: any) => {
+      newName = item.name;
+    });
+    branOldPriceList.forEach((item: any) => {
+      newName = item.name;
+    });
+
+    showDistName.value = newName || distName;
     showed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
     goldPrice.value = result;
     oldGoldPrice.value = oldResult;
