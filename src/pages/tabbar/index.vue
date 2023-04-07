@@ -1,4 +1,10 @@
 <template>
+  <page-meta
+    :page-style="
+      'overflow:' +
+      (maskPopup && newBannerList.length > 0 ? 'hidden' : 'visible')
+    "
+  ></page-meta>
   <CustomPage :backgroundColor="pageBackground" bottom>
     <view
       class="page-top-show"
