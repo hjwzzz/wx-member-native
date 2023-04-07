@@ -44,6 +44,18 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { items: () => ({}) });
 // 更多
 const goMoreNotice = (item: any, noticTime: any) => {
+  // console.log('item', item);
+  if (item.isUrl) {
+    if (item.link && item.link.miniUrl) {
+      uni.navigateTo({ url: item.link.miniUrl });
+      return;
+    }
+    if (item.link && item.link.h5Url) {
+      uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.link.h5Url)}` });
+      return;
+    }
+    return;
+  }
   uni.setStorageSync('notic', item);
   uni.setStorageSync('noticTime', noticTime);
   uni.navigateTo({ url: '/my-assets-pages/notice/index' });
