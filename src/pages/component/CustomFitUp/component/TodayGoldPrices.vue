@@ -183,9 +183,9 @@
             </view>
             <view
               class="gold-price-style2-item-pz"
-              v-if="props.items?.param?.showBrand"
+              v-if="props.items?.param?.showBrand && item.brandName"
             >
-              品牌：{{ item.brandName || '--' }}
+              品牌：{{ item.brandName }}
             </view>
           </view>
           <view class="gold-price-style2-item-price">
@@ -279,7 +279,11 @@
           >
             <text class="gold-price-style3-item-right-name">
               {{ item.met }}{{ item.metCtn || ''
-              }}{{ item.brandName ? `(${item.brandName})` : '' }}
+              }}{{
+                props.items?.param?.showBran && item.brandName
+                  ? `(${item.brandName})`
+                  : ''
+              }}
             </text>
             <text class="gold-price-style3-item-right-price">
               ¥{{ item.price || 0 }}
