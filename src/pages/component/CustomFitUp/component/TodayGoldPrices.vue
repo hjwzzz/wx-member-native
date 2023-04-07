@@ -93,8 +93,14 @@
                   <view class="swiper-title left">
                     {{ price.met || '' }}{{ price.metCtn || '' }}
                   </view>
-                  <view v-if="price.brandName" class="swiper-line" />
-                  <view class="swiper-title rigth">
+                  <view
+                    v-if="price.brandName && props.items?.param?.showBrand"
+                    class="swiper-line"
+                  />
+                  <view
+                    class="swiper-title rigth"
+                    v-if="props.items?.param?.showBrand"
+                  >
                     {{ price.brandName || '' }}
                   </view>
                 </view>
@@ -228,9 +234,14 @@
             v-for="(item, index) in goldPrice"
             :key="index"
           >
+            <!--  v-if="props.items?.param?.showBrand" -->
             <text class="gold-price-style3-item-right-name">
               {{ item.met }}{{ item.metCtn || ''
-              }}{{ item.brandName ? `(${item.brandName})` : '' }}
+              }}{{
+                props.items?.param?.showBran && item.brandName
+                  ? `(${item.brandName})`
+                  : ''
+              }}
             </text>
             <text class="gold-price-style3-item-right-price">
               ¥{{ item.price || 0 }}
