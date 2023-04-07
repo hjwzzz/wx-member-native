@@ -5,8 +5,8 @@
         <text
           class="title"
           :style="{
-            color: props.items?.param?.doOut?.special?.color,
-            fontSize: props.items?.param?.doOut?.special?.fontSize,
+            color: specials.color,
+            fontSize: specials.fontSize,
           }"
           >{{ title }}</text
         >
@@ -15,14 +15,14 @@
         <text
           class="more"
           :style="{
-            color: props.items?.param?.doOut?.special?.color,
+            color: specials.color,
           }"
           >更多</text
         >
         <uni-icons
           type="arrowright"
           size="14"
-          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+          :color="specials.color || '#B7B8C4'"
         ></uni-icons>
       </view>
     </view>
@@ -37,9 +37,8 @@
           v-if="cou.showed"
           class="coupon-card-item"
           :style="{
-            background:
-              props.items?.param?.doOut?.special?.couponColor || '#e04838',
-            color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
+            background: specials.couponColor || '#e04838',
+            color: specials.color || '#fbe7c3',
           }"
         >
           <view class="coupon-card-item-text coupon-card-item-price">
@@ -68,10 +67,8 @@
             <view
               class="coupon-card-item-text coupon-card-item-btn"
               :style="{
-                background:
-                  props.items?.param?.doOut?.special?.color || '#e04838',
-                color:
-                  props.items?.param?.doOut?.special?.couponColor || '#e04838',
+                background: specials.color || '#e04838',
+                color: specials.couponColor || '#e04838',
               }"
               @click="receiveCoupon(cou)"
             >
@@ -102,9 +99,8 @@
           <view
             class="swiper-item-list"
             :style="{
-              background:
-                props.items?.param?.doOut?.special?.couponColor || '#e04838',
-              color: props.items?.param?.doOut?.special?.color || '#fbe7c3',
+              background: specials.couponColor || '#e04838',
+              color: specials.color || '#fbe7c3',
             }"
           >
             <view
@@ -137,11 +133,8 @@
                 <view
                   class="coupon-card-item-text coupon-card-item-btn"
                   :style="{
-                    background:
-                      props.items?.param?.doOut?.special?.color || '#e04838',
-                    color:
-                      props.items?.param?.doOut?.special?.couponColor ||
-                      '#e04838',
+                    background: specials.color || '#e04838',
+                    color: specials.couponColor || '#e04838',
                   }"
                   @click="receiveCoupon(cou)"
                 >
@@ -198,6 +191,8 @@ const props = withDefaults(defineProps<Props>(), {
   item: () => ({}),
   policyListNum: 0,
 });
+
+const specials = computed(() => props.items?.param?.doOut?.special || {});
 
 const currentIndex = ref(0);
 const swiperChange = (e: any) => {
@@ -314,49 +309,6 @@ const toDetail = () => {
   // Router
   uni.navigateTo({ url: '/my-assets-pages/coupon-center/index' });
 };
-
-// const getPolicyList = async () => {
-//   if (!initBasicsData.checkLogin) {
-//     return;
-//   }
-//   const res = await queryWarrantyListPageFront({
-//     mid: initBasicsData.useMid,
-//     curPage: 1,
-//     pageSize: props.policyListNum,
-//   });
-//   if (res.code === 0 && res.data) {
-//     Object.assign(policyList, res.data);
-//   }
-// };
-// policyListNum 有值再去请求
-// watch(
-//   () => props.policyListNum,
-//   () => {
-//     getPolicyList();
-//   },
-//   { immediate: true }
-// );
-// // 登录请求
-// watch(
-//   () => initBasicsData.checkLogin,
-//   (bool: boolean) => {
-//     if (bool) {
-//       getPolicyList();
-//     } else {
-//       policyList.records = [];
-//       policyList.totalRecord = 0;
-//     }
-//   }
-// );
-
-// onShow(() => {
-//   if (initBasicsData.checkLogin) {
-//     getPolicyList();
-//     return;
-//   }
-//   policyList.records = [];
-//   policyList.totalRecord = 0;
-// });
 </script>
 
 <style lang="scss" scoped>

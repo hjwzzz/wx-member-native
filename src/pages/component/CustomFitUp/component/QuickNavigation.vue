@@ -11,7 +11,8 @@
         v-if="item.showed"
         @click="handleEntryUrl(item)"
       >
-        <view class="item-header">
+        <!--item-header showSize  item-header-s-->
+        <view :class="showSize === 0 ? 'item-header-s' : ' item-header'">
           <image
             class="item-header-image"
             :src="item.icoUrl || `${staticUrl}img/item-avatar-default.png`"
@@ -52,7 +53,8 @@
           :key="index"
           @click="handleEntryUrl(item)"
         >
-          <view class="item-header">
+          <!-- class="item-header" -->
+          <view :class="showSize === 0 ? 'item-header-s' : ' item-header'">
             <image
               class="item-header-image"
               :src="item.icoUrl || `${staticUrl}img/item-avatar-default.png`"
@@ -101,6 +103,8 @@ const props = withDefaults(defineProps<Props>(), {
   // swiperVav: () => [],
   items: () => ({}),
 });
+
+const showSize = computed(() => props.items?.param?.doOut?.special?.size || 0);
 
 const quickLine = computed(() => {
   if (props.items.param?.linkList) {
@@ -171,6 +175,13 @@ const swiperChange = (e: any) => {
   }
 }
 
+.item-header-s {
+  display: inline-block;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
 .quick-swiper {
   // width: 100%;
   padding: 60rpx 20rpx 20rpx;

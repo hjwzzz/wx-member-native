@@ -16,7 +16,8 @@
           @click="handleEntryUrl(entry)"
           v-if="entry.showed"
         >
-          <view class="item-icon">
+          <!-- class="item-icon" -->
+          <view :class="showClass">
             <image
               class="image"
               :src="entry.icoUrl || `${staticUrl}img/item-avatar-default.png`"
@@ -58,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-// import { reactive, watch, ref } from 'vue';
+import { computed } from 'vue';
 // import { queryWarrantyListPageFront } from '@/api/server';
 import { staticUrl } from '@/utils/config';
 // import { useBasicsData } from '@/store/basicsData';
@@ -76,6 +77,22 @@ const props = withDefaults(defineProps<Props>(), {
   items: () => ({}),
   // policyListNum: 0,
 });
+//
+// :class="showSize === 0 ? 'item-header-s' : ' item-header'"
+// const showSize = computed(() => props.items?.param?.doOut?.special?.size || 0);
+//  props.items.param.doOut.fixedStyle === 3
+// ? 'wrapper-list'
+//           : 'wrapper-grid'
+
+// props.items?.param?.doOut?.special?.size || 0
+const showClass = computed(() => {
+  if (props.items.param.doOut.fixedStyle === 3) {
+    return 'item-icon';
+  }
+  const showSize = props.items?.param?.doOut?.special?.size || 0;
+  return showSize === 0 ? 'item-icon-s' : 'item-icon';
+});
+
 // const emits = defineEmits(['showCode']);
 
 // const handleFixedSysUrl = () => {
@@ -182,6 +199,19 @@ const showRedDot = (entry: any) => {
         margin: 0 auto;
         overflow: hidden;
         border-radius: 22rpx;
+
+        .image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .item-icon-s {
+        width: 48rpx;
+        height: 48rpx;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 12rpx;
 
         .image {
           width: 100%;
