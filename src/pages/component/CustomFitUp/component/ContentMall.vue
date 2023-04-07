@@ -44,11 +44,11 @@
         :key="index"
         @click="onMallDetail(item.id)"
       >
-        <view class="img">
+        <!-- <view class="img">
           <image class="image" :src="item.displayImgUrl" mode=""></image>
         </view>
-        <view class="text">{{ item.name }}</view>
-        <!-- <view class="img">
+        <view class="text">{{ item.name }}</view> -->
+        <view class="img">
           <image class="image" :src="item.displayImgUrl" mode=""></image>
         </view>
         <view class="text">{{ item.name }}</view>
@@ -57,7 +57,7 @@
           <text v-if="Number(item.displayPrice) > 0">
             +{{ item.displayPrice }}元
           </text>
-        </view> -->
+        </view>
       </view>
     </view>
   </view>
