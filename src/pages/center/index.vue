@@ -7,9 +7,10 @@
     <view
       class="page-top-show"
       :style="{
-        background:
-          userInfo.background ||
-          `url( ${showToImageBG} ) center top / 100% auto no-repeat`,
+        background: showToImageBG
+          ? `url( ${showToImageBG} ) center top / 100% auto no-repeat`
+          : pageBackground,
+
         paddingTop: headHeight + 'rpx',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -156,8 +157,8 @@ onShow(() => {
     },
   });
 });
-const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
-const showToImageBG = ref(deFImage1);
+// const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
+const showToImageBG = ref('');
 
 // const deFImage = 'https://static.jqzplat.com/web/c_default_center_bg.jpg';
 // const showToImage = ref(deFImage);
@@ -218,7 +219,7 @@ const getPageDate = async () => {
   const { param } = data;
   // pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
   pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
-  showToImageBG.value = param?.doOut?.special?.backgroundImage || deFImage1;
+  showToImageBG.value = param?.doOut?.special?.backgroundImage || '';
   pageTitle.value = data?.param?.title || '个人中心';
 };
 
@@ -398,7 +399,7 @@ const hideFullMenberCode = () => {
   justify-content: center;
   align-items: center;
   font-size: 28rpx;
-  font-weight: 500;
+  font-weight: 700;
   color: #000000;
 }
 

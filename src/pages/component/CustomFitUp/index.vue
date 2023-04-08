@@ -118,6 +118,7 @@
         v-if="items.kind === 'COUPON' && items.visible === 'Y'"
         :items="items"
         :title="items.param.title"
+        @changeItem="onChangeItem"
       />
     </block>
   </view>
@@ -179,6 +180,10 @@ onShow(() => {
     },
   });
 });
+
+const onChangeItem = () => {
+  getPageDate();
+};
 
 // onMounted(() => {
 //   getPageDate();

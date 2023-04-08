@@ -97,7 +97,8 @@ import { onLoad } from '@dcloudio/uni-app';
 import { staticUrl } from '@/utils/config';
 import { getNearStore } from '@/pages/api/nearby-store';
 import { mergeFullAddress } from '@/utils/util';
-
+import { useBasicsData } from '@/store/basicsData';
+import Router from '@/utils/router';
 // 店铺信息
 interface storeType {
   url: string;
@@ -116,11 +117,18 @@ interface storeType {
   gsResult: string;
   gsResultName: string;
 }
+const initBasicsData = useBasicsData();
+
 const list = ref<storeType[]>([]);
 
 const loading = ref(false);
 
 onLoad(() => {
+  if (!initBasicsData.checkLogin) {
+    Router.goLogin();
+    return;
+  }
+
   uni.showLoading({
     title: '加载中',
     mask: true,

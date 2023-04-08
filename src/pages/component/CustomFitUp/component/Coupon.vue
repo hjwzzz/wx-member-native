@@ -72,7 +72,7 @@
               }"
               @click="receiveCoupon(cou)"
             >
-              立刻领取
+              {{ cou.restrictStatus === 1 ? '已领取' : '立刻领取' }}
             </view>
           </view>
         </view>
@@ -138,7 +138,7 @@
                   }"
                   @click="receiveCoupon(cou)"
                 >
-                  立刻领取
+                  {{ cou.restrictStatus === 1 ? '已领取' : '立刻领取' }}
                 </view>
               </view>
             </view>
@@ -192,6 +192,8 @@ const props = withDefaults(defineProps<Props>(), {
   policyListNum: 0,
 });
 
+const emits = defineEmits(['changeItem']);
+
 const specials = computed(() => props.items?.param?.doOut?.special || {});
 
 const currentIndex = ref(0);
@@ -228,6 +230,15 @@ const couponsList = computed(() => {
 const modelShow = ref(false);
 const getResult = ref('success');
 const receiveCoupon = async (item: any) => {
+  if (item.restrictStatus === 1) {
+    uni.showToast({
+      title: '已领取',
+      duration: 3000,
+      icon: 'none',
+    });
+    return;
+  }
+
   if (!initBasicsData.checkLogin) {
     return uni.showModal({
       content: '请先登录账号',
@@ -251,6 +262,7 @@ const receiveCoupon = async (item: any) => {
     modelShow.value = true;
     getResult.value = 'success';
     // queryReceiveCenterListFront();
+    emits('changeItem');
   } else if (res.code === 4111) {
     // 已失效
     modelShow.value = true;

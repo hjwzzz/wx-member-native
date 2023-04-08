@@ -262,9 +262,9 @@ const showIcon = computed(() => {
   font-size: 28rpx;
   font-weight: 400;
   line-height: 60rpx;
-  color: #fff;
+  // color: #fff;
   text-align: center;
-  background: #ff547b;
+  // background: #ff547b;
   border-radius: 30rpx;
 }
 
@@ -281,16 +281,31 @@ const showIcon = computed(() => {
   .member-card-list-item-name {
     color: #32333869;
   }
+  .info-btn {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #323338;
+  }
 }
 
 .member-card-style2 {
   background: linear-gradient(90deg, #3d3e40, #2b2d31);
   color: #fbe7c3;
+  .info-btn {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #fbe7c3;
+  }
 }
 
 .member-card-style3 {
   // background: linear-gradient(90deg, #ff56436b, rgba(255, 255, 255, 0.7));
   color: #323338;
+  .info-btn {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #000000;
+  }
 }
 
 .member-card {

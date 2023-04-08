@@ -6,10 +6,13 @@
     "
   ></page-meta>
   <CustomPage :backgroundColor="pageBackground" bottom>
+    <!--  background: `url( ${showToImageBG} ) center top / 100% auto no-repeat`, -->
     <view
       class="page-top-show"
       :style="{
-        background: `url( ${showToImageBG} ) center top / 100% auto no-repeat`,
+        background: showToImageBG
+          ? `url( ${showToImageBG} ) center top / 100% auto no-repeat`
+          : pageBackground,
         paddingTop: headHeight + 'rpx',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -149,8 +152,8 @@ const pageTitle = ref('首页');
 const headHeight: Ref<number> = ref(100);
 const menuInfoTopShow: Ref<number> = ref(0);
 const menuInfoHeightShow: Ref<number> = ref(0);
-const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
-const showToImageBG = ref(deFImage1);
+// const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
+const showToImageBG = ref('');
 const newBannerList: any = ref([]);
 const newBanneRadius = ref('0px');
 const pageBackground = ref('#f5f5f5');
@@ -159,7 +162,7 @@ const getPageDate = async () => {
   const { data } = await getByOpsIdAndKind('WM_HOME');
   const { param, panelList } = data;
   pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
-  showToImageBG.value = param?.doOut?.special?.backgroundImage || deFImage1;
+  showToImageBG.value = param?.doOut?.special?.backgroundImage || '';
   pageTitle.value = data?.param?.title || '首页';
 
   //  获取基本信息
