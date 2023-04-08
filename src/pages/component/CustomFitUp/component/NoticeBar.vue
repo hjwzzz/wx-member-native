@@ -15,11 +15,18 @@
     >
       <template #icon>
         <image
+          v-if="props.items.param?.isIcon"
           class="uni-notice-bar-icon"
-          :src="props.items.param?.icoUrl || icons"
+          :src="props.items.param?.iconLight || icons"
           mode="aspectFill"
         >
         </image>
+        <text
+          v-else
+          class="iconfont icon-wode3"
+          :class="props.items.param?.icoUrl"
+        >
+        </text>
       </template>
     </uni-notice-bar>
   </view>
@@ -81,5 +88,10 @@ const goMoreNotice = (item: any, noticTime: any) => {
   :deep(.uni-noticebar) {
     margin-bottom: 0px;
   }
+}
+
+.iconfont {
+  font-size: 32rpx;
+  color: var(--main-color);
 }
 </style>

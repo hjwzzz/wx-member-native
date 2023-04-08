@@ -238,7 +238,7 @@
             <text class="gold-price-style3-item-right-name">
               {{ item.met }}{{ item.metCtn || ''
               }}{{
-                props.items?.param?.showBran && item.brandName
+                props.items?.param?.showBrand && item.brandName
                   ? `(${item.brandName})`
                   : ''
               }}
@@ -280,7 +280,7 @@
             <text class="gold-price-style3-item-right-name">
               {{ item.met }}{{ item.metCtn || ''
               }}{{
-                props.items?.param?.showBran && item.brandName
+                props.items?.param?.showBrand && item.brandName
                   ? `(${item.brandName})`
                   : ''
               }}
