@@ -171,7 +171,7 @@ const showRedDot = (entry: any) => {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    width: 100%;
+    // width: 100%;
     height: 100%;
     padding: 20rpx 0;
 

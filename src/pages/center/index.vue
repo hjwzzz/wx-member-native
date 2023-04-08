@@ -24,7 +24,10 @@
         height: menuInfoHeightShow + 'px',
       }"
     >
-      {{ pageTitle }}
+      <!-- {{ pageTitle }} -->
+      <text class="page-top-title-text text-break">
+        {{ pageTitle }}
+      </text>
     </view>
     <CustomFitUp types="WM_CENTER" @showCode="showMenberCodePopup" />
   </CustomPage>
@@ -391,16 +394,32 @@ const hideFullMenberCode = () => {
   //   color: #000000;
   // }
 }
+// .page-top-title {
+//   position: absolute;
+//   left: 0px;
+//   right: 0px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 28rpx;
+//   font-weight: 700;
+//   color: #000000;
+// }
 .page-top-title {
   position: absolute;
   left: 0px;
   right: 0px;
   display: flex;
-  justify-content: center;
+  padding-left: 30rpx;
+  // justify-content: center;
   align-items: center;
   font-size: 28rpx;
   font-weight: 700;
   color: #000000;
+  .page-top-title-text {
+    // text-align: center;
+    width: 450rpx;
+  }
 }
 
 .menber-code-popup {
