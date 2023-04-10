@@ -5,7 +5,7 @@
         <!--  :indicator-dots="bannerList?.length > 1"
           indicator-color="#D8D9E0"
           :indicator-active-color="initBasicsData.mainColor" -->
-        <swiper style="height: 300rpx" @change="swiperChange" autoplay circular>
+        <swiper style="height: 326rpx" @change="swiperChange" autoplay circular>
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
@@ -13,7 +13,7 @@
           >
             <image
               class="banner-image"
-              style="height: 300rpx; width: 690rpx"
+              style="height: 326rpx; width: 100%"
               :src="item.icoUrl"
               mode="aspectFill"
             ></image>
@@ -112,7 +112,7 @@
         <!--  :indicator-dots="bannerList?.length > 1"
           indicator-color="#D8D9E0"
           :indicator-active-color="initBasicsData.mainColor" -->
-        <swiper style="height: 400rpx" @change="swiperChange" autoplay circular>
+        <swiper style="height: 326rpx" @change="swiperChange" autoplay circular>
           <swiper-item
             v-for="(item, index) in bannerList"
             :key="index"
@@ -120,7 +120,7 @@
           >
             <image
               class="banner-image"
-              style="height: 400rpx; width: 100%"
+              style="height: 326rpx; width: 100%"
               :src="item.icoUrl"
               mode="aspectFill"
             ></image>
@@ -148,7 +148,7 @@
           :src="staticUrl + `img/icon-008.png`"
           mode="scaleToFill"
         />
-        <view class="name text-break">
+        <view class="name shop-style-name text-break">
           {{ goldPriceDatas.store.name || goldPriceDatas.store.distName }}
         </view>
         <uni-icons type="right" color="#B7B8C4" size="18"></uni-icons>
@@ -512,6 +512,10 @@ onShareTimeline(() => shareTimeline(shareData.value));
     color: #323338;
   }
 }
+
+.shop-style-name {
+  width: 100%;
+}
 .custom-dots {
   position: relative;
   .custom-dots-box {
@@ -727,6 +731,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 28rpx;
   }
 }
 .gold-price-style3-item-right {
