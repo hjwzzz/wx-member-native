@@ -248,21 +248,24 @@ const getPageDate = async () => {
     //  获取基本信息
     const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
     const memberCardInfo = panelList.find(getMenber) || {};
-    if (!memberCardInfo.param) {
-      return;
-    }
-    userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
-    userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
-    userInfo.doOut = memberCardInfo.param.doOut;
-    // userInfo.background =
-    //   userInfo.doOut?.fixedStyle === 2
-    //     ? null
-    //     : memberCardInfo.param.doOut.style.background;
-    if (
-      memberCardInfo.param.doOut.style.background &&
-      userInfo.doOut?.fixedStyle === 2
-    ) {
-      delete memberCardInfo.param.doOut.style.background;
+    // if (!memberCardInfo.param) {
+    //   return;
+    // }
+
+    if (memberCardInfo.param) {
+      userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
+      userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
+      userInfo.doOut = memberCardInfo.param.doOut;
+      // userInfo.background =
+      //   userInfo.doOut?.fixedStyle === 2
+      //     ? null
+      //     : memberCardInfo.param.doOut.style.background;
+      if (
+        memberCardInfo.param.doOut.style.background &&
+        userInfo.doOut?.fixedStyle === 2
+      ) {
+        delete memberCardInfo.param.doOut.style.background;
+      }
     }
   }
   // console.log('result', result);

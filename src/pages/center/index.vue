@@ -411,14 +411,14 @@ const hideFullMenberCode = () => {
   right: 0px;
   display: flex;
   padding-left: 30rpx;
-  // justify-content: center;
+  justify-content: center;
   align-items: center;
   font-size: 28rpx;
   font-weight: 700;
   color: #000000;
   .page-top-title-text {
-    // text-align: center;
-    width: 450rpx;
+    text-align: center;
+    width: 350rpx;
   }
 }
 

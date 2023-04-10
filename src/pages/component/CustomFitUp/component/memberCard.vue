@@ -266,6 +266,8 @@ const showIcon = computed(() => {
   text-align: center;
   // background: #ff547b;
   border-radius: 30rpx;
+  // color: var(--main-color);
+  color: var(--main-color);
 }
 
 .nowrap {
@@ -284,7 +286,7 @@ const showIcon = computed(() => {
   .info-btn {
     font-size: 32rpx;
     font-weight: 700;
-    color: #323338;
+    // color: #323338;
   }
 }
 
@@ -294,7 +296,7 @@ const showIcon = computed(() => {
   .info-btn {
     font-size: 32rpx;
     font-weight: 700;
-    color: #fbe7c3;
+    // color: #fbe7c3;
   }
 }
 
@@ -304,7 +306,7 @@ const showIcon = computed(() => {
   .info-btn {
     font-size: 32rpx;
     font-weight: 700;
-    color: #000000;
+    // color: #000000;
   }
 }
 

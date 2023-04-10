@@ -402,7 +402,7 @@ const toDetail = () => {
     display: flex;
     justify-content: flex-start;
 
-    width: 660rpx;
+    width: 100%;
     border-radius: 16rpx;
   }
   .coupon-card-item-swiper {
