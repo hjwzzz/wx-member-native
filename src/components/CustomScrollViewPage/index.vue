@@ -2,7 +2,7 @@
   <view
     class="custom-page"
     :style="{
-      backgroundColor: backgroundColor,
+      background: background,
       '--main-color': mainColor,
       paddingTop: `${props.paddingTop}rpx`,
     }"
@@ -40,11 +40,11 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   paddingTop: 0,
   paddingBottom: 0,
-  backgroundColor: '#f5f5f5',
+  background: '#f5f5f5',
 });
 const initBasicsData = useBasicsData();
 const mainColor = computed(() => initBasicsData.mainColor);
-const backgroundColor = computed(() => props.backgroundColor);
+const background = computed(() => props.background);
 
 // const viewHeight = Number(props.paddingTop) + Number(props.paddingBottom);
 const viewHeight = computed(() => Number(props.paddingTop) + Number(props.paddingBottom));

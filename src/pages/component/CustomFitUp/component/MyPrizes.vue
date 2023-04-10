@@ -1,13 +1,35 @@
 <template>
-  <view class="grid-prize">
+  <view
+    class="grid-prize"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header" @click="emits('handle', 0)">
       <view class="left">
-        <text class="title">{{ props.title }}</text>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ props.title }}</text
+        >
       </view>
       <!-- @click="handleSysUrl(item)" -->
       <view class="right">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{ color: props.items?.param?.doOut?.special?.color }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
     <view class="content">
@@ -19,7 +41,7 @@
       >
         <view class="content-header">
           <view class="circel">
-            <image class="image" :src="imageUrl" mode="scaleToFill" />
+            <image class="image" :src="showImage(index)" mode="scaleToFill" />
             <view class="badge" v-if="prize.status === 0 && texcCnt > 0">
               {{ texcCnt > 99 ? '99+' : texcCnt }}
             </view>
@@ -27,9 +49,13 @@
               {{ notGetCnt > 99 ? '99+' : notGetCnt }}
             </view>
           </view>
-          <view class="icon iconfont icon-color" :class="prize.img"></view>
+          <!-- <view class="icon iconfont icon-color" :class="prize.img"></view> -->
         </view>
-        <view class="content-footer">{{ prize.name }}</view>
+        <view
+          class="content-footer"
+          :style="{ color: props.items?.param?.doOut?.special?.color }"
+          >{{ prize.name }}</view
+        >
       </view>
     </view>
   </view>
@@ -40,14 +66,20 @@ import { staticUrl } from '@/utils/config';
 
 import { computed } from 'vue';
 
-const imageUrl = `${staticUrl}img/circle.png`;
+// const imageUrl = `${staticUrl}img/circle.png`;
+// icon-012 icon-018  icon-017  icon-016
+const baseIcon = ['012', '018', '017', '016'];
+const showImage = (index: number) => `${staticUrl}img/icon-${baseIcon[index]}.png`;
+
 interface Props {
   title?: string;
   item?: any;
+  items?: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '我的奖品',
   item: () => ({}),
+  items: () => ({}),
 });
 
 const emits = defineEmits(['handle']);
@@ -87,8 +119,8 @@ const prizeList = [
 .grid-prize {
   min-height: 190rpx;
   padding: 30rpx;
-  margin: 30rpx 0rpx;
-  background: #fff;
+  // margin: 30rpx 0rpx;
+  // background: #fff;
   border-radius: 16rpx;
 
   .header {

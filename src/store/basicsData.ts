@@ -16,13 +16,21 @@ export const useBasicsData = defineStore(
     };
     // 微会员配置tab
     const bottomNavList: Ref<any[]> = ref([]);
+    const bottomNavListShow = ref(true);
     const setBottomNavList = (item: any[]) => {
       bottomNavList.value = item || [];
     };
+    const setBottomNavListShow = (bool: boolean | any) => {
+      bottomNavListShow.value = bool;
+    };
     //  浮窗导航
     const levitationNavList: Ref<any[]> = ref([]);
+    const levitationNavListShow = ref(true);
     const setLevitationNavList = (item: any[]) => {
       levitationNavList.value = item || [];
+    };
+    const setLevitationNavListShow = (bool: boolean | any) => {
+      levitationNavListShow.value = bool;
     };
     // 登录状态-MID
     const useMid = ref('');
@@ -51,12 +59,17 @@ export const useBasicsData = defineStore(
       checkLogin,
       bottomNavList,
       levitationNavList,
+      bottomNavListShow,
+      levitationNavListShow,
       couponPopularizeScene,
+
       setUseMid,
       setMainColor,
       setColorTheme,
       setBottomNavList,
       setLevitationNavList,
+      setBottomNavListShow,
+      setLevitationNavListShow,
       setCouponPopularizeScene,
     };
   },

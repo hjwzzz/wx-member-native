@@ -17,3 +17,9 @@ export const queryPopup = async (data: any) => {
   const url = `${devBaseUrl}/memberAdvertFront/queryPopup`;
   return request(url, data);
 };
+
+// 查询弹窗设置-new
+export const queryPopupByType = async (data: any) => {
+  const url = `${devBaseUrl}/memberAdvertFront/queryPopupByType`;
+  return request(url, data);
+};

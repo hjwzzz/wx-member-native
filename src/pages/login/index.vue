@@ -69,6 +69,7 @@ import type { Protocol } from './index.type';
 import { useBasicsData } from '@/store/basicsData';
 import { onLoad, onUnload } from '@dcloudio/uni-app';
 import Router from '@/utils/router';
+import { getByOpsIdAndKind } from '@/api/server';
 
 const initBasicsData = useBasicsData();
 const logo = ref('');
@@ -114,9 +115,19 @@ const jsCodeLogin = async () => {
 
 // 用户协议
 const getMemberEula = async () => {
+  const res = await getByOpsIdAndKind('WM_REG');
+  // console.log('getByOpsIdAnwwwdKind', res);
+  if (res.data.param.logo || res.data.param) {
+    logo.value = res.data.param.logo;
+    Object.assign(protocol, res.data.param);
+  }
   const { data } = await getMemberEulaRequest();
   logo.value = data.logo;
   Object.assign(protocol, data);
+  if (res.data.param.logo || res.data.param) {
+    logo.value = res.data.param.logo;
+    Object.assign(protocol, res.data.param);
+  }
 };
 const agreement = (i: string) => {
   const agreementDetail = protocol.eulas.find(k => k.kind === i);

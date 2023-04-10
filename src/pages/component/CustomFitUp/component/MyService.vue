@@ -1,25 +1,60 @@
 <template>
-  <view class="grid-serve">
+  <view
+    class="grid-serve"
+    :style="{
+      ...props.items?.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title }}</text>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ props.title }}</text
+        >
       </view>
       <view class="right" @click="handleSysUrl">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+          }"
+          >更多</text
+        >
+        <uni-icons
+          type="arrowright"
+          size="14"
+          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+        ></uni-icons>
       </view>
     </view>
     <view class="content">
       <view
         class="grid-serve-item"
-        v-for="(serve, index) in props.srvProList"
+        v-for="(serve, index) in srvProList"
         :key="index"
         @click="handleDetailUrl(serve)"
       >
         <image class="grid-serve-item-img" :src="serve.imgUrl" alt="" />
         <view class="grid-serve-item-wrapper">
-          <view class="grid-serve-item-wrapper-name">{{ serve.name }}</view>
-          <view class="grid-serve-item-wrapper-btn">
+          <view
+            class="grid-serve-item-wrapper-name"
+            :style="{
+              color: props.items?.param?.doOut?.special?.color,
+            }"
+            >{{ serve.name }}</view
+          >
+          <view
+            class="grid-serve-item-wrapper-btn"
+            :style="{
+              color: props.items?.param?.doOut?.special?.color,
+            }"
+          >
             {{
               !serve.acctId ? '免费' : parseInt(serve.value) + serve.acctName
             }}
@@ -28,50 +63,53 @@
             class="icon"
             type="arrowright"
             size="18"
-            color="#b7b8c4"
+            :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
           ></uni-icons>
         </view>
       </view>
-      <NoneData v-if="props.srvProList.length === 0" />
+      <!-- <NoneData v-if="props.srvProList.length === 0" /> -->
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-// import { Ref, inject } from 'vue';
-// import { queryServiceBookPageFront } from '@/api/reservation-service';
-// import { useBasicsData } from '@/store/basicsData';
-import NoneData from './NoneData.vue';
+import { onShow } from '@dcloudio/uni-app';
+import { Ref, watch, ref, onMounted } from 'vue';
+import { queryServiceBookPageFront } from '@/api/reservation-service';
+import { useBasicsData } from '@/store/basicsData';
+// import NoneData from './NoneData.vue';
 import Router from '@/utils/router';
-// import { debounce } from '@/utils/util';
+import { debounce } from '@/utils/util';
 
-// const initBasicsData = useBasicsData();
+const initBasicsData = useBasicsData();
 
 interface Props {
   title?: string;
   item?: any;
-  // srvProshowNum?: number;
-  srvProList: any;
+  srvProshowNum?: number;
+  // srvProList: any;
+  items: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '预约服务',
   item: () => ({}),
-  srvProList: () => ({}),
-  // srvProshowNum: 0,
+  // srvProList: () => ({}),
+  items: () => ({}),
+  srvProshowNum: 0,
 });
 
-// const srvProList: Ref<any> = ref([]);
-// const getMemberRecommend = async () => {
-//   if (initBasicsData.checkLogin) {
-//     const servPage = await queryServiceBookPageFront({
-//       mid: initBasicsData.useMid,
-//       curPage: 1,
-//       pageSize: props.srvProshowNum,
-//       status: '',
-//     });
-//     srvProList.value = servPage.data?.records || [];
-//   }
-// };
+const srvProList: Ref<any> = ref([]);
+const getMemberRecommend = async () => {
+  if (initBasicsData.checkLogin) {
+    const servPage = await queryServiceBookPageFront({
+      mid: initBasicsData.useMid,
+      curPage: 1,
+      pageSize: props.srvProshowNum || 4,
+      status: '',
+    });
+    srvProList.value = servPage.data?.records || [];
+  }
+};
 const handleSysUrl = () => {
   Router.goCodePage('my_reservation_detail');
 };
@@ -81,13 +119,13 @@ const handleDetailUrl = ({ id }: any) => {
 
 // const refreshState = inject('reState') as Ref<boolean>;
 
-// const initInfo = debounce(() => {
-//   if (initBasicsData.checkLogin) {
-//     getMemberRecommend();
-//   } else {
-//     srvProList.value = [];
-//   }
-// }, 1000);
+const initInfo = debounce(() => {
+  if (initBasicsData.checkLogin) {
+    getMemberRecommend();
+  } else {
+    srvProList.value = [];
+  }
+}, 1000);
 // srvProshowNum有值再去请求
 // watch(
 //   () => props.srvProshowNum,
@@ -100,20 +138,25 @@ const handleDetailUrl = ({ id }: any) => {
 // watch(refreshState, () => {
 //   initInfo();
 // });
+onShow(() => {
+  initInfo();
+});
+onMounted(() => {
+  initInfo();
+});
 // 登录请求-刷新
-// watch(
-//   () => initBasicsData.checkLogin,
-//   () => initInfo()
-// );
+watch([() => initBasicsData.checkLogin, () => props.srvProshowNum], () => {
+  initInfo();
+});
 </script>
 
 <style lang="scss" scoped>
 .grid-serve {
   // width: 690rpx;
-  min-height: 180rpx;
+  min-height: 40rpx;
   padding: 30rpx;
-  margin: 30rpx 0rpx;
-  background: #fff;
+  // margin: 30rpx 0rpx;
+  // background: #fff;
   border-radius: 16rpx;
 
   .header {
