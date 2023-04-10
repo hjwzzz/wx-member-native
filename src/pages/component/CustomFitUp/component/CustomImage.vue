@@ -119,9 +119,9 @@ const styles = computed(() => {
     // console.log(height);    backgroundSize: 'cover',
     //  backgroundPosition: 'center', background-position: center;
     return {
+      ...item,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
-      ...item,
     };
   }
 

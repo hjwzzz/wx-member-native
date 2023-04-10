@@ -131,7 +131,7 @@ const onMallDetail = (id: string) => {
     //flex-shrink: 0;
     // width: calc(100%);
     .img {
-      // width: 196rpx;
+      width: 196rpx;
       height: 196rpx;
       margin-bottom: 15rpx;
       border: 2rpx solid #ebedf0;

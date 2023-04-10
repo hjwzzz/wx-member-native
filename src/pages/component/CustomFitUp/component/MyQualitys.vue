@@ -73,13 +73,13 @@
           <text class="text">时间：</text>
           <text class="text">{{ policy.bizTime }}</text>
           <text class="text-num">数量：</text>
-          <text class="text">{{ policy.details.length }}件</text>
+          <text class="text">{{ getNum(policy.details) }}件</text>
         </view>
         <view class="policy-card-item-btn">
           <view class="policy-card-item-btn-info">
             <text>总计：</text>
             <text class="num-infos">￥</text>
-            <text class="num-info-price">200000</text>
+            <text class="num-info-price">{{ getPrice(policy.details) }}</text>
           </view>
           <view
             class="policy-card-item-btn-name"
@@ -218,6 +218,21 @@ onShow(() => {
   policyList.records = [];
   policyList.totalRecord = 0;
 });
+
+const getNum = (list: any) => {
+  let num = 0;
+  list.map((item: any) => {
+    num += Number(item.quantity) || 0;
+  });
+  return num;
+};
+const getPrice = (list: any) => {
+  let num = 0;
+  list.map((item: any) => {
+    num += Number(item.amount) || 0;
+  });
+  return num;
+};
 </script>
 
 <style lang="scss" scoped>
