@@ -2,7 +2,7 @@
   <view
     class="member-card"
     :style="{
-      ...props.items.param.doOut.style,
+      ...userInfo.doOut.style,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     }"
@@ -112,7 +112,9 @@
             </text>
           </view>
           <view class="card-start-center" @click="handleFixedSysUrl()">
-            <text class="member-card-bottom-member-ri-text"> 查看权益</text>
+            <text class="member-card-bottom-member-ri-text">
+              {{ userInfo.title }}</text
+            >
             <image
               class="member-card-bottom-member-ri"
               :src="staticUrl + 'img/member-r2.png'"
@@ -171,7 +173,9 @@
           </view>
         </view>
         <view class="member-card-bottom-style-btn-text">
-          <text class="member-card-bottom-member-btn-text"> 查看权益</text>
+          <text class="member-card-bottom-member-btn-text">
+            {{ userInfo.title }}</text
+          >
           <image
             class="member-card-bottom-member-ri"
             :src="staticUrl + 'img/member-r1.png'"

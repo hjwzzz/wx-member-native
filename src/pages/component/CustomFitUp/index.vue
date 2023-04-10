@@ -1,19 +1,17 @@
 <template>
   <!-- class="custom-fit-up-box" :style="{ top: headHeight + 'px' }" -->
+  <!--     items.kind === 'MEM_CARD' &&
+          items.visible === 'Y' && -->
   <view class="custom-fit-up-box-vnew">
+    <memberCard
+      v-if="props.types === 'WM_CENTER'"
+      :userInfo="userInfo"
+      :loginList="loginList"
+      @showCode="onShowCode"
+    />
     <block v-for="(items, index) in panelList" :key="index">
       <!-- 会员卡 -->
-      <memberCard
-        v-if="
-          items.kind === 'MEM_CARD' &&
-          items.visible === 'Y' &&
-          props.types === 'WM_CENTER'
-        "
-        :items="items"
-        :userInfo="userInfo"
-        :loginList="loginList"
-        @showCode="onShowCode"
-      />
+
       <!-- 轮播图 -->
       <Rotation
         v-if="items.kind === 'SWIPER' && items.visible === 'Y'"
@@ -218,15 +216,15 @@ const userInfo: any = reactive({
       fontSize: '32rpx',
     },
     style: {
-      borderRadius: '10rpx',
       marginBottom: '30rpx',
       marginLeft: '30rpx',
       marginRight: '30rpx',
-      marginTop: '30rpx',
-      background: '#fff',
+      marginTop: '0rpx',
+      background: '#ffffff',
     },
   },
   background: '',
+  title: '',
 });
 
 const loginList: any = ref([]);
@@ -237,7 +235,7 @@ const getPageDate = async () => {
 
   // WM_CENTER
   if (props.types === 'WM_CENTER') {
-    const { param, panelList } = result.data;
+    const { param } = result.data;
     loginList.value = param?.quickNavList || [];
     if (param) {
       userInfo.avatarUrl = param.avatarUrl;
@@ -245,28 +243,52 @@ const getPageDate = async () => {
       userInfo.nickName = param.nickName;
     }
 
+    // 默认会员卡-用于做兼容旧的数据
+    const card: any = {
+      showGrowthValue: true,
+      showSignIn: true,
+      title: '查看权益',
+      doOut: {
+        fixedStyle: 0,
+        special: {},
+        style: {
+          background: '#ffffff',
+          marginBottom: '60rpx',
+          marginLeft: '30rpx',
+          marginRight: '30rpx',
+          marginTop: '60rpx',
+        },
+      },
+    };
+
+    const memberCart = param.card ? param.card : card;
+
+    userInfo.showGrowthValue = memberCart.showGrowthValue;
+    userInfo.showSignIn = memberCart.showSignIn;
+    userInfo.doOut = memberCart.doOut;
+    userInfo.title = memberCart.title;
+    if (userInfo.doOut.style.background && userInfo.doOut?.fixedStyle === 2) {
+      delete userInfo.doOut.style.background;
+    }
+
     //  获取基本信息
-    const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
-    const memberCardInfo = panelList.find(getMenber) || {};
+    // const getMenber = (item: { kind: string }) => item.kind === 'MEM_CARD';
+    // const memberCardInfo = panelList.find(getMenber) || {};
     // if (!memberCardInfo.param) {
     //   return;
     // }
+    // if (memberCardInfo.param) {
+    // userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
+    // userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
+    // userInfo.doOut = memberCardInfo.param.doOut;
 
-    if (memberCardInfo.param) {
-      userInfo.showGrowthValue = memberCardInfo.param.showGrowthValue || false;
-      userInfo.showSignIn = memberCardInfo.param.showSignIn || false;
-      userInfo.doOut = memberCardInfo.param.doOut;
-      // userInfo.background =
-      //   userInfo.doOut?.fixedStyle === 2
-      //     ? null
-      //     : memberCardInfo.param.doOut.style.background;
-      if (
-        memberCardInfo.param.doOut.style.background &&
-        userInfo.doOut?.fixedStyle === 2
-      ) {
-        delete memberCardInfo.param.doOut.style.background;
-      }
-    }
+    // if (
+    //   memberCardInfo.param.doOut.style.background &&
+    //   userInfo.doOut?.fixedStyle === 2
+    // ) {
+    //   delete memberCardInfo.param.doOut.style.background;
+    // }
+    // }
   }
   // console.log('result', result);
   if (result.data.panelList) {

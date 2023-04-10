@@ -38,7 +38,7 @@
           class="coupon-card-item"
           :style="{
             background: specials.couponColor || '#e04838',
-            color: specials.color || '#fbe7c3',
+            color: specials.styleColor || '#fbe7c3',
           }"
         >
           <view class="coupon-card-item-text coupon-card-item-price">
@@ -67,7 +67,7 @@
             <view
               class="coupon-card-item-text coupon-card-item-btn"
               :style="{
-                background: specials.color || '#e04838',
+                background: specials.styleColor || '#e04838',
                 color: specials.couponColor || '#e04838',
               }"
               @click="receiveCoupon(cou)"
@@ -100,7 +100,7 @@
             class="swiper-item-list"
             :style="{
               background: specials.couponColor || '#e04838',
-              color: specials.color || '#fbe7c3',
+              color: specials.styleColor || '#fbe7c3',
             }"
           >
             <view
@@ -133,7 +133,7 @@
                 <view
                   class="coupon-card-item-text coupon-card-item-btn"
                   :style="{
-                    background: specials.color || '#e04838',
+                    background: specials.styleColor || '#e04838',
                     color: specials.couponColor || '#e04838',
                   }"
                   @click="receiveCoupon(cou)"
