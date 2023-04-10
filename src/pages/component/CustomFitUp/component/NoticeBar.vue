@@ -19,12 +19,15 @@
           class="uni-notice-bar-icon"
           :src="props.items.param?.iconLight || icons"
           mode="aspectFill"
+          @click="goMoreNotice(props.items.param, props.items.updateTime)"
         >
         </image>
         <text
           v-else
-          class="iconfont icon-wode3"
-          :class="props.items.param?.icoUrl"
+          class="iconfont"
+          :class="props.items.param.icoUrl"
+          :style="{ color: props.items.param?.doOut?.special?.color }"
+          @click="goMoreNotice(props.items.param, props.items.updateTime)"
         >
         </text>
       </template>
