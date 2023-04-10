@@ -42,7 +42,11 @@
               ...props.items?.param?.doOut?.special,
             }"
           >
-            <image class="swiper-item-image" :src="item.icoUrl" mode="widthFix">
+            <image
+              class="swiper-item-image"
+              :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+              mode="widthFix"
+            >
             </image>
           </view>
         </swiper-item>
