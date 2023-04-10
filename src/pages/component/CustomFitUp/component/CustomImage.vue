@@ -40,11 +40,15 @@
     </view>
     <!-- 纵向平铺 -->
     <view class="image-direction" v-if="fixedStyles === 1">
+      <!-- props.items?.param?.doOut?.style -->
       <view
         class="direction-item-list"
         v-for="(item, index) in listImage"
         :key="index"
-        :style="{ height: heights }"
+        :style="{
+          height: heights,
+          marginBottom: imgMargin,
+        }"
         @click="bannerListClickImage(item)"
       >
         <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
@@ -73,7 +77,7 @@
         class="image-broadwise-slither-item"
         v-for="(item, index) in listImage"
         :key="index"
-        :style="{ height: heights }"
+        :style="{ height: heights, marginRight: imgMargin }"
         @click="bannerListClickImage(item)"
       >
         <image
@@ -140,6 +144,8 @@ const fixedStyles = computed(() => {
   return 0;
 });
 
+// props.items?.param?.doOut?.special.imgMargin
+const imgMargin = computed(() => props.items?.param?.doOut?.special?.imgMargin || '0rpx');
 // props.items?.param?.doOut?.fixedStyle
 
 // props.items?.param?.doOut?.style.height
