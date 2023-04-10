@@ -6,7 +6,7 @@
       }`"
     >
       <view class="name" :style="{ color: couponItem.showMainColor }">
-        {{ item.name || item.couponName }}
+        {{ item?.name || item?.couponName }}
       </view>
       <view class="handle" v-if="showStatus">
         <slot
@@ -76,7 +76,12 @@ const props = defineProps<{
 const emits = defineEmits(['event']);
 
 const couponItem: any = computed(() => {
-  if (!props.item?.style?.watermarkImgUrl) {
+  // console.log(
+  //   'props.item?.style?.watermarkImgUr',
+  //   props.item?.style?.watermarkImgUrl
+  // );
+  // console.log('props.item?', props.item.style);
+  if (!props.item?.style) {
     return {};
   }
   const {
@@ -87,6 +92,14 @@ const couponItem: any = computed(() => {
     complementaryColor,
     mainColor,
   }: any = props.item.style;
+  // console.log({
+  //   topImage: `url("${url}"), linear-gradient(270deg, ${topBgColorBottom} 1%, ${topBgColorTop} 99% 100%, #f5f5f5)`,
+  //   bottomColor: `linear-gradient(270deg, ${bottomBgColorTop} 0%, ${topBgColorTop} 100%)`,
+  //   complementaryColor,
+  //   topBgColorTop,
+  //   receiveColor: mainColor || '#ffffff',
+  //   showMainColor: props.showStatus ? mainColor : '#ffffff',
+  // });
 
   return {
     topImage: `url("${url}"), linear-gradient(270deg, ${topBgColorBottom} 1%, ${topBgColorTop} 99% 100%, #f5f5f5)`,

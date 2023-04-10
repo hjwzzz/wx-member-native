@@ -91,5 +91,25 @@ class Storage {
   static getBottomNavList() {
     return uni.getStorageSync('bottomNavList');
   }
+  // 完善资料门店列表处理
+  static setDistList(value: any[]) {
+    uni.setStorageSync('distList', value);
+  }
+  static getDistList() {
+    return uni.getStorageSync('distList');
+  }
+  static removeDistList() {
+    return uni.removeStorageSync('distList');
+  }
+  // 欢迎语进入完善资料门店列表处理
+  static setRegData(str: string) {
+    uni.setStorageSync('welcomeGuide', str);
+  }
+  static getRegData() {
+    return uni.getStorageSync('welcomeGuide');
+  }
+  static removeRegData() {
+    return uni.removeStorageSync('welcomeGuide');
+  }
 }
 export default Storage;
