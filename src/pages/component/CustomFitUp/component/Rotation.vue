@@ -37,15 +37,16 @@
           <view
             class="swiper-item-view"
             :style="{
-              height: boxStyle.height,
               overflow: 'hidden',
-              ...props.items?.param?.doOut?.special,
             }"
           >
             <image
+              :style="{
+                height: boxStyle.height,
+                borderRadius: props.items?.param?.doOut?.special?.borderRadius,
+              }"
               class="swiper-item-image"
               :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
-              mode="widthFix"
             >
             </image>
           </view>
@@ -165,7 +166,7 @@ const swiperChange = (e: any) => {
 .custom-dots {
   position: relative;
   overflow: hidden;
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
   background-size: cover;
   .custom-dots-box {
     // width: 100%;

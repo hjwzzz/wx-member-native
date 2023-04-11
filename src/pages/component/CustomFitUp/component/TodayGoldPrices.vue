@@ -1,6 +1,13 @@
 <template>
   <!-- grid-price-none 无数据显示 -->
-  <view class="grid-price" :style="props.items?.param?.doOut?.style">
+  <view
+    class="grid-price"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
         <text
@@ -24,15 +31,11 @@
         <text
           class="more"
           :style="{
-            color: props.items?.param?.doOut?.special?.color,
+            color: '#9697A2',
           }"
           >更多</text
         >
-        <uni-icons
-          type="arrowright"
-          size="14"
-          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
-        ></uni-icons>
+        <uni-icons type="arrowright" size="14" color="#9697A2"></uni-icons>
       </view>
     </view>
 
@@ -109,7 +112,15 @@
                 </text>
               </view>
               <view class="detail-content">
-                <view class="left detail-content-left">
+                <!-- styleColor   props.items?.param?.doOut?.special?.color  -->
+                <view
+                  class="left detail-content-left"
+                  :style="{
+                    color:
+                      props.items?.param?.doOut?.special?.styleColor ||
+                      initBasicsData.mainColor,
+                  }"
+                >
                   {{ price.price || 0 }}
                 </view>
                 <view class="right">元/克</view>
@@ -188,7 +199,14 @@
               品牌：{{ item.brandName }}
             </view>
           </view>
-          <view class="gold-price-style2-item-price">
+          <view
+            class="gold-price-style2-item-price"
+            :style="{
+              color:
+                props.items?.param?.doOut?.special?.styleColor ||
+                initBasicsData.mainColor,
+            }"
+          >
             ¥{{ item.price || 0 }}
           </view>
         </view>
@@ -243,7 +261,14 @@
                   : ''
               }}
             </text>
-            <text class="gold-price-style3-item-right-price">
+            <text
+              class="gold-price-style3-item-right-price"
+              :style="{
+                color:
+                  props.items?.param?.doOut?.special?.styleColor ||
+                  initBasicsData.mainColor,
+              }"
+            >
               ¥{{ item.price || 0 }}
             </text>
           </view>
@@ -285,7 +310,14 @@
                   : ''
               }}
             </text>
-            <text class="gold-price-style3-item-right-price">
+            <text
+              class="gold-price-style3-item-right-price"
+              :style="{
+                color:
+                  props.items?.param?.doOut?.special?.styleColor ||
+                  initBasicsData.mainColor,
+              }"
+            >
               ¥{{ item.price || 0 }}
             </text>
           </view>

@@ -2,7 +2,7 @@
   <view
     v-if="show"
     class="uni-noticebar"
-    :style="{ backgroundColor }"
+    :style="{ background: backgroundColor }"
     @click="onClick"
   >
     <slot name="icon" v-if="showIcon === true || showIcon === 'true'">

@@ -19,7 +19,9 @@
             <image
               class="swiper-item-image"
               :src="item.icoUrl"
-              mode="aspectFill"
+              :style="{
+                borderRadius: borderRadius,
+              }"
               @click="bannerListClickImage(item)"
             >
             </image>
@@ -51,7 +53,13 @@
         }"
         @click="bannerListClickImage(item)"
       >
-        <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
+        <image
+          class="swiper-item-image"
+          :style="{
+            borderRadius: borderRadius,
+          }"
+          :src="item.icoUrl"
+        >
         </image>
       </view>
     </view>
@@ -65,7 +73,13 @@
         :style="{ height: heights }"
         @click="bannerListClickImage(item)"
       >
-        <image class="swiper-item-image" :src="item.icoUrl" mode="aspectFill">
+        <image
+          class="swiper-item-image"
+          :style="{
+            borderRadius: borderRadius,
+          }"
+          :src="item.icoUrl"
+        >
         </image>
       </view>
       <!-- <view class="image-broadwise-item"> </view> -->
@@ -82,8 +96,10 @@
       >
         <image
           class="swiper-item-slither-image"
+          :style="{
+            borderRadius: borderRadius,
+          }"
           :src="item.icoUrl"
-          mode="aspectFill"
         >
         </image>
       </view>
@@ -134,6 +150,9 @@ const styles = computed(() => {
 
 const listImage = computed(() => props.items?.param?.doOut?.images || oldListImage.value);
 const heights = computed(() => props.items?.param?.doOut?.special?.height || '400rpx');
+const borderRadius = computed(() => props.items?.param?.doOut?.special?.borderRadius);
+
+// props.items?.param?.doOut?.special?.borderRadius
 const fixedStyles = computed(() => {
   if (!props.items?.param?.doOut?.fixedStyle) {
     return 0;
@@ -214,7 +233,7 @@ const swiperChange = (e: any) => {
     // background: #e04838;
     width: 100%;
     height: 100%;
-    border-radius: 16rpx;
+    // border-radius: 16rpx;
     .swiper-item-image {
       width: 100%;
       height: 100%;
@@ -232,7 +251,7 @@ const swiperChange = (e: any) => {
     align-items: center;
   }
   .custom-dots-show {
-    border-radius: 6rpx;
+    // border-radius: 6rpx;
     margin-left: 5rpx;
     margin-right: 5rpx;
   }
@@ -274,7 +293,7 @@ const swiperChange = (e: any) => {
     width: 100%;
     height: 144rpx;
     background: #ffffff;
-    border-radius: 8px;
+    // border-radius: 8px;
     margin-bottom: 20rpx;
     // display: flex;
     // justify-content: center;
@@ -300,11 +319,11 @@ const swiperChange = (e: any) => {
     // background: red;
     margin-right: 20rpx;
     overflow: hidden;
-    border-radius: 14rpx;
+    // border-radius: 14rpx;
     .swiper-item-slither-image {
       height: 100%;
       width: 100%;
-      border-radius: 14rpx;
+      // border-radius: 14rpx;
     }
   }
 }

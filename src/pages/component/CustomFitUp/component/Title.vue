@@ -42,7 +42,7 @@
       v-if="props.items?.param?.doOut?.special?.moreIsIcon"
       type="arrowright"
       size="14"
-      :color="props.items?.param?.doOut?.special.iconColor || '#B7B8C4'"
+      color="#9697A2"
     ></uni-icons>
     <text
       v-else

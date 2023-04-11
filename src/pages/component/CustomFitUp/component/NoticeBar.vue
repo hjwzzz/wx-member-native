@@ -1,6 +1,10 @@
 <template>
   <view
-    :style="props.items?.param?.doOut?.style"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     class="notice-bars"
     @click="goMoreNotice(props.items.param, props.items.updateTime)"
   >
@@ -11,25 +15,41 @@
       :text="props.items.param?.title"
       :background-color="props.items.param?.doOut?.style?.background || '#fff'"
       :color="props.items.param?.doOut?.special?.color"
-      :moreColor="props.items.param?.doOut?.special?.color"
+      moreColor="#9697A2"
     >
       <template #icon>
-        <image
-          v-if="props.items.param?.isIcon"
-          class="uni-notice-bar-icon"
-          :src="props.items.param?.iconLight || icons"
-          mode="aspectFill"
-          @click="goMoreNotice(props.items.param, props.items.updateTime)"
-        >
-        </image>
-        <text
-          v-else
-          class="iconfont"
-          :class="props.items.param.icoUrl"
-          :style="{ color: props.items.param?.doOut?.special?.color }"
-          @click="goMoreNotice(props.items.param, props.items.updateTime)"
-        >
-        </text>
+        <view class="image-icon">
+          <block v-if="props.items.param?.isIcon || props.items.param?.icoUrl">
+            <image
+              v-if="props.items.param?.isIcon"
+              class="uni-notice-bar-icon"
+              :src="props.items.param?.iconLight || icons"
+              mode="aspectFill"
+              @click="goMoreNotice(props.items.param, props.items.updateTime)"
+            >
+            </image>
+            <text
+              v-if="!props.items.param?.isIcon && props.items.param.icoUrl"
+              class="iconfont"
+              :class="props.items.param.icoUrl"
+              :style="{ color: props.items.param?.doOut?.special?.color }"
+              @click="goMoreNotice(props.items.param, props.items.updateTime)"
+            >
+            </text>
+          </block>
+
+          <block
+            v-if="!props.items.param?.isIcon && !props.items.param?.icoUrl"
+          >
+            <image
+              class="uni-notice-bar-icon"
+              :src="icons"
+              mode="aspectFill"
+              @click="goMoreNotice(props.items.param, props.items.updateTime)"
+            >
+            </image>
+          </block>
+        </view>
       </template>
     </uni-notice-bar>
   </view>
@@ -91,6 +111,10 @@ const goMoreNotice = (item: any, noticTime: any) => {
   :deep(.uni-noticebar) {
     margin-bottom: 0px;
   }
+}
+.image-icon {
+  display: flex;
+  align-items: center;
 }
 
 .iconfont {

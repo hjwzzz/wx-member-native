@@ -2,7 +2,11 @@
   <!-- 一行排列-滑动  -->
   <view
     class="quick-line"
-    :style="props.items.param.doOut.style"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     v-if="props.items.param.doOut.fixedStyle === 0"
   >
     <block v-for="(item, index) in props.items.param.linkList" :key="index">
@@ -150,13 +154,14 @@ const swiperChange = (e: any) => {
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  // justify-content: center;
   &::-webkit-scrollbar {
     display: none; /* Chrome Safari */
   }
   .quick-line-item {
     // display: inline-block;
-    flex-shrink: 0;
-    width: 150rpx;
+    flex-grow: 1;
+    min-width: 150rpx;
     text-align: center;
   }
 

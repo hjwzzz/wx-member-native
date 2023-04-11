@@ -1,5 +1,13 @@
 <template>
-  <view class="coupon-act" :style="props.items.param?.doOut?.style">
+  <view
+    class="coupon-act"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
+    <!-- coupon-acts  couponsList.length > 1   props.items.param.doOut.fixedStyle === 1-->
     <view class="header">
       <view class="header-left">
         <text
@@ -15,15 +23,11 @@
         <text
           class="more"
           :style="{
-            color: specials.color,
+            color: '#9697A2',
           }"
           >更多</text
         >
-        <uni-icons
-          type="arrowright"
-          size="14"
-          :color="specials.color || '#B7B8C4'"
-        ></uni-icons>
+        <uni-icons type="arrowright" size="14" color="#9697A2"></uni-icons>
       </view>
     </view>
 
@@ -49,7 +53,9 @@
               </text>
             </block>
             <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
-              <text class="coupon-card-item-price-unit">随机金额 </text>
+              <text class="coupon-card-item-price-unit unit-suij"
+                >随机金额
+              </text>
             </block>
             <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
               <text class="coupon-card-item-price-num">
@@ -79,7 +85,11 @@
       </block>
     </view>
 
-    <view class="custom-dots" v-if="props.items.param.doOut.fixedStyle === 1">
+    <view
+      class="custom-dots"
+      v-if="props.items.param.doOut.fixedStyle === 1"
+      :class="couponsList.length > 1 ? 'custom-dots-s' : ''"
+    >
       <swiper
         style="height: 250rpx"
         :autoplay="false"
@@ -116,7 +126,9 @@
                   </text>
                 </block>
                 <block v-if="coupon2.includes(cou.prodCode?.code || cou.prod)">
-                  <text class="coupon-card-item-price-unit">随机金额 </text>
+                  <text class="coupon-card-item-price-unit unit-suij"
+                    >随机金额
+                  </text>
                 </block>
                 <block v-if="coupon3.includes(cou.prodCode?.code || cou.prod)">
                   <text class="coupon-card-item-price-num">
@@ -210,7 +222,7 @@ const couponsList = computed(() => {
       //  v-if="cou.showed"
       if (item.showed) {
         arr.push(item);
-        if (arr.length === 8) {
+        if (arr.length === 3) {
           listArr.push([...arr]);
           arr = [];
         }
@@ -384,10 +396,17 @@ const toDetail = () => {
   }
 }
 
+.unit-suij {
+  font-size: 30rpx !important;
+}
+
+.custom-dots-s {
+  padding-bottom: 16rpx;
+}
 .custom-dots {
   position: relative;
-  padding-top: 30rpx;
-  padding-bottom: 50rpx;
+  padding-top: 20rpx;
+  // padding-bottom: 15rpx;
 
   .coupon-swiper {
     border-radius: 16rpx;
@@ -450,7 +469,7 @@ const toDetail = () => {
   .custom-dots-box {
     // width: 100%;
     position: absolute;
-    bottom: 18rpx;
+    bottom: -10rpx;
     left: 0rpx;
     right: 0rpx;
     display: flex;
@@ -471,10 +490,13 @@ const toDetail = () => {
   }
 }
 
+// .coupon-acts {
+//   padding-bottom: 46rpx;
+// }
 .coupon-act {
   // width: 690rpx;
   padding: 30rpx;
-  padding-bottom: 10rpx;
+  // padding-bottom: 10rpx;
   // margin: 30rpx 0rpx;
   // background: #fff;
   // border-radius: 16rpx;
