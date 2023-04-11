@@ -37,15 +37,16 @@
           <view
             class="swiper-item-view"
             :style="{
-              height: boxStyle.height,
               overflow: 'hidden',
-              ...props.items?.param?.doOut?.special,
             }"
           >
             <image
+              :style="{
+                height: boxStyle.height,
+                borderRadius: props.items?.param?.doOut?.special?.borderRadius,
+              }"
               class="swiper-item-image"
               :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
-              mode="widthFix"
             >
             </image>
           </view>
