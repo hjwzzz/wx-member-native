@@ -1,5 +1,12 @@
 <template>
-  <view class="grid-list" :style="props.items?.param?.doOut?.style">
+  <view
+    class="grid-list"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view
       :class="
         props.items.param.doOut.fixedStyle === 3
@@ -50,7 +57,7 @@
             v-if="props.items.param.doOut.fixedStyle === 3"
             type="arrowright"
             size="14"
-            :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
+            color="#9697A2"
           />
         </view>
       </block>

@@ -2,7 +2,11 @@
   <!-- 一行排列-滑动  -->
   <view
     class="quick-line"
-    :style="props.items.param.doOut.style"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     v-if="props.items.param.doOut.fixedStyle === 0"
   >
     <block v-for="(item, index) in props.items.param.linkList" :key="index">

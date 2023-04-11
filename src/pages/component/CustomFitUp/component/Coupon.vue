@@ -23,15 +23,11 @@
         <text
           class="more"
           :style="{
-            color: specials.color,
+            color: '#9697A2',
           }"
           >更多</text
         >
-        <uni-icons
-          type="arrowright"
-          size="14"
-          :color="specials.color || '#B7B8C4'"
-        ></uni-icons>
+        <uni-icons type="arrowright" size="14" color="#9697A2"></uni-icons>
       </view>
     </view>
 

@@ -1,6 +1,13 @@
 <template>
   <!-- grid-price-none 无数据显示 -->
-  <view class="grid-price" :style="props.items?.param?.doOut?.style">
+  <view
+    class="grid-price"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
         <text
@@ -24,15 +31,11 @@
         <text
           class="more"
           :style="{
-            color: props.items?.param?.doOut?.special?.color,
+            color: '#9697A2',
           }"
           >更多</text
         >
-        <uni-icons
-          type="arrowright"
-          size="14"
-          :color="props.items?.param?.doOut?.special?.color || '#B7B8C4'"
-        ></uni-icons>
+        <uni-icons type="arrowright" size="14" color="#9697A2"></uni-icons>
       </view>
     </view>
 

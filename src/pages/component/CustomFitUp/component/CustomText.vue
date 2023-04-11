@@ -1,5 +1,12 @@
 <template>
-  <view :style="props.items?.param?.doOut?.style" class="box-text">
+  <view
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+    class="box-text"
+  >
     <view
       :style="{
         ...props.items?.param?.doOut?.special,

@@ -1,6 +1,10 @@
 <template>
   <view
-    :style="props.items?.param?.doOut?.style"
+    :style="{
+      ...props.items.param?.doOut?.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
     class="notice-bars"
     @click="goMoreNotice(props.items.param, props.items.updateTime)"
   >
@@ -11,7 +15,7 @@
       :text="props.items.param?.title"
       :background-color="props.items.param?.doOut?.style?.background || '#fff'"
       :color="props.items.param?.doOut?.special?.color"
-      :moreColor="props.items.param?.doOut?.special?.color"
+      moreColor="#9697A2"
     >
       <template #icon>
         <view class="image-icon">
