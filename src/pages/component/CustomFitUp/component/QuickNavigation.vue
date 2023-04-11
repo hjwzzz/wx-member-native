@@ -150,13 +150,14 @@ const swiperChange = (e: any) => {
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  // justify-content: center;
   &::-webkit-scrollbar {
     display: none; /* Chrome Safari */
   }
   .quick-line-item {
     // display: inline-block;
-    flex-shrink: 0;
-    width: 150rpx;
+    flex-grow: 1;
+    min-width: 150rpx;
     text-align: center;
   }
 

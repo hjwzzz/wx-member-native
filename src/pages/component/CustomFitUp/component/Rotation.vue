@@ -166,7 +166,7 @@ const swiperChange = (e: any) => {
 .custom-dots {
   position: relative;
   overflow: hidden;
-  margin-bottom: 30rpx;
+  // margin-bottom: 30rpx;
   background-size: cover;
   .custom-dots-box {
     // width: 100%;
