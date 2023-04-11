@@ -310,6 +310,9 @@ const getPageDate = async () => {
           },
         };
       }
+      if (item.kind === 'QUICK_NAV') {
+        item.param.doOut.fixedStyle = 1;
+      }
 
       return item;
     });
