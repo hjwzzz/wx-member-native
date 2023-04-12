@@ -18,11 +18,12 @@
           <view class="swiper-item-list">
             <image
               class="swiper-item-image"
-              :src="item.icoUrl"
+              :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
               :style="{
                 borderRadius: borderRadius,
               }"
               @click="bannerListClickImage(item)"
+              mode="aspectFill"
             >
             </image>
           </view>
@@ -58,7 +59,8 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
@@ -85,7 +87,8 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
@@ -106,7 +109,8 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
