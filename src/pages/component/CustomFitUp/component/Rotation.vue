@@ -45,8 +45,9 @@
                 height: boxStyle.height,
                 borderRadius: props.items?.param?.doOut?.special?.borderRadius,
               }"
-              class="swiper-item-image"
+              class="swiper-item-image 11"
               :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+              mode="aspectFill"
             >
             </image>
           </view>

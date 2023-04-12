@@ -36,7 +36,7 @@
         <!-- aspectFit|aspectFill|widthFix -->
         <image
           class="nearby-store-image-show"
-          :src="list.url || `${staticUrl}img/store/store-avatar-default.png`"
+          :src="list.url || 'https://static.jqzplat.com/img/r-54253.png'"
           mode="aspectFill"
         >
         </image>
@@ -312,11 +312,11 @@ const onMall = () => {
 
   .nearby-store-image {
     // width: 325px;
-    height: 248rpx;
+    height: 370rpx;
     border-radius: 16rpx;
     overflow: hidden;
     .nearby-store-image-show {
-      height: 248rpx;
+      height: 370rpx;
       width: 100%;
     }
   }

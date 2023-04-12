@@ -170,7 +170,7 @@
                 />
               </view>
               <view class="gold-price-style3-center">
-                <text class=""> 销售金价 </text>
+                <text class="gold-price-style3-center-text"> 销售金价 </text>
               </view>
             </view>
           </view>
@@ -181,14 +181,23 @@
               v-for="(item, index) in goldPriceDatas.metalPrices"
               :key="index"
             >
-              <text class="gold-price-style3-item-right-name">
+              <text class="gold-price-style3-item-right-name text-break">
                 {{ item.met }}{{ item.metCtn || ''
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
-              <text class="gold-price-style3-item-right-price">
+              <text class="gold-price-style3-item-right-price text-break">
                 ¥{{ item.price || 0 }}
               </text>
             </view>
+
+            <!-- <view class="gold-price-style3-item-right-info">
+              <text class="gold-price-style3-item-right-name text-break">
+                11111111111111111111111111111
+              </text>
+              <text class="gold-price-style3-item-right-price text-break">
+                11111111 1111111111111111
+              </text>
+            </view> -->
           </view>
         </view>
 
@@ -206,7 +215,7 @@
                 />
               </view>
               <view class="gold-price-style3-center">
-                <text class=""> 回收金价 </text>
+                <text class="gold-price-style3-center-text"> 回收金价 </text>
               </view>
             </view>
           </view>
@@ -216,11 +225,11 @@
               v-for="(item, index) in goldPriceDatas.oldmatMetalPrices"
               :key="index"
             >
-              <text class="gold-price-style3-item-right-name">
+              <text class="gold-price-style3-item-right-name text-break">
                 {{ item.met }}{{ item.metCtn || ''
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
-              <text class="gold-price-style3-item-right-price">
+              <text class="gold-price-style3-item-right-price text-break">
                 ¥{{ item.price || 0 }}
               </text>
             </view>
@@ -576,7 +585,9 @@ onShareTimeline(() => shareTimeline(shareData.value));
   // margin: 30rpx 0;
   // border-top-left-radius: 40rpx;
   // border-top-right-radius: 40rpx;
-  margin-top: 0rpx;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  margin-top: 30rpx;
   background: #ffffff;
   display: flex;
   justify-content: space-between;
@@ -584,7 +595,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
   align-items: center;
   padding: 0 30rpx;
   // width: 80vw;
-  // border-radius: 16rpx;
+  border-radius: 20rpx;
   z-index: 999;
   .name {
     font-size: 28rpx;
@@ -733,6 +744,9 @@ onShareTimeline(() => shareTimeline(shareData.value));
     align-items: center;
     font-size: 28rpx;
   }
+  .gold-price-style3-center-text {
+    margin-top: 10rpx;
+  }
 }
 .gold-price-style3-item-right {
   flex-grow: 1;
@@ -752,6 +766,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
     font-size: 32rpx;
     font-weight: 700;
     color: #dbb866;
+    width: 180rpx;
   }
   // background-color: rgb(186, 186, 186);
 }

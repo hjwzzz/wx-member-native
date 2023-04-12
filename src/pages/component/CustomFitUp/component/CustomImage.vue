@@ -18,11 +18,12 @@
           <view class="swiper-item-list">
             <image
               class="swiper-item-image"
-              :src="item.icoUrl"
+              :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
               :style="{
                 borderRadius: borderRadius,
               }"
               @click="bannerListClickImage(item)"
+              mode="aspectFill"
             >
             </image>
           </view>
@@ -58,14 +59,22 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
     </view>
 
     <!-- 横向平铺 -->
-    <view class="image-broadwise" v-if="fixedStyles === 2">
+    <!--  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 18rpx; -->
+    <view
+      class="image-broadwise"
+      :style="{ gridTemplateColumns: ` repeat(${listImage.length}, 1fr)` }"
+      v-if="fixedStyles === 2"
+    >
       <view
         class="image-broadwise-item"
         v-for="(item, index) in listImage"
@@ -78,7 +87,8 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
@@ -99,7 +109,8 @@
           :style="{
             borderRadius: borderRadius,
           }"
-          :src="item.icoUrl"
+          :src="item.icoUrl || 'https://static.jqzplat.com/img/r-54253.png'"
+          mode="aspectFill"
         >
         </image>
       </view>
@@ -292,9 +303,9 @@ const swiperChange = (e: any) => {
   .image-broadwise-item {
     width: 100%;
     height: 144rpx;
-    background: #ffffff;
+    // background: #ffffff;
     // border-radius: 8px;
-    margin-bottom: 20rpx;
+    // margin-bottom: 20rpx;
     // display: flex;
     // justify-content: center;
     // align-items: center;
