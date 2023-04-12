@@ -37,18 +37,20 @@
             >
             </text>
           </block>
-
-          <block
-            v-if="!props.items.param?.isIcon && !props.items.param?.icoUrl"
-          >
-            <image
+          <!-- <image
               class="uni-notice-bar-icon"
               :src="icons"
               mode="aspectFill"
               @click="goMoreNotice(props.items.param, props.items.updateTime)"
             >
-            </image>
-          </block>
+            </image> -->
+          <text
+            v-if="!props.items.param?.isIcon && !props.items.param?.icoUrl"
+            class="iconfont icon-gonggao"
+            :style="{ color: props.items.param?.doOut?.special?.color }"
+            @click="goMoreNotice(props.items.param, props.items.updateTime)"
+          >
+          </text>
         </view>
       </template>
     </uni-notice-bar>
