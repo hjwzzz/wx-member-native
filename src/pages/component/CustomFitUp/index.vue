@@ -294,8 +294,11 @@ const getPageDate = async () => {
   if (result.data.panelList) {
     const comList = result.data.panelList.map((item: any) => {
       if (!item.param.doOut) {
+        // if (item.kind === 'QUICK_NAV') {
+        // item.param.doOut.fixedStyle = 1;
+        // }
         item.param.doOut = {
-          fixedStyle: 0,
+          fixedStyle: item.kind === 'QUICK_NAV' ? 1 : 0,
           special: {
             color: '#8c7373',
             fontSize: '32rpx',
@@ -309,9 +312,6 @@ const getPageDate = async () => {
             background: '#fff',
           },
         };
-      }
-      if (item.kind === 'QUICK_NAV') {
-        item.param.doOut.fixedStyle = 1;
       }
 
       return item;

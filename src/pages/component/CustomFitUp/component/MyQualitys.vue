@@ -81,11 +81,22 @@
         <view class="policy-card-item-btn">
           <view class="policy-card-item-btn-info">
             <text>总计：</text>
-            <text class="num-infos">￥</text>
-            <text class="num-info-price">{{ getPrice(policy.details) }}</text>
+            <text
+              class="num-infos"
+              :style="{ color: initBasicsData.mainColor }"
+            >
+              ￥
+            </text>
+            <text
+              class="num-info-price"
+              :style="{ color: initBasicsData.mainColor }"
+            >
+              {{ getPrice(policy.details) }}
+            </text>
           </view>
           <view
             class="policy-card-item-btn-name"
+            :style="{ background: initBasicsData.mainColor }"
             @click="goDetails(index, policy)"
           >
             详情
@@ -344,7 +355,8 @@ const getPrice = (list: any) => {
       align-items: center;
       font-size: 24rpx;
       font-weight: 400;
-      color: #fbe7c3;
+      // color: #fbe7c3;
+      color: #ffffff;
     }
   }
   .policy-card-item-text {

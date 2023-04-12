@@ -65,7 +65,14 @@
     </view>
 
     <!-- 横向平铺 -->
-    <view class="image-broadwise" v-if="fixedStyles === 2">
+    <!--  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 18rpx; -->
+    <view
+      class="image-broadwise"
+      :style="{ gridTemplateColumns: ` repeat(${listImage.length}, 1fr)` }"
+      v-if="fixedStyles === 2"
+    >
       <view
         class="image-broadwise-item"
         v-for="(item, index) in listImage"
@@ -292,9 +299,9 @@ const swiperChange = (e: any) => {
   .image-broadwise-item {
     width: 100%;
     height: 144rpx;
-    background: #ffffff;
+    // background: #ffffff;
     // border-radius: 8px;
-    margin-bottom: 20rpx;
+    // margin-bottom: 20rpx;
     // display: flex;
     // justify-content: center;
     // align-items: center;
