@@ -181,14 +181,23 @@
               v-for="(item, index) in goldPriceDatas.metalPrices"
               :key="index"
             >
-              <text class="gold-price-style3-item-right-name">
+              <text class="gold-price-style3-item-right-name text-break">
                 {{ item.met }}{{ item.metCtn || ''
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
-              <text class="gold-price-style3-item-right-price">
+              <text class="gold-price-style3-item-right-price text-break">
                 ¥{{ item.price || 0 }}
               </text>
             </view>
+
+            <!-- <view class="gold-price-style3-item-right-info">
+              <text class="gold-price-style3-item-right-name text-break">
+                11111111111111111111111111111
+              </text>
+              <text class="gold-price-style3-item-right-price text-break">
+                11111111 1111111111111111
+              </text>
+            </view> -->
           </view>
         </view>
 
@@ -216,11 +225,11 @@
               v-for="(item, index) in goldPriceDatas.oldmatMetalPrices"
               :key="index"
             >
-              <text class="gold-price-style3-item-right-name">
+              <text class="gold-price-style3-item-right-name text-break">
                 {{ item.met }}{{ item.metCtn || ''
                 }}{{ item.brandName ? `(${item.brandName})` : '' }}
               </text>
-              <text class="gold-price-style3-item-right-price">
+              <text class="gold-price-style3-item-right-price text-break">
                 ¥{{ item.price || 0 }}
               </text>
             </view>
@@ -752,6 +761,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
     font-size: 32rpx;
     font-weight: 700;
     color: #dbb866;
+    width: 180rpx;
   }
   // background-color: rgb(186, 186, 186);
 }
