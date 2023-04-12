@@ -201,7 +201,7 @@ const initBasicsData = useBasicsData();
 interface Props {
   userInfo: any;
   loginList: any;
-  items: any;
+  items?: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   userInfo: () => ({}),

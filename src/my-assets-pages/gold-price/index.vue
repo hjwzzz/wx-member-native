@@ -170,7 +170,7 @@
                 />
               </view>
               <view class="gold-price-style3-center">
-                <text class=""> 销售金价 </text>
+                <text class="gold-price-style3-center-text"> 销售金价 </text>
               </view>
             </view>
           </view>
@@ -215,7 +215,7 @@
                 />
               </view>
               <view class="gold-price-style3-center">
-                <text class=""> 回收金价 </text>
+                <text class="gold-price-style3-center-text"> 回收金价 </text>
               </view>
             </view>
           </view>
@@ -585,7 +585,9 @@ onShareTimeline(() => shareTimeline(shareData.value));
   // margin: 30rpx 0;
   // border-top-left-radius: 40rpx;
   // border-top-right-radius: 40rpx;
-  margin-top: 0rpx;
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  margin-top: 30rpx;
   background: #ffffff;
   display: flex;
   justify-content: space-between;
@@ -593,7 +595,7 @@ onShareTimeline(() => shareTimeline(shareData.value));
   align-items: center;
   padding: 0 30rpx;
   // width: 80vw;
-  // border-radius: 16rpx;
+  border-radius: 20rpx;
   z-index: 999;
   .name {
     font-size: 28rpx;
@@ -741,6 +743,9 @@ onShareTimeline(() => shareTimeline(shareData.value));
     justify-content: center;
     align-items: center;
     font-size: 28rpx;
+  }
+  .gold-price-style3-center-text {
+    margin-top: 10rpx;
   }
 }
 .gold-price-style3-item-right {
