@@ -41,7 +41,7 @@
     <view
       class="policy-card"
       v-if="
-        props.items.param.doOut.fixedStyle === 0 && policyList.records.length
+        props.items.param.doOut.fixedStyle === 1 && policyList.records.length
       "
     >
       <view
@@ -104,7 +104,7 @@
         </view>
       </view>
     </view>
-    <block v-if="props.items.param.doOut.fixedStyle === 1">
+    <block v-if="props.items.param.doOut.fixedStyle === 0">
       <view
         class="content"
         v-for="(policy, index) in policyList.records"
