@@ -220,6 +220,13 @@ const userInfo: any = reactive({
 const getPageDate = async () => {
   const { data } = await getByOpsIdAndKind('WM_CENTER');
   const { param } = data;
+
+  if (param) {
+    userInfo.avatarUrl = param.avatarUrl;
+    userInfo.curLevelName = param.curLevelName;
+    userInfo.nickName = param.nickName;
+  }
+
   // pageBackground.value = param?.doOut?.style?.background || '#f5f5f5';
   pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
   showToImageBG.value = param?.doOut?.special?.backgroundImage || '';
