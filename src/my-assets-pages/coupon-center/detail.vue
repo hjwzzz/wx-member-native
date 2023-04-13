@@ -126,14 +126,17 @@ onShow(() => {
 });
 
 onLoad((options: any) => {
-  initBasicsData.setCouponPopularizeScene('');
+  const initBasicsData = useBasicsData();
+  if (initBasicsData.setCouponPopularizeScene) {
+    initBasicsData.setCouponPopularizeScene('');
+  }
   const { id = '' } = options;
   couponOptions.value = options;
   couponId.value = id;
   if (couponId.value) {
     return getDetail();
   }
-  const scene: any = options?.scene || wx.getLaunchOptionsSync().scene;
+  const scene: any = options?.scene || uni.getLaunchOptionsSync().scene;
   // console.log('scene', scene);
   if (scene) {
     uni.setStorageSync('couponDetailscene', scene);
@@ -168,7 +171,7 @@ onLoad((options: any) => {
 });
 
 // getCenterCouponIdByStorageFront
-const getParamData = async (scene: any, ops = {}) => {
+const getParamData = async (scene: any) => {
   const res = await getCenterCouponIdByStorageFront(scene);
   couponId.value = res.data;
   getDetail();
