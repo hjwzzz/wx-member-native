@@ -18,7 +18,16 @@
       moreColor="#9697A2"
     >
       <template #icon>
-        <view class="image-icon">
+        <!-- icon-wu -->
+        <!-- <view class="image-icon" v-if="props.items.param.icoUrl === 'icon-wu'">
+          <text
+            class="iconfont icon-wu"
+            :style="{ color: props.items.param?.doOut?.special?.color }"
+            @click="goMoreNotice(props.items.param, props.items.updateTime)"
+          >
+          </text>
+        </view> -->
+        <view class="image-icon" v-if="props.items.param.icoUrl !== 'icon-wu'">
           <block v-if="props.items.param?.isIcon || props.items.param?.icoUrl">
             <image
               v-if="props.items.param?.isIcon"
@@ -52,6 +61,7 @@
           >
           </text>
         </view>
+        <text v-if="props.items.param.icoUrl === 'icon-wu'"></text>
       </template>
     </uni-notice-bar>
   </view>
