@@ -403,6 +403,8 @@ const getPrice = (list: any) => {
     justify-content: space-between;
     align-items: center;
     height: 80rpx;
+    padding-top: 5rpx;
+    // padding-bottom: 10rpx;
     .header-left {
       display: flex;
       align-items: center;

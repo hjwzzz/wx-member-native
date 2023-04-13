@@ -498,7 +498,7 @@ const _getGoldPriceByPage = async () => {
   justify-content: space-between;
   align-items: center;
   font-size: 28rpx;
-  margin-top: 20rpx;
+  // margin-top: 10rpx;
 
   .gold-price-style1-text {
     display: flex;
@@ -506,6 +506,7 @@ const _getGoldPriceByPage = async () => {
     align-items: center;
     border-radius: 32rpx;
     height: 64rpx;
+    // margin-right: 20rpx;
   }
   .gold-price-style1-item1 {
     width: 304rpx;
@@ -567,7 +568,7 @@ const _getGoldPriceByPage = async () => {
     margin-top: 0rpx !important;
   }
   .gold-price-style2-tabs {
-    margin-right: 20rpx;
+    margin-right: 40rpx;
     color: #9697a2;
     height: 100rpx;
     display: flex;
@@ -729,6 +730,7 @@ const _getGoldPriceByPage = async () => {
     justify-content: space-between;
     align-items: center;
     height: 80rpx;
+    padding-top: 10rpx;
     .left {
       display: flex;
       align-items: center;

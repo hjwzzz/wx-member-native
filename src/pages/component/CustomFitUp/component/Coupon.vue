@@ -34,7 +34,13 @@
     <!--    props.items.param.doOut.fixedStyle === 0 ||
       props.items.param.doOut.fixedStyle === 1 -->
 
-    <view class="coupon-card" v-if="props.items.param.doOut.fixedStyle === 0">
+    <view
+      class="coupon-card"
+      v-if="
+        props.items.param.doOut.fixedStyle === 0 &&
+        props.items.param?.coupons.length > 0
+      "
+    >
       <!-- showed -->
       <block v-for="(cou, index) in props.items.param?.coupons" :key="index">
         <view
@@ -87,7 +93,7 @@
 
     <view
       class="custom-dots"
-      v-if="props.items.param.doOut.fixedStyle === 1"
+      v-if="props.items.param.doOut.fixedStyle === 1 && couponsList.length > 0"
       :class="couponsList.length > 1 ? 'custom-dots-s' : ''"
     >
       <swiper
@@ -213,13 +219,14 @@ const swiperChange = (e: any) => {
   currentIndex.value = e.detail.current;
 };
 
-// props.items.param?.coupons
+const couponsLine = computed(() => props.items.param?.coupons || []);
+// props.items.param?.coupons props.items.param?.coupons
+// const couponsList = [];
 const couponsList = computed(() => {
   if (props.items.param?.coupons) {
     let arr: any = [];
     const listArr: any = [];
     props.items.param?.coupons.map((item: any) => {
-      //  v-if="cou.showed"
       if (item.showed) {
         arr.push(item);
         if (arr.length === 3) {
@@ -228,7 +235,6 @@ const couponsList = computed(() => {
         }
       }
     });
-
     if (arr.length !== 0) {
       listArr.push([...arr]);
       arr = [];
@@ -338,7 +344,7 @@ const toDetail = () => {
 <style lang="scss" scoped>
 .coupon-card {
   padding-top: 20rpx;
-  padding-bottom: 20rpx;
+  // padding-bottom: 20rpx;
   // width: 350px;
   // display: flex;
   // justify-content: flex-start;
@@ -528,6 +534,10 @@ const toDetail = () => {
     }
 
     .right {
+      // display: flex;
+      // align-items: center;
+      height: 40rpx;
+      padding-bottom: 10rpx;
       .more {
         width: 48rpx;
         height: 34rpx;
