@@ -118,7 +118,7 @@ const showRedDot = (entry: any) => {
 .grid-list {
   padding: 20 30rpx;
   overflow: hidden;
-  // background: #fff;
+  background: #fff;
   // border-radius: 16rpx;
   // margin-bottom: 30rpx;
 

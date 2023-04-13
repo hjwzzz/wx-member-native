@@ -159,7 +159,7 @@ const swiperChange = (e: any) => {
   padding-left: 20rpx;
   padding-right: 20rpx;
   // margin-bottom: 30rpx;
-  // background: #fff;
+  background: #fff;
   // border-radius: 16rpx;
 
   display: flex;
