@@ -56,11 +56,12 @@
         </view>
       </view>
     </view>
+    <NoneData v-if="mallList.length === 0"> </NoneData>
   </view>
 </template>
 
 <script setup lang="ts">
-// import NoneData from './NoneData.vue';
+import NoneData from './NoneData.vue';
 import { queryMemberRecommend } from '@/api/points-mall';
 import { onMounted, ref, Ref } from 'vue';
 import Router from '@/utils/router';

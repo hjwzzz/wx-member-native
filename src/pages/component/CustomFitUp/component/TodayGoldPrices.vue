@@ -334,7 +334,10 @@
         </view>
       </view>
     </view>
-    <!-- && showed -->
+    <!-- && showed   goldPrice.value : oldGoldPrice.value-->
+    <NoneData
+      v-if="goldPrice.length === 0 && oldGoldPrice.length === 0"
+    ></NoneData>
   </view>
 </template>
 
@@ -344,6 +347,8 @@ import { getGoldPriceByPage } from '@/pages/api/server';
 import Router from '@/utils/router';
 import { ref, Ref, onMounted, watch, computed } from 'vue';
 import { staticUrl } from '@/utils/config';
+import NoneData from './NoneData.vue';
+
 const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 

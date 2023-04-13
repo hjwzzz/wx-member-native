@@ -411,6 +411,7 @@ const hideFullMenberCode = () => {
   right: 0px;
   display: flex;
   padding-left: 30rpx;
+  padding-right: 30rpx;
   justify-content: center;
   align-items: center;
   font-size: 28rpx;

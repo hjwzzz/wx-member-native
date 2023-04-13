@@ -12,9 +12,11 @@
     <block v-for="(item, index) in props.items.param.linkList" :key="index">
       <view
         class="quick-line-item"
+        :class="showFour"
         v-if="item.showed"
         @click="handleEntryUrl(item)"
       >
+        <!-- margin-left -->
         <!--item-header showSize  item-header-s-->
         <view :class="showSize === 0 ? 'item-header-s' : ' item-header'">
           <image
@@ -109,6 +111,17 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const showSize = computed(() => props.items?.param?.doOut?.special?.size || 0);
+// props.items.param.linkList.length > 4 ? 'quick-items' : 'quick-items-min'  margin-left
+
+const showFour = computed(() => {
+  if (props.items.param.linkList.length > 4) {
+    if (props.items.param?.doOut?.style.marginLeft) {
+      return 'quick-items-min';
+    }
+    return 'quick-items';
+  }
+  return '';
+});
 
 const quickLine = computed(() => {
   if (props.items.param?.linkList) {
@@ -165,6 +178,12 @@ const swiperChange = (e: any) => {
     text-align: center;
   }
 
+  .quick-items {
+    min-width: 164rpx;
+  }
+  .quick-items-min {
+    min-width: 151rpx;
+  }
   .item-header {
     display: inline-block;
     width: 88rpx;

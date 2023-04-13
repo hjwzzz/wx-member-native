@@ -41,16 +41,11 @@
           <view
             class="grid-serve-item-wrapper-name"
             :style="{
-              color: props.items?.param?.doOut?.special?.color,
+              color: '#333333',
             }"
             >{{ serve.name }}</view
           >
-          <view
-            class="grid-serve-item-wrapper-btn"
-            :style="{
-              color: props.items?.param?.doOut?.special?.color,
-            }"
-          >
+          <view class="grid-serve-item-wrapper-btn">
             {{
               !serve.acctId ? '免费' : parseInt(serve.value) + serve.acctName
             }}
@@ -63,7 +58,7 @@
           ></uni-icons>
         </view>
       </view>
-      <!-- <NoneData v-if="props.srvProList.length === 0" /> -->
+      <NoneData v-if="srvProList.length === 0" />
     </view>
   </view>
 </template>
@@ -73,7 +68,7 @@ import { onShow } from '@dcloudio/uni-app';
 import { Ref, watch, ref, onMounted } from 'vue';
 import { queryServiceBookPageFront } from '@/api/reservation-service';
 import { useBasicsData } from '@/store/basicsData';
-// import NoneData from './NoneData.vue';
+import NoneData from './NoneData.vue';
 import Router from '@/utils/router';
 import { debounce } from '@/utils/util';
 
