@@ -173,7 +173,10 @@ const getPageDate = async () => {
   if (memberCardInfo.visible === 'N') {
     return;
   }
-  if (!memberCardInfo.param) {
+  if (
+    !memberCardInfo.param ||
+    memberCardInfo.param?.doOut?.images?.length === 0
+  ) {
     getWmAlertAdBannerListFun();
     return;
   }
