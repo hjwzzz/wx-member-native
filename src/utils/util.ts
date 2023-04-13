@@ -174,7 +174,41 @@ export const bannerListClick = (item: any) => {
   Router.goCodePage(code, param);
 };
 
+export const bannerListClickImage = (item: any) => {
+  const url = item;
+  const code = url.code || url.systemUrl;
+  if (!code && url.appletUrl) {
+    const miniUrl = item.miniUrl || url.appletUrl;
+    Router.goNoCodePage(miniUrl);
+    return;
+  }
+  if (!code && url.h5Url) {
+    uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
+    return;
+  }
+  let param = item.miniUrl?.split('?')?.[1];
+  if (param) {
+    param = `?${param}`;
+  } else {
+    param = '';
+  }
+  Router.goCodePage(code, param);
+};
+
 export const handleEntryUrl = (item: any) => {
+  console.log('22222222222', item);
+  // uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+  if (item.urlKind === 'CUSTOMIZE') {
+    if (item.miniUrl) {
+      Router.goNoCodePage(item.miniUrl);
+      return;
+    }
+    if (item.h5Url) {
+      uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
+      return;
+    }
+    return;
+  }
   if (!item.code && item.miniUrl) {
     Router.goNoCodePage(item.miniUrl);
     return;

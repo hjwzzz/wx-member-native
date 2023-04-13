@@ -1,27 +1,37 @@
 <template>
   <CustomScrollViewPage @scrolltolower="onLoadMore">
-    <swiper
-      class="advert-list"
-      v-if="advertList.length"
-      circular
-      :indicator-dots="advertList.length > 1"
-      indicator-color="#D8D9E0"
-      :indicator-active-color="initBasicsData.mainColor"
-      autoplay
-    >
-      <swiper-item
-        v-for="item in advertList"
-        :key="item.imgUrl"
-        class="advert-list-item"
+    <view class="custom-dots">
+      <swiper
+        class="advert-list"
+        v-if="showCouponList.length"
+        circular
+        autoplay
+        @change="swiperChange"
       >
-        <image
-          mode="aspectFill"
-          :src="item.imgUrl"
-          @click.stop="bannerListClick(item)"
-        ></image>
-      </swiper-item>
-    </swiper>
-
+        <swiper-item
+          v-for="item in showCouponList"
+          :key="item.icoUrl"
+          class="advert-list-item"
+        >
+          <image
+            mode="aspectFill"
+            :src="item.icoUrl"
+            @click.stop="bannerListClickImage(item)"
+          ></image>
+        </swiper-item>
+      </swiper>
+      <view class="custom-dots-box dots-round" v-if="showCouponList.length > 1">
+        <view
+          class="custom-dots-show"
+          v-for="(_, index) in showCouponList"
+          :key="index"
+          :style="{
+            background:
+              currentIndex === index ? initBasicsData.mainColor : '#bdbdbd',
+          }"
+        />
+      </view>
+    </view>
     <view class="coupon-list" v-if="receiveCenterList.length">
       <CouponItem
         class="coupon-item"
@@ -95,6 +105,7 @@ import {
   queryCouponCenterListFront,
 } from '@/my-assets-pages/api/coupon';
 import { queryShareSett } from '@/api/index';
+import { getByOpsIdAndKind } from '@/api/server';
 
 import CouponItem from '@/my-assets-pages/component/CouponItem/index.vue';
 import CouponResultModal from '@/my-assets-pages/component/CouponResultModal/index.vue';
@@ -103,7 +114,7 @@ import Storage from '@/utils/storage';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
 import { shareAppMessage } from '@/utils/shareHold';
-import { bannerListClick } from '@/utils/util';
+import { bannerListClickImage } from '@/utils/util';
 //
 
 const status = ref<'more' | 'loading' | 'no-more'>('no-more');
@@ -118,13 +129,46 @@ const queryReceiveCenterListForm = reactive<QueryReceiveCenterListForm>({
   curPage: 1,
 });
 
-const getAdvertFront = async () => {
-  const { data } = await queryAdvertFront('');
-  if (!data) {
-    return;
-  }
-  advertList.value = data;
+// const getAdvertFront = async () => {
+//   const { data } = await queryAdvertFront('');
+//   if (!data) {
+//     return;
+//   }
+//   advertList.value = data;
+// };
+
+const currentIndex = ref(0);
+const swiperChange = (e: any) => {
+  currentIndex.value = e.detail.current;
 };
+const showCouponList: any = ref([]);
+const getcouponKind = async () => {
+  const res = await getByOpsIdAndKind('WM_COU_CT');
+
+  if (res.data?.param?.doOut?.images) {
+    showCouponList.value = res.data?.param?.doOut?.images || [];
+  } else {
+    const { data } = await queryAdvertFront('');
+    if (!data) {
+      return;
+    }
+    const lData = data.map((item: any) => ({
+      icoUrl: item.imgUrl,
+      title: '',
+      h5Url: item.h5Url,
+      miniUrl: item.miniUrl,
+      url: item.url,
+    }));
+    showCouponList.value = lData;
+  }
+  // const { data } = await queryAdvertFront('');
+  // if (!data) {
+  //   return;
+  // }
+  // advertList.value = data;
+  // console.log('WM_COU_CT', dddd);
+};
+
 const queryReceiveCenterListFront = async () => {
   const { data } = await queryCouponCenterListFront(queryReceiveCenterListForm);
   if (!data) {
@@ -143,7 +187,8 @@ const queryReceiveCenterListFront = async () => {
 };
 
 onMounted(() => {
-  getAdvertFront();
+  // getAdvertFront();
+  getcouponKind();
   queryReceiveCenterListFront();
 
   getShareSet();
@@ -243,6 +288,35 @@ const onLoadMore = () => {
 </script>
 
 <style lang="scss" scoped>
+.custom-dots {
+  position: relative;
+  // padding-top: 30rpx;
+  // padding-bottom: 50rpx;
+
+  .custom-dots-box {
+    // width: 100%;
+    position: absolute;
+    bottom: 18rpx;
+    left: 0rpx;
+    right: 0rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .custom-dots-show {
+    border-radius: 6rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+  }
+  .dots-round {
+    z-index: 200px;
+    .custom-dots-show {
+      width: 24rpx;
+      height: 6rpx;
+    }
+  }
+}
+
 .coupon-list {
   padding: 30rpx;
   padding-bottom: 0;

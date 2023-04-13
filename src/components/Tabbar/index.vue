@@ -7,7 +7,17 @@
         class="home-icon home-data"
         @click="linkNavListFun(item)"
       >
-        <view class="iconfont home-icon-style" :class="item.icoUrl" />
+        <!-- iconLight -->
+        <image
+          v-if="item.isIcon === 1"
+          class="float-icon-iamge"
+          :src="item.iconLight"
+          mode="aspectFit"
+        >
+        </image>
+        <text v-else class="iconfont home-icon-style" :class="item.icoUrl">
+        </text>
+        <!-- <view class="iconfont home-icon-style" :class="item.icoUrl" /> -->
       </view>
     </block>
     <view
@@ -35,8 +45,16 @@
           @click="setSelected(index, item)"
           :style="actionColor(index)"
         >
-          <view class="tarbar-list-li-icon">
-            <view class="iconfont icon-style" :class="item.icoUrl"></view>
+          <view class="tarbar-list-li-icon" :style="actionBackground">
+            <image
+              v-if="item.isIcon === 1"
+              class="tarbar-icon-iamge"
+              :src="actionImage(index, item)"
+              mode="aspectFit"
+            >
+            </image>
+            <text v-else class="iconfont icon-style" :class="item.icoUrl">
+            </text>
           </view>
           <view class="tarbar-list-li-name">
             {{ item.title }}
@@ -48,10 +66,13 @@
 </template>
 
 <script setup lang="ts">
+import { onShow } from '@dcloudio/uni-app';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useBasicsData, useActiveTab } from '@/store/basicsData';
 import Router from '@/utils/router';
+import Storage from '@/utils/storage';
 import { staticUrl } from '@/utils/config';
+import { getByOpsIdAndKind } from '@/api/server';
 
 const initBasicsData = useBasicsData();
 const initActiveTab = useActiveTab();
@@ -68,7 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const tabBarList = computed(() => {
   const list = initBasicsData.bottomNavList;
-  initTab();
+  // initTab();
   return list;
 });
 const tabBarStyle = reactive({
@@ -111,12 +132,35 @@ const linkNavListFun = (item: any) => {
 };
 
 // 显示颜色
-
 const actionColor = computed(() => (index: number) => {
-  if (initActiveTab.current === index) {
-    return `color:${tabBarStyle.selectedColor}`;
+  if (doOutStyle.custom.type === 0 || doOutStyle.custom.type === '0') {
+    if (initActiveTab.current === index) {
+      return `color:${tabBarStyle.selectedColor}`;
+    }
+    return '';
   }
-  return '';
+  if (initActiveTab.current === index) {
+    return `color:${doOutStyle.special.colorLight}`;
+  }
+  return `color:${doOutStyle.special.colorDark}`;
+});
+// 显示背景颜色
+const actionBackground = computed(() => {
+  if (doOutStyle.custom.type === 0 || doOutStyle.custom.type === '0') {
+    return '';
+  }
+  return `background:${doOutStyle.special.background}`;
+  // if (initActiveTab.current === index) {
+  //   return `background:${doOutStyle.special.background}`;
+  // }
+  // return '';
+});
+// 显示image
+const actionImage = computed(() => (index: number, item: any) => {
+  if (initActiveTab.current === index) {
+    return item.iconLight;
+  }
+  return item.iconDark;
 });
 
 // const emits = defineEmits(['change']);
@@ -145,10 +189,64 @@ const setSelected = (index: number, item: any) => {
   Router.goCodePage(item.code);
 };
 
-onMounted(() => {
-  // initTab(initBasicsData.bottomNavList);
-  initTab();
+// onMounted(() => {
+//   initTab(initBasicsData.bottomNavList);
+//   initTab();
+// });
+
+onShow(() => {
+  getWmmeberNav();
+  geThemeColor();
 });
+//
+const geThemeColor = async () => {
+  const { data } = await getByOpsIdAndKind('WM_THEME');
+
+  if (data.style) {
+    initBasicsData.setMainColor(data.style.mainColor);
+    initBasicsData.setColorTheme(data.style);
+  }
+
+  // console.log('WM_THEME', data);
+  // if (data.param) {
+  //   initBasicsData.setBottomNavList(data.param.bottomNavList);
+  //   initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
+  //   initBasicsData.setBottomNavListShow(data.param.bottomNavShowed);
+  //   initBasicsData.setLevitationNavListShow(data.param.llevitationNavShowed);
+  // }
+  // const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  // initActiveTab.setCurrent(active || 0);
+  initTab();
+};
+
+const doOutStyle: any = reactive({ custom: { type: 0 }, special: {} });
+
+const getWmmeberNav = async () => {
+  // console.log('getWmmeberNav');
+  const { data } = await getByOpsIdAndKind('WM_BTMNAV');
+  // WM_BTMNAV
+  if (data.param) {
+    initBasicsData.setBottomNavList(data.param.bottomNavList);
+    initBasicsData.setLevitationNavList(data.param.levitationNavList?.reverse());
+    initBasicsData.setBottomNavListShow(data.param.bottomNavShowed);
+    initBasicsData.setLevitationNavListShow(data.param.llevitationNavShowed);
+    Object.assign(doOutStyle, data.param.doOut);
+  }
+  // const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  // initActiveTab.setCurrent(active || 0);
+  initTab();
+};
+
+// const [getWmColorThemeRes, getWmmeberNavRequestRes] = await Promise.all([
+//     queryWmColorThemeFront(),
+//     getWeMemberNavFront(),
+//   ]);
+
+//   if (getWmmeberNavRequestRes.data) {
+//     const { bottomNavList, levitationNavList } = getWmmeberNavRequestRes.data;
+//     initBasicsData.setBottomNavList(bottomNavList);
+//     initBasicsData.setLevitationNavList(levitationNavList?.reverse());
+//   }
 
 const initTab = () => {
   // list?: any
@@ -166,11 +264,18 @@ const initTab = () => {
   // selected.value = initActiveTab.current;
 
   const active = initBasicsData.bottomNavList.findIndex(({ code }: any) => code === props.code);
+  // console.log(' props.code', props.code);
+  // console.log(' active', active);
+  // console.log(' bottomNavList', initBasicsData.bottomNavList);
   initActiveTab.setCurrent(active || 0);
 };
 </script>
 
 <style lang="scss" scoped>
+.float-icon-iamge {
+  width: 30rpx;
+  height: 30rpx;
+}
 .tarbar {
   // min-height: 100rpx;
   width: 100%;
@@ -190,6 +295,11 @@ const initTab = () => {
     bottom: 0;
     padding-bottom: constant(safe-area-inset-bottom);
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .tarbar-icon-iamge {
+    width: 30rpx;
+    height: 30rpx;
   }
 
   .tarbar-list-ul {

@@ -2,7 +2,7 @@
   <view class="grid-price">
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title || '今日金价' }}</text>
+        <text class="title">{{ props.title }}</text>
       </view>
       <view class="right" @click="more">
         <text class="more">更多</text>

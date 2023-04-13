@@ -138,6 +138,20 @@ const request = async <T = any>(
     if (isLoading && requestCount === 0) {
       uni.hideLoading();
     }
+
+    // 服务过期处理
+    if (res.data.code === 610) {
+      uni.redirectTo({ url: '/my-assets-pages/no-wifi/invalid-serve' });
+      return Promise.resolve(res.data as BaseRequestRes<T>);
+    }
+
+    // 没有登录
+    if (res.data.code === 401 || res.data.code === 30101057) {
+      Storage.setMid('');
+      Router.goLogin();
+      return Promise.reject(res.data as BaseRequestRes<T>);
+    }
+
     if (res.statusCode !== 200 || res.data.code === 500) {
       uni.showToast({
         icon: 'none',
@@ -160,18 +174,7 @@ const request = async <T = any>(
     //   });
     //   return Promise.resolve(res.data as BaseRequestRes<T>);
     // }
-    // 服务过期处理
-    if (res.data.code === 610) {
-      uni.redirectTo({ url: '/my-assets-pages/no-wifi/invalid-serve' });
-      return Promise.resolve(res.data as BaseRequestRes<T>);
-    }
 
-    // 没有登录
-    if (res.data.code === 401) {
-      Storage.setMid('');
-      Router.goLogin();
-      return Promise.reject(res.data as BaseRequestRes<T>);
-    }
     // 请求错误
     if (error) {
       return Promise.reject(error);

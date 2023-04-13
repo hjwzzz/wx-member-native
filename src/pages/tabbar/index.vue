@@ -1,179 +1,85 @@
 <template>
-  <CustomPage bottom>
-    <!-- 首页轮播图 -->
+  <page-meta
+    :page-style="
+      'overflow:' +
+      (maskPopup && newBannerList.length > 0 ? 'hidden' : 'visible')
+    "
+  ></page-meta>
+  <CustomPage :backgroundColor="pageBackground" bottom>
+    <!--  background: `url( ${showToImageBG} ) center top / 100% auto no-repeat`, -->
     <view
-      class="banner-show-background"
+      class="page-top-show"
       :style="{
-        marginBottom: bannerList?.length > 0 ? '54rpx' : '30rpx',
+        background: showToImageBG
+          ? `url( ${showToImageBG} ) center top / 100% auto no-repeat`
+          : pageBackground,
+        paddingTop: headHeight + 'rpx',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       }"
     >
-      <view
-        class="back-img"
-        :style="{
-          background: topBgImageUrl,
-        }"
-      >
-      </view>
-      <view class="banner">
-        <swiper
-          style="height: 300rpx"
-          :indicator-dots="bannerList.length > 1"
-          indicator-color="#D8D9E0"
-          :indicator-active-color="initBasicsData.mainColor"
-          autoplay
-          circular
-        >
-          <block v-for="(item, index) in bannerList" :key="index">
-            <swiper-item
-              class="swiper-item"
-              @click.stop="bannerListClick(item)"
-            >
-              <image
-                class=""
-                style="height: 300rpx"
-                :src="item.imgUrl"
-                mode="aspectFill"
-              ></image>
-            </swiper-item>
-          </block>
-        </swiper>
-      </view>
     </view>
-
-    <view class="customer-diy">
-      <block
-        v-for="(items, index) in dataList.wmMainRspVo?.panelList"
-        :key="index"
-      >
-        <!-- 提示    -->
-        <view
-          class="bulletin"
-          v-if="items.kind === 'NOTICE'"
-          @click="goMoreNotice(items.param, items.updateTime)"
-        >
-          <view class="bulletin-box">
-            <text class="iconfont icon-gonggao icon-text"> </text>
-            <text class="bulletin-text">{{ items.param.title }}</text>
-          </view>
-          <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
-        </view>
-        <!-- 广告图 -->
-        <view
-          class="ad-banner-list"
-          v-else-if="items.kind === 'BANNER' && adBannerList.length"
-        >
-          <swiper
-            style="height: 180rpx"
-            class="banner"
-            :indicator-dots="adBannerList.length > 1"
-            indicator-color="#D8D9E0"
-            :indicator-active-color="initBasicsData.mainColor"
-            autoplay
-            circular
-          >
-            <block v-for="(item, index) in adBannerList" :key="index">
-              <swiper-item class="swiper-item">
-                <image
-                  @click="bannerListClick(item)"
-                  class="image"
-                  style="height: 180rpx"
-                  :src="item.image"
-                  mode="aspectFill"
-                ></image>
-              </swiper-item>
-            </block>
-          </swiper>
-        </view>
-        <!-- 快捷导航 -->
-        <view
-          class="quick-nav"
-          v-else-if="items.kind === 'QUICK_NAV' && swiperVav.length"
-        >
-          <swiper
-            :style="{ height: swiperVavHeight + 'rpx' }"
-            class=""
-            :indicator-dots="swiperVav.length > 1"
-            indicator-color="#D8D9E0"
-            :indicator-active-color="initBasicsData.mainColor"
-            circular
-          >
-            <swiper-item
-              class="swiper-item"
-              v-for="(navs, index) in swiperVav"
-              :key="index"
-            >
-              <view
-                class="item-shop"
-                v-for="(item, index) in navs"
-                :key="index"
-                @click="handleEntryUrl(item)"
-              >
-                <view class="item-header">
-                  <image
-                    class="item-header-image"
-                    :src="
-                      item.icoUrl || `${staticUrl}img/item-avatar-default.png`
-                    "
-                    mode=""
-                  ></image>
-                </view>
-                <view class="item-text">{{ item.title }}</view>
-              </view>
-            </swiper-item>
-          </swiper>
-        </view>
-        <!-- 富文本 -->
-        <view class="des-html" v-else-if="items.kind === 'RICH_TEXT'">
-          <mp-html
-            v-if="items.param.content"
-            :copy-link="false"
-            :content="richImage(items.param.content)"
-            @linktap="linktap"
-          />
-          <NoneData v-else> </NoneData>
-        </view>
-        <!-- 今日金价 -->
-        <TodayGoldPrice
-          v-else-if="items.kind === 'GOLD_PRICE'"
-          :title="items.param.title"
-          type="WM_HOME"
-        ></TodayGoldPrice>
-        <!-- 积分商城推荐  -->
-        <ContentMall
-          v-else-if="items.kind === 'REC_GIFTS'"
-          :title="items.param.title"
-        ></ContentMall>
-      </block>
+    <view
+      class="page-top-title"
+      :style="{
+        top: menuInfoTopShow + 'px',
+        height: menuInfoHeightShow + 'px',
+      }"
+    >
+      <text class="page-top-title-text text-break">
+        {{ pageTitle }}
+      </text>
     </view>
+    <CustomFitUp types="WM_HOME" />
   </CustomPage>
   <Tabbar code="wm_index"> </Tabbar>
 
-  <view class="home-mask" v-if="maskPopup && floatAdsPopup.length > 0">
+  <!--   :indicator-dots="newBannerList.length > 1"
+            indicator-color="#D8D9E0"
+            :indicator-active-color="initBasicsData.mainColor" -->
+  <view class="home-mask" v-if="maskPopup && newBannerList.length > 0">
     <view class="home-alert">
       <view class="alert-img">
         <view class="alert-box">
-          <swiper
-            :style="{ height: '680rpx' }"
-            class=""
-            :indicator-dots="floatAdsPopup.length > 1"
-            indicator-color="#D8D9E0"
-            :indicator-active-color="initBasicsData.mainColor"
-            circular
-            autoplay
-          >
-            <swiper-item
-              class="swiper-item"
-              v-for="(item, index) in floatAdsPopup"
-              :key="index"
+          <view class="custom-dots">
+            <swiper
+              :style="{ height: '680rpx' }"
+              circular
+              autoplay
+              :interval="5000"
+              @change="swiperChange"
             >
-              <image
-                class="alert-box-image"
-                @click="bannerListClick(item)"
-                :src="item.image"
-                mode="aspectFit"
-              ></image>
-            </swiper-item>
-          </swiper>
+              <swiper-item
+                class="swiper-item"
+                v-for="(item, index) in newBannerList"
+                :key="index"
+              >
+                <image
+                  :style="{ borderRadius: newBanneRadius }"
+                  class="alert-box-image"
+                  @click="bannerListClickImage(item)"
+                  :src="item.icoUrl"
+                  mode="aspectFit"
+                ></image>
+              </swiper-item>
+            </swiper>
+            <view
+              class="custom-dots-box dots-round"
+              v-if="newBannerList.length > 1"
+            >
+              <view
+                class="custom-dots-show"
+                v-for="(_, index) in newBannerList"
+                :key="index"
+                :style="{
+                  background:
+                    currentIndex === index
+                      ? initBasicsData.mainColor
+                      : '#bdbdbd',
+                }"
+              />
+            </view>
+          </view>
         </view>
       </view>
       <view class="alert-icon" @click.stop="maskPopup = false">
@@ -188,28 +94,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed } from 'vue';
+import { ref, Ref } from 'vue';
 import {
   onShareTimeline,
   onShareAppMessage,
   onShow,
   onLoad,
+  // onReady,
 } from '@dcloudio/uni-app';
 // import { queryGoldPriceByPage } from '@/api/server';
 import { queryShareSett } from '@/api/index';
 import { queryWeMemberAlertBannerListFront } from '@/pages/api/server';
-import {
-  getWmIndex,
-  queryHomBannerListFront,
-  queryPopup,
-} from '@/pages/api/index';
-import NoneData from '../component/NoneData.vue';
-import TodayGoldPrice from '../component/TodayGoldPrice.vue';
-import ContentMall from '../component/ContentMall.vue';
+// import { getByOpsIdAndKind } from '@/api/server';
+// import Router from '@/utils/router';
+import { queryPopupByType } from '@/pages/api/index';
+// import Storage from '@/utils/storage';
+import CustomFitUp from '../component/CustomFitUp/index.vue';
+import { getByOpsIdAndKind } from '@/api/server';
 import Tabbar from '@/components/Tabbar/index.vue';
 // import Router from '@/utils/router';
 import { staticUrl } from '@/utils/config';
-import { richImage, bannerListClick, handleEntryUrl } from '@/utils/util';
+import { bannerListClickImage } from '@/utils/util';
 import { shareHold, shareAppMessage, shareTimeline } from '@/utils/shareHold';
 import { useBasicsData } from '@/store/basicsData';
 
@@ -217,19 +122,113 @@ const initBasicsData = useBasicsData();
 // const mainColor = initBasicsData.mainColor;
 // onMounted(() => {
 // });
-onLoad(() => {
-  queryPopupFun();
-});
+// onReady(() => {});
+// onLoad(() => {});
+
 onShow(() => {
+  uni.getSystemInfo({
+    success: res => {
+      const rr = uni.getMenuButtonBoundingClientRect();
+      const menuInfoTop = rr.top;
+      const menuInfoBottom = rr.bottom;
+      menuInfoTopShow.value = menuInfoTop;
+      menuInfoHeightShow.value = rr.height;
+
+      const showHeight =
+        Number(menuInfoTop) +
+        Number(menuInfoBottom) -
+        Number(res.statusBarHeight) +
+        10;
+      headHeight.value = showHeight * 2;
+    },
+  });
+
   getPageDate();
-  getAdBannerList();
+  // getAdBannerList();
   // getGoldPriceByPage();
-  getWmAlertAdBannerListFun();
+  // getWmAlertAdBannerListFun();
   getShareSet();
 });
 
-const linktap = (e: any) => {
-  uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(e.href)}` });
+const pageTitle = ref('首页');
+const headHeight: Ref<number> = ref(100);
+const menuInfoTopShow: Ref<number> = ref(0);
+const menuInfoHeightShow: Ref<number> = ref(0);
+// const deFImage1 = 'https://static.jqzplat.com/wx_%20applet/img/bg-img-002.png';
+const showToImageBG = ref('');
+const newBannerList: any = ref([]);
+const newBanneRadius = ref('0px');
+const pageBackground = ref('#f5f5f5');
+const getPageDate = async () => {
+  // console.log('WM_HOMEWM_HOMEWM_HOMEWM_HOME');
+  const { data } = await getByOpsIdAndKind('WM_HOME');
+  const { param, panelList } = data;
+  pageBackground.value = param?.doOut?.special?.backgroundColor || '#f5f5f5';
+  showToImageBG.value = param?.doOut?.special?.backgroundImage || '';
+  pageTitle.value = data?.param?.title || '首页';
+
+  //  获取基本信息
+  const getMenber = (item: { kind: string }) => item.kind === 'POP_IMAGE';
+  const memberCardInfo = panelList.find(getMenber) || {};
+  if (memberCardInfo.visible === 'N') {
+    return;
+  }
+  if (!memberCardInfo.param) {
+    getWmAlertAdBannerListFun();
+    return;
+  }
+  const { style, special } = memberCardInfo.param?.doOut || {};
+  newBanneRadius.value = style?.borderRadius || '0rpx';
+  const everyDay = special.everyDay ? 'Y' : 'N';
+  queryPopupFun(everyDay);
+  // console.log('POP_IMAGEmemberCardInfo2', memberCardInfo);
+  let image: any = [];
+  if (memberCardInfo.param.doOut.images) {
+    image = memberCardInfo.param.doOut.images.filter((item: any) => item.showed);
+  }
+  newBannerList.value = image;
+  // console.log('POP_IMAGE', image);
+};
+
+const currentIndex = ref(0);
+const swiperChange = (e: any) => {
+  currentIndex.value = e.detail.current;
+};
+
+// icoUrl  showed   special: {everyDay: false} special: {everyDay: true}   visible
+// 设置广告弹窗
+// frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出
+// isOpen: 是否开启弹窗 Y:开启 N:关闭
+// const floatAdsPopup: Ref<any> = ref([]);
+const maskPopup = ref(false);
+const queryPopupFun = async (isOnce: any) => {
+  let popupTime = uni.getStorageSync('popupTime');
+  if (popupTime === '' || popupTime === null) {
+    const num = Math.floor(Math.random() * 10000 + 1);
+    popupTime = `${new Date()
+      .getTime()}-${num}`;
+    uni.setStorageSync('popupTime', popupTime);
+  }
+  // queryPopupByType queryPopup
+  const res = await queryPopupByType({ param: popupTime, isOnce });
+  const { isOpen } = res.data;
+  maskPopup.value = false;
+  if (isOpen === 'Y') {
+    maskPopup.value = true;
+  }
+};
+// 弹窗广告图
+const getWmAlertAdBannerListFun = async () => {
+  const res = await queryWeMemberAlertBannerListFront('');
+  // const floatAds = res?.data?.splice(0, 3) || [];
+  // newBannerList.value  floatAdsPopup.value
+  const floatAds = res?.data || [];
+  newBannerList.value = floatAds.map((item: any) => ({
+    ...item,
+    icoUrl: item.icoUrl,
+    title: item.name,
+    url: item.url,
+  }));
 };
 
 // const shareObj: Ref<any> = ref({});
@@ -246,332 +245,80 @@ const getShareSet = async () => {
 };
 onShareAppMessage(() => shareAppMessage(shareData.value));
 onShareTimeline(() => shareTimeline(shareData.value));
-
-const bannerList: Ref<any> = ref([]);
-const swiperVav: Ref<any> = ref([]);
-const swiperVavHeight = ref(196);
-const dataList: Ref<any> = ref({});
-const adBannerList: Ref<any> = ref([]);
-// const goldPrice: Ref<any> = ref([]);
-// const todayGoldPriceShowed = ref(false);
-// 页面数据
-const getPageDate = async () => {
-  const result = await getWmIndex('');
-  const banner = result.data?.bannerList || [];
-
-  dataList.value = result.data;
-  bannerList.value = banner;
-
-  // console.log('bannerList', bannerList.value);
-  // console.log(result);
-  uni.setNavigationBarTitle({
-    // 设置顶部bar的标题
-    title: result.data.wmMainRspVo?.param?.title,
-  });
-
-  getPanelList();
-};
-
-// const bannerIndexFun = (item: any) => {
-//   const url = JSON.parse(item.url || {});
-//   const code = url.code || url.systemUrl;
-//   if (!code && url.appletUrl) {
-//     const miniUrl = item.miniUrl || url.appletUrl;
-//     Router.goNoCodePage(miniUrl);
-//     return;
-//   }
-//   if (!code && url.h5Url) {
-//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(url.h5Url)}` });
-//     return;
-//   }
-
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(url.code || url.systemUrl, param);
-// };
-// QUICK_NAV
-const getPanelList = () => {
-  const panelList = dataList.value.wmMainRspVo?.panelList;
-  if (panelList) {
-    const quickNav: any = panelList.filter((p: any) => p.kind === 'QUICK_NAV');
-    const linkList = quickNav[0].param.linkList;
-    const swiperVavList: any = [];
-    for (let i = 0; i < linkList.length; i += 8) {
-      swiperVavList.push(linkList.slice(i, i + 8));
-    }
-    if (swiperVavList.length) {
-      const len = swiperVavList[0]?.length;
-      const num = Number(String(len / 4)
-        .split('.')[0]) + 1 || 0;
-      const height = (len % 4 === 0 ? len / 4 : num) * 196;
-      swiperVavHeight.value = height;
-    }
-    swiperVav.value = swiperVavList;
-  }
-};
-// 获取广告
-const getAdBannerList = async () => {
-  const result = await queryHomBannerListFront('');
-  if (result?.data && result?.data.length) {
-    const list =
-      result?.data.map((item: any) => ({
-        image: item.imgUrl,
-        title: item.title,
-        url: item.url,
-      })) || [];
-    // console.log('listadBannerLitadBannerList', adBannerList.value);
-    adBannerList.value = list;
-  }
-};
-
-// 获取今日金价  type="WM_HOME"
-// const getGoldPriceByPage = async () => {
-//   if (!initBasicsData.checkLogin) {
-//     return;
-//   }
-//   const res = await queryGoldPriceByPage('WM_HOME');
-//   if (res.code === 0 && res.data) {
-//     const { branPriceList, param, uiParam: todayGoldPrice } = res.data;
-//     // this.uiParam = uiParam;
-//     const { showNum } = param;
-//     const result: any = [];
-
-//     branPriceList.map((item: unknown, index: number) => {
-//       if (index < showNum) {
-//         result.push(item);
-//       }
-//     });
-//     todayGoldPriceShowed.value = todayGoldPrice.todayGoldPriceShowed === 'Y';
-//     goldPrice.value = result;
-
-//   }
-// };
-
-// const richImage = (item: string) => {
-//   const reg = /<img.*?src=[\"|\']?(.*?)[\"|\']?\s.*?>/g;
-//   const content = item.replace(
-//     reg,
-//     '<img style="max-width: 100%;" src="$1" />'
-//   );
-//   return content;
-// };
-
-const topBgImageUrl = computed(() => {
-  const imageUrl = dataList.value.wmMainRspVo?.param?.topBgImageUrl;
-  if (imageUrl) {
-    return `url(${imageUrl}) center top / 100% auto no-repeat`;
-  }
-  return 'linear-gradient(121deg, #fff0eb 0%, #dce2fb 100%)';
-});
-
-// const handleEntryUrl = (item: any) => {
-//   if (!item.code && item.miniUrl) {
-//     Router.goNoCodePage(item.miniUrl);
-//     return;
-//   }
-//   if (!item.code && item.h5Url) {
-//     uni.navigateTo({ url: `/pages/tabbar/custom?url=${encodeURIComponent(item.h5Url)}` });
-//     return;
-//   }
-
-//   let param = item.miniUrl?.split('?')?.[1];
-//   if (param) {
-//     param = `?${param}`;
-//   } else {
-//     param = '';
-//   }
-//   Router.goCodePage(item.code, param);
-// };
-
-// 设置广告弹窗
-// frequency: 弹窗频率 0:每日仅弹出一次 1:每次进入页面弹出
-// isOpen: 是否开启弹窗 Y:开启 N:关闭
-const floatAdsPopup: Ref<any> = ref([]);
-const maskPopup = ref(false);
-const queryPopupFun = async () => {
-  let popupTime = uni.getStorageSync('popupTime');
-  if (popupTime === '' || popupTime === null) {
-    const num = Math.floor(Math.random() * 10000 + 1);
-    popupTime = `${new Date()
-      .getTime()}-${num}`;
-    uni.setStorageSync('popupTime', popupTime);
-  }
-  const res = await queryPopup(popupTime);
-  const { isOpen, isShowed } = res.data;
-  maskPopup.value = false;
-  if (isOpen === 'Y' && isShowed !== 'Y') {
-    maskPopup.value = true;
-  }
-};
-// 弹窗广告图
-const getWmAlertAdBannerListFun = async () => {
-  const res = await queryWeMemberAlertBannerListFront('');
-  const floatAds = res?.data.splice(0, 3) || [];
-  floatAdsPopup.value = floatAds.map((item: any) => ({
-    image: item.imgUrl,
-    title: item.name,
-    url: item.url,
-  }));
-};
-
-// 更多
-const goMoreNotice = (item: any, noticTime: any) => {
-  uni.setStorageSync('notic', item);
-  uni.setStorageSync('noticTime', noticTime);
-  uni.navigateTo({ url: '/my-assets-pages/notice/index' });
-};
 </script>
 
 <style lang="scss" scoped>
-.banner-show-background {
-  position: relative;
-  height: 306rpx;
-
-  .back-img {
-    width: 750rpx;
-    height: 256rpx;
-  }
-
-  .banner {
-    position: absolute;
-    top: 30rpx;
-    left: 30rpx;
-    width: 690rpx;
-    height: 300rpx;
-    border-radius: 16rpx;
-    overflow: hidden;
-    image {
-      width: 100%;
-      border-radius: 10rpx;
-    }
-  }
-}
-
-.customer-diy {
-  display: flex;
-  flex-direction: column;
-  width: calc(100vw - 60rpx);
-  // margin: 0 30rpx;
+.page-top-show {
   padding-left: 30rpx;
   padding-right: 30rpx;
+  padding-bottom: 30rpx;
+  width: calc(100vw - 60rpx);
+  min-height: 330rpx;
+  // background: linear-gradient(180deg, #f5debb, #f4f5f7);
+  background-repeat: no-repeat;
+  // background-size: 100% 100%;
+  // position: absolute;
+  // left: 0px;
+  // right: 0px;
+  // z-index: 0;
+  // .page-top-title {
+  //   position: absolute;
+  //   left: 0px;
+  //   right: 0px;
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   font-size: 28rpx;
+  //   font-weight: 500;
+  //   color: #000000;
+  // }
+}
 
-  .iconfont {
-    margin-right: 10px;
-    font-size: 16px;
-    color: var(--main-color);
-  }
-
-  .ad-banner-list {
-    width: 100%;
-    height: 180rpx;
-    margin-bottom: 30rpx;
-    // background-color: #323338;
-    border-radius: 16rpx;
-    overflow: hidden;
-
-    .image {
-      width: 100%;
-      border-radius: 10rpx;
-    }
-
-    .swiper-item {
-      overflow: hidden;
-      border-radius: 10rpx;
-    }
-  }
-
-  .quick-nav {
+.custom-dots {
+  position: relative;
+  // padding-top: 30rpx;
+  // padding-bottom: 50rpx;
+  .custom-dots-box {
     // width: 100%;
-    padding: 50rpx 20rpx 20rpx;
-    margin-bottom: 30rpx;
-    background: #fff;
-    border-radius: 16rpx;
-
-    .item-shop {
-      display: inline-block;
-      width: 162rpx;
-      margin-bottom: 30rpx;
-      text-align: center;
-    }
-
-    .item-header {
-      display: inline-block;
-      width: 88rpx;
-      height: 88rpx;
-      border-radius: 22rpx;
-    }
-
-    .item-header-image {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .item-text {
-      height: 34rpx;
-      margin-top: 16rpx;
-      margin-bottom: 25rpx;
-      font-size: 24rpx;
-      font-weight: 400;
-      line-height: 34rpx;
-      color: #323338;
-    }
-
-    .swiper-item {
-      display: flex;
-      flex-wrap: wrap;
-    }
+    position: absolute;
+    bottom: 18rpx;
+    left: 0rpx;
+    right: 0rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-
-  .des-html {
-    width: 630rpx;
-    padding: 30rpx;
-    margin-bottom: 30rpx;
-    font-size: 28rpx;
-    font-weight: 400;
-    color: #646771;
-    background: #fff;
-    border-radius: 16rpx;
+  .custom-dots-show {
+    border-radius: 6rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
   }
-
-  .des-html img {
-    width: 50%;
+  .dots-round {
+    z-index: 200px;
+    .custom-dots-show {
+      width: 24rpx;
+      height: 6rpx;
+    }
   }
 }
 
-.bulletin {
+.page-top-title {
+  position: absolute;
+  left: 0px;
+  right: 0px;
   display: flex;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  justify-content: center;
   align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  height: 72rpx;
-  margin-bottom: 30rpx;
-  font-size: 24rpx;
-  font-weight: 400;
-  line-height: 72rpx;
-  color: #323338;
-  background: #fff;
-  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #000000;
+  .page-top-title-text {
+    text-align: center;
+    width: 350rpx;
+  }
 }
-
-.bulletin-box {
-  width: 550rpx;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bulletin-text {
-  font-size: 24rpx;
-  color: #323338;
-}
-
 .home-mask {
   position: fixed;
   top: 0;
