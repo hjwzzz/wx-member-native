@@ -313,7 +313,7 @@ const swiperChange = (e: any) => {
   currentIndex.value = e.detail.current;
 };
 
-const showPriceKind = reactive({
+const showPriceKind: any = reactive({
   defaultShow: 'AUTO',
   doOut: { style: {}, images: [], fixedStyle: 0 },
   laborCostShowed: 'Y',
@@ -357,6 +357,8 @@ const getPriceKind = async () => {
     oldData();
     getBannerList();
   }
+  showPriceKind.doOut ??= {};
+  showPriceKind.doOut.fixedStyle ??= 0;
 };
 
 const oldData = () => {

@@ -313,7 +313,7 @@ const getPageDate = async () => {
           },
         };
       }
-
+      item.param.doOut.fixedStyle ??= 0;
       return item;
     });
     panelList.value = comList || [];
