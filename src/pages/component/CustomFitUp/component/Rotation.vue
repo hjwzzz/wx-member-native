@@ -20,7 +20,7 @@
 
     <!-- {{ bannerList }} -->
     <swiper
-      :style="{ height: boxStyle.height }"
+      :style="{ height: boxStyle.height || '300rpx' }"
       :autoplay="true"
       :interval="intervals"
       circular
@@ -32,7 +32,7 @@
         <swiper-item
           class="swiper-item"
           @click.stop="bannerListClickImage(item)"
-          :style="{ height: boxStyle.height }"
+          :style="{ height: boxStyle.height || '300rpx' }"
         >
           <view
             class="swiper-item-view"
@@ -42,7 +42,7 @@
           >
             <image
               :style="{
-                height: boxStyle.height,
+                height: boxStyle.height || '300rpx',
                 borderRadius: props.items?.param?.doOut?.special?.borderRadius,
               }"
               class="swiper-item-image 11"
