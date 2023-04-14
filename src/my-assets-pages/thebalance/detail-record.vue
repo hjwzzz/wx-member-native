@@ -7,7 +7,7 @@
             <image
               :src="staticUrl + 'img/shourumingxi.png'"
               mode=""
-              v-if="dataObj.opKind.code === 'BON_IN'"
+              v-if="showImage(dataObj.realValue)"
             ></image>
             <image
               :src="staticUrl + 'img/yuerzhichu.png'"
@@ -15,24 +15,36 @@
               v-else
             ></image>
           </view>
-          <view class="mingcheng">
+          <!-- <view class="mingcheng">
             {{ dataObj.remark || '' }}
-          </view>
+          </view> -->
           <view class="yuermoss">
-            {{ incomeFun(dataObj.opKind) }}{{ dataObj.realValue }}
+            {{ incomeFun(dataObj.realValue) }}
           </view>
         </view>
         <view class="bottom">
           <view class="danhao">
-            <view class="left"> 单号 </view>
+            <view class="left"> 流水号 </view>
             <view class="right">
               {{ dataObj.relatedNo || '' }}
             </view>
           </view>
           <view class="shijian">
-            <view class="left"> 时间 </view>
+            <view class="left"> 交易时间 </view>
             <view class="right">
               {{ dataObj.createTime || '' }}
+            </view>
+          </view>
+          <view class="shijian">
+            <view class="left"> 交易类型 </view>
+            <view class="right">
+              {{ getType(dataObj.opReason) }}
+            </view>
+          </view>
+          <view class="shijian">
+            <view class="left"> 备注 </view>
+            <view class="right">
+              {{ dataObj.remark || '' }}
             </view>
           </view>
         </view>
@@ -44,6 +56,23 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
 import { staticUrl } from '@/utils/config';
+
+const typeMap = {
+  XCHG: '兑现',
+  REC: '收回',
+  BACK: '返还',
+  DIFF: '补差',
+  PRF: '结息',
+  MAN: '手动',
+  CHRG: '充值',
+  GIVE: '赠送',
+  CHRG_RET: '充值退账',
+  GIVE_RET: '赠送退账',
+  CHRG_DEC: '充值扣减',
+  GIVE_DEC: '赠送扣减',
+  CHRG_REC: '充值退回',
+  GIVE_REC: '赠送退回',
+} as const;
 
 const dataObj: Ref<any> = ref({
   createTime: '',
@@ -58,13 +87,24 @@ onMounted(() => {
   dataObj.value = res;
 });
 
+const getType = (typeCode: keyof typeof typeMap) => typeMap[typeCode] ?? '';
+
 // 收入还是支出
-const incomeFun = (opKind: any) => {
-  if (opKind === 'BON_IN') {
-    return '+';
+// const incomeFun = (opKind: any) => {
+//   if (opKind === 'BON_IN') {
+//     return '+';
+//   }
+//   return '-';
+// };
+
+const incomeFun = (val: any) => {
+  if (Number(val) > 0) {
+    return `+${val}`;
   }
-  return '-';
+  return val;
 };
+// 收入还是支出
+const showImage = (val: any) => Number(val) > 0;
 </script>
 
 <style lang="scss" scoped>
@@ -73,7 +113,7 @@ const incomeFun = (opKind: any) => {
   background-color: #f5f5f5;
   // height: 100vh;
   .mcDetail {
-    height: 590rpx;
+    // height: 590rpx;
     background-color: #ffffff;
     border-radius: 16rpx;
     .top {
@@ -99,7 +139,8 @@ const incomeFun = (opKind: any) => {
     }
     .bottom {
       margin-top: 40rpx;
-      padding: 0 30rpx;
+      padding: 0 30rpx 30rpx;
+      font-size: 28rpx;
       .shijian {
         margin-top: 40rpx;
       }

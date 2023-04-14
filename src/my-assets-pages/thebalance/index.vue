@@ -28,18 +28,20 @@
           <view class="foolt">
             <view class="left">
               <view class="topTo" :style="{ color: item.topTo, opacity: 0.7 }">
-                储值金额({{ item.unit || '' }})
+                <!-- 储值金额({{ item.unit || '' }}) -->
+                累计充值
               </view>
               <view class="bottomTo" :style="{ color: item.bottomTo }">
-                {{ item.value || 0 }}
+                {{ item.totalValueIn || 0 }}
               </view>
             </view>
             <view class="right">
               <view class="topTo" :style="{ color: item.topTo, opacity: 0.7 }">
-                赠送金额({{ item.unit || '' }})
+                <!-- 赠送金额({{ item.unit || '' }}) -->
+                累计赠送
               </view>
               <view class="bottomTo" :style="{ color: item.bottomTo }">
-                {{ item.bonus || 0 }}
+                {{ item.totalBonusIn || 0 }}
               </view>
             </view>
           </view>
