@@ -5,6 +5,7 @@ import request from '@/utils/request';
 // 微会员-推荐商品
 export const saveOrderPayRequest = async (data: {
   orderId: string
+  opsId: string
 }) => {
   const url = `${baseUrl}/retail-mall/order/orderFront/saveOrderPay`;
   const res = await request(url, data);

@@ -135,26 +135,10 @@ onShow(() => {
     /**
      * 如果是商品详情页面
      */
-    if (path === '/mall/pages/goods/detail') {
-
-      /**
-       * 处理 h5 商品页面点击
-       * - 加入购物车
-       * - 点击立即购买
-       */
-      // if (rest.type === 'H5BUY') {
-      //   // 点击时未登录
-      //   if (!rest.mid && !rest.token) {
-      //     Router.goLogin(
-      //       `/retail-mall/pages/index?path=${path}&spuId=${rest.spuId}`,
-      //       true
-      //     );
-      //     return;
-      //   }
-      // }
-      webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}`;
-      return;
-    }
+    // if (path === '/mall/pages/goods/detail') {
+    //   webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}`;
+    //   return;
+    // }
 
     // routerQuery.value = rest;
     webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}`;

@@ -19,14 +19,14 @@ const orderId = ref('');
 
 onLoad((option: any) => {
   if (option.orderId) {
-    startPay(option.orderId);
+    startPay({ orderId: option.orderId, opsId: option.opsId });
     orderId.value = option.orderId;
   } else {
     return showToast('订单ID为空');
   }
 });
 
-const startPay = async (orderId: string) => {
+const startPay = async ({ orderId, opsId }: { orderId: string, opsId: string }) => {
   uni.showLoading({ title: '正在调起支付' });
   let provider;
   uni.getProvider({
@@ -36,14 +36,14 @@ const startPay = async (orderId: string) => {
     },
   });
 
-  const { data, msg, code } = await saveOrderPayRequest({ orderId });
+  const { data, msg, code } = await saveOrderPayRequest({ orderId, opsId });
   uni.hideLoading();
   if (code !== 0) {
     showToast(msg);
     setTimeout(() => {
       uni.setStorage({
         key: 'mallPay',
-        data: { type: 'fail', orderId },
+        data: { type: 'fail', orderId, opsId },
         success() {
           uni.navigateBack({ delta: 1 });
         },
@@ -55,17 +55,17 @@ const startPay = async (orderId: string) => {
     provider: provider || 'wxpay',
     orderInfo: '',
     nonceStr: data.nonceStr,
-    package: data.package,
+    package: data.packageValue,
     paySign: data.paySign,
     signType: data.signType,
     timeStamp: `${data.timeStamp}`,
     // total_fee: 2000,
     success: () => {
-      goNextStep({ type: 'success', orderId });
+      goNextStep({ type: 'success', orderId, opsId });
     },
     fail: () => {
       showToast('支付失败');
-      goNextStep({ type: 'fail' });
+      goNextStep({ type: 'fail', orderId, opsId });
     },
   });
 };
