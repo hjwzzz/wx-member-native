@@ -75,7 +75,10 @@ const logo = ref('');
 const protocol = reactive<Protocol>({});
 const agreeProto = ref(false);
 
-onLoad(({ c, num, inviteMid, welcomeGuide }) => {
+let fromMallUrl : string | undefined = undefined;
+
+onLoad(({ c, num, inviteMid, welcomeGuide, from }) => {
+  fromMallUrl = from;
   // onLoad(obj => {
   //   console.log(111, obj);
   //   const ss = JSON.parse(JSON.stringify(obj));
@@ -109,6 +112,9 @@ const jsCodeLogin = async () => {
   initBasicsData.setUseMid(mid);
 
   if (!mid) return;
+  if (fromMallUrl) {
+    Storage.setMallUrl(fromMallUrl);
+  }
   Router.fromLoginBack();
 };
 

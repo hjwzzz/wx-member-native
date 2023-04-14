@@ -418,6 +418,23 @@
           }
         }
       ]
+    },
+    {
+      "root": "retail-mall",
+      "pages": [
+        {
+          "path": "pages/index",
+          "style": {
+            "navigationBarTitleText": "微商城"
+          }
+        },
+        {
+          "path": "pages/pay",
+          "style": {
+            "navigationBarTitleText": "正在支付"
+          }
+        }
+      ]
     }
   ],
   "preloadRule": {

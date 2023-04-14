@@ -111,5 +111,13 @@ class Storage {
   static removeRegData() {
     return uni.removeStorageSync('welcomeGuide');
   }
+
+  static setMallUrl(url: string) {
+    uni.setStorageSync('mallUrl', url);
+  }
+
+  static getMallUrl() {
+    return uni.getStorageSync('mallUrl');
+  }
 }
 export default Storage;
