@@ -1,13 +1,35 @@
 <template>
-  <view class="grid-gift">
+  <!--  backgroundSize: 'cover',
+      backgroundPosition: 'center', -->
+  <view
+    class="grid-gift"
+    :style="{
+      ...props.items.param.doOut.style,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }"
+  >
     <view class="header">
       <view class="left">
-        <text class="title">{{ props.title || '推荐礼品' }}</text>
+        <text
+          class="title"
+          :style="{
+            color: props.items?.param?.doOut?.special?.color,
+            fontSize: props.items?.param?.doOut?.special?.fontSize,
+          }"
+          >{{ props.title || '推荐礼品' }}</text
+        >
         <text class="number"></text>
       </view>
       <view class="right" @click="onMall">
-        <text class="more">更多</text>
-        <uni-icons type="arrowright" size="14" color="#B7B8C4"></uni-icons>
+        <text
+          class="more"
+          :style="{
+            color: '#9697A2',
+          }"
+          >更多</text
+        >
+        <uni-icons type="arrowright" size="14" color="#9697A2"></uni-icons>
       </view>
     </view>
     <view class="content-mall" v-if="mallList.length > 0">
@@ -18,6 +40,10 @@
         :key="index"
         @click="onMallDetail(item.id)"
       >
+        <!-- <view class="img">
+          <image class="image" :src="item.displayImgUrl" mode=""></image>
+        </view>
+        <view class="text">{{ item.name }}</view> -->
         <view class="img">
           <image class="image" :src="item.displayImgUrl" mode=""></image>
         </view>
@@ -30,7 +56,7 @@
         </view>
       </view>
     </view>
-    <NoneData v-else></NoneData>
+    <NoneData v-if="mallList.length === 0"> </NoneData>
   </view>
 </template>
 
@@ -43,8 +69,12 @@ import { useBasicsData } from '@/store/basicsData';
 
 interface Props {
   title?: string;
+  items: any;
 }
-const props = withDefaults(defineProps<Props>(), { title: '推荐礼品' });
+const props = withDefaults(defineProps<Props>(), {
+  title: '推荐礼品',
+  items: () => ({}),
+});
 const initBasicsData = useBasicsData();
 
 onMounted(() => {
@@ -83,19 +113,27 @@ const onMallDetail = (id: string) => {
   min-height: 300rpx;
   padding-top: 35rpx;
   padding-bottom: 10rpx;
-  border-radius: 8px;
+  // border-radius: 8px;
+
+  // display: grid;
+  // grid-template-columns: repeat(3, 1fr);
+  // grid-gap: 20rpx;
 
   .mall-item {
-    width: 196rpx;
+    // width: 196rpx;
     margin-right: 20rpx;
 
+    // background-color: red;
+    flex-grow: 1;
+    //flex-shrink: 0;
+    // width: calc(100%);
     .img {
       width: 196rpx;
       height: 196rpx;
       margin-bottom: 15rpx;
       border: 2rpx solid #ebedf0;
       border-radius: 16rpx;
-
+      // width: calc(30%);
       .image {
         width: 100%;
         height: 100%;
@@ -110,11 +148,16 @@ const onMallDetail = (id: string) => {
       line-height: 45rpx;
       text-overflow: ellipsis;
       white-space: nowrap;
+      width: 180rpx;
     }
 
     ._price {
       color: #ff547b;
     }
+  }
+
+  .mall-item:last-child {
+    margin-right: 0rpx;
   }
 }
 

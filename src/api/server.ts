@@ -176,3 +176,15 @@ export const getWxMiniInfo = async (data: any) => {
   const res = await request(url, data);
   return res;
 };
+
+//  获取页面设置   devBaseUrl
+export const getByOpsIdAndKind = async (data: any) => {
+  const url = `${devBaseUrl}/sysUiFront/getByOpsIdAndKind`;
+  const res = await request(url, data);
+  return res;
+};
+export const getSysUi = async (data: any) => {
+  const url = `${baseUrl}/emp-base/sys/sysUi/getSysUi`;
+  const res = await request(url, data);
+  return res;
+};
