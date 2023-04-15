@@ -9,6 +9,7 @@ import { h5Url } from '@/utils/config';
 import { ref } from 'vue';
 import Router from '@/utils/router';
 import { useBasicsData } from '@/store/basicsData';
+import { shareAppMessage } from '@/utils/shareHold';
 
 const mallPathMap = {
 
@@ -43,6 +44,7 @@ const mallPathMap = {
   goodsDetail: '/mall/pages/goods/detail'
 };
 
+
 const authPath = [
   mallPathMap.shoppingCart,
   mallPathMap.orderList,
@@ -50,6 +52,13 @@ const authPath = [
   mallPathMap.address,
   mallPathMap.personalCenter,
 ];
+
+const messageData = ref<any>({});
+const messageType = ref('null');
+const shareName = ref('');
+const shareImage = ref('');
+const shareSettData = ref<any>([]);
+const shareData = ref<any>([]);
 
 const getParams = (params: Record<string, string | undefined>) => `${Object.entries(params)
   .map(([k, v]) => `${k}=${v}`)
@@ -97,7 +106,7 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}`;
     return;
   }
 
@@ -108,7 +117,7 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}`;
     return;
   }
 
@@ -155,6 +164,32 @@ onShow(() => {
     webViewUrl.value = `${defaultUrl}?${getParams(defaultParams.value)}`;
   }
 
+});
+
+const onMiniMessage = (message: any) => {
+  const data = message.detail.data;
+  const lastData = data[data.length - 1];
+  messageType.value = lastData.showType;
+  if (messageType.value === 'goodsdetails') {
+    shareName.value = lastData.title;
+    shareImage.value = lastData.imageUrl;
+    messageData.value = {
+      title: lastData.title,
+      path: `/my-assets-pages/point-mall/index?productId=${lastData.id}`,
+      shareObj: shareSettData.value,
+    };
+  }
+};
+
+onShareAppMessage(() => {
+  if (messageType.value === 'goodsDetails') {
+    return shareAppMessage(
+      messageData.value,
+      shareName.value,
+      shareImage.value
+    );
+  }
+  return shareAppMessage(shareData.value);
 });
 </script>
 
