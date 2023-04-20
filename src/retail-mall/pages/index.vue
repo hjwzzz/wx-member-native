@@ -14,43 +14,43 @@ import { shareAppMessage } from '@/utils/shareHold';
 const mallPathMap = {
 
   /** 首页 */
-  home: '/mall/pages/home/index',
+  retail_mall_index: '/mall/pages/home/index',
 
   /** 分类 */
-  category: '/mall/pages/category/index',
+  retail_mall_category: '/mall/pages/category/index',
 
   /** 购物车 */
-  shoppingCart: '/mall/pages/shopping-cart/index',
+  retail_mall_shopping: '/mall/pages/shopping-cart/index',
 
   /** 我的订单 */
-  orderList: '/mall/pages/order/list',
+  retail_mall_order: '/mall/pages/order/list',
 
   /** 我的收藏 */
-  collect: '/mall/pages/collect/index',
+  retail_mall_collect: '/mall/pages/collect/index',
 
   /** 地址管理 */
-  address: '/mall/pages/address/list',
+  retail_mall_address: '/mall/pages/address/list',
 
   /** 公告 */
-  announcement: '/mall/pages/announcement/index',
+  retail_mall_announce: '/mall/pages/announcement/index',
 
   /** 门店信息 */
-  shop: '/mall/pages/shop/index',
+  retail_mall_shop: '/mall/pages/shop/index',
 
-  /** 门店信息 */
-  personalCenter: '/mall/pages/personal-center/index',
+  /** 个人中心 */
+  retail_mall_personal: '/mall/pages/personal-center/index',
 
   /** 跳转商品详情页 */
-  goodsDetail: '/mall/pages/goods/detail'
+  retail_mall_goodsDetail: '/mall/pages/goods/detail',
 };
 
 
 const authPath = [
-  mallPathMap.shoppingCart,
-  mallPathMap.orderList,
-  mallPathMap.collect,
-  mallPathMap.address,
-  mallPathMap.personalCenter,
+  mallPathMap.retail_mall_shopping,
+  mallPathMap.retail_mall_order,
+  mallPathMap.retail_mall_collect,
+  mallPathMap.retail_mall_address,
+  mallPathMap.retail_mall_personal,
 ];
 
 const messageData = ref<any>({});
@@ -72,7 +72,7 @@ const initBasicsData = useBasicsData();
 
 const routerQuery = ref<Record<string, string | undefined>>({});
 const defaultParams = ref<Record<string, string | undefined>>({});
-const defaultUrl = `${h5Url}/#/mall/pages/home/index`;
+const defaultUrl = `${h5Url}/#/${mallPathMap.retail_mall_index}}`;
 const webViewUrl = ref('');
 
 // const mallPathMap = { goodsDetail: '/mall/pages/goods/detail' };
@@ -85,6 +85,8 @@ onLoad(option => {
 
 
 onShow(() => {
+  uni.hideHomeButton();
+
   defaultParams.value = {
     appId: Storage.getJqzAppId(),
     epid: Storage.getEpid(),
@@ -106,7 +108,7 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()}`;
     return;
   }
 
@@ -117,14 +119,16 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()}`;
     return;
   }
 
   /**
    * 有 path , 是从 H5 跳转过来的
    */
-  const { path, ...rest } = routerQuery.value;
+  const { name, ...rest } = routerQuery.value;
+
+  const path = mallPathMap[name];
 
   if (path) {
 
@@ -134,7 +138,7 @@ onShow(() => {
     if (!initBasicsData.checkLogin) {
       if (authPath.includes(path)) {
         Router.goLogin(
-          `/retail-mall/pages/index?path=${path}${getParams(rest)}`,
+          `/retail-mall/pages/index?name=${name}${getParams(rest)}&timestamp=${new Date()}`,
           true
         );
         return;
@@ -150,7 +154,7 @@ onShow(() => {
     // }
 
     // routerQuery.value = rest;
-    webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}`;
+    webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}&timestamp=${new Date()}`;
     return;
   }
 
@@ -158,8 +162,7 @@ onShow(() => {
 
   if (mallUrl) {
     const url = decodeURIComponent(mallUrl);
-    console.log(url);
-    webViewUrl.value = `${url}${url.includes('?') ? '&' : '?'}${getParams(defaultParams.value)}`;
+    webViewUrl.value = `${url}${url.includes('?') ? '&' : '?'}${getParams(defaultParams.value)}&timestamp=${new Date()}`;
   } else {
     webViewUrl.value = `${defaultUrl}?${getParams(defaultParams.value)}`;
   }

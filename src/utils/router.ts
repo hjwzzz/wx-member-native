@@ -56,6 +56,38 @@ const pageCode: any = {
   my_reservation_detail: '/reservation-service-pages/myAppointment/index', // 我的预约服务
   reservation_detail: '/reservation-service-pages/myAppointment/detail', // 预约服务-详情
   member_equity: '/pages/member-equity/index', // 会员权益
+
+
+  // 微商城
+  /** 首页 */
+  retail_mall_index: '/retail-mall/pages/index',
+
+  /** 分类 */
+  retail_mall_category: '/retail-mall/pages/index',
+
+  /** 购物车 */
+  retail_mall_shopping: '/retail-mall/pages/index',
+
+  /** 我的订单 */
+  retail_mall_order: '/retail-mall/pages/index',
+
+  /** 我的收藏 */
+  retail_mall_collect: '/retail-mall/pages/index',
+
+  /** 地址管理 */
+  retail_mall_address: '/retail-mall/pages/index',
+
+  /** 公告 */
+  retail_mall_announce: '/retail-mall/pages/index',
+
+  /** 门店信息 */
+  retail_mall_shop: '/retail-mall/pages/index',
+
+  /** 个人中心 */
+  retail_mall_personal: '/retail-mall/pages/index',
+
+  /** 跳转商品详情页 */
+  retail_mall_goodsDetail: '/retail-mall/pages/index',
 };
 
 const oldPage: {
