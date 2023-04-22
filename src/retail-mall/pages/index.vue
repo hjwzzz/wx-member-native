@@ -75,7 +75,7 @@ const initBasicsData = useBasicsData();
 
 const routerQuery = ref<Record<string, string | undefined>>({});
 const defaultParams = ref<Record<string, string | undefined>>({});
-const defaultUrl = `${h5Url}/#/${mallPathMap.retail_mall_index}}`;
+const defaultUrl = `${h5Url}/#${mallPathMap.retail_mall_index}`;
 const webViewUrl = ref('');
 
 // const mallPathMap = { goodsDetail: '/mall/pages/goods/detail' };
@@ -111,7 +111,8 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/fail?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()
+      .getTime()}`;
     return;
   }
 
@@ -122,7 +123,17 @@ onShow(() => {
       icon: 'none',
     });
 
-    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()}`;
+    webViewUrl.value = `${h5Url}/#/mall/pages/pay/success?${getParams(defaultParams.value)}&orderId=${mallPay.orderId}&opsId=${mallPay.opsId}&timestamp=${new Date()
+      .getTime()}`;
+    return;
+  }
+
+  const mallUrl = Storage.getMallUrl();
+
+  if (mallUrl) {
+    Storage.setMallUrl('');
+    webViewUrl.value = `${h5Url}/#${mallUrl}?${getParams(defaultParams.value)}&timestamp=${new Date()
+      .getTime()}`;
     return;
   }
 
@@ -141,7 +152,8 @@ onShow(() => {
     if (!initBasicsData.checkLogin) {
       if (authPath.includes(path)) {
         Router.goLogin(
-          `/retail-mall/pages/index?name=${name}${getParams(rest)}&timestamp=${new Date()}`,
+          `/retail-mall/pages/index?name=${name}${getParams(rest)}&timestamp=${new Date()
+            .getTime()}`,
           true
         );
         return;
@@ -157,18 +169,13 @@ onShow(() => {
     // }
 
     // routerQuery.value = rest;
-    webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}&timestamp=${new Date()}`;
+    webViewUrl.value = `${h5Url}/#${path}?${getParams({ ...rest, ...defaultParams.value })}&timestamp=${new Date()
+      .getTime()}`;
     return;
   }
 
-  const mallUrl = Storage.getMallUrl();
 
-  if (mallUrl) {
-    const url = decodeURIComponent(mallUrl);
-    webViewUrl.value = `${url}${url.includes('?') ? '&' : '?'}${getParams(defaultParams.value)}&timestamp=${new Date()}`;
-  } else {
-    webViewUrl.value = `${defaultUrl}?${getParams(defaultParams.value)}`;
-  }
+  webViewUrl.value = `${defaultUrl}?${getParams(defaultParams.value)}`;
 
 });
 

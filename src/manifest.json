@@ -50,9 +50,9 @@
   "quickapp": {},
   /* 小程序特有相关  dev开发环境： wxd850ff0cc3cc960c fat测试环境： wx55776771de6369cc UAT环境： wx9bb3bd01db33ef27 生产：wx2075f2e57d7a2994 */
   /* 老凤祥 sit wx3a9821ee25a1149b */
-  /* 中国黄金 sit wx55776771de6369cc */
+  /* 中国黄金 sit wxa3dd755cb7a067b9 */
   "mp-weixin": {
-    "appid": "wx55776771de6369cc",
+    "appid": "wxa3dd755cb7a067b9",
     "setting": {
       "ignoreDevUnusedFiles": false,
       "urlCheck": false
