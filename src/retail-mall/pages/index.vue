@@ -42,6 +42,9 @@ const mallPathMap = {
 
   /** 跳转商品详情页 */
   retail_mall_goodsDetail: '/mall/pages/goods/detail',
+
+  /** 跳转商品详情页 */
+  retail_mall_goodsList: '/mall/pages/goods/list',
 };
 
 

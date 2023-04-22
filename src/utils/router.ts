@@ -86,6 +86,9 @@ const pageCode: any = {
   /** 个人中心 */
   retail_mall_personal: '/retail-mall/pages/index',
 
+  /** 跳转商品列表 */
+  retail_mall_goodsList: '/retail-mall/pages/index',
+
   /** 跳转商品详情页 */
   retail_mall_goodsDetail: '/retail-mall/pages/index',
 };
